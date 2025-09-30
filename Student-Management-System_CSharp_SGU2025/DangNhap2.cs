@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Student_Management_System_CSharp_SGU2025
 {
-    public partial class Form2 : Form
+    public partial class DangNhap2 : Form
     {
-        public Form2()
+        public DangNhap2()
         {
             InitializeComponent();
         }
