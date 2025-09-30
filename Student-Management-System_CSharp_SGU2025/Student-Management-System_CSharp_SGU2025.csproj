@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BUS\DEKHONGBIMATFOLDER.cs" />
+    <Compile Include="DAO\DEKHONGBIMATFOLDER.cs" />
+    <Compile Include="DTO\DEKHONGBIMATFOLDER.cs" />
     <Compile Include="GUI\DangNhaTestp.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,11 +101,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BUS\" />
-    <Folder Include="DAO\" />
-    <Folder Include="DTO\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Images\3que.png" />
     <Content Include="Images\education.png">
