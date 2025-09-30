@@ -1,11 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Student_Management_System_CSharp_SGU2025
+
+namespace Student_Management_System_CSharp_SGU2025.GUI
 {
-    public partial class DangNhap : Form
+    public partial class DangNhaTestp : Form
     {
-        public DangNhap()
+        public DangNhaTestp()
         {
             InitializeComponent();
         }
@@ -82,6 +90,22 @@ namespace Student_Management_System_CSharp_SGU2025
 
         private void lblPass_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void panelRight_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblTitle_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+          
 
         }
     }
