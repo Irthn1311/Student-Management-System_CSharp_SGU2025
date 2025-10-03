@@ -70,18 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GUI\DangNhaTestp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\DangNhaTestp.Designer.cs">
-      <DependentUpon>DangNhaTestp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\DangNhap.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\DangNhap.Designer.cs">
-      <DependentUpon>DangNhap.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -108,12 +96,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="GUI\DangNhaTestp.resx">
-      <DependentUpon>DangNhaTestp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\DangNhap.resx">
-      <DependentUpon>DangNhap.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\TrangChu.resx">
       <DependentUpon>TrangChu.cs</DependentUpon>
     </EmbeddedResource>
