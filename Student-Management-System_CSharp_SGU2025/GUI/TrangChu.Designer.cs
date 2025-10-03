@@ -209,10 +209,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemThiVaDiem.Location = new System.Drawing.Point(4, 223);
             this.sidebarMenuItemThiVaDiem.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.sidebarMenuItemThiVaDiem.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.exam;
-            this.sidebarMenuItemThiVaDiem.MenuText = "Thi & Điểm";
+            this.sidebarMenuItemThiVaDiem.MenuText = "Lịch thi";
             this.sidebarMenuItemThiVaDiem.Name = "sidebarMenuItemThiVaDiem";
             this.sidebarMenuItemThiVaDiem.Size = new System.Drawing.Size(240, 44);
             this.sidebarMenuItemThiVaDiem.TabIndex = 11;
+            this.sidebarMenuItemThiVaDiem.Load += new System.EventHandler(this.sidebarMenuItemThiVaDiem_Load);
             // 
             // sidebarMenuItemDanhGia
             // 
