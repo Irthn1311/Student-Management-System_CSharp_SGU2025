@@ -26,8 +26,29 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
 
         }
+        // ...existing code...
+        private void buttonHamburger_Click(object sender, EventArgs e)
+        {
+            // TODO: Thêm logic ẩn/hiện sidebar tại đây nếu cần
+        }
+        // ...existing code...
 
         private void button5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void mainContentPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void statCardUpcomingExams_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void flowLayoutPanelStatCards_Paint(object sender, PaintEventArgs e)
         {
 
         }

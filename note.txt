@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>QLHS - Bảng điều khiển</title>
+    
+    <style>
+      /* ========== globals.css ========== */
+      @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0px;
+  height: 100%;
+}
+/* a blue color as a generic focus style */
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
+}
+a {
+  text-decoration: none;
+}
+
+
+      /* ========== styleguide.css (giả sử chứa biến, font, semantic tokens) ========== */
+      :root {
+  --semantic-button-font-family: "Inter", Helvetica;
+  --semantic-button-font-weight: 400;
+  --semantic-button-font-size: 15.875px;
+  --semantic-button-letter-spacing: 0px;
+  --semantic-button-line-height: 24px;
+  --semantic-button-font-style: normal;
+  --semantic-cell-upper-font-family: "Inter", Helvetica;
+  --semantic-cell-upper-font-weight: 400;
+  --semantic-cell-upper-font-size: 12px;
+  --semantic-cell-upper-letter-spacing: 0.6000000238418579px;
+  --semantic-cell-upper-line-height: 16px;
+  --semantic-cell-upper-font-style: normal;
+  --semantic-data-font-family: "Inter", Helvetica;
+  --semantic-data-font-weight: 400;
+  --semantic-data-font-size: 15.625px;
+  --semantic-data-letter-spacing: 0px;
+  --semantic-data-line-height: 24px;
+  --semantic-data-font-style: normal;
+  --semantic-heading-1-font-family: "Inter", Helvetica;
+  --semantic-heading-1-font-weight: 700;
+  --semantic-heading-1-font-size: 19.6875px;
+  --semantic-heading-1-letter-spacing: 0px;
+  --semantic-heading-1-line-height: 28px;
+  --semantic-heading-1-font-style: normal;
+  --semantic-heading-2-font-family: "Inter", Helvetica;
+  --semantic-heading-2-font-weight: 700;
+  --semantic-heading-2-font-size: 23.4375px;
+  --semantic-heading-2-letter-spacing: 0px;
+  --semantic-heading-2-line-height: 32px;
+  --semantic-heading-2-font-style: normal;
+  --semantic-heading-3-font-family: "Inter", Helvetica;
+  --semantic-heading-3-font-weight: 700;
+  --semantic-heading-3-font-size: 17.859375px;
+  --semantic-heading-3-letter-spacing: 0px;
+  --semantic-heading-3-line-height: 28px;
+  --semantic-heading-3-font-style: normal;
+  --semantic-input-font-family: "Inter", Helvetica;
+  --semantic-input-font-weight: 400;
+  --semantic-input-font-size: 15.625px;
+  --semantic-input-letter-spacing: 0px;
+  --semantic-input-line-height: normal;
+  --semantic-input-font-style: normal;
+  --semantic-label-font-family: "Inter", Helvetica;
+  --semantic-label-font-weight: 400;
+  --semantic-label-font-size: 13.125px;
+  --semantic-label-letter-spacing: 0px;
+  --semantic-label-line-height: 20px;
+  --semantic-label-font-style: normal;
+  --semantic-link-font-family: "Inter", Helvetica;
+  --semantic-link-font-weight: 400;
+  --semantic-link-font-size: 14.875px;
+  --semantic-link-letter-spacing: 0px;
+  --semantic-link-line-height: 24px;
+  --semantic-link-font-style: normal;
+  --semantic-options-font-family: "Inter", Helvetica;
+  --semantic-options-font-weight: 400;
+  --semantic-options-font-size: 15.625px;
+  --semantic-options-letter-spacing: 0px;
+  --semantic-options-line-height: 16px;
+  --semantic-options-font-style: normal;
+  --semantic-strong-font-family: "Inter", Helvetica;
+  --semantic-strong-font-weight: 700;
+  --semantic-strong-font-size: 13.453125px;
+  --semantic-strong-letter-spacing: 0px;
+  --semantic-strong-line-height: 20px;
+  --semantic-strong-font-style: normal;
+  --semantic-textarea-font-family: "Inter", Helvetica;
+  --semantic-textarea-font-weight: 400;
+  --semantic-textarea-font-size: 15px;
+  --semantic-textarea-letter-spacing: 0px;
+  --semantic-textarea-line-height: 24px;
+  --semantic-textarea-font-style: normal;
+  --inter-regular-font-family: "Inter", Helvetica;
+  --inter-regular-font-weight: 400;
+  --inter-regular-font-size: 11.4375px;
+  --inter-regular-letter-spacing: 0px;
+  --inter-regular-line-height: 16px;
+  --inter-regular-font-style: normal;
+  --inter-bold-font-family: "Inter", Helvetica;
+  --inter-bold-font-weight: 700;
+  --inter-bold-font-size: 24px;
+  --inter-bold-letter-spacing: 0px;
+  --inter-bold-line-height: 32px;
+  --inter-bold-font-style: normal;
+}
+
+      /* ========== style.css ========== */
+      .container {
+  display: flex;
+  min-height: 1200px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.container .background-shadow {
+  display: flex;
+  flex-direction: column;
+  width: 256px;
+  align-items: flex-start;
+  position: relative;
+  align-self: stretch;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 6px -4px #0000001a, 0px 10px 15px -3px #0000001a;
+}
+
+.container .horizontal-border {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px 16px 17px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-color: #e5e7eb;
+}
+
+.container .div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.container .div-2 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.container .text-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #2563eb;
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 28px;
+  white-space: nowrap;
+}
+
+.container .button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px;
+  position: relative;
+  flex: 0 0 auto;
+  border-radius: 8px;
+}
+
+.container .SVG {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.container .vector {
+  position: absolute;
+  width: 66.67%;
+  height: 0;
+  top: 50.00%;
+  left: 16.67%;
+}
+
+.container .img {
+  position: absolute;
+  width: 66.67%;
+  height: 0;
+  top: 25.00%;
+  left: 16.67%;
+}
+
+.container .vector-2 {
+  position: absolute;
+  width: 66.67%;
+  height: 0;
+  top: 75.00%;
+  left: 16.67%;
+}
+
+.container .nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.container .link {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  border-radius: 8px;
+}
+
+.container .vector-3 {
+  position: absolute;
+  width: 75.00%;
+  height: 83.33%;
+  top: 8.33%;
+  left: 12.50%;
+}
+
+.container .vector-4 {
+  position: absolute;
+  width: 25.00%;
+  height: 41.67%;
+  top: 50.00%;
+  left: 37.50%;
+}
+
+.container .margin {
+  padding: 0px 0px 0px 12px;
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.container .text-wrapper-2 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #374151;
+  font-size: 15px;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.container .vector-5 {
+  position: absolute;
+  width: 58.33%;
+  height: 25.00%;
+  top: 62.50%;
+  left: 8.33%;
+}
+
+.container .vector-6 {
+  position: absolute;
+  width: 33.33%;
+  height: 33.33%;
+  top: 12.50%;
+  left: 20.83%;
+}
+
+.container .vector-7 {
+  position: absolute;
+  width: 12.50%;
+  height: 24.46%;
+  top: 63.04%;
+  left: 79.17%;
+}
+
+.container .vector-8 {
+  position: absolute;
+  width: 12.53%;
+  height: 32.29%;
+  top: 13.04%;
+  left: 66.67%;
+}
+
+.container .text-wrapper-3 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #374151;
+  font-size: 15.2px;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.container .vector-9 {
+  position: absolute;
+  width: 0;
+  height: 16.67%;
+  top: 8.33%;
+  left: 33.33%;
+}
+
+.container .vector-10 {
+  position: absolute;
+  width: 0;
+  height: 16.67%;
+  top: 8.33%;
+  left: 66.67%;
+}
+
+.container .vector-11 {
+  position: absolute;
+  width: 75.00%;
+  height: 75.00%;
+  top: 16.67%;
+  left: 12.50%;
+}
+
+.container .vector-12 {
+  position: absolute;
+  width: 75.00%;
+  height: 0;
+  top: 41.67%;
+  left: 12.50%;
+}
+
+.container .text-wrapper-4 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #374151;
+  font-size: 15.1px;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.container .vector-13 {
+  position: absolute;
+  width: 66.67%;
+  height: 83.33%;
+  top: 8.33%;
+  left: 16.67%;
+}
+
+.container .vector-14 {
+  position: absolute;
+  width: 25.00%;
+  height: 25.00%;
+  top: 8.33%;
+  left: 58.33%;
+}
+
+.container .vector-15 {
+  position: absolute;
+  width: 8.33%;
+  height: 0;
+  top: 37.50%;
+  left: 33.33%;
+}
+
+.container .vector-16 {
+  position: absolute;
+  width: 33.33%;
+  height: 0;
+  top: 54.17%;
+  left: 33.33%;
+}
+
+.container .vector-17 {
+  position: absolute;
+  width: 33.33%;
+  height: 0;
+  top: 70.83%;
+  left: 33.33%;
+}
+
+.container .thi-i-m {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #374151;
+  font-size: 15.5px;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.container .vector-18 {
+  position: absolute;
+  width: 75.00%;
+  height: 75.00%;
+  top: 12.50%;
+  left: 12.50%;
+}
+
+.container .vector-19 {
+  position: absolute;
+  width: 0;
+  height: 33.33%;
+  top: 37.50%;
+  left: 75.00%;
+}
+
+.container .vector-20 {
+  position: absolute;
+  width: 0;
+  height: 50.00%;
+  top: 20.83%;
+  left: 54.17%;
+}
+
+.container .vector-21 {
+  position: absolute;
+  width: 0;
+  height: 12.50%;
+  top: 58.33%;
+  left: 33.33%;
+}
+
+.container .text-wrapper-5 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #374151;
+  font-size: 15.4px;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.container .vector-22 {
+  position: absolute;
+  width: 50.00%;
+  height: 50.00%;
+  top: 8.33%;
+  left: 25.00%;
+}
+
+.container .vector-23 {
+  position: absolute;
+  width: 41.67%;
+  height: 37.96%;
+  top: 53.71%;
+  left: 29.17%;
+}
+
+.container .vector-24 {
+  position: absolute;
+  width: 83.33%;
+  height: 20.83%;
+  top: 12.50%;
+  left: 8.33%;
+}
+
+.container .vector-25 {
+  position: absolute;
+  width: 66.67%;
+  height: 54.17%;
+  top: 33.33%;
+  left: 16.67%;
+}
+
+.container .vector-26 {
+  position: absolute;
+  width: 16.67%;
+  height: 0;
+  top: 50.00%;
+  left: 41.67%;
+}
+
+.container .text-wrapper-6 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #374151;
+  font-size: 14.6px;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.container .vector-27 {
+  position: absolute;
+  width: 75.15%;
+  height: 83.33%;
+  top: 8.33%;
+  left: 12.43%;
+}
+
+.container .vector-28 {
+  position: absolute;
+  width: 25.00%;
+  height: 25.00%;
+  top: 37.50%;
+  left: 37.50%;
+}
+
+.container .text-wrapper-7 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: var(--semantic-link-font-family);
+  font-weight: var(--semantic-link-font-weight);
+  color: #374151;
+  font-size: var(--semantic-link-font-size);
+  letter-spacing: var(--semantic-link-letter-spacing);
+  line-height: var(--semantic-link-line-height);
+  white-space: nowrap;
+  font-style: var(--semantic-link-font-style);
+}
+
+.container .div-3 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  flex: 1;
+  align-self: stretch;
+  flex-grow: 1;
+}
+
+.container .background {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 17px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  background-color: #ffffff;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-color: #e5e7eb;
+  box-shadow: 0px 1px 2px #0000000d;
+}
+
+.container .text-wrapper-8 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: var(--semantic-heading-1-font-family);
+  font-weight: var(--semantic-heading-1-font-weight);
+  color: #1f2937;
+  font-size: var(--semantic-heading-1-font-size);
+  letter-spacing: var(--semantic-heading-1-letter-spacing);
+  line-height: var(--semantic-heading-1-line-height);
+  white-space: nowrap;
+  font-style: var(--semantic-heading-1-font-style);
+}
+
+.container .div-4 {
+  position: relative;
+  width: 506.5px;
+  height: 42px;
+}
+
+.container .container-wrapper {
+  padding: 0px 0px 0px 16px;
+  position: absolute;
+  top: 5px;
+  left: 325px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.container .div-5 {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.container .SVG-wrapper {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: #3b82f6;
+  border-radius: 9999px;
+}
+
+.container .SVG-2 {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+
+.container .vector-29 {
+  position: absolute;
+  width: 58.33%;
+  height: 25.00%;
+  top: 62.50%;
+  left: 20.83%;
+}
+
+.container .vector-30 {
+  position: absolute;
+  width: 33.33%;
+  height: 33.33%;
+  top: 12.50%;
+  left: 33.33%;
+}
+
+.container .div-wrapper {
+  padding: 0px 0px 0px 8px;
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.container .text-wrapper-9 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #374151;
+  font-size: 13.3px;
+  letter-spacing: 0;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.container .SVG-margin {
+  display: flex;
+  flex-direction: column;
+  width: 24px;
+  height: 16px;
+  align-items: flex-start;
+  padding: 0px 0px 0px 8px;
+  position: relative;
+}
+
+.container .frame-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 16px;
+  height: 16px;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+}
+
+.container .frame {
+  position: relative;
+  flex: 1;
+  width: 16px;
+  flex-grow: 1;
+}
+
+.container .vector-31 {
+  position: absolute;
+  width: 50.00%;
+  height: 25.00%;
+  top: 37.50%;
+  left: 25.00%;
+}
+
+.container .div-6 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  top: calc(50.00% - 21px);
+  left: 0;
+}
+
+.container .input {
+  display: inline-flex;
+  align-items: flex-start;
+  padding: 5px 17px 10px 41px;
+  position: relative;
+  flex: 0 0 auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #d1d5db;
+}
+
+.container .div-wrapper-2 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 135.69px 3px 0px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.container .text-wrapper-10 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: var(--semantic-input-font-family);
+  font-weight: var(--semantic-input-font-weight);
+  color: #9ca3af;
+  font-size: var(--semantic-input-font-size);
+  letter-spacing: var(--semantic-input-letter-spacing);
+  line-height: var(--semantic-input-line-height);
+  font-style: var(--semantic-input-font-style);
+}
+
+.container .SVG-3 {
+  position: absolute;
+  top: calc(50.00% - 10px);
+  left: 12px;
+  width: 20px;
+  height: 20px;
+}
+
+.container .vector-32 {
+  position: absolute;
+  width: 66.67%;
+  height: 66.67%;
+  top: 12.50%;
+  left: 12.50%;
+}
+
+.container .vector-33 {
+  position: absolute;
+  width: 17.92%;
+  height: 17.92%;
+  top: 69.58%;
+  left: 69.58%;
+}
+
+.container .button-margin {
+  position: absolute;
+  top: 3px;
+  left: 273px;
+  width: 52px;
+  height: 36px;
+}
+
+.container .div-7 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 24px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.container .div-8 {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.container .background-border {
+  display: flex;
+  flex-direction: column;
+  width: 386px;
+  align-items: flex-start;
+  padding: 25px;
+  position: relative;
+  align-self: stretch;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #e5e7eb;
+  box-shadow: 0px 2px 4px -2px #0000001a, 0px 4px 6px -1px #0000001a;
+}
+
+.container .div-wrapper-3 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.container .text-wrapper-11 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #4b5563;
+  font-size: 13.6px;
+  letter-spacing: 0;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.container .text-wrapper-12 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 22.7px;
+  letter-spacing: 0;
+  line-height: 32px;
+  white-space: nowrap;
+}
+
+.container .background-2 {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+.container .text-wrapper-13 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #4b5563;
+  font-size: 13.3px;
+  letter-spacing: 0;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.container .text-wrapper-14 {
+  font-size: 20.2px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: 0;
+  line-height: 32px;
+  white-space: nowrap;
+}
+
+.container .background-3 {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: #dbeafe;
+  border-radius: 8px;
+}
+
+.container .SVG-4 {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.container .vector-34 {
+  position: absolute;
+  width: 83.40%;
+  height: 41.67%;
+  top: 20.83%;
+  left: 8.34%;
+}
+
+.container .vector-35 {
+  position: absolute;
+  width: 0;
+  height: 25.00%;
+  top: 41.67%;
+  left: 91.67%;
+}
+
+.container .vector-36 {
+  position: absolute;
+  width: 50.00%;
+  height: 27.08%;
+  top: 52.08%;
+  left: 25.00%;
+}
+
+.container .text-wrapper-15 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #4b5563;
+  font-size: 13.5px;
+  letter-spacing: 0;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.container .text-wrapper-16 {
+  font-size: 20.8px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: 0;
+  line-height: 32px;
+  white-space: nowrap;
+}
+
+.container .background-4 {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: #f3e8ff;
+  border-radius: 8px;
+}
+
+.container .text-wrapper-17 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: var(--semantic-label-font-family);
+  font-weight: var(--semantic-label-font-weight);
+  color: #4b5563;
+  font-size: var(--semantic-label-font-size);
+  letter-spacing: var(--semantic-label-letter-spacing);
+  line-height: var(--semantic-label-line-height);
+  white-space: nowrap;
+  font-style: var(--semantic-label-font-style);
+}
+
+.container .text-wrapper-18 {
+  font-size: var(--inter-bold-font-size);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: var(--inter-bold-font-family);
+  font-weight: var(--inter-bold-font-weight);
+  color: #1f2937;
+  letter-spacing: var(--inter-bold-letter-spacing);
+  line-height: var(--inter-bold-line-height);
+  white-space: nowrap;
+  font-style: var(--inter-bold-font-style);
+}
+
+.container .background-5 {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: #ffedd5;
+  border-radius: 8px;
+}
+
+.container .vector-37 {
+  position: absolute;
+  width: 83.33%;
+  height: 83.33%;
+  top: 8.33%;
+  left: 8.33%;
+}
+
+.container .vector-38 {
+  position: absolute;
+  width: 16.67%;
+  height: 33.33%;
+  top: 25.00%;
+  left: 50.00%;
+}
+
+.container .background-shadow-2 {
+  display: flex;
+  flex-direction: column;
+  width: 796px;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  position: relative;
+  align-self: stretch;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 2px 4px -2px #0000001a, 0px 4px 6px -1px #0000001a;
+}
+
+.container .text-wrapper-19 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  margin-top: -1.00px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 17.4px;
+  letter-spacing: 0;
+  line-height: 28px;
+}
+
+.container .div-9 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.container .div-10 {
+  display: flex;
+  align-items: center;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.container .background-6 {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  background-color: #3b82f6;
+  border-radius: 9999px;
+}
+
+.container .text-wrapper-20 {
+  font-size: 10.9px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #6b7280;
+  letter-spacing: 0;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.container .background-7 {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  background-color: #22c55e;
+  border-radius: 9999px;
+}
+
+.container .p {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: var(--semantic-label-font-family);
+  font-weight: var(--semantic-label-font-weight);
+  color: #374151;
+  font-size: var(--semantic-label-font-size);
+  letter-spacing: var(--semantic-label-letter-spacing);
+  line-height: var(--semantic-label-line-height);
+  white-space: nowrap;
+  font-style: var(--semantic-label-font-style);
+}
+
+.container .text-wrapper-21 {
+  font-size: 11.1px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #6b7280;
+  letter-spacing: 0;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.container .background-8 {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  background-color: #f97316;
+  border-radius: 9999px;
+}
+
+.container .text-wrapper-22 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #374151;
+  font-size: 13px;
+  letter-spacing: 0;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.container .text-wrapper-23 {
+  font-size: var(--inter-regular-font-size);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-top: -1.00px;
+  font-family: var(--inter-regular-font-family);
+  font-weight: var(--inter-regular-font-weight);
+  color: #6b7280;
+  letter-spacing: var(--inter-regular-letter-spacing);
+  line-height: var(--inter-regular-line-height);
+  white-space: nowrap;
+  font-style: var(--inter-regular-font-style);
+}
+
+.container .text-wrapper-24 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  margin-top: -1.00px;
+  font-family: var(--semantic-heading-3-font-family);
+  font-weight: var(--semantic-heading-3-font-weight);
+  color: #000000;
+  font-size: var(--semantic-heading-3-font-size);
+  letter-spacing: var(--semantic-heading-3-letter-spacing);
+  line-height: var(--semantic-heading-3-line-height);
+  font-style: var(--semantic-heading-3-font-style);
+}
+
+.container .background-9 {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+/* Original CSS code should be injected here */
+
+/* Additional styles for semantic elements and accessibility improvements */
+.text-wrapper-10 {
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.text-wrapper-10:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+.link:hover {
+  background-color: #f3f4f6;
+}
+
+.link:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+.button:hover {
+  background-color: #f3f4f6;
+}
+
+.button:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+/* Ensure proper heading hierarchy */
+h1.text-wrapper {
+  font-size: 18px;
+}
+
+h2.text-wrapper-8 {
+  font-size: var(--semantic-heading-1-font-size);
+}
+
+h3.text-wrapper-19,
+h3.text-wrapper-24 {
+  font-size: var(--semantic-heading-3-font-size);
+}
+
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="background-shadow" role="navigation" aria-label="Menu chính">
+        <header class="horizontal-border">
+          <div class="div">
+            <div class="div-2">
+              <h1 class="text-wrapper">QLHS</h1>
+            </div>
+            <button class="button" type="button" aria-label="Menu hamburger">
+              <div class="SVG">
+                <img class="vector" src="img/vector-8.svg" alt="" />
+                <img class="img" src="img/vector-13.svg" alt="" />
+                <img class="vector-2" src="img/vector-33.svg" alt="" />
+              </div>
+            </button>
+          </div>
+        </header>
+        <nav class="nav">
+          <a href="#" class="link" role="menuitem">
+            <div class="SVG">
+              <img class="vector-3" src="img/vector-17.svg" alt="" />
+              <img class="vector-4" src="img/vector-35.svg" alt="" />
+            </div>
+            <div class="margin">
+              <span class="text-wrapper-2">Trang chủ</span>
+            </div>
+          </a>
+          <a href="#" class="link" role="menuitem">
+            <div class="SVG">
+              <img class="vector-5" src="img/vector.svg" alt="" />
+              <img class="vector-6" src="img/vector-15.svg" alt="" />
+              <img class="vector-7" src="img/vector-7.svg" alt="" />
+              <img class="vector-8" src="img/vector-25.svg" alt="" />
+            </div>
+            <div class="margin">
+              <span class="text-wrapper-3">Học sinh</span>
+            </div>
+          </a>
+          <a href="#" class="link" role="menuitem">
+            <div class="SVG">
+              <img class="vector-9" src="img/vector-21.svg" alt="" />
+              <img class="vector-10" src="img/vector-5.svg" alt="" />
+              <img class="vector-11" src="img/vector-2.svg" alt="" />
+              <img class="vector-12" src="img/image.svg" alt="" />
+            </div>
+            <div class="margin">
+              <span class="text-wrapper-4">Thời khóa biểu</span>
+            </div>
+          </a>
+          <a href="#" class="link" role="menuitem">
+            <div class="SVG">
+              <img class="vector-13" src="img/vector-9.svg" alt="" />
+              <img class="vector-14" src="img/vector-34.svg" alt="" />
+              <img class="vector-15" src="img/vector-24.svg" alt="" />
+              <img class="vector-16" src="img/vector-31.svg" alt="" />
+              <img class="vector-17" src="img/vector-40.svg" alt="" />
+            </div>
+            <div class="margin">
+              <span class="thi-i-m">Thi &amp; Điểm</span>
+            </div>
+          </a>
+          <a href="#" class="link" role="menuitem">
+            <div class="SVG">
+              <img class="vector-18" src="img/vector-14.svg" alt="" />
+              <img class="vector-19" src="img/vector-3.svg" alt="" />
+              <img class="vector-20" src="img/vector-36.svg" alt="" />
+              <img class="vector-21" src="img/vector-38.svg" alt="" />
+            </div>
+            <div class="margin">
+              <span class="text-wrapper-5">Đánh giá</span>
+            </div>
+          </a>
+          <a href="#" class="link" role="menuitem">
+            <div class="SVG">
+              <img class="vector-22" src="img/vector-16.svg" alt="" />
+              <img class="vector-23" src="img/vector-30.svg" alt="" />
+            </div>
+            <div class="margin">
+              <span class="text-wrapper-3">Hạnh kiểm</span>
+            </div>
+          </a>
+          <a href="#" class="link" role="menuitem">
+            <div class="SVG">
+              <img class="vector-18" src="img/vector-18.svg" alt="" />
+            </div>
+            <div class="margin">
+              <span class="text-wrapper-5">Báo cáo</span>
+            </div>
+          </a>
+          <a href="#" class="link" role="menuitem">
+            <div class="SVG">
+              <img class="vector-24" src="img/vector-27.svg" alt="" />
+              <img class="vector-25" src="img/vector-28.svg" alt="" />
+              <img class="vector-26" src="img/vector-6.svg" alt="" />
+            </div>
+            <div class="margin">
+              <span class="text-wrapper-6">Lưu trữ</span>
+            </div>
+          </a>
+          <a href="#" class="link" role="menuitem">
+            <div class="SVG">
+              <img class="vector-27" src="img/vector-19.svg" alt="" />
+              <img class="vector-28" src="img/vector-12.svg" alt="" />
+            </div>
+            <div class="margin">
+              <span class="text-wrapper-7">Cài đặt</span>
+            </div>
+          </a>
+        </nav>
+      </aside>
+      <main class="div-3">
+        <header class="background">
+          <div class="div-2">
+            <h2 class="text-wrapper-8">Bảng điều khiển</h2>
+          </div>
+          <div class="div-4">
+            <div class="container-wrapper">
+              <div class="div-5">
+                <div class="SVG-wrapper">
+                  <div class="SVG-2">
+                    <img class="vector-29" src="img/vector-39.svg" alt="" />
+                    <img class="vector-30" src="img/vector-29.svg" alt="" />
+                  </div>
+                </div>
+                <div class="div-wrapper">
+                  <span class="text-wrapper-9">Xin chào, Admin</span>
+                </div>
+                <div class="SVG-margin">
+                  <div class="frame-wrapper">
+                    <div class="frame">
+                      <img class="vector-31" src="img/vector-37.svg" alt="" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="div-6">
+              <div class="input">
+                <div class="div-wrapper-2">
+                  <input type="search" class="text-wrapper-10" placeholder="Tìm kiếm..." aria-label="Tìm kiếm" />
+                </div>
+              </div>
+              <div class="SVG-3">
+                <img class="vector-32" src="img/vector-26.svg" alt="" />
+                <img class="vector-33" src="img/vector-11.svg" alt="" />
+              </div>
+            </div>
+            <img class="button-margin" src="img/button-margin.svg" alt="" />
+          </div>
+        </header>
+        <section class="div-7">
+          <div class="div-8">
+            <article class="background-border">
+              <div class="div">
+                <div class="div-2">
+                  <div class="div-wrapper-3">
+                    <span class="text-wrapper-11">Tổng số học sinh</span>
+                  </div>
+                  <div class="div-wrapper-3">
+                    <span class="text-wrapper-12">1,247</span>
+                  </div>
+                </div>
+                <img class="background-2" src="img/background.svg" alt="Biểu tượng học sinh" />
+              </div>
+            </article>
+            <article class="background-border">
+              <div class="div">
+                <div class="div-2">
+                  <div class="div-wrapper-3">
+                    <span class="text-wrapper-13">Giáo viên</span>
+                  </div>
+                  <div class="div-wrapper-3">
+                    <span class="text-wrapper-14">89</span>
+                  </div>
+                </div>
+                <div class="background-3">
+                  <div class="SVG-4">
+                    <img class="vector-34" src="img/vector-23.svg" alt="" />
+                    <img class="vector-35" src="img/vector-10.svg" alt="" />
+                    <img class="vector-36" src="img/vector-20.svg" alt="" />
+                  </div>
+                </div>
+              </div>
+            </article>
+            <article class="background-border">
+              <div class="div">
+                <div class="div-2">
+                  <div class="div-wrapper-3">
+                    <span class="text-wrapper-15">Lớp học</span>
+                  </div>
+                  <div class="div-wrapper-3">
+                    <span class="text-wrapper-16">32</span>
+                  </div>
+                </div>
+                <div class="background-4">
+                  <div class="SVG-4">
+                    <img class="vector-13" src="img/vector-32.svg" alt="" />
+                  </div>
+                </div>
+              </div>
+            </article>
+            <article class="background-border">
+              <div class="div">
+                <div class="div-2">
+                  <div class="div-wrapper-3">
+                    <span class="text-wrapper-17">Kỳ thi sắp tới</span>
+                  </div>
+                  <div class="div-wrapper-3">
+                    <span class="text-wrapper-18">3</span>
+                  </div>
+                </div>
+                <div class="background-5">
+                  <div class="SVG-4">
+                    <img class="vector-37" src="img/vector-22.svg" alt="" />
+                    <img class="vector-38" src="img/vector-4.svg" alt="" />
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div class="div-8">
+            <section class="background-shadow-2">
+              <div class="div-wrapper-3">
+                <h3 class="text-wrapper-19">Hoạt động gần đây</h3>
+              </div>
+              <div class="div-9">
+                <div class="div-10">
+                  <div class="background-6" aria-hidden="true"></div>
+                  <div class="margin">
+                    <p class="text-wrapper-9">Nguyễn Văn A đã nộp bài thi Toán</p>
+                  </div>
+                  <div class="margin">
+                    <time class="text-wrapper-20" datetime="2024-01-01T12:00:00">5 phút trước</time>
+                  </div>
+                </div>
+                <div class="div-10">
+                  <div class="background-7" aria-hidden="true"></div>
+                  <div class="margin">
+                    <p class="p">Giáo viên Trần Thị B đã cập nhật điểm</p>
+                  </div>
+                  <div class="margin">
+                    <time class="text-wrapper-21" datetime="2024-01-01T11:45:00">15 phút trước</time>
+                  </div>
+                </div>
+                <div class="div-10">
+                  <div class="background-8" aria-hidden="true"></div>
+                  <div class="margin">
+                    <p class="text-wrapper-22">Thông báo: Lịch thi giữa kỳ đã được cập nhật</p>
+                  </div>
+                  <div class="margin">
+                    <time class="text-wrapper-23" datetime="2024-01-01T11:00:00">1 giờ trước</time>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section class="background-shadow-2">
+              <div class="div-wrapper-3">
+                <h3 class="text-wrapper-24">Biểu đồ điểm số</h3>
+              </div>
+              <img class="background-9" src="img/background-2.svg" alt="Biểu đồ điểm số của học sinh" />
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
