@@ -104,8 +104,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.splitContainer2.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.splitContainer2.Panel2.Controls.Add(this.mainContentHeaderPanel);
             this.splitContainer2.Panel2.Controls.Add(this.mainContentPanel);
-            this.splitContainer2.Size = new System.Drawing.Size(1600, 1000);
-            this.splitContainer2.SplitterDistance = 259;
+            this.splitContainer2.Size = new System.Drawing.Size(1440, 900);
+            this.splitContainer2.SplitterDistance = 192;
             this.splitContainer2.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -126,7 +126,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(259, 1000);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(192, 900);
             this.flowLayoutPanel1.TabIndex = 0;
             this.flowLayoutPanel1.WrapContents = false;
             this.flowLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanel1_Paint);
@@ -138,7 +138,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.panelHeaderSidebar.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelHeaderSidebar.Location = new System.Drawing.Point(3, 3);
             this.panelHeaderSidebar.Name = "panelHeaderSidebar";
-            this.panelHeaderSidebar.Size = new System.Drawing.Size(242, 50);
+            this.panelHeaderSidebar.Size = new System.Drawing.Size(190, 50);
             this.panelHeaderSidebar.TabIndex = 7;
             // 
             // labelTitle
@@ -148,7 +148,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.labelTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
             this.labelTitle.Location = new System.Drawing.Point(10, 10);
             this.labelTitle.Name = "labelTitle";
-            this.labelTitle.Size = new System.Drawing.Size(99, 36);
+            this.labelTitle.Size = new System.Drawing.Size(119, 40);
             this.labelTitle.TabIndex = 0;
             this.labelTitle.Text = "QLHS";
             // 
@@ -158,7 +158,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.buttonHamburger.Controls.Add(this.pictureBoxHamburger);
             this.buttonHamburger.FlatAppearance.BorderSize = 0;
             this.buttonHamburger.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonHamburger.Location = new System.Drawing.Point(192, 5);
+            this.buttonHamburger.Location = new System.Drawing.Point(140, 5);
             this.buttonHamburger.Name = "buttonHamburger";
             this.buttonHamburger.Size = new System.Drawing.Size(40, 40);
             this.buttonHamburger.TabIndex = 1;
@@ -182,7 +182,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemTrangChu.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.home;
             this.sidebarMenuItemTrangChu.MenuText = "Trang chủ";
             this.sidebarMenuItemTrangChu.Name = "sidebarMenuItemTrangChu";
-            this.sidebarMenuItemTrangChu.Size = new System.Drawing.Size(240, 44);
+            this.sidebarMenuItemTrangChu.Size = new System.Drawing.Size(185, 44);
             this.sidebarMenuItemTrangChu.TabIndex = 8;
             // 
             // sidebarMenuItemHocSinh
@@ -192,7 +192,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemHocSinh.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.student;
             this.sidebarMenuItemHocSinh.MenuText = "Học sinh";
             this.sidebarMenuItemHocSinh.Name = "sidebarMenuItemHocSinh";
-            this.sidebarMenuItemHocSinh.Size = new System.Drawing.Size(240, 44);
+            this.sidebarMenuItemHocSinh.Size = new System.Drawing.Size(188, 44);
             this.sidebarMenuItemHocSinh.TabIndex = 9;
             // 
             // sidebarMenuItemThoiKhoaBieu
@@ -202,7 +202,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemThoiKhoaBieu.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.calendar;
             this.sidebarMenuItemThoiKhoaBieu.MenuText = "Thời khóa biểu";
             this.sidebarMenuItemThoiKhoaBieu.Name = "sidebarMenuItemThoiKhoaBieu";
-            this.sidebarMenuItemThoiKhoaBieu.Size = new System.Drawing.Size(240, 44);
+            this.sidebarMenuItemThoiKhoaBieu.Size = new System.Drawing.Size(188, 44);
             this.sidebarMenuItemThoiKhoaBieu.TabIndex = 10;
             // 
             // sidebarMenuItemThiVaDiem
@@ -212,7 +212,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemThiVaDiem.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.exam;
             this.sidebarMenuItemThiVaDiem.MenuText = "Lịch thi";
             this.sidebarMenuItemThiVaDiem.Name = "sidebarMenuItemThiVaDiem";
-            this.sidebarMenuItemThiVaDiem.Size = new System.Drawing.Size(240, 44);
+            this.sidebarMenuItemThiVaDiem.Size = new System.Drawing.Size(188, 44);
             this.sidebarMenuItemThiVaDiem.TabIndex = 11;
             this.sidebarMenuItemThiVaDiem.Load += new System.EventHandler(this.sidebarMenuItemThiVaDiem_Load);
             // 
@@ -223,7 +223,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemDanhGia.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.statistics;
             this.sidebarMenuItemDanhGia.MenuText = "Đánh giá";
             this.sidebarMenuItemDanhGia.Name = "sidebarMenuItemDanhGia";
-            this.sidebarMenuItemDanhGia.Size = new System.Drawing.Size(240, 44);
+            this.sidebarMenuItemDanhGia.Size = new System.Drawing.Size(184, 44);
             this.sidebarMenuItemDanhGia.TabIndex = 12;
             // 
             // sidebarMenuItemHanhKiem
@@ -233,7 +233,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemHanhKiem.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
             this.sidebarMenuItemHanhKiem.MenuText = "Hạnh kiểm";
             this.sidebarMenuItemHanhKiem.Name = "sidebarMenuItemHanhKiem";
-            this.sidebarMenuItemHanhKiem.Size = new System.Drawing.Size(240, 44);
+            this.sidebarMenuItemHanhKiem.Size = new System.Drawing.Size(188, 44);
             this.sidebarMenuItemHanhKiem.TabIndex = 13;
             // 
             // sidebarMenuItemBaoCao
@@ -243,7 +243,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemBaoCao.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
             this.sidebarMenuItemBaoCao.MenuText = "Báo cáo";
             this.sidebarMenuItemBaoCao.Name = "sidebarMenuItemBaoCao";
-            this.sidebarMenuItemBaoCao.Size = new System.Drawing.Size(240, 44);
+            this.sidebarMenuItemBaoCao.Size = new System.Drawing.Size(188, 44);
             this.sidebarMenuItemBaoCao.TabIndex = 14;
             // 
             // sidebarMenuItemLuuTru
@@ -253,7 +253,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemLuuTru.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
             this.sidebarMenuItemLuuTru.MenuText = "Lưu trữ";
             this.sidebarMenuItemLuuTru.Name = "sidebarMenuItemLuuTru";
-            this.sidebarMenuItemLuuTru.Size = new System.Drawing.Size(240, 44);
+            this.sidebarMenuItemLuuTru.Size = new System.Drawing.Size(188, 44);
             this.sidebarMenuItemLuuTru.TabIndex = 15;
             // 
             // sidebarMenuItemCaiDat
@@ -263,7 +263,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemCaiDat.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
             this.sidebarMenuItemCaiDat.MenuText = "Cài đặt";
             this.sidebarMenuItemCaiDat.Name = "sidebarMenuItemCaiDat";
-            this.sidebarMenuItemCaiDat.Size = new System.Drawing.Size(240, 44);
+            this.sidebarMenuItemCaiDat.Size = new System.Drawing.Size(188, 44);
             this.sidebarMenuItemCaiDat.TabIndex = 16;
             // 
             // mainContentHeaderPanel
@@ -274,16 +274,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.mainContentHeaderPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.mainContentHeaderPanel.Location = new System.Drawing.Point(0, 0);
             this.mainContentHeaderPanel.Name = "mainContentHeaderPanel";
-            this.mainContentHeaderPanel.Size = new System.Drawing.Size(1337, 74);
+            this.mainContentHeaderPanel.Size = new System.Drawing.Size(1244, 56);
             this.mainContentHeaderPanel.TabIndex = 0;
             // 
             // labelDashboardTitle
             // 
             this.labelDashboardTitle.AutoSize = true;
             this.labelDashboardTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelDashboardTitle.Location = new System.Drawing.Point(46, 15);
+            this.labelDashboardTitle.Location = new System.Drawing.Point(20, 14);
             this.labelDashboardTitle.Name = "labelDashboardTitle";
-            this.labelDashboardTitle.Size = new System.Drawing.Size(201, 29);
+            this.labelDashboardTitle.Size = new System.Drawing.Size(238, 33);
             this.labelDashboardTitle.TabIndex = 0;
             this.labelDashboardTitle.Text = "Bảng điều khiển";
             // 
@@ -293,9 +293,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.panelSearchAdmin.Controls.Add(this.labelHelloAdmin);
             this.panelSearchAdmin.Controls.Add(this.pictureBoxAdminAvatar);
             this.panelSearchAdmin.Controls.Add(this.pictureBoxNotification);
-            this.panelSearchAdmin.Location = new System.Drawing.Point(810, 13);
+            this.panelSearchAdmin.Location = new System.Drawing.Point(748, 8);
             this.panelSearchAdmin.Name = "panelSearchAdmin";
-            this.panelSearchAdmin.Size = new System.Drawing.Size(500, 40);
+            this.panelSearchAdmin.Size = new System.Drawing.Size(476, 40);
             this.panelSearchAdmin.TabIndex = 1;
             this.panelSearchAdmin.Paint += new System.Windows.Forms.PaintEventHandler(this.panelSearchAdmin_Paint);
             // 
@@ -303,16 +303,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             this.labelHelloAdmin.AutoSize = true;
             this.labelHelloAdmin.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelHelloAdmin.Location = new System.Drawing.Point(300, 11);
+            this.labelHelloAdmin.Location = new System.Drawing.Point(280, 11);
             this.labelHelloAdmin.Name = "labelHelloAdmin";
-            this.labelHelloAdmin.Size = new System.Drawing.Size(130, 20);
+            this.labelHelloAdmin.Size = new System.Drawing.Size(155, 25);
             this.labelHelloAdmin.TabIndex = 1;
             this.labelHelloAdmin.Text = "Xin chào, Admin";
             // 
             // pictureBoxAdminAvatar
             // 
             this.pictureBoxAdminAvatar.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
-            this.pictureBoxAdminAvatar.Location = new System.Drawing.Point(450, 5);
+            this.pictureBoxAdminAvatar.Location = new System.Drawing.Point(430, 5);
             this.pictureBoxAdminAvatar.Name = "pictureBoxAdminAvatar";
             this.pictureBoxAdminAvatar.Size = new System.Drawing.Size(32, 32);
             this.pictureBoxAdminAvatar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -322,7 +322,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // pictureBoxNotification
             // 
             this.pictureBoxNotification.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.notification_bell;
-            this.pictureBoxNotification.Location = new System.Drawing.Point(265, 10);
+            this.pictureBoxNotification.Location = new System.Drawing.Point(245, 10);
             this.pictureBoxNotification.Name = "pictureBoxNotification";
             this.pictureBoxNotification.Size = new System.Drawing.Size(20, 20);
             this.pictureBoxNotification.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -338,8 +338,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.mainContentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainContentPanel.Location = new System.Drawing.Point(0, 0);
             this.mainContentPanel.Name = "mainContentPanel";
-            this.mainContentPanel.Padding = new System.Windows.Forms.Padding(24);
-            this.mainContentPanel.Size = new System.Drawing.Size(1337, 1000);
+            this.mainContentPanel.Padding = new System.Windows.Forms.Padding(20);
+            this.mainContentPanel.Size = new System.Drawing.Size(1244, 900);
             this.mainContentPanel.TabIndex = 1;
             this.mainContentPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.mainContentPanel_Paint);
             // 
@@ -465,7 +465,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.labelRecentActivities.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelRecentActivities.Location = new System.Drawing.Point(24, 24);
             this.labelRecentActivities.Name = "labelRecentActivities";
-            this.labelRecentActivities.Size = new System.Drawing.Size(194, 25);
+            this.labelRecentActivities.Size = new System.Drawing.Size(231, 29);
             this.labelRecentActivities.TabIndex = 0;
             this.labelRecentActivities.Text = "Hoạt động gần đây";
             // 
@@ -495,7 +495,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.labelScoreChart.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelScoreChart.Location = new System.Drawing.Point(24, 24);
             this.labelScoreChart.Name = "labelScoreChart";
-            this.labelScoreChart.Size = new System.Drawing.Size(166, 25);
+            this.labelScoreChart.Size = new System.Drawing.Size(203, 29);
             this.labelScoreChart.TabIndex = 0;
             this.labelScoreChart.Text = "Biểu đồ điểm số";
             // 
@@ -510,7 +510,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             // TrangChu
             // 
-            this.ClientSize = new System.Drawing.Size(1600, 1000);
+            this.ClientSize = new System.Drawing.Size(1440, 900);
             this.Controls.Add(this.splitContainer2);
             this.Name = "TrangChu";
             this.Load += new System.EventHandler(this.TrangChu_Load);
