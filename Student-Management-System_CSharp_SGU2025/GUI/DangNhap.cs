@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guna.UI2.WinForms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,33 +13,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class DangNhap : Form
     {
+
+
         public DangNhap()
         {
             InitializeComponent();
+
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.MaximizeBox = true;
+            this.MinimizeBox = true;
+            this.WindowState = FormWindowState.Normal;
+
+            panelLeft.Dock = DockStyle.Left;
+            panelRight.Dock = DockStyle.Fill;
         }
+
+
         private void BtnLogin_Click(object sender, EventArgs e)
         {
-            string user = txtUser.Text.Trim();
-            string pass = txtPass.Text.Trim();
-            string role = cbRole.SelectedItem?.ToString();
-
-            if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(pass) || string.IsNullOrEmpty(role))
-            {
-                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Demo check
-            if (user == "admin" && pass == "123" && role == "Quản trị viên")
-            {
-                MessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show("Sai thông tin đăng nhập!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            
         }
 
         private void panelLeft_Paint(object sender, PaintEventArgs e)
@@ -53,7 +47,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void DangNhap_Load(object sender, EventArgs e)
         {
+            
+            txtTenDangNhap.PlaceholderText = "Nhập tên đăng nhập";
+            txtPass.PlaceholderText = "Nhập mật khẩu";
+            txtPass.PasswordChar = '●'; // ẩn mật khẩu
 
+            cbRole.Items.Clear();
+            cbRole.Items.Add("Quản trị viên");
+            cbRole.Items.Add("Giáo viên");
+            cbRole.Items.Add("Sinh viên");
+            cbRole.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         private void lblWelcome_Click(object sender, EventArgs e)
@@ -105,6 +108,41 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
 
 
+        }
+
+        private void txtPass_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbRole_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnLogin_Click_1(object sender, EventArgs e)
+        {
+            string user = txtTenDangNhap.Text.Trim();
+            string pass = txtPass.Text.Trim();
+            string role = cbRole.SelectedItem?.ToString();
+
+            if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(pass) || string.IsNullOrEmpty(role))
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Demo check
+            if (user == "admin" && pass == "123" && role == "Quản trị viên")
+            {
+                MessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Sai thông tin đăng nhập!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
