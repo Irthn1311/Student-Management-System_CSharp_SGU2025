@@ -52,5 +52,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
 
         }
+
+        private void panelSearchAdmin_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
