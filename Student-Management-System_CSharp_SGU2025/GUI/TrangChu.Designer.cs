@@ -55,7 +55,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
-            this.splitContainer2.Size = new System.Drawing.Size(1874, 1061);
+            this.splitContainer2.Size = new System.Drawing.Size(1874, 1055);
             this.splitContainer2.SplitterDistance = 271;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -70,7 +70,7 @@
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(271, 1061);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(271, 1055);
             this.flowLayoutPanel1.TabIndex = 0;
             this.flowLayoutPanel1.WrapContents = false;
             // 
@@ -121,7 +121,7 @@
             // 
             // TrangChu
             // 
-            this.ClientSize = new System.Drawing.Size(1874, 1061);
+            this.ClientSize = new System.Drawing.Size(1874, 1055);
             this.Controls.Add(this.splitContainer2);
             this.Name = "TrangChu";
             this.Load += new System.EventHandler(this.TrangChu_Load);
