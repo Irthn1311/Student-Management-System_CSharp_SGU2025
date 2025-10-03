@@ -89,22 +89,25 @@
     <Compile Include="GUI\StatCard.Designer.cs">
       <DependentUpon>StatCard.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\FrmMonHoc.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\FrmMonHoc.Designer.cs">
-      <DependentUpon>FrmMonHoc.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\TrangChu.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\TrangChu.Designer.cs">
       <DependentUpon>TrangChu.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\PNMonHoc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\PNMonHoc.Designer.cs">
+      <DependentUpon>PNMonHoc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="GUI\TrangChu.resx">
       <DependentUpon>TrangChu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\PNMonHoc.resx">
+      <DependentUpon>PNMonHoc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -133,7 +136,6 @@
   <ItemGroup>
     <Folder Include="BUS\" />
     <Folder Include="DAO\" />
-    <Folder Include="DTO\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\3que.png" />
@@ -141,6 +143,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\repair.png" />
+    <Content Include="Images\subject.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

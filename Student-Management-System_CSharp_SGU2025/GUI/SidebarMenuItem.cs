@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
@@ -15,6 +10,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         public SidebarMenuItem()
         {
             InitializeComponent();
+
+            // Lắng nghe click
+            this.Click += SidebarMenuItem_Click;
+            labelText.Click += SidebarMenuItem_Click;
+            pictureBoxIcon.Click += SidebarMenuItem_Click;
+
+            SetActive(false); // mặc định không active
+        }
+
+        // Sự kiện để FormMain có thể bắt được
+        public event EventHandler ItemClicked;
+
+        private bool isActive;
+        [Category("Custom Props")]
+        public bool IsActive
+        {
+            get { return isActive; }
+            set { SetActive(value); }
         }
 
         [Category("Custom Props")]
@@ -29,6 +42,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             get { return pictureBoxIcon.Image; }
             set { pictureBoxIcon.Image = value; }
+        }
+
+        private void SidebarMenuItem_Click(object sender, EventArgs e)
+        {
+            // Kích hoạt sự kiện ra ngoài
+            ItemClicked?.Invoke(this, e);
+        }
+
+        private void SetActive(bool active)
+        {
+            isActive = active;
+            if (active)
+            {
+                this.BackColor = Color.LightBlue; // màu xanh nhạt
+            }
+            else
+            {
+                this.BackColor = Color.Transparent; // trở lại bình thường
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // ...existing code...
         private void buttonHamburger_Click(object sender, EventArgs e)
         {
-            // TODO: Thêm logic ẩn/hiện sidebar tại đây nếu cần
+            
         }
         // ...existing code...
 
@@ -66,6 +66,38 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void sidebarMenuItem1_Load(object sender, EventArgs e)
+        {
+        }
+
+        private void pictureBoxScoreChart_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnTrangChu_Click(object sender, EventArgs e)
+        {
+            mainContentPanel.Controls.Clear();
+            PNMonHoc pn = new PNMonHoc();
+            pn.Dock = DockStyle.Fill;
+
+            // Add vào panelContent
+            mainContentPanel.Controls.Add(pn);
+        }
+
+        private void sidebarMenuItemDanhGia_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void sidebarMenuItemTrangChu_Load(object sender, EventArgs e)
+        {
+            mainContentPanel.Controls.Clear();
+            PNMonHoc pn = new PNMonHoc();
+            pn.Dock = DockStyle.Fill;
+            mainContentPanel.Controls.Add(pn);
         }
     }
 }
