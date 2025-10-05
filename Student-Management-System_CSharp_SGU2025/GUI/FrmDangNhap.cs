@@ -31,5 +31,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
 
         }
+
+        private void FrmDangNhap_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lbTenDangNhap_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

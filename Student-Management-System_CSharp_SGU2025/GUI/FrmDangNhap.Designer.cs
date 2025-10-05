@@ -123,6 +123,7 @@
             this.lbTenDangNhap.Size = new System.Drawing.Size(124, 22);
             this.lbTenDangNhap.TabIndex = 5;
             this.lbTenDangNhap.Text = "Tên đăng nhập";
+            this.lbTenDangNhap.Click += new System.EventHandler(this.lbTenDangNhap_Click);
             // 
             // lbMatKhau
             // 
@@ -202,7 +203,7 @@
             this.linkLbQuenMatKhau.AutoSize = true;
             this.linkLbQuenMatKhau.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLbQuenMatKhau.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
-            this.linkLbQuenMatKhau.Location = new System.Drawing.Point(1023, 609);
+            this.linkLbQuenMatKhau.Location = new System.Drawing.Point(1023, 616);
             this.linkLbQuenMatKhau.Name = "linkLbQuenMatKhau";
             this.linkLbQuenMatKhau.Size = new System.Drawing.Size(136, 20);
             this.linkLbQuenMatKhau.TabIndex = 10;
@@ -227,6 +228,7 @@
             this.Controls.Add(this.panelLeftDangNhap);
             this.Name = "FrmDangNhap";
             this.Text = "FrmDangNhap";
+            this.Load += new System.EventHandler(this.FrmDangNhap_Load);
             this.panelLeftDangNhap.ResumeLayout(false);
             this.panelLeftDangNhap.PerformLayout();
             this.ResumeLayout(false);
