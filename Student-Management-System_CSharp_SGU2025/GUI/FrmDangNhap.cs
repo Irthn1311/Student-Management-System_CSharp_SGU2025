@@ -39,7 +39,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void lbTenDangNhap_Click(object sender, EventArgs e)
         {
+            
+        }
 
+        private void btnDangNhap_Click(object sender, EventArgs e)
+        {
+            // Mở form TrangChu và đóng hẳn ứng dụng khi TrangChu bị đóng
+            var frm = new TrangChu();
+            frm.FormClosed += (s, args) => this.Close(); // đóng form đăng nhập => kết thúc message loop
+            frm.Show();
+            this.Hide();
         }
     }
 }
