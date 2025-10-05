@@ -38,6 +38,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.labelTitle = new System.Windows.Forms.Label();
             this.buttonHamburger = new System.Windows.Forms.Button();
             this.pictureBoxHamburger = new System.Windows.Forms.PictureBox();
+            this.mainContentHeaderPanel = new System.Windows.Forms.Panel();
+            this.labelDashboardTitle = new System.Windows.Forms.Label();
+            this.panelSearchAdmin = new System.Windows.Forms.Panel();
+            this.labelHelloAdmin = new System.Windows.Forms.Label();
+            this.pictureBoxAdminAvatar = new System.Windows.Forms.PictureBox();
+            this.pictureBoxNotification = new System.Windows.Forms.PictureBox();
+            this.mainContentPanel = new System.Windows.Forms.Panel();
+            this.flowLayoutPanelStatCards = new System.Windows.Forms.FlowLayoutPanel();
+            this.panelRecentActivities = new System.Windows.Forms.Panel();
+            this.flowLayoutPanelActivities = new System.Windows.Forms.FlowLayoutPanel();
+            this.labelRecentActivities = new System.Windows.Forms.Label();
+            this.panelScoreChart = new System.Windows.Forms.Panel();
+            this.pictureBoxScoreChart = new System.Windows.Forms.PictureBox();
+            this.labelScoreChart = new System.Windows.Forms.Label();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.sidebarMenuItemTrangChu = new Student_Management_System_CSharp_SGU2025.GUI.SidebarMenuItem();
             this.sidebarMenuItemHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.SidebarMenuItem();
             this.sidebarMenuItemThoiKhoaBieu = new Student_Management_System_CSharp_SGU2025.GUI.SidebarMenuItem();
@@ -47,28 +62,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.sidebarMenuItemBaoCao = new Student_Management_System_CSharp_SGU2025.GUI.SidebarMenuItem();
             this.sidebarMenuItemLuuTru = new Student_Management_System_CSharp_SGU2025.GUI.SidebarMenuItem();
             this.sidebarMenuItemCaiDat = new Student_Management_System_CSharp_SGU2025.GUI.SidebarMenuItem();
-            this.mainContentHeaderPanel = new System.Windows.Forms.Panel();
-            this.labelDashboardTitle = new System.Windows.Forms.Label();
-            this.panelSearchAdmin = new System.Windows.Forms.Panel();
-            this.labelHelloAdmin = new System.Windows.Forms.Label();
-            this.pictureBoxAdminAvatar = new System.Windows.Forms.PictureBox();
-            this.pictureBoxNotification = new System.Windows.Forms.PictureBox();
-            this.mainContentPanel = new System.Windows.Forms.Panel();
-            this.flowLayoutPanelStatCards = new System.Windows.Forms.FlowLayoutPanel();
             this.statCardUpcomingExams = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
             this.statCardClasses = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
             this.statCardStudents = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
             this.statCardTeachers = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
-            this.panelRecentActivities = new System.Windows.Forms.Panel();
-            this.flowLayoutPanelActivities = new System.Windows.Forms.FlowLayoutPanel();
             this.recentActivityItem1 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
             this.recentActivityItem2 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
             this.recentActivityItem3 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
-            this.labelRecentActivities = new System.Windows.Forms.Label();
-            this.panelScoreChart = new System.Windows.Forms.Panel();
-            this.pictureBoxScoreChart = new System.Windows.Forms.PictureBox();
-            this.labelScoreChart = new System.Windows.Forms.Label();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -175,97 +175,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.pictureBoxHamburger.TabIndex = 0;
             this.pictureBoxHamburger.TabStop = false;
             // 
-            // sidebarMenuItemTrangChu
-            // 
-            this.sidebarMenuItemTrangChu.Location = new System.Drawing.Point(4, 61);
-            this.sidebarMenuItemTrangChu.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.sidebarMenuItemTrangChu.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.home;
-            this.sidebarMenuItemTrangChu.MenuText = "Trang chủ";
-            this.sidebarMenuItemTrangChu.Name = "sidebarMenuItemTrangChu";
-            this.sidebarMenuItemTrangChu.Size = new System.Drawing.Size(185, 44);
-            this.sidebarMenuItemTrangChu.TabIndex = 8;
-            // 
-            // sidebarMenuItemHocSinh
-            // 
-            this.sidebarMenuItemHocSinh.Location = new System.Drawing.Point(4, 115);
-            this.sidebarMenuItemHocSinh.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.sidebarMenuItemHocSinh.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.student;
-            this.sidebarMenuItemHocSinh.MenuText = "Học sinh";
-            this.sidebarMenuItemHocSinh.Name = "sidebarMenuItemHocSinh";
-            this.sidebarMenuItemHocSinh.Size = new System.Drawing.Size(188, 44);
-            this.sidebarMenuItemHocSinh.TabIndex = 9;
-            // 
-            // sidebarMenuItemThoiKhoaBieu
-            // 
-            this.sidebarMenuItemThoiKhoaBieu.Location = new System.Drawing.Point(4, 169);
-            this.sidebarMenuItemThoiKhoaBieu.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.sidebarMenuItemThoiKhoaBieu.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.calendar;
-            this.sidebarMenuItemThoiKhoaBieu.MenuText = "Thời khóa biểu";
-            this.sidebarMenuItemThoiKhoaBieu.Name = "sidebarMenuItemThoiKhoaBieu";
-            this.sidebarMenuItemThoiKhoaBieu.Size = new System.Drawing.Size(188, 44);
-            this.sidebarMenuItemThoiKhoaBieu.TabIndex = 10;
-            // 
-            // sidebarMenuItemThiVaDiem
-            // 
-            this.sidebarMenuItemThiVaDiem.Location = new System.Drawing.Point(4, 223);
-            this.sidebarMenuItemThiVaDiem.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.sidebarMenuItemThiVaDiem.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.exam;
-            this.sidebarMenuItemThiVaDiem.MenuText = "Lịch thi";
-            this.sidebarMenuItemThiVaDiem.Name = "sidebarMenuItemThiVaDiem";
-            this.sidebarMenuItemThiVaDiem.Size = new System.Drawing.Size(188, 44);
-            this.sidebarMenuItemThiVaDiem.TabIndex = 11;
-            this.sidebarMenuItemThiVaDiem.Load += new System.EventHandler(this.sidebarMenuItemThiVaDiem_Load);
-            // 
-            // sidebarMenuItemDanhGia
-            // 
-            this.sidebarMenuItemDanhGia.Location = new System.Drawing.Point(4, 277);
-            this.sidebarMenuItemDanhGia.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.sidebarMenuItemDanhGia.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.statistics;
-            this.sidebarMenuItemDanhGia.MenuText = "Đánh giá";
-            this.sidebarMenuItemDanhGia.Name = "sidebarMenuItemDanhGia";
-            this.sidebarMenuItemDanhGia.Size = new System.Drawing.Size(184, 44);
-            this.sidebarMenuItemDanhGia.TabIndex = 12;
-            // 
-            // sidebarMenuItemHanhKiem
-            // 
-            this.sidebarMenuItemHanhKiem.Location = new System.Drawing.Point(4, 331);
-            this.sidebarMenuItemHanhKiem.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.sidebarMenuItemHanhKiem.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
-            this.sidebarMenuItemHanhKiem.MenuText = "Hạnh kiểm";
-            this.sidebarMenuItemHanhKiem.Name = "sidebarMenuItemHanhKiem";
-            this.sidebarMenuItemHanhKiem.Size = new System.Drawing.Size(188, 44);
-            this.sidebarMenuItemHanhKiem.TabIndex = 13;
-            // 
-            // sidebarMenuItemBaoCao
-            // 
-            this.sidebarMenuItemBaoCao.Location = new System.Drawing.Point(4, 385);
-            this.sidebarMenuItemBaoCao.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.sidebarMenuItemBaoCao.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
-            this.sidebarMenuItemBaoCao.MenuText = "Báo cáo";
-            this.sidebarMenuItemBaoCao.Name = "sidebarMenuItemBaoCao";
-            this.sidebarMenuItemBaoCao.Size = new System.Drawing.Size(188, 44);
-            this.sidebarMenuItemBaoCao.TabIndex = 14;
-            // 
-            // sidebarMenuItemLuuTru
-            // 
-            this.sidebarMenuItemLuuTru.Location = new System.Drawing.Point(4, 439);
-            this.sidebarMenuItemLuuTru.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.sidebarMenuItemLuuTru.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
-            this.sidebarMenuItemLuuTru.MenuText = "Lưu trữ";
-            this.sidebarMenuItemLuuTru.Name = "sidebarMenuItemLuuTru";
-            this.sidebarMenuItemLuuTru.Size = new System.Drawing.Size(188, 44);
-            this.sidebarMenuItemLuuTru.TabIndex = 15;
-            // 
-            // sidebarMenuItemCaiDat
-            // 
-            this.sidebarMenuItemCaiDat.Location = new System.Drawing.Point(4, 493);
-            this.sidebarMenuItemCaiDat.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.sidebarMenuItemCaiDat.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
-            this.sidebarMenuItemCaiDat.MenuText = "Cài đặt";
-            this.sidebarMenuItemCaiDat.Name = "sidebarMenuItemCaiDat";
-            this.sidebarMenuItemCaiDat.Size = new System.Drawing.Size(188, 44);
-            this.sidebarMenuItemCaiDat.TabIndex = 16;
-            // 
             // mainContentHeaderPanel
             // 
             this.mainContentHeaderPanel.BackColor = System.Drawing.Color.White;
@@ -355,55 +264,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.flowLayoutPanelStatCards.TabIndex = 0;
             this.flowLayoutPanelStatCards.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanelStatCards_Paint);
             // 
-            // statCardUpcomingExams
-            // 
-            this.statCardUpcomingExams.BackColor = System.Drawing.Color.White;
-            this.statCardUpcomingExams.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.calendar;
-            this.statCardUpcomingExams.Location = new System.Drawing.Point(4, 5);
-            this.statCardUpcomingExams.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.statCardUpcomingExams.Name = "statCardUpcomingExams";
-            this.statCardUpcomingExams.Size = new System.Drawing.Size(220, 100);
-            this.statCardUpcomingExams.TabIndex = 3;
-            this.statCardUpcomingExams.Title = "Kỳ thi sắp tới";
-            this.statCardUpcomingExams.Value = "3";
-            this.statCardUpcomingExams.Load += new System.EventHandler(this.statCardUpcomingExams_Load);
-            // 
-            // statCardClasses
-            // 
-            this.statCardClasses.BackColor = System.Drawing.Color.White;
-            this.statCardClasses.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.exam;
-            this.statCardClasses.Location = new System.Drawing.Point(232, 5);
-            this.statCardClasses.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.statCardClasses.Name = "statCardClasses";
-            this.statCardClasses.Size = new System.Drawing.Size(220, 100);
-            this.statCardClasses.TabIndex = 2;
-            this.statCardClasses.Title = "Lớp học";
-            this.statCardClasses.Value = "32";
-            // 
-            // statCardStudents
-            // 
-            this.statCardStudents.BackColor = System.Drawing.Color.White;
-            this.statCardStudents.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.student;
-            this.statCardStudents.Location = new System.Drawing.Point(460, 5);
-            this.statCardStudents.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.statCardStudents.Name = "statCardStudents";
-            this.statCardStudents.Size = new System.Drawing.Size(220, 100);
-            this.statCardStudents.TabIndex = 0;
-            this.statCardStudents.Title = "Tổng số học sinh";
-            this.statCardStudents.Value = "1,247";
-            // 
-            // statCardTeachers
-            // 
-            this.statCardTeachers.BackColor = System.Drawing.Color.White;
-            this.statCardTeachers.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
-            this.statCardTeachers.Location = new System.Drawing.Point(688, 5);
-            this.statCardTeachers.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.statCardTeachers.Name = "statCardTeachers";
-            this.statCardTeachers.Size = new System.Drawing.Size(220, 100);
-            this.statCardTeachers.TabIndex = 1;
-            this.statCardTeachers.Title = "Giáo viên";
-            this.statCardTeachers.Value = "89";
-            // 
             // panelRecentActivities
             // 
             this.panelRecentActivities.BackColor = System.Drawing.Color.White;
@@ -425,39 +285,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.flowLayoutPanelActivities.Name = "flowLayoutPanelActivities";
             this.flowLayoutPanelActivities.Size = new System.Drawing.Size(350, 150);
             this.flowLayoutPanelActivities.TabIndex = 1;
-            // 
-            // recentActivityItem1
-            // 
-            this.recentActivityItem1.ActivityText = "Nguyễn Văn A đã nộp bài thi Toán";
-            this.recentActivityItem1.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
-            this.recentActivityItem1.Location = new System.Drawing.Point(4, 5);
-            this.recentActivityItem1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.recentActivityItem1.Name = "recentActivityItem1";
-            this.recentActivityItem1.Size = new System.Drawing.Size(300, 32);
-            this.recentActivityItem1.TabIndex = 0;
-            this.recentActivityItem1.TimeText = "5 phút trước";
-            // 
-            // recentActivityItem2
-            // 
-            this.recentActivityItem2.ActivityText = "Giáo viên Trần Thị B đã cập nhật điểm";
-            this.recentActivityItem2.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
-            this.recentActivityItem2.Location = new System.Drawing.Point(4, 47);
-            this.recentActivityItem2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.recentActivityItem2.Name = "recentActivityItem2";
-            this.recentActivityItem2.Size = new System.Drawing.Size(300, 32);
-            this.recentActivityItem2.TabIndex = 1;
-            this.recentActivityItem2.TimeText = "15 phút trước";
-            // 
-            // recentActivityItem3
-            // 
-            this.recentActivityItem3.ActivityText = "Thông báo: Lịch thi giữa kỳ đã được cập nhật";
-            this.recentActivityItem3.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(115)))), ((int)(((byte)(22)))));
-            this.recentActivityItem3.Location = new System.Drawing.Point(4, 89);
-            this.recentActivityItem3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.recentActivityItem3.Name = "recentActivityItem3";
-            this.recentActivityItem3.Size = new System.Drawing.Size(300, 32);
-            this.recentActivityItem3.TabIndex = 2;
-            this.recentActivityItem3.TimeText = "1 giờ trước";
             // 
             // labelRecentActivities
             // 
@@ -507,6 +334,180 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.imageList1.Images.SetKeyName(1, "");
             this.imageList1.Images.SetKeyName(2, "");
             this.imageList1.Images.SetKeyName(3, "");
+            // 
+            // sidebarMenuItemTrangChu
+            // 
+            this.sidebarMenuItemTrangChu.Location = new System.Drawing.Point(4, 61);
+            this.sidebarMenuItemTrangChu.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.sidebarMenuItemTrangChu.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.home;
+            this.sidebarMenuItemTrangChu.MenuText = "Trang chủ";
+            this.sidebarMenuItemTrangChu.Name = "sidebarMenuItemTrangChu";
+            this.sidebarMenuItemTrangChu.Size = new System.Drawing.Size(185, 44);
+            this.sidebarMenuItemTrangChu.TabIndex = 8;
+            // 
+            // sidebarMenuItemHocSinh
+            // 
+            this.sidebarMenuItemHocSinh.Location = new System.Drawing.Point(4, 115);
+            this.sidebarMenuItemHocSinh.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.sidebarMenuItemHocSinh.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.student;
+            this.sidebarMenuItemHocSinh.MenuText = "Học sinh";
+            this.sidebarMenuItemHocSinh.Name = "sidebarMenuItemHocSinh";
+            this.sidebarMenuItemHocSinh.Size = new System.Drawing.Size(188, 44);
+            this.sidebarMenuItemHocSinh.TabIndex = 9;
+            this.sidebarMenuItemHocSinh.Load += new System.EventHandler(this.sidebarMenuItemHocSinh_Load);
+            // 
+            // sidebarMenuItemThoiKhoaBieu
+            // 
+            this.sidebarMenuItemThoiKhoaBieu.Location = new System.Drawing.Point(4, 169);
+            this.sidebarMenuItemThoiKhoaBieu.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.sidebarMenuItemThoiKhoaBieu.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.calendar;
+            this.sidebarMenuItemThoiKhoaBieu.MenuText = "Thời khóa biểu";
+            this.sidebarMenuItemThoiKhoaBieu.Name = "sidebarMenuItemThoiKhoaBieu";
+            this.sidebarMenuItemThoiKhoaBieu.Size = new System.Drawing.Size(188, 44);
+            this.sidebarMenuItemThoiKhoaBieu.TabIndex = 10;
+            // 
+            // sidebarMenuItemThiVaDiem
+            // 
+            this.sidebarMenuItemThiVaDiem.Location = new System.Drawing.Point(4, 223);
+            this.sidebarMenuItemThiVaDiem.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.sidebarMenuItemThiVaDiem.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.exam;
+            this.sidebarMenuItemThiVaDiem.MenuText = "Lịch thi";
+            this.sidebarMenuItemThiVaDiem.Name = "sidebarMenuItemThiVaDiem";
+            this.sidebarMenuItemThiVaDiem.Size = new System.Drawing.Size(188, 44);
+            this.sidebarMenuItemThiVaDiem.TabIndex = 11;
+            this.sidebarMenuItemThiVaDiem.Load += new System.EventHandler(this.sidebarMenuItemThiVaDiem_Load);
+            // 
+            // sidebarMenuItemDanhGia
+            // 
+            this.sidebarMenuItemDanhGia.Location = new System.Drawing.Point(4, 277);
+            this.sidebarMenuItemDanhGia.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.sidebarMenuItemDanhGia.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.statistics;
+            this.sidebarMenuItemDanhGia.MenuText = "Đánh giá";
+            this.sidebarMenuItemDanhGia.Name = "sidebarMenuItemDanhGia";
+            this.sidebarMenuItemDanhGia.Size = new System.Drawing.Size(184, 44);
+            this.sidebarMenuItemDanhGia.TabIndex = 12;
+            // 
+            // sidebarMenuItemHanhKiem
+            // 
+            this.sidebarMenuItemHanhKiem.Location = new System.Drawing.Point(4, 331);
+            this.sidebarMenuItemHanhKiem.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.sidebarMenuItemHanhKiem.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
+            this.sidebarMenuItemHanhKiem.MenuText = "Hạnh kiểm";
+            this.sidebarMenuItemHanhKiem.Name = "sidebarMenuItemHanhKiem";
+            this.sidebarMenuItemHanhKiem.Size = new System.Drawing.Size(188, 44);
+            this.sidebarMenuItemHanhKiem.TabIndex = 13;
+            // 
+            // sidebarMenuItemBaoCao
+            // 
+            this.sidebarMenuItemBaoCao.Location = new System.Drawing.Point(4, 385);
+            this.sidebarMenuItemBaoCao.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.sidebarMenuItemBaoCao.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
+            this.sidebarMenuItemBaoCao.MenuText = "Báo cáo";
+            this.sidebarMenuItemBaoCao.Name = "sidebarMenuItemBaoCao";
+            this.sidebarMenuItemBaoCao.Size = new System.Drawing.Size(188, 44);
+            this.sidebarMenuItemBaoCao.TabIndex = 14;
+            // 
+            // sidebarMenuItemLuuTru
+            // 
+            this.sidebarMenuItemLuuTru.Location = new System.Drawing.Point(4, 439);
+            this.sidebarMenuItemLuuTru.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.sidebarMenuItemLuuTru.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
+            this.sidebarMenuItemLuuTru.MenuText = "Lưu trữ";
+            this.sidebarMenuItemLuuTru.Name = "sidebarMenuItemLuuTru";
+            this.sidebarMenuItemLuuTru.Size = new System.Drawing.Size(188, 44);
+            this.sidebarMenuItemLuuTru.TabIndex = 15;
+            // 
+            // sidebarMenuItemCaiDat
+            // 
+            this.sidebarMenuItemCaiDat.Location = new System.Drawing.Point(4, 493);
+            this.sidebarMenuItemCaiDat.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.sidebarMenuItemCaiDat.MenuIcon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
+            this.sidebarMenuItemCaiDat.MenuText = "Cài đặt";
+            this.sidebarMenuItemCaiDat.Name = "sidebarMenuItemCaiDat";
+            this.sidebarMenuItemCaiDat.Size = new System.Drawing.Size(188, 44);
+            this.sidebarMenuItemCaiDat.TabIndex = 16;
+            // 
+            // statCardUpcomingExams
+            // 
+            this.statCardUpcomingExams.BackColor = System.Drawing.Color.White;
+            this.statCardUpcomingExams.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.calendar;
+            this.statCardUpcomingExams.Location = new System.Drawing.Point(4, 5);
+            this.statCardUpcomingExams.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.statCardUpcomingExams.Name = "statCardUpcomingExams";
+            this.statCardUpcomingExams.Size = new System.Drawing.Size(220, 100);
+            this.statCardUpcomingExams.TabIndex = 3;
+            this.statCardUpcomingExams.Title = "Kỳ thi sắp tới";
+            this.statCardUpcomingExams.Value = "3";
+            this.statCardUpcomingExams.Load += new System.EventHandler(this.statCardUpcomingExams_Load);
+            // 
+            // statCardClasses
+            // 
+            this.statCardClasses.BackColor = System.Drawing.Color.White;
+            this.statCardClasses.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.exam;
+            this.statCardClasses.Location = new System.Drawing.Point(232, 5);
+            this.statCardClasses.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.statCardClasses.Name = "statCardClasses";
+            this.statCardClasses.Size = new System.Drawing.Size(220, 100);
+            this.statCardClasses.TabIndex = 2;
+            this.statCardClasses.Title = "Lớp học";
+            this.statCardClasses.Value = "32";
+            // 
+            // statCardStudents
+            // 
+            this.statCardStudents.BackColor = System.Drawing.Color.White;
+            this.statCardStudents.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.student;
+            this.statCardStudents.Location = new System.Drawing.Point(460, 5);
+            this.statCardStudents.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.statCardStudents.Name = "statCardStudents";
+            this.statCardStudents.Size = new System.Drawing.Size(220, 100);
+            this.statCardStudents.TabIndex = 0;
+            this.statCardStudents.Title = "Tổng số học sinh";
+            this.statCardStudents.Value = "1,247";
+            // 
+            // statCardTeachers
+            // 
+            this.statCardTeachers.BackColor = System.Drawing.Color.White;
+            this.statCardTeachers.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
+            this.statCardTeachers.Location = new System.Drawing.Point(688, 5);
+            this.statCardTeachers.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.statCardTeachers.Name = "statCardTeachers";
+            this.statCardTeachers.Size = new System.Drawing.Size(220, 100);
+            this.statCardTeachers.TabIndex = 1;
+            this.statCardTeachers.Title = "Giáo viên";
+            this.statCardTeachers.Value = "89";
+            // 
+            // recentActivityItem1
+            // 
+            this.recentActivityItem1.ActivityText = "Nguyễn Văn A đã nộp bài thi Toán";
+            this.recentActivityItem1.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
+            this.recentActivityItem1.Location = new System.Drawing.Point(4, 5);
+            this.recentActivityItem1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.recentActivityItem1.Name = "recentActivityItem1";
+            this.recentActivityItem1.Size = new System.Drawing.Size(300, 32);
+            this.recentActivityItem1.TabIndex = 0;
+            this.recentActivityItem1.TimeText = "5 phút trước";
+            // 
+            // recentActivityItem2
+            // 
+            this.recentActivityItem2.ActivityText = "Giáo viên Trần Thị B đã cập nhật điểm";
+            this.recentActivityItem2.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
+            this.recentActivityItem2.Location = new System.Drawing.Point(4, 47);
+            this.recentActivityItem2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.recentActivityItem2.Name = "recentActivityItem2";
+            this.recentActivityItem2.Size = new System.Drawing.Size(300, 32);
+            this.recentActivityItem2.TabIndex = 1;
+            this.recentActivityItem2.TimeText = "15 phút trước";
+            // 
+            // recentActivityItem3
+            // 
+            this.recentActivityItem3.ActivityText = "Thông báo: Lịch thi giữa kỳ đã được cập nhật";
+            this.recentActivityItem3.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(115)))), ((int)(((byte)(22)))));
+            this.recentActivityItem3.Location = new System.Drawing.Point(4, 89);
+            this.recentActivityItem3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.recentActivityItem3.Name = "recentActivityItem3";
+            this.recentActivityItem3.Size = new System.Drawing.Size(300, 32);
+            this.recentActivityItem3.TabIndex = 2;
+            this.recentActivityItem3.TimeText = "1 giờ trước";
             // 
             // TrangChu
             // 

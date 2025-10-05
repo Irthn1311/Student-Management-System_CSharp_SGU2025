@@ -67,5 +67,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
 
         }
+
+        private void sidebarMenuItemHocSinh_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
