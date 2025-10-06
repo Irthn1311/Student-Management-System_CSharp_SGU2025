@@ -63,6 +63,11 @@ namespace Student_Management_System_CSharp_SGU2025.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+<<<<<<< HEAD
+        public static System.Drawing.Bitmap add {
+            get {
+                object obj = ResourceManager.GetObject("add", resourceCulture);
+=======
         public static System.Drawing.Bitmap _3que {
             get {
                 object obj = ResourceManager.GetObject("3que", resourceCulture);
