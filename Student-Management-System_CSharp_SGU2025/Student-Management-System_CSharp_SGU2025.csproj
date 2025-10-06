@@ -77,17 +77,17 @@
     <Compile Include="GUI\FrmDangNhap.Designer.cs">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\RecentActivityItem.Designer.cs">
       <DependentUpon>RecentActivityItem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\SidebarMenuItem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\SidebarMenuItem.Designer.cs">
-      <DependentUpon>SidebarMenuItem.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\StatCard.cs">
       <SubType>UserControl</SubType>
@@ -101,19 +101,88 @@
     <Compile Include="GUI\FrmMonHoc.Designer.cs">
       <DependentUpon>FrmMonHoc.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\TrangChu.cs">
-      <SubType>Form</SubType>
+    <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\TrangChu.Designer.cs">
-      <DependentUpon>TrangChu.cs</DependentUpon>
+    <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.Designer.cs">
+      <DependentUpon>ucBaoCaoBangDiem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCao.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCao.Designer.cs">
+      <DependentUpon>ucBaoCao.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCaoDanhSachLop.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCaoDanhSachLop.Designer.cs">
+      <DependentUpon>ucBaoCaoDanhSachLop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Dashboard\ucDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Dashboard\ucDashboard.Designer.cs">
+      <DependentUpon>ucDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Controls\ucHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Controls\ucHeader.Designer.cs">
+      <DependentUpon>ucHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Controls\ucSidebar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Controls\ucSidebar.Designer.cs">
+      <DependentUpon>ucSidebar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.Designer.cs">
+      <DependentUpon>ucBaoCaoThongKeHocLuc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\XepLoai\ucXepLoai.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\XepLoai\ucXepLoai.Designer.cs">
+      <DependentUpon>ucXepLoai.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="GUI\FrmDangNhap.resx">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\TrangChu.resx">
-      <DependentUpon>TrangChu.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\Forms\frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\FrmMonHoc.resx">
+      <DependentUpon>FrmMonHoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoBangDiem.resx">
+      <DependentUpon>ucBaoCaoBangDiem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\ucBaoCao.resx">
+      <DependentUpon>ucBaoCao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoDanhSachLop.resx">
+      <DependentUpon>ucBaoCaoDanhSachLop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Dashboard\ucDashboard.resx">
+      <DependentUpon>ucDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Controls\ucHeader.resx">
+      <DependentUpon>ucHeader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Controls\ucSidebar.resx">
+      <DependentUpon>ucSidebar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.resx">
+      <DependentUpon>ucBaoCaoThongKeHocLuc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\XepLoai\ucXepLoai.resx">
+      <DependentUpon>ucXepLoai.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

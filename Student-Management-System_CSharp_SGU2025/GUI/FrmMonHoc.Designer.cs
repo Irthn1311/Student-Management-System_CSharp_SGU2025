@@ -35,15 +35,15 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.dgvMonHoc = new Guna.UI2.WinForms.Guna2DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -78,10 +78,10 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.dgvMonHoc);
-            this.tabPage1.Location = new System.Drawing.Point(4, 34);
+            this.tabPage1.Location = new System.Drawing.Point(4, 45);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1589, 903);
+            this.tabPage1.Size = new System.Drawing.Size(1589, 892);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Danh sách môn học";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -119,8 +119,9 @@
             this.dgvMonHoc.Location = new System.Drawing.Point(3, 3);
             this.dgvMonHoc.Name = "dgvMonHoc";
             this.dgvMonHoc.RowHeadersVisible = false;
+            this.dgvMonHoc.RowHeadersWidth = 62;
             this.dgvMonHoc.RowTemplate.Height = 24;
-            this.dgvMonHoc.Size = new System.Drawing.Size(1583, 897);
+            this.dgvMonHoc.Size = new System.Drawing.Size(1583, 886);
             this.dgvMonHoc.TabIndex = 0;
             this.dgvMonHoc.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvMonHoc.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -145,12 +146,36 @@
             this.dgvMonHoc.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.dgvMonHoc.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.guna2DataGridView1_CellContentClick);
             // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Mã Môn";
+            this.Column1.MinimumWidth = 8;
+            this.Column1.Name = "Column1";
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Tên Môn";
+            this.Column2.MinimumWidth = 8;
+            this.Column2.Name = "Column2";
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Số tiết";
+            this.Column3.MinimumWidth = 8;
+            this.Column3.Name = "Column3";
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "Tùy chỉnh";
+            this.Column4.MinimumWidth = 8;
+            this.Column4.Name = "Column4";
+            // 
             // tabPage2
             // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 34);
+            this.tabPage2.Location = new System.Drawing.Point(4, 45);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1589, 903);
+            this.tabPage2.Size = new System.Drawing.Size(1589, 892);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Chỉnh sửa gì đó";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -190,34 +215,14 @@
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.MinimumSize = new System.Drawing.Size(75, 31);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(116, 31);
+            this.label1.Size = new System.Drawing.Size(163, 36);
             this.label1.TabIndex = 4;
             this.label1.Text = "MÔN HỌC";
             this.label1.Click += new System.EventHandler(this.label1_Click_1);
             // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "Mã Môn";
-            this.Column1.Name = "Column1";
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Tên Môn";
-            this.Column2.Name = "Column2";
-            // 
-            // Column3
-            // 
-            this.Column3.HeaderText = "Số tiết";
-            this.Column3.Name = "Column3";
-            // 
-            // Column4
-            // 
-            this.Column4.HeaderText = "Tùy chỉnh";
-            this.Column4.Name = "Column4";
-            // 
             // FrmMonHoc
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(17F, 36F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1584, 961);
             this.Controls.Add(this.panel1);
