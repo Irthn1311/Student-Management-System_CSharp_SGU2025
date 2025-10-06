@@ -57,7 +57,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             btnExportStatistics.FillColor = Color.FromArgb(30, 136, 229);
             btnExportStatistics.ForeColor = Color.White;
             btnExportStatistics.BorderRadius = 8;
-            btnExportStatistics.Text = "📊 Xuất báo cáo tổng hợp";
+            btnExportStatistics.Text = "Xuất báo cáo tổng hợp";
+            btnExportStatistics.Image = Properties.Resources.statistics;
         }
 
         private void SetupKhoiPanel(Guna.UI2.WinForms.Guna2Panel khoiPanel, Label titleLabel, string title, FlowLayoutPanel statsContainer)

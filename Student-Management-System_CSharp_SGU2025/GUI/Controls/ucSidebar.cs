@@ -17,6 +17,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             InitializeComponent();
         }
 
+        // Public properties to expose buttons for better maintainability
+        public Guna.UI2.WinForms.Guna2Button BangTinButton => btnBangTin;
+        public Guna.UI2.WinForms.Guna2Button XepLoaiButton => btnXepLoai;
+        public Guna.UI2.WinForms.Guna2Button BaoCaoButton => btnBaoCao;
+
         private void pnlHeader_Paint(object sender, PaintEventArgs e)
         {
 

@@ -23,42 +23,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void InitializeNavigation()
         {
-            // Wire up sidebar button events
-            // Sử dụng reflection để access private buttons trong ucSidebar1
-            var btnBangTin = GetControlByName(ucSidebar1, "btnBangTin") as Guna.UI2.WinForms.Guna2Button;
-            var btnXepLoai = GetControlByName(ucSidebar1, "btnXepLoai") as Guna.UI2.WinForms.Guna2Button;
-            var btnBaoCao = GetControlByName(ucSidebar1, "btnBaoCao") as Guna.UI2.WinForms.Guna2Button;
-
-            if (btnBangTin != null)
-            {
-                btnBangTin.Click += BtnBangTin_Click;
-            }
-
-            if (btnXepLoai != null)
-            {
-                btnXepLoai.Click += BtnXepLoai_Click;
-            }
-
-            if (btnBaoCao != null)
-            {
-                btnBaoCao.Click += BtnBaoCao_Click;
-            }
+            // Wire up sidebar button events using public properties
+            ucSidebar1.BangTinButton.Click += BtnBangTin_Click;
+            ucSidebar1.XepLoaiButton.Click += BtnXepLoai_Click;
+            ucSidebar1.BaoCaoButton.Click += BtnBaoCao_Click;
         }
 
-        // Helper method để lấy control theo tên
-        private Control GetControlByName(Control parent, string name)
-        {
-            foreach (Control ctrl in parent.Controls)
-            {
-                if (ctrl.Name == name)
-                    return ctrl;
-                
-                var found = GetControlByName(ctrl, name);
-                if (found != null)
-                    return found;
-            }
-            return null;
-        }
 
         private void BtnBangTin_Click(object sender, EventArgs e)
         {
