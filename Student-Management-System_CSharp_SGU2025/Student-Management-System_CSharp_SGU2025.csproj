@@ -71,34 +71,34 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\MonHoc.cs" />
-    <Compile Include="GUI\DiemSo_NhapDiem.cs">
+    <Compile Include="GUI\DiemSo\DiemSo_NhapDiem.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\DiemSo_NhapDiem.Designer.cs">
+    <Compile Include="GUI\DiemSo\DiemSo_NhapDiem.Designer.cs">
       <DependentUpon>DiemSo_NhapDiem.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\FrmDangNhap.cs">
+    <Compile Include="GUI\DangNhap\FrmDangNhap.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\FrmDangNhap.Designer.cs">
+    <Compile Include="GUI\DangNhap\FrmDangNhap.Designer.cs">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\HanhKiem.cs">
+    <Compile Include="GUI\LamThem\HanhKiem.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\HanhKiem.Designer.cs">
+    <Compile Include="GUI\LamThem\HanhKiem.Designer.cs">
       <DependentUpon>HanhKiem.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\HeaderQuanLiHocSinh.cs">
+    <Compile Include="GUI\TaiSuDung\HeaderQuanLiHocSinh.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\HeaderQuanLiHocSinh.Designer.cs">
+    <Compile Include="GUI\TaiSuDung\HeaderQuanLiHocSinh.Designer.cs">
       <DependentUpon>HeaderQuanLiHocSinh.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\HocSinh.cs">
+    <Compile Include="GUI\HocSinh\HocSinh.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\HocSinh.Designer.cs">
+    <Compile Include="GUI\HocSinh\HocSinh.Designer.cs">
       <DependentUpon>HocSinh.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
@@ -125,10 +125,10 @@
     <Compile Include="GUI\FrmMonHoc.Designer.cs">
       <DependentUpon>FrmMonHoc.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\StatCardQuanLiHocSinh.cs">
+    <Compile Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\StatCardQuanLiHocSinh.Designer.cs">
+    <Compile Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.Designer.cs">
       <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\TrangChu.cs">
@@ -139,22 +139,22 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="GUI\DiemSo_NhapDiem.resx">
+    <EmbeddedResource Include="GUI\DiemSo\DiemSo_NhapDiem.resx">
       <DependentUpon>DiemSo_NhapDiem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\FrmDangNhap.resx">
+    <EmbeddedResource Include="GUI\DangNhap\FrmDangNhap.resx">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\HanhKiem.resx">
+    <EmbeddedResource Include="GUI\LamThem\HanhKiem.resx">
       <DependentUpon>HanhKiem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\HeaderQuanLiHocSinh.resx">
+    <EmbeddedResource Include="GUI\TaiSuDung\HeaderQuanLiHocSinh.resx">
       <DependentUpon>HeaderQuanLiHocSinh.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\HocSinh.resx">
+    <EmbeddedResource Include="GUI\HocSinh\HocSinh.resx">
       <DependentUpon>HocSinh.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\StatCardQuanLiHocSinh.resx">
+    <EmbeddedResource Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.resx">
       <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\TrangChu.resx">
