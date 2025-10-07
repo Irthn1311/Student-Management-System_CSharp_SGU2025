@@ -71,11 +71,35 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\MonHoc.cs" />
+    <Compile Include="GUI\DiemSo_NhapDiem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\DiemSo_NhapDiem.Designer.cs">
+      <DependentUpon>DiemSo_NhapDiem.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\FrmDangNhap.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\FrmDangNhap.Designer.cs">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\HanhKiem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\HanhKiem.Designer.cs">
+      <DependentUpon>HanhKiem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\HeaderQuanLiHocSinh.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\HeaderQuanLiHocSinh.Designer.cs">
+      <DependentUpon>HeaderQuanLiHocSinh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\HocSinh.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\HocSinh.Designer.cs">
+      <DependentUpon>HocSinh.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
       <SubType>UserControl</SubType>
@@ -101,6 +125,12 @@
     <Compile Include="GUI\FrmMonHoc.Designer.cs">
       <DependentUpon>FrmMonHoc.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\StatCardQuanLiHocSinh.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\StatCardQuanLiHocSinh.Designer.cs">
+      <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\TrangChu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,8 +139,23 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GUI\DiemSo_NhapDiem.resx">
+      <DependentUpon>DiemSo_NhapDiem.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\FrmDangNhap.resx">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HanhKiem.resx">
+      <DependentUpon>HanhKiem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HeaderQuanLiHocSinh.resx">
+      <DependentUpon>HeaderQuanLiHocSinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HocSinh.resx">
+      <DependentUpon>HocSinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\StatCardQuanLiHocSinh.resx">
+      <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\TrangChu.resx">
       <DependentUpon>TrangChu.cs</DependentUpon>
@@ -145,11 +190,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\3que.png" />
+    <None Include="Images\download.png" />
+    <None Include="Images\diskette.png" />
     <Content Include="Images\education.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Images\people.png" />
     <None Include="Images\padlock.png" />
+    <None Include="Images\plus.png" />
     <Content Include="Images\repair.png" />
     <None Include="Images\school.png" />
   </ItemGroup>
