@@ -71,6 +71,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\MonHoc.cs" />
+    <Compile Include="GUI\LopKhoi\LopKhoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\LopKhoi.Designer.cs">
+      <DependentUpon>LopKhoi.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\FrmDangNhap.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,11 +101,23 @@
     <Compile Include="GUI\StatCard.Designer.cs">
       <DependentUpon>StatCard.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\FrmMonHoc.cs">
-      <SubType>Form</SubType>
+    <Compile Include="GUI\PhanCongGiangDay\PhanCongGiangDay.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\FrmMonHoc.Designer.cs">
-      <DependentUpon>FrmMonHoc.cs</DependentUpon>
+    <Compile Include="GUI\PhanCongGiangDay\PhanCongGiangDay.Designer.cs">
+      <DependentUpon>PhanCongGiangDay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardKhoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardKhoi.Designer.cs">
+      <DependentUpon>StatCardKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardPhanCongGiangDay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardPhanCongGiangDay.Designer.cs">
+      <DependentUpon>StatCardPhanCongGiangDay.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.cs">
       <SubType>UserControl</SubType>
@@ -151,6 +169,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GUI\LopKhoi\LopKhoi.resx">
+      <DependentUpon>LopKhoi.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\FrmDangNhap.resx">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
     </EmbeddedResource>
@@ -214,11 +235,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\3que.png" />
+    <None Include="Images\delete_icon.png" />
+    <None Include="Images\edit_icon.png" />
+    <None Include="Images\add.png" />
     <Content Include="Images\education.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Images\people.png" />
     <None Include="Images\padlock.png" />
+    <None Include="Images\filter.png" />
     <Content Include="Images\repair.png" />
     <None Include="Images\school.png" />
   </ItemGroup>
