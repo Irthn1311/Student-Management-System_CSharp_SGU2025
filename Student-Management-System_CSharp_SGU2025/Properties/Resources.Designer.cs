@@ -10,8 +10,9 @@
 
 namespace Student_Management_System_CSharp_SGU2025.Properties {
     using System;
-    
-    
+    using System.Drawing;
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,7 +24,7 @@ namespace Student_Management_System_CSharp_SGU2025.Properties {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
-        
+        internal static Image unlock;
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
@@ -231,6 +232,16 @@ namespace Student_Management_System_CSharp_SGU2025.Properties {
         public static System.Drawing.Bitmap padlock {
             get {
                 object obj = ResourceManager.GetObject("padlock", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap padlock1 {
+            get {
+                object obj = ResourceManager.GetObject("padlock1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
