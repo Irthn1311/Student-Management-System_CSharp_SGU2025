@@ -64,7 +64,7 @@
             "Tất cả lớp",
             "Lớp 6A1",
             "Lớp 7A2"});
-            this.cbLop.Location = new System.Drawing.Point(998, 111);
+            this.cbLop.Location = new System.Drawing.Point(998, 30);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(168, 36);
             this.cbLop.StartIndex = 0;
@@ -103,12 +103,12 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableHocSinh.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableHocSinh.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableHocSinh.Location = new System.Drawing.Point(23, 345);
+            this.tableHocSinh.Location = new System.Drawing.Point(23, 264);
             this.tableHocSinh.Name = "tableHocSinh";
             this.tableHocSinh.RowHeadersVisible = false;
             this.tableHocSinh.RowHeadersWidth = 51;
             this.tableHocSinh.RowTemplate.Height = 24;
-            this.tableHocSinh.Size = new System.Drawing.Size(1143, 510);
+            this.tableHocSinh.Size = new System.Drawing.Size(1143, 429);
             this.tableHocSinh.TabIndex = 12;
             this.tableHocSinh.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableHocSinh.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -189,7 +189,7 @@
             this.txtTimKiemHocSinh.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtTimKiemHocSinh.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.search;
             this.txtTimKiemHocSinh.IconLeftOffset = new System.Drawing.Point(7, 0);
-            this.txtTimKiemHocSinh.Location = new System.Drawing.Point(224, 118);
+            this.txtTimKiemHocSinh.Location = new System.Drawing.Point(224, 37);
             this.txtTimKiemHocSinh.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtTimKiemHocSinh.Name = "txtTimKiemHocSinh";
             this.txtTimKiemHocSinh.PlaceholderText = "Tìm kiếm học sinh ...";
@@ -209,7 +209,7 @@
             this.btnThemHocSinh.ForeColor = System.Drawing.Color.White;
             this.btnThemHocSinh.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
             this.btnThemHocSinh.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThemHocSinh.Location = new System.Drawing.Point(23, 111);
+            this.btnThemHocSinh.Location = new System.Drawing.Point(23, 30);
             this.btnThemHocSinh.Name = "btnThemHocSinh";
             this.btnThemHocSinh.Size = new System.Drawing.Size(168, 45);
             this.btnThemHocSinh.TabIndex = 1;
@@ -221,14 +221,15 @@
             this.headerQuanLiHocSinh.BackColor = System.Drawing.Color.White;
             this.headerQuanLiHocSinh.Location = new System.Drawing.Point(0, 0);
             this.headerQuanLiHocSinh.Name = "headerQuanLiHocSinh";
-            this.headerQuanLiHocSinh.Size = new System.Drawing.Size(1184, 81);
+            this.headerQuanLiHocSinh.Size = new System.Drawing.Size(1184, 0);
             this.headerQuanLiHocSinh.TabIndex = 13;
+            this.headerQuanLiHocSinh.Visible = false;
             this.headerQuanLiHocSinh.Load += new System.EventHandler(this.headerQuanLiHocSinh_Load);
             // 
             // statCardDangHoc
             // 
             this.statCardDangHoc.BackColor = System.Drawing.Color.White;
-            this.statCardDangHoc.Location = new System.Drawing.Point(902, 173);
+            this.statCardDangHoc.Location = new System.Drawing.Point(902, 92);
             this.statCardDangHoc.Name = "statCardDangHoc";
             this.statCardDangHoc.Size = new System.Drawing.Size(264, 142);
             this.statCardDangHoc.TabIndex = 10;
@@ -236,7 +237,7 @@
             // statCardNu
             // 
             this.statCardNu.BackColor = System.Drawing.Color.White;
-            this.statCardNu.Location = new System.Drawing.Point(614, 173);
+            this.statCardNu.Location = new System.Drawing.Point(614, 92);
             this.statCardNu.Name = "statCardNu";
             this.statCardNu.Size = new System.Drawing.Size(264, 142);
             this.statCardNu.TabIndex = 9;
@@ -244,7 +245,7 @@
             // statCardNam
             // 
             this.statCardNam.BackColor = System.Drawing.Color.White;
-            this.statCardNam.Location = new System.Drawing.Point(317, 173);
+            this.statCardNam.Location = new System.Drawing.Point(317, 92);
             this.statCardNam.Name = "statCardNam";
             this.statCardNam.Size = new System.Drawing.Size(264, 142);
             this.statCardNam.TabIndex = 8;
@@ -253,7 +254,7 @@
             // statCardTongHocSinh
             // 
             this.statCardTongHocSinh.BackColor = System.Drawing.Color.White;
-            this.statCardTongHocSinh.Location = new System.Drawing.Point(23, 173);
+            this.statCardTongHocSinh.Location = new System.Drawing.Point(23, 92);
             this.statCardTongHocSinh.Name = "statCardTongHocSinh";
             this.statCardTongHocSinh.Size = new System.Drawing.Size(264, 142);
             this.statCardTongHocSinh.TabIndex = 7;
@@ -274,7 +275,7 @@
             this.Controls.Add(this.txtTimKiemHocSinh);
             this.Controls.Add(this.btnThemHocSinh);
             this.Name = "HocSinh";
-            this.Size = new System.Drawing.Size(1184, 900);
+            this.Size = new System.Drawing.Size(1184, 820);
             this.Load += new System.EventHandler(this.HocSinh_Load_1);
             ((System.ComponentModel.ISupportInitialize)(this.tableHocSinh)).EndInit();
             this.ResumeLayout(false);

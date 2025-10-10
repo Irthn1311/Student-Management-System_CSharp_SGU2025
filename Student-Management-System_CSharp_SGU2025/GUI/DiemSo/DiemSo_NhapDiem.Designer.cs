@@ -82,7 +82,7 @@
             "Anh ",
             "Hóa ",
             "Vật Lí"});
-            this.cbMonHoc.Location = new System.Drawing.Point(1028, 105);
+            this.cbMonHoc.Location = new System.Drawing.Point(1028, 24);
             this.cbMonHoc.Name = "cbMonHoc";
             this.cbMonHoc.Size = new System.Drawing.Size(136, 36);
             this.cbMonHoc.StartIndex = 0;
@@ -102,7 +102,7 @@
             "Tất cả lớp",
             "Lớp 6A1",
             "Lớp 7A2"});
-            this.cbLop.Location = new System.Drawing.Point(844, 105);
+            this.cbLop.Location = new System.Drawing.Point(844, 24);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(159, 36);
             this.cbLop.StartIndex = 0;
@@ -124,7 +124,7 @@
             "Học Kỳ II - 2023 - 2024",
             "Học Kỳ I - 2024 - 2025",
             "Học Kỳ II - 2024 - 2025"});
-            this.cbHocKyNamHoc.Location = new System.Drawing.Point(551, 105);
+            this.cbHocKyNamHoc.Location = new System.Drawing.Point(551, 24);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
             this.cbHocKyNamHoc.Size = new System.Drawing.Size(263, 36);
             this.cbHocKyNamHoc.StartIndex = 0;
@@ -163,12 +163,12 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableNhapDiem.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableNhapDiem.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableNhapDiem.Location = new System.Drawing.Point(21, 327);
+            this.tableNhapDiem.Location = new System.Drawing.Point(21, 246);
             this.tableNhapDiem.Name = "tableNhapDiem";
             this.tableNhapDiem.RowHeadersVisible = false;
             this.tableNhapDiem.RowHeadersWidth = 51;
             this.tableNhapDiem.RowTemplate.Height = 24;
-            this.tableNhapDiem.Size = new System.Drawing.Size(1143, 461);
+            this.tableNhapDiem.Size = new System.Drawing.Size(1143, 380);
             this.tableNhapDiem.TabIndex = 19;
             this.tableNhapDiem.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableNhapDiem.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -241,7 +241,7 @@
             this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnXuatExcel.ForeColor = System.Drawing.Color.White;
             this.btnXuatExcel.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.download;
-            this.btnXuatExcel.Location = new System.Drawing.Point(1040, 809);
+            this.btnXuatExcel.Location = new System.Drawing.Point(1040, 728);
             this.btnXuatExcel.Name = "btnXuatExcel";
             this.btnXuatExcel.Size = new System.Drawing.Size(124, 35);
             this.btnXuatExcel.TabIndex = 21;
@@ -260,7 +260,7 @@
             this.btnLuuDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnLuuDiem.ForeColor = System.Drawing.Color.White;
             this.btnLuuDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.diskette;
-            this.btnLuuDiem.Location = new System.Drawing.Point(1040, 809);
+            this.btnLuuDiem.Location = new System.Drawing.Point(1040, 728);
             this.btnLuuDiem.Name = "btnLuuDiem";
             this.btnLuuDiem.Size = new System.Drawing.Size(124, 35);
             this.btnLuuDiem.TabIndex = 20;
@@ -277,7 +277,7 @@
             this.btnNhapDiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btnNhapDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnNhapDiem.ForeColor = System.Drawing.Color.White;
-            this.btnNhapDiem.Location = new System.Drawing.Point(21, 105);
+            this.btnNhapDiem.Location = new System.Drawing.Point(21, 24);
             this.btnNhapDiem.Name = "btnNhapDiem";
             this.btnNhapDiem.Size = new System.Drawing.Size(125, 36);
             this.btnNhapDiem.TabIndex = 23;
@@ -294,7 +294,7 @@
             this.btnXemBangDiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btnXemBangDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnXemBangDiem.ForeColor = System.Drawing.Color.White;
-            this.btnXemBangDiem.Location = new System.Drawing.Point(148, 105);
+            this.btnXemBangDiem.Location = new System.Drawing.Point(148, 24);
             this.btnXemBangDiem.Name = "btnXemBangDiem";
             this.btnXemBangDiem.Size = new System.Drawing.Size(150, 36);
             this.btnXemBangDiem.TabIndex = 24;
@@ -334,12 +334,12 @@
             dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableXemBangDiem.DefaultCellStyle = dataGridViewCellStyle6;
             this.tableXemBangDiem.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableXemBangDiem.Location = new System.Drawing.Point(21, 327);
+            this.tableXemBangDiem.Location = new System.Drawing.Point(21, 246);
             this.tableXemBangDiem.Name = "tableXemBangDiem";
             this.tableXemBangDiem.RowHeadersVisible = false;
             this.tableXemBangDiem.RowHeadersWidth = 51;
             this.tableXemBangDiem.RowTemplate.Height = 24;
-            this.tableXemBangDiem.Size = new System.Drawing.Size(1143, 476);
+            this.tableXemBangDiem.Size = new System.Drawing.Size(1143, 395);
             this.tableXemBangDiem.TabIndex = 25;
             this.tableXemBangDiem.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableXemBangDiem.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -418,7 +418,7 @@
             this.btnKhoaDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnKhoaDiem.ForeColor = System.Drawing.Color.White;
             this.btnKhoaDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.padlock1;
-            this.btnKhoaDiem.Location = new System.Drawing.Point(874, 809);
+            this.btnKhoaDiem.Location = new System.Drawing.Point(874, 728);
             this.btnKhoaDiem.Name = "btnKhoaDiem";
             this.btnKhoaDiem.Size = new System.Drawing.Size(140, 35);
             this.btnKhoaDiem.TabIndex = 26;
@@ -429,7 +429,7 @@
             // 
             this.statCardDiemTrungBinh.BackColor = System.Drawing.Color.White;
             this.statCardDiemTrungBinh.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statCardDiemTrungBinh.Location = new System.Drawing.Point(18, 164);
+            this.statCardDiemTrungBinh.Location = new System.Drawing.Point(18, 83);
             this.statCardDiemTrungBinh.Name = "statCardDiemTrungBinh";
             this.statCardDiemTrungBinh.Size = new System.Drawing.Size(255, 142);
             this.statCardDiemTrungBinh.TabIndex = 18;
@@ -438,7 +438,7 @@
             // 
             this.statCardDiemCaoNhat.BackColor = System.Drawing.Color.White;
             this.statCardDiemCaoNhat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statCardDiemCaoNhat.Location = new System.Drawing.Point(315, 164);
+            this.statCardDiemCaoNhat.Location = new System.Drawing.Point(315, 83);
             this.statCardDiemCaoNhat.Name = "statCardDiemCaoNhat";
             this.statCardDiemCaoNhat.Size = new System.Drawing.Size(252, 142);
             this.statCardDiemCaoNhat.TabIndex = 17;
@@ -447,7 +447,7 @@
             // 
             this.statCardDiemThapNhat.BackColor = System.Drawing.Color.White;
             this.statCardDiemThapNhat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statCardDiemThapNhat.Location = new System.Drawing.Point(617, 164);
+            this.statCardDiemThapNhat.Location = new System.Drawing.Point(617, 83);
             this.statCardDiemThapNhat.Name = "statCardDiemThapNhat";
             this.statCardDiemThapNhat.Size = new System.Drawing.Size(253, 142);
             this.statCardDiemThapNhat.TabIndex = 16;
@@ -456,7 +456,7 @@
             // 
             this.statCardDaNhap.BackColor = System.Drawing.Color.White;
             this.statCardDaNhap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statCardDaNhap.Location = new System.Drawing.Point(916, 164);
+            this.statCardDaNhap.Location = new System.Drawing.Point(916, 83);
             this.statCardDaNhap.Name = "statCardDaNhap";
             this.statCardDaNhap.Size = new System.Drawing.Size(248, 142);
             this.statCardDaNhap.TabIndex = 15;
@@ -466,8 +466,9 @@
             this.headerQuanLiNhapDiem.BackColor = System.Drawing.Color.White;
             this.headerQuanLiNhapDiem.Location = new System.Drawing.Point(0, 0);
             this.headerQuanLiNhapDiem.Name = "headerQuanLiNhapDiem";
-            this.headerQuanLiNhapDiem.Size = new System.Drawing.Size(1184, 81);
+            this.headerQuanLiNhapDiem.Size = new System.Drawing.Size(1184, 0);
             this.headerQuanLiNhapDiem.TabIndex = 0;
+            this.headerQuanLiNhapDiem.Visible = false;
             this.headerQuanLiNhapDiem.Load += new System.EventHandler(this.headerQuanLiNhapDiem_Load);
             // 
             // DiemSo_NhapDiem
@@ -491,7 +492,7 @@
             this.Controls.Add(this.cbMonHoc);
             this.Controls.Add(this.headerQuanLiNhapDiem);
             this.Name = "DiemSo_NhapDiem";
-            this.Size = new System.Drawing.Size(1184, 900);
+            this.Size = new System.Drawing.Size(1184, 820);
             this.Load += new System.EventHandler(this.DiemSo_NhapDiem_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tableNhapDiem)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tableXemBangDiem)).EndInit();

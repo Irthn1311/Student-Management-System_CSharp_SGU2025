@@ -56,8 +56,9 @@
             this.headerHanhKiem.BackColor = System.Drawing.Color.White;
             this.headerHanhKiem.Location = new System.Drawing.Point(0, 0);
             this.headerHanhKiem.Name = "headerHanhKiem";
-            this.headerHanhKiem.Size = new System.Drawing.Size(1163, 81);
+            this.headerHanhKiem.Size = new System.Drawing.Size(1163, 0);
             this.headerHanhKiem.TabIndex = 0;
+            this.headerHanhKiem.Visible = false;
             this.headerHanhKiem.Load += new System.EventHandler(this.headerHanhKiem_Load);
             // 
             // cbHocKyNamHoc
@@ -76,7 +77,7 @@
             "Học Kỳ II - 2023 - 2024",
             "Học Kỳ I - 2024 - 2025",
             "Học Kỳ II - 2024 - 2025"});
-            this.cbHocKyNamHoc.Location = new System.Drawing.Point(19, 100);
+            this.cbHocKyNamHoc.Location = new System.Drawing.Point(19, 19);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
             this.cbHocKyNamHoc.Size = new System.Drawing.Size(263, 36);
             this.cbHocKyNamHoc.StartIndex = 0;
@@ -97,7 +98,7 @@
             "Tất cả lớp",
             "Lớp 6A1",
             "Lớp 7A2"});
-            this.cbLop.Location = new System.Drawing.Point(314, 100);
+            this.cbLop.Location = new System.Drawing.Point(314, 19);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(159, 36);
             this.cbLop.StartIndex = 0;
@@ -107,7 +108,7 @@
             // statCarHanhKiemTot
             // 
             this.statCarHanhKiemTot.BackColor = System.Drawing.Color.White;
-            this.statCarHanhKiemTot.Location = new System.Drawing.Point(126, 165);
+            this.statCarHanhKiemTot.Location = new System.Drawing.Point(126, 84);
             this.statCarHanhKiemTot.Name = "statCarHanhKiemTot";
             this.statCarHanhKiemTot.Size = new System.Drawing.Size(252, 142);
             this.statCarHanhKiemTot.TabIndex = 19;
@@ -115,7 +116,7 @@
             // statCardHanhKiemKha
             // 
             this.statCardHanhKiemKha.BackColor = System.Drawing.Color.White;
-            this.statCardHanhKiemKha.Location = new System.Drawing.Point(480, 165);
+            this.statCardHanhKiemKha.Location = new System.Drawing.Point(480, 84);
             this.statCardHanhKiemKha.Name = "statCardHanhKiemKha";
             this.statCardHanhKiemKha.Size = new System.Drawing.Size(252, 142);
             this.statCardHanhKiemKha.TabIndex = 20;
@@ -123,7 +124,7 @@
             // statCardHanhKiemTrungBinh
             // 
             this.statCardHanhKiemTrungBinh.BackColor = System.Drawing.Color.White;
-            this.statCardHanhKiemTrungBinh.Location = new System.Drawing.Point(845, 165);
+            this.statCardHanhKiemTrungBinh.Location = new System.Drawing.Point(845, 84);
             this.statCardHanhKiemTrungBinh.Name = "statCardHanhKiemTrungBinh";
             this.statCardHanhKiemTrungBinh.Size = new System.Drawing.Size(252, 142);
             this.statCardHanhKiemTrungBinh.TabIndex = 21;
@@ -132,7 +133,7 @@
             // statCardChuaDanhGiaHanhKiem
             // 
             this.statCardChuaDanhGiaHanhKiem.BackColor = System.Drawing.Color.White;
-            this.statCardChuaDanhGiaHanhKiem.Location = new System.Drawing.Point(654, 361);
+            this.statCardChuaDanhGiaHanhKiem.Location = new System.Drawing.Point(654, 280);
             this.statCardChuaDanhGiaHanhKiem.Name = "statCardChuaDanhGiaHanhKiem";
             this.statCardChuaDanhGiaHanhKiem.Size = new System.Drawing.Size(252, 142);
             this.statCardChuaDanhGiaHanhKiem.TabIndex = 22;
@@ -140,7 +141,7 @@
             // statCardHanhKiemYeu
             // 
             this.statCardHanhKiemYeu.BackColor = System.Drawing.Color.White;
-            this.statCardHanhKiemYeu.Location = new System.Drawing.Point(296, 361);
+            this.statCardHanhKiemYeu.Location = new System.Drawing.Point(296, 280);
             this.statCardHanhKiemYeu.Name = "statCardHanhKiemYeu";
             this.statCardHanhKiemYeu.Size = new System.Drawing.Size(252, 142);
             this.statCardHanhKiemYeu.TabIndex = 23;
@@ -157,7 +158,7 @@
             this.btnLuuHanhKiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnLuuHanhKiem.ForeColor = System.Drawing.Color.White;
             this.btnLuuHanhKiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.diskette;
-            this.btnLuuHanhKiem.Location = new System.Drawing.Point(955, 1063);
+            this.btnLuuHanhKiem.Location = new System.Drawing.Point(955, 780);
             this.btnLuuHanhKiem.Name = "btnLuuHanhKiem";
             this.btnLuuHanhKiem.Size = new System.Drawing.Size(173, 44);
             this.btnLuuHanhKiem.TabIndex = 27;
@@ -166,7 +167,7 @@
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(237, 1063);
+            this.panel1.Location = new System.Drawing.Point(237, 780);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 64);
             this.panel1.TabIndex = 28;
@@ -201,12 +202,12 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableHanhKiem.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableHanhKiem.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableHanhKiem.Location = new System.Drawing.Point(20, 528);
+            this.tableHanhKiem.Location = new System.Drawing.Point(20, 447);
             this.tableHanhKiem.Name = "tableHanhKiem";
             this.tableHanhKiem.RowHeadersVisible = false;
             this.tableHanhKiem.RowHeadersWidth = 51;
             this.tableHanhKiem.RowTemplate.Height = 24;
-            this.tableHanhKiem.Size = new System.Drawing.Size(1133, 506);
+            this.tableHanhKiem.Size = new System.Drawing.Size(1143, 325);
             this.tableHanhKiem.TabIndex = 29;
             this.tableHanhKiem.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableHanhKiem.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -283,7 +284,7 @@
             this.Controls.Add(this.cbHocKyNamHoc);
             this.Controls.Add(this.headerHanhKiem);
             this.Name = "HanhKiem";
-            this.Size = new System.Drawing.Size(1142, 858);
+            this.Size = new System.Drawing.Size(1184, 820);
             this.Load += new System.EventHandler(this.HanhKiem_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tableHanhKiem)).EndInit();
             this.ResumeLayout(false);
