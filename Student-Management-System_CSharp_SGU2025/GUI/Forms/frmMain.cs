@@ -12,6 +12,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class MainForm : Form
     {
+        // Current active user control
+        private UserControl currentUserControl = null;
+        
         public MainForm()
         {
             InitializeComponent();
@@ -81,189 +84,247 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ShowPhanCongGiangDay();
         }
 
+        private void DisposeCurrentUserControl()
+        {
+            if (currentUserControl != null)
+            {
+                this.Controls.Remove(currentUserControl);
+                currentUserControl.Dispose();
+                currentUserControl = null;
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                DisposeCurrentUserControl();
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
+
         private void ShowDashboard()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = true;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show Dashboard
+            var dashboard = new ucDashboard();
+            dashboard.BackColor = Color.FromArgb(243, 244, 246);
+            dashboard.Font = new Font("Segoe UI", 12.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dashboard.Location = new Point(256, 80);
+            dashboard.Margin = new Padding(2);
+            dashboard.Name = "ucDashboard1";
+            dashboard.Size = new Size(1184, 900);
+            dashboard.TabIndex = 1;
+
+            this.Controls.Add(dashboard);
+            currentUserControl = dashboard;
 
             // Update header
             ucHeader1.UpdateHeader("Bảng tin", "Trang chủ / Bảng tin");
 
             // Bring to front
-            ucDashboard1.BringToFront();
+            dashboard.BringToFront();
         }
 
         private void ShowXepLoai()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = true;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show XepLoai
+            var xepLoai = new ucXepLoai();
+            xepLoai.AutoScroll = true;
+            xepLoai.BackColor = Color.FromArgb(243, 244, 246);
+            xepLoai.Location = new Point(256, 80);
+            xepLoai.Margin = new Padding(2);
+            xepLoai.Name = "ucXepLoai1";
+            xepLoai.Padding = new Padding(24);
+            xepLoai.Size = new Size(1184, 900);
+            xepLoai.TabIndex = 3;
+
+            this.Controls.Add(xepLoai);
+            currentUserControl = xepLoai;
 
             // Update header
             ucHeader1.UpdateHeader("Xếp loại & Tổng kết", "Trang chủ / Xếp loại & Tổng kết");
 
             // Bring to front
-            ucXepLoai1.BringToFront();
+            xepLoai.BringToFront();
         }
 
         private void ShowBaoCao()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = true;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show BaoCao
+            var baoCao = new ucBaoCao();
+            baoCao.BackColor = Color.FromArgb(249, 250, 251);
+            baoCao.Location = new Point(256, 80);
+            baoCao.Margin = new Padding(2);
+            baoCao.Name = "ucBaoCao1";
+            baoCao.Size = new Size(1184, 900);
+            baoCao.TabIndex = 4;
+
+            this.Controls.Add(baoCao);
+            currentUserControl = baoCao;
 
             // Update header
             ucHeader1.UpdateHeader("Báo cáo", "Trang chủ / Báo cáo");
 
             // Bring to front
-            ucBaoCao1.BringToFront();
+            baoCao.BringToFront();
         }
 
         private void ShowHanhKiem()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = true;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show HanhKiem
+            var hanhKiem = new HanhKiem();
+            hanhKiem.BackColor = Color.FromArgb(243, 244, 246);
+            hanhKiem.Location = new Point(256, 80);
+            hanhKiem.Margin = new Padding(2);
+            hanhKiem.Name = "ucHanhKiem1";
+            hanhKiem.Size = new Size(1184, 900);
+            hanhKiem.TabIndex = 5;
+
+            this.Controls.Add(hanhKiem);
+            currentUserControl = hanhKiem;
 
             // Update header
             ucHeader1.UpdateHeader("Hạnh kiểm", "Trang chủ / Hạnh kiểm");
 
             // Bring to front
-            ucHanhKiem1.BringToFront();
+            hanhKiem.BringToFront();
         }
 
         private void ShowHocSinh()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = true;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show HocSinh
+            var hocSinh = new HocSinh();
+            hocSinh.BackColor = Color.FromArgb(243, 244, 246);
+            hocSinh.Location = new Point(256, 80);
+            hocSinh.Margin = new Padding(2);
+            hocSinh.Name = "ucHocSinh1";
+            hocSinh.Size = new Size(1184, 900);
+            hocSinh.TabIndex = 6;
+
+            this.Controls.Add(hocSinh);
+            currentUserControl = hocSinh;
 
             // Update header
             ucHeader1.UpdateHeader("Hồ sơ Học sinh", "Trang chủ / Hồ sơ học sinh");
 
             // Bring to front
-            ucHocSinh1.BringToFront();
+            hocSinh.BringToFront();
         }
 
         private void ShowDiemSo()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = true;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show DiemSo
+            var diemSo = new DiemSo_NhapDiem();
+            diemSo.BackColor = Color.FromArgb(243, 244, 246);
+            diemSo.Location = new Point(256, 80);
+            diemSo.Margin = new Padding(2);
+            diemSo.Name = "ucDiemSo1";
+            diemSo.Size = new Size(1184, 900);
+            diemSo.TabIndex = 7;
+
+            this.Controls.Add(diemSo);
+            currentUserControl = diemSo;
 
             // Update header
             ucHeader1.UpdateHeader("Điểm số", "Trang chủ / Điểm số");
 
             // Bring to front
-            ucDiemSo1.BringToFront();
+            diemSo.BringToFront();
         }
 
         private void ShowLopKhoi()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = true;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show LopKhoi
+            var lopKhoi = new LopKhoi();
+            lopKhoi.BackColor = Color.FromArgb(243, 244, 246);
+            lopKhoi.Location = new Point(256, 80);
+            lopKhoi.Margin = new Padding(2);
+            lopKhoi.Name = "ucLopKhoi1";
+            lopKhoi.Size = new Size(1184, 900);
+            lopKhoi.TabIndex = 8;
+
+            this.Controls.Add(lopKhoi);
+            currentUserControl = lopKhoi;
 
             // Update header
             ucHeader1.UpdateHeader("Lớp học", "Trang chủ / Lớp học");
 
             // Bring to front
-            ucLopKhoi1.BringToFront();
+            lopKhoi.BringToFront();
         }
 
         private void ShowFrmMonHoc()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = true;
-            ucPhanCongGiangDay1.Visible = false;
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show FrmMonHoc
+            var frmMonHoc = new FrmMonHoc();
+            frmMonHoc.BackColor = Color.FromArgb(243, 244, 246);
+            frmMonHoc.Location = new Point(256, 80);
+            frmMonHoc.Margin = new Padding(2);
+            frmMonHoc.Name = "ucFrmMonHoc1";
+            frmMonHoc.Size = new Size(1184, 900);
+            frmMonHoc.TabIndex = 9;
+
+            this.Controls.Add(frmMonHoc);
+            currentUserControl = frmMonHoc;
 
             // Update header
             ucHeader1.UpdateHeader("Môn học", "Trang chủ / Môn học");
 
             // Bring to front
-            ucFrmMonHoc1.BringToFront();
+            frmMonHoc.BringToFront();
         }
 
         private void ShowPhanCongGiangDay()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = true;
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show PhanCongGiangDay
+            var phanCongGiangDay = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.PhanCongGiangDay();
+            phanCongGiangDay.BackColor = Color.FromArgb(243, 244, 246);
+            phanCongGiangDay.Location = new Point(256, 80);
+            phanCongGiangDay.Margin = new Padding(2);
+            phanCongGiangDay.Name = "ucPhanCongGiangDay1";
+            phanCongGiangDay.Size = new Size(1184, 900);
+            phanCongGiangDay.TabIndex = 10;
+
+            this.Controls.Add(phanCongGiangDay);
+            currentUserControl = phanCongGiangDay;
 
             // Update header
             ucHeader1.UpdateHeader("Phân công giảng dạy", "Trang chủ / Phân công giảng dạy");
 
             // Bring to front
-            ucPhanCongGiangDay1.BringToFront();
+            phanCongGiangDay.BringToFront();
         }
 
-        private void ucDashboard1_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }
