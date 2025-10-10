@@ -83,11 +83,47 @@
     <Compile Include="GUI\DangNhap\FrmDangNhap.Designer.cs">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\LamThem\HanhKiem.cs">
+    <Compile Include="GUI\Forms\frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\HanhKiem\HanhKiem.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\LamThem\HanhKiem.Designer.cs">
+    <Compile Include="GUI\HanhKiem\HanhKiem.Designer.cs">
       <DependentUpon>HanhKiem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\LopKhoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\LopKhoi.Designer.cs">
+      <DependentUpon>LopKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\MonHoc\FrmMonHoc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\MonHoc\FrmMonHoc.Designer.cs">
+      <DependentUpon>FrmMonHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\PhanCongGiangDay\PhanCongGiangDay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\PhanCongGiangDay\PhanCongGiangDay.Designer.cs">
+      <DependentUpon>PhanCongGiangDay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardKhoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardKhoi.Designer.cs">
+      <DependentUpon>StatCardKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardPhanCongGiangDay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardPhanCongGiangDay.Designer.cs">
+      <DependentUpon>StatCardPhanCongGiangDay.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\TaiSuDung\HeaderQuanLiHocSinh.cs">
       <SubType>UserControl</SubType>
@@ -113,10 +149,6 @@
     <Compile Include="GUI\StatCard.Designer.cs">
       <DependentUpon>StatCard.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\FrmMonHoc.cs" />
-    <Compile Include="GUI\FrmMonHoc.Designer.cs">
-      <DependentUpon>FrmMonHoc.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -200,6 +232,18 @@
     </Compile>
     <Compile Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.Designer.cs">
       <DependentUpon>ucBaoCaoThongKeHocLuc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.Designer.cs">
+      <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemHoSoHocSinh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemHoSoHocSinh.Designer.cs">
+      <DependentUpon>ThemHoSoHocSinh.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\XepLoai\ucXepLoai.cs">
       <SubType>UserControl</SubType>
@@ -214,12 +258,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\DangNhap\FrmDangNhap.resx">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Forms\frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\FrmMonHoc.resx">
-      <DependentUpon>FrmMonHoc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoBangDiem.resx">
       <DependentUpon>ucBaoCaoBangDiem.cs</DependentUpon>
@@ -241,6 +279,25 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.resx">
       <DependentUpon>ucBaoCaoThongKeHocLuc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\LopKhoi\LopKhoi.resx">
+      <DependentUpon>LopKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\MonHoc\FrmMonHoc.resx">
+      <DependentUpon>FrmMonHoc.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\PhanCongGiangDay\PhanCongGiangDay.resx">
+      <DependentUpon>PhanCongGiangDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\statcardLHP\StatCardKhoi.resx">
+      <DependentUpon>StatCardKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\statcardLHP\StatCardPhanCongGiangDay.resx">
+      <DependentUpon>StatCardPhanCongGiangDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.resx">
+      <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\XepLoai\ucXepLoai.resx">
       <DependentUpon>ucXepLoai.cs</DependentUpon>

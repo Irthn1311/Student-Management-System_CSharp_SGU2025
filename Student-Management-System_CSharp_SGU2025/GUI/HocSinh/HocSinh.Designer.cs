@@ -40,13 +40,13 @@
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.txtTimKiemHocSinh = new Guna.UI2.WinForms.Guna2TextBox();
+            this.btnThemHocSinh = new Guna.UI2.WinForms.Guna2Button();
             this.headerQuanLiHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
             this.statCardDangHoc = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardNu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardNam = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardTongHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.txtTimKiemHocSinh = new Guna.UI2.WinForms.Guna2TextBox();
-            this.btnThemHocSinh = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.tableHocSinh)).BeginInit();
             this.SuspendLayout();
             // 
@@ -175,6 +175,47 @@
             this.Column9.MinimumWidth = 6;
             this.Column9.Name = "Column9";
             // 
+            // txtTimKiemHocSinh
+            // 
+            this.txtTimKiemHocSinh.BorderRadius = 7;
+            this.txtTimKiemHocSinh.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtTimKiemHocSinh.DefaultText = "";
+            this.txtTimKiemHocSinh.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtTimKiemHocSinh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtTimKiemHocSinh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtTimKiemHocSinh.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtTimKiemHocSinh.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtTimKiemHocSinh.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtTimKiemHocSinh.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtTimKiemHocSinh.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.search;
+            this.txtTimKiemHocSinh.IconLeftOffset = new System.Drawing.Point(7, 0);
+            this.txtTimKiemHocSinh.Location = new System.Drawing.Point(224, 118);
+            this.txtTimKiemHocSinh.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtTimKiemHocSinh.Name = "txtTimKiemHocSinh";
+            this.txtTimKiemHocSinh.PlaceholderText = "Tìm kiếm học sinh ...";
+            this.txtTimKiemHocSinh.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtTimKiemHocSinh.SelectedText = "";
+            this.txtTimKiemHocSinh.Size = new System.Drawing.Size(306, 35);
+            this.txtTimKiemHocSinh.TabIndex = 6;
+            // 
+            // btnThemHocSinh
+            // 
+            this.btnThemHocSinh.BorderRadius = 7;
+            this.btnThemHocSinh.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemHocSinh.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemHocSinh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnThemHocSinh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnThemHocSinh.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnThemHocSinh.ForeColor = System.Drawing.Color.White;
+            this.btnThemHocSinh.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
+            this.btnThemHocSinh.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnThemHocSinh.Location = new System.Drawing.Point(23, 111);
+            this.btnThemHocSinh.Name = "btnThemHocSinh";
+            this.btnThemHocSinh.Size = new System.Drawing.Size(168, 45);
+            this.btnThemHocSinh.TabIndex = 1;
+            this.btnThemHocSinh.Text = "Thêm học sinh";
+            this.btnThemHocSinh.Click += new System.EventHandler(this.btnThemHocSinh_Click);
+            // 
             // headerQuanLiHocSinh
             // 
             this.headerQuanLiHocSinh.BackColor = System.Drawing.Color.White;
@@ -217,46 +258,6 @@
             this.statCardTongHocSinh.Size = new System.Drawing.Size(264, 142);
             this.statCardTongHocSinh.TabIndex = 7;
             this.statCardTongHocSinh.Load += new System.EventHandler(this.statCardTongHocSinh_Load);
-            // 
-            // txtTimKiemHocSinh
-            // 
-            this.txtTimKiemHocSinh.BorderRadius = 7;
-            this.txtTimKiemHocSinh.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtTimKiemHocSinh.DefaultText = "";
-            this.txtTimKiemHocSinh.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txtTimKiemHocSinh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.txtTimKiemHocSinh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtTimKiemHocSinh.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtTimKiemHocSinh.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtTimKiemHocSinh.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtTimKiemHocSinh.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtTimKiemHocSinh.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.search;
-            this.txtTimKiemHocSinh.IconLeftOffset = new System.Drawing.Point(7, 0);
-            this.txtTimKiemHocSinh.Location = new System.Drawing.Point(224, 118);
-            this.txtTimKiemHocSinh.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txtTimKiemHocSinh.Name = "txtTimKiemHocSinh";
-            this.txtTimKiemHocSinh.PlaceholderText = "Tìm kiếm học sinh ...";
-            this.txtTimKiemHocSinh.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtTimKiemHocSinh.SelectedText = "";
-            this.txtTimKiemHocSinh.Size = new System.Drawing.Size(306, 35);
-            this.txtTimKiemHocSinh.TabIndex = 6;
-            // 
-            // btnThemHocSinh
-            // 
-            this.btnThemHocSinh.BorderRadius = 7;
-            this.btnThemHocSinh.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemHocSinh.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemHocSinh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnThemHocSinh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnThemHocSinh.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnThemHocSinh.ForeColor = System.Drawing.Color.White;
-            this.btnThemHocSinh.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
-            this.btnThemHocSinh.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThemHocSinh.Location = new System.Drawing.Point(23, 111);
-            this.btnThemHocSinh.Name = "btnThemHocSinh";
-            this.btnThemHocSinh.Size = new System.Drawing.Size(168, 45);
-            this.btnThemHocSinh.TabIndex = 1;
-            this.btnThemHocSinh.Text = "Thêm học sinh";
             // 
             // HocSinh
             // 

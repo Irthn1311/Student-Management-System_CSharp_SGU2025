@@ -180,7 +180,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             row.Cells[4].Style.ForeColor = Color.Black; // Mặc định
                             break;
                     }
-                    
+
                 }
             }
         }

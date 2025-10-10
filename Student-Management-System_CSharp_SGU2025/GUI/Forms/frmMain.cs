@@ -16,7 +16,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             InitializeComponent();
             InitializeNavigation();
-            
+
             // Set default page to Dashboard
             ShowDashboard();
         }
@@ -27,6 +27,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucSidebar1.BangTinButton.Click += BtnBangTin_Click;
             ucSidebar1.XepLoaiButton.Click += BtnXepLoai_Click;
             ucSidebar1.BaoCaoButton.Click += BtnBaoCao_Click;
+            ucSidebar1.HanhKiemButton.Click += BtnHanhKiem_Click;
+            ucSidebar1.HocSinhButton.Click += BtnHocSinh_Click;
+            ucSidebar1.DiemSoButton.Click += BtnDiemSo_Click;
+            ucSidebar1.LopHocButton.Click += BtnLopHoc_Click;
+            ucSidebar1.MonHocButton.Click += BtnMonHoc_Click;
+            ucSidebar1.PhanCongButton.Click += BtnPhanCong_Click;
         }
 
 
@@ -45,12 +51,48 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ShowBaoCao();
         }
 
+        private void BtnHanhKiem_Click(object sender, EventArgs e)
+        {
+            ShowHanhKiem();
+        }
+
+        private void BtnHocSinh_Click(object sender, EventArgs e)
+        {
+            ShowHocSinh();
+        }
+
+        private void BtnDiemSo_Click(object sender, EventArgs e)
+        {
+            ShowDiemSo();
+        }
+
+        private void BtnLopHoc_Click(object sender, EventArgs e)
+        {
+            ShowLopKhoi();
+        }
+
+        private void BtnMonHoc_Click(object sender, EventArgs e)
+        {
+            ShowFrmMonHoc();
+        }
+
+        private void BtnPhanCong_Click(object sender, EventArgs e)
+        {
+            ShowPhanCongGiangDay();
+        }
+
         private void ShowDashboard()
         {
             // Hide all content panels
             ucDashboard1.Visible = true;
             ucXepLoai1.Visible = false;
             ucBaoCao1.Visible = false;
+            ucHanhKiem1.Visible = false;
+            ucHocSinh1.Visible = false;
+            ucDiemSo1.Visible = false;
+            ucLopKhoi1.Visible = false;
+            ucFrmMonHoc1.Visible = false;
+            ucPhanCongGiangDay1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Bảng tin", "Trang chủ / Bảng tin");
@@ -65,6 +107,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucDashboard1.Visible = false;
             ucXepLoai1.Visible = true;
             ucBaoCao1.Visible = false;
+            ucHanhKiem1.Visible = false;
+            ucHocSinh1.Visible = false;
+            ucDiemSo1.Visible = false;
+            ucLopKhoi1.Visible = false;
+            ucFrmMonHoc1.Visible = false;
+            ucPhanCongGiangDay1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Xếp loại & Tổng kết", "Trang chủ / Xếp loại & Tổng kết");
@@ -79,12 +127,138 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucDashboard1.Visible = false;
             ucXepLoai1.Visible = false;
             ucBaoCao1.Visible = true;
+            ucHanhKiem1.Visible = false;
+            ucHocSinh1.Visible = false;
+            ucDiemSo1.Visible = false;
+            ucLopKhoi1.Visible = false;
+            ucFrmMonHoc1.Visible = false;
+            ucPhanCongGiangDay1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Báo cáo", "Trang chủ / Báo cáo");
 
             // Bring to front
             ucBaoCao1.BringToFront();
+        }
+
+        private void ShowHanhKiem()
+        {
+            // Hide all content panels
+            ucDashboard1.Visible = false;
+            ucXepLoai1.Visible = false;
+            ucBaoCao1.Visible = false;
+            ucHanhKiem1.Visible = true;
+            ucHocSinh1.Visible = false;
+            ucDiemSo1.Visible = false;
+            ucLopKhoi1.Visible = false;
+            ucFrmMonHoc1.Visible = false;
+            ucPhanCongGiangDay1.Visible = false;
+
+            // Update header
+            ucHeader1.UpdateHeader("Hạnh kiểm", "Trang chủ / Hạnh kiểm");
+
+            // Bring to front
+            ucHanhKiem1.BringToFront();
+        }
+
+        private void ShowHocSinh()
+        {
+            // Hide all content panels
+            ucDashboard1.Visible = false;
+            ucXepLoai1.Visible = false;
+            ucBaoCao1.Visible = false;
+            ucHanhKiem1.Visible = false;
+            ucHocSinh1.Visible = true;
+            ucDiemSo1.Visible = false;
+            ucLopKhoi1.Visible = false;
+            ucFrmMonHoc1.Visible = false;
+            ucPhanCongGiangDay1.Visible = false;
+
+            // Update header
+            ucHeader1.UpdateHeader("Hồ sơ Học sinh", "Trang chủ / Hồ sơ học sinh");
+
+            // Bring to front
+            ucHocSinh1.BringToFront();
+        }
+
+        private void ShowDiemSo()
+        {
+            // Hide all content panels
+            ucDashboard1.Visible = false;
+            ucXepLoai1.Visible = false;
+            ucBaoCao1.Visible = false;
+            ucHanhKiem1.Visible = false;
+            ucHocSinh1.Visible = false;
+            ucDiemSo1.Visible = true;
+            ucLopKhoi1.Visible = false;
+            ucFrmMonHoc1.Visible = false;
+            ucPhanCongGiangDay1.Visible = false;
+
+            // Update header
+            ucHeader1.UpdateHeader("Điểm số", "Trang chủ / Điểm số");
+
+            // Bring to front
+            ucDiemSo1.BringToFront();
+        }
+
+        private void ShowLopKhoi()
+        {
+            // Hide all content panels
+            ucDashboard1.Visible = false;
+            ucXepLoai1.Visible = false;
+            ucBaoCao1.Visible = false;
+            ucHanhKiem1.Visible = false;
+            ucHocSinh1.Visible = false;
+            ucDiemSo1.Visible = false;
+            ucLopKhoi1.Visible = true;
+            ucFrmMonHoc1.Visible = false;
+            ucPhanCongGiangDay1.Visible = false;
+
+            // Update header
+            ucHeader1.UpdateHeader("Lớp học", "Trang chủ / Lớp học");
+
+            // Bring to front
+            ucLopKhoi1.BringToFront();
+        }
+
+        private void ShowFrmMonHoc()
+        {
+            // Hide all content panels
+            ucDashboard1.Visible = false;
+            ucXepLoai1.Visible = false;
+            ucBaoCao1.Visible = false;
+            ucHanhKiem1.Visible = false;
+            ucHocSinh1.Visible = false;
+            ucDiemSo1.Visible = false;
+            ucLopKhoi1.Visible = false;
+            ucFrmMonHoc1.Visible = true;
+            ucPhanCongGiangDay1.Visible = false;
+
+            // Update header
+            ucHeader1.UpdateHeader("Môn học", "Trang chủ / Môn học");
+
+            // Bring to front
+            ucFrmMonHoc1.BringToFront();
+        }
+
+        private void ShowPhanCongGiangDay()
+        {
+            // Hide all content panels
+            ucDashboard1.Visible = false;
+            ucXepLoai1.Visible = false;
+            ucBaoCao1.Visible = false;
+            ucHanhKiem1.Visible = false;
+            ucHocSinh1.Visible = false;
+            ucDiemSo1.Visible = false;
+            ucLopKhoi1.Visible = false;
+            ucFrmMonHoc1.Visible = false;
+            ucPhanCongGiangDay1.Visible = true;
+
+            // Update header
+            ucHeader1.UpdateHeader("Phân công giảng dạy", "Trang chủ / Phân công giảng dạy");
+
+            // Bring to front
+            ucPhanCongGiangDay1.BringToFront();
         }
 
         private void ucDashboard1_Load(object sender, EventArgs e)

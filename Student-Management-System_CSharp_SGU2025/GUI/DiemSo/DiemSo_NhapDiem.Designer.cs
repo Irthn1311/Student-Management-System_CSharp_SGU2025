@@ -85,6 +85,7 @@
             this.cbMonHoc.Location = new System.Drawing.Point(1028, 105);
             this.cbMonHoc.Name = "cbMonHoc";
             this.cbMonHoc.Size = new System.Drawing.Size(136, 36);
+            this.cbMonHoc.StartIndex = 0;
             this.cbMonHoc.TabIndex = 12;
             // 
             // cbLop

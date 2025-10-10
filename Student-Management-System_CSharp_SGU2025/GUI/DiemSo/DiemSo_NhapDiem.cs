@@ -161,7 +161,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void ConfigureTableNhapDiem()
         {
             // Cấu hình header
-            tableNhapDiem.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(243, 244, 246); 
+            tableNhapDiem.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(243, 244, 246);
             tableNhapDiem.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
             tableNhapDiem.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             tableNhapDiem.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -207,7 +207,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tableNhapDiem.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(243, 244, 246);
             tableNhapDiem.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(75, 85, 99);
 
-         
+
 
         }
 
@@ -361,7 +361,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         }
 
-        
+
 
         private void btnLuuDiem_Click(object sender, EventArgs e)
         {
@@ -393,15 +393,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             if (isLocked)
             {
-                btnKhoaDiem.Image = Image.FromFile(@"C:\Users\ACER\source\repos\Student-Management-System_CSharp_SGU2025\Images\unlock.png");
+                string imagePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "unlock.png");
+                btnKhoaDiem.Image = Image.FromFile(imagePath);
                 btnKhoaDiem.Text = "Mở khóa điểm";
                 isLocked = false;
                 tableNhapDiem.ReadOnly = true; // Cho phép chỉnh sửa
-                
+
             }
             else
             {
-                btnKhoaDiem.Image = Properties.Resources.padlock; 
+                btnKhoaDiem.Image = Properties.Resources.padlock;
                 btnKhoaDiem.Text = "Khóa điểm";
                 isLocked = true;
                 tableNhapDiem.ReadOnly = false; // Khóa chỉnh sửa

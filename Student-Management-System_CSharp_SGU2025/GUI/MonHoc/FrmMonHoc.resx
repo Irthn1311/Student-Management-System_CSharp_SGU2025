@@ -117,7 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-<<<<<<< HEAD:Student-Management-System_CSharp_SGU2025/GUI/MonHoc/FrmMonHoc.resx
   <metadata name="MaMon.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -133,6 +132,4 @@
   <metadata name="TuyChinh.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-=======
->>>>>>> 5935ae6 (đảy 3 giao diện dashboard, xeploai, bao cao (#1)):Student-Management-System_CSharp_SGU2025/GUI/FrmMonHoc.resx
 </root>

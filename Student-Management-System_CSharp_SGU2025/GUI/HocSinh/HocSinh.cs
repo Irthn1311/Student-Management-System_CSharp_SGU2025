@@ -95,8 +95,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tableHocSinh.Columns.Add(colView);
             tableHocSinh.Columns.Add(colEdit);
 
-            int viewColWidth = 70; 
-            int editColWidth = 34; 
+            int viewColWidth = 70;
+            int editColWidth = 34;
 
             tableHocSinh.Columns["View"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             tableHocSinh.Columns["Edit"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -128,17 +128,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
 
-        // === Thêm học sinh có icon ===
+        // === Thêm icon vào cột thao tác ===
         private void AddRowWithIcons(string ma, string ten, string ns, string gioitinh, string lop, string trangthai)
         {
             int idx = tableHocSinh.Rows.Add(ma, ten, ns, gioitinh, lop, trangthai, null, null);
 
             try
             {
-                string eyePath = @"C:\Users\ACER\source\repos\Student-Management-System_CSharp_SGU2025\Images\icon_eye.png";
-                string editPath = @"C:\Users\ACER\source\repos\Student-Management-System_CSharp_SGU2025\Images\icon_edit.png";
+                string eyePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "icon_eye.png");
+                string editPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "icon_edit.png");
 
-           
+                // Chỉnh kích thước icon nhỏ lại cho phù hợp với cột
+
+                // Các phần còn lại là đúng:
                 if (System.IO.File.Exists(eyePath))
                     tableHocSinh.Rows[idx].Cells["View"].Value = Image.FromFile(eyePath);
                 if (System.IO.File.Exists(editPath))
@@ -198,7 +200,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             statCardDangHoc.lbCardValue.Text = "1,235";
             statCardDangHoc.lbCardNote.Text = "12 nghỉ học";
 
-            statCardTongHocSinh.lbCardNote.ForeColor = Color.FromArgb(22,163,74);
+            statCardTongHocSinh.lbCardNote.ForeColor = Color.FromArgb(22, 163, 74);
             statCardNam.lbCardValue.ForeColor = Color.FromArgb(30, 136, 229);
             statCardNu.lbCardValue.ForeColor = Color.FromArgb(219, 39, 119);
             statCardDangHoc.lbCardValue.ForeColor = Color.FromArgb(22, 163, 74);
@@ -244,7 +246,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 if (e.Value.ToString() == "Nam")
                 {
                     e.CellStyle.ForeColor = Color.FromArgb(29, 78, 216);
-                    e.CellStyle.BackColor = Color.FromArgb(219,234,254);
+                    e.CellStyle.BackColor = Color.FromArgb(219, 234, 254);
                 }
                 else if (e.Value.ToString() == "Nữ")
                 {
@@ -272,7 +274,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
 
         }
+
+        private void btnThemHocSinh_Click(object sender, EventArgs e)
+        {
+            ThemHoSoHocSinh frm = new ThemHoSoHocSinh();
+            frm.StartPosition = FormStartPosition.CenterScreen;
+            frm.ShowDialog();
+        }
     }
 }
-    
+
 
