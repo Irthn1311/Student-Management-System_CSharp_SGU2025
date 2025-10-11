@@ -28,12 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cbMonHoc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
@@ -82,9 +82,10 @@
             "Anh ",
             "Hóa ",
             "Vật Lí"});
-            this.cbMonHoc.Location = new System.Drawing.Point(1028, 24);
+            this.cbMonHoc.Location = new System.Drawing.Point(1041, 20);
+            this.cbMonHoc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbMonHoc.Name = "cbMonHoc";
-            this.cbMonHoc.Size = new System.Drawing.Size(136, 36);
+            this.cbMonHoc.Size = new System.Drawing.Size(103, 36);
             this.cbMonHoc.StartIndex = 0;
             this.cbMonHoc.TabIndex = 12;
             // 
@@ -102,9 +103,10 @@
             "Tất cả lớp",
             "Lớp 6A1",
             "Lớp 7A2"});
-            this.cbLop.Location = new System.Drawing.Point(844, 24);
+            this.cbLop.Location = new System.Drawing.Point(899, 20);
+            this.cbLop.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbLop.Name = "cbLop";
-            this.cbLop.Size = new System.Drawing.Size(159, 36);
+            this.cbLop.Size = new System.Drawing.Size(120, 36);
             this.cbLop.StartIndex = 0;
             this.cbLop.TabIndex = 13;
             // 
@@ -124,9 +126,10 @@
             "Học Kỳ II - 2023 - 2024",
             "Học Kỳ I - 2024 - 2025",
             "Học Kỳ II - 2024 - 2025"});
-            this.cbHocKyNamHoc.Location = new System.Drawing.Point(551, 24);
+            this.cbHocKyNamHoc.Location = new System.Drawing.Point(677, 20);
+            this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
-            this.cbHocKyNamHoc.Size = new System.Drawing.Size(263, 36);
+            this.cbHocKyNamHoc.Size = new System.Drawing.Size(198, 36);
             this.cbHocKyNamHoc.StartIndex = 0;
             this.cbHocKyNamHoc.TabIndex = 14;
             this.cbHocKyNamHoc.SelectedIndexChanged += new System.EventHandler(this.cbHocKyNamHoc_SelectedIndexChanged);
@@ -135,16 +138,16 @@
             // 
             this.tableNhapDiem.AllowUserToAddRows = false;
             this.tableNhapDiem.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            this.tableNhapDiem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tableNhapDiem.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.White;
+            this.tableNhapDiem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tableNhapDiem.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this.tableNhapDiem.ColumnHeadersHeight = 19;
             this.tableNhapDiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tableNhapDiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -154,21 +157,22 @@
             this.Column3,
             this.Column7,
             this.Column8});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tableNhapDiem.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tableNhapDiem.DefaultCellStyle = dataGridViewCellStyle9;
             this.tableNhapDiem.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableNhapDiem.Location = new System.Drawing.Point(21, 246);
+            this.tableNhapDiem.Location = new System.Drawing.Point(16, 224);
+            this.tableNhapDiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tableNhapDiem.Name = "tableNhapDiem";
             this.tableNhapDiem.RowHeadersVisible = false;
             this.tableNhapDiem.RowHeadersWidth = 51;
             this.tableNhapDiem.RowTemplate.Height = 24;
-            this.tableNhapDiem.Size = new System.Drawing.Size(1143, 380);
+            this.tableNhapDiem.Size = new System.Drawing.Size(1128, 464);
             this.tableNhapDiem.TabIndex = 19;
             this.tableNhapDiem.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableNhapDiem.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -241,9 +245,10 @@
             this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnXuatExcel.ForeColor = System.Drawing.Color.White;
             this.btnXuatExcel.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.download;
-            this.btnXuatExcel.Location = new System.Drawing.Point(1040, 728);
+            this.btnXuatExcel.Location = new System.Drawing.Point(1016, 707);
+            this.btnXuatExcel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnXuatExcel.Name = "btnXuatExcel";
-            this.btnXuatExcel.Size = new System.Drawing.Size(124, 35);
+            this.btnXuatExcel.Size = new System.Drawing.Size(138, 43);
             this.btnXuatExcel.TabIndex = 21;
             this.btnXuatExcel.Text = "Xuất Excel";
             this.btnXuatExcel.Click += new System.EventHandler(this.btnXuatExcel_Click);
@@ -260,9 +265,10 @@
             this.btnLuuDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnLuuDiem.ForeColor = System.Drawing.Color.White;
             this.btnLuuDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.diskette;
-            this.btnLuuDiem.Location = new System.Drawing.Point(1040, 728);
+            this.btnLuuDiem.Location = new System.Drawing.Point(1016, 707);
+            this.btnLuuDiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnLuuDiem.Name = "btnLuuDiem";
-            this.btnLuuDiem.Size = new System.Drawing.Size(124, 35);
+            this.btnLuuDiem.Size = new System.Drawing.Size(138, 43);
             this.btnLuuDiem.TabIndex = 20;
             this.btnLuuDiem.Text = "Lưu điểm";
             this.btnLuuDiem.Click += new System.EventHandler(this.btnLuuDiem_Click);
@@ -277,9 +283,10 @@
             this.btnNhapDiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btnNhapDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnNhapDiem.ForeColor = System.Drawing.Color.White;
-            this.btnNhapDiem.Location = new System.Drawing.Point(21, 24);
+            this.btnNhapDiem.Location = new System.Drawing.Point(16, 20);
+            this.btnNhapDiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnNhapDiem.Name = "btnNhapDiem";
-            this.btnNhapDiem.Size = new System.Drawing.Size(125, 36);
+            this.btnNhapDiem.Size = new System.Drawing.Size(139, 36);
             this.btnNhapDiem.TabIndex = 23;
             this.btnNhapDiem.Text = "Nhập điểm";
             this.btnNhapDiem.Click += new System.EventHandler(this.btnNhapDiem_Click);
@@ -294,9 +301,10 @@
             this.btnXemBangDiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btnXemBangDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnXemBangDiem.ForeColor = System.Drawing.Color.White;
-            this.btnXemBangDiem.Location = new System.Drawing.Point(148, 24);
+            this.btnXemBangDiem.Location = new System.Drawing.Point(150, 20);
+            this.btnXemBangDiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnXemBangDiem.Name = "btnXemBangDiem";
-            this.btnXemBangDiem.Size = new System.Drawing.Size(150, 36);
+            this.btnXemBangDiem.Size = new System.Drawing.Size(139, 36);
             this.btnXemBangDiem.TabIndex = 24;
             this.btnXemBangDiem.Text = "Xem bảng điểm";
             this.btnXemBangDiem.Click += new System.EventHandler(this.btnXemBangDiem_Click);
@@ -305,16 +313,16 @@
             // 
             this.tableXemBangDiem.AllowUserToAddRows = false;
             this.tableXemBangDiem.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
-            this.tableXemBangDiem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tableXemBangDiem.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.White;
+            this.tableXemBangDiem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tableXemBangDiem.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
             this.tableXemBangDiem.ColumnHeadersHeight = 19;
             this.tableXemBangDiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tableXemBangDiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -325,21 +333,22 @@
             this.dataGridViewTextBoxColumn5,
             this.dataGridViewTextBoxColumn6,
             this.Column4});
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tableXemBangDiem.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tableXemBangDiem.DefaultCellStyle = dataGridViewCellStyle12;
             this.tableXemBangDiem.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableXemBangDiem.Location = new System.Drawing.Point(21, 246);
+            this.tableXemBangDiem.Location = new System.Drawing.Point(16, 224);
+            this.tableXemBangDiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tableXemBangDiem.Name = "tableXemBangDiem";
             this.tableXemBangDiem.RowHeadersVisible = false;
             this.tableXemBangDiem.RowHeadersWidth = 51;
             this.tableXemBangDiem.RowTemplate.Height = 24;
-            this.tableXemBangDiem.Size = new System.Drawing.Size(1143, 395);
+            this.tableXemBangDiem.Size = new System.Drawing.Size(1128, 464);
             this.tableXemBangDiem.TabIndex = 25;
             this.tableXemBangDiem.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableXemBangDiem.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -417,10 +426,11 @@
             this.btnKhoaDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
             this.btnKhoaDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnKhoaDiem.ForeColor = System.Drawing.Color.White;
-            this.btnKhoaDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.padlock1;
-            this.btnKhoaDiem.Location = new System.Drawing.Point(874, 728);
+            this.btnKhoaDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.padlock;
+            this.btnKhoaDiem.Location = new System.Drawing.Point(860, 707);
+            this.btnKhoaDiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnKhoaDiem.Name = "btnKhoaDiem";
-            this.btnKhoaDiem.Size = new System.Drawing.Size(140, 35);
+            this.btnKhoaDiem.Size = new System.Drawing.Size(138, 43);
             this.btnKhoaDiem.TabIndex = 26;
             this.btnKhoaDiem.Text = "Khóa điểm";
             this.btnKhoaDiem.Click += new System.EventHandler(this.btnKhoaDiem_Click);
@@ -429,51 +439,56 @@
             // 
             this.statCardDiemTrungBinh.BackColor = System.Drawing.Color.White;
             this.statCardDiemTrungBinh.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statCardDiemTrungBinh.Location = new System.Drawing.Point(18, 83);
+            this.statCardDiemTrungBinh.Location = new System.Drawing.Point(14, 67);
+            this.statCardDiemTrungBinh.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardDiemTrungBinh.Name = "statCardDiemTrungBinh";
-            this.statCardDiemTrungBinh.Size = new System.Drawing.Size(255, 142);
+            this.statCardDiemTrungBinh.Size = new System.Drawing.Size(262, 136);
             this.statCardDiemTrungBinh.TabIndex = 18;
             // 
             // statCardDiemCaoNhat
             // 
             this.statCardDiemCaoNhat.BackColor = System.Drawing.Color.White;
             this.statCardDiemCaoNhat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statCardDiemCaoNhat.Location = new System.Drawing.Point(315, 83);
+            this.statCardDiemCaoNhat.Location = new System.Drawing.Point(296, 67);
+            this.statCardDiemCaoNhat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardDiemCaoNhat.Name = "statCardDiemCaoNhat";
-            this.statCardDiemCaoNhat.Size = new System.Drawing.Size(252, 142);
+            this.statCardDiemCaoNhat.Size = new System.Drawing.Size(262, 136);
             this.statCardDiemCaoNhat.TabIndex = 17;
             // 
             // statCardDiemThapNhat
             // 
             this.statCardDiemThapNhat.BackColor = System.Drawing.Color.White;
             this.statCardDiemThapNhat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statCardDiemThapNhat.Location = new System.Drawing.Point(617, 83);
+            this.statCardDiemThapNhat.Location = new System.Drawing.Point(594, 67);
+            this.statCardDiemThapNhat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardDiemThapNhat.Name = "statCardDiemThapNhat";
-            this.statCardDiemThapNhat.Size = new System.Drawing.Size(253, 142);
+            this.statCardDiemThapNhat.Size = new System.Drawing.Size(262, 136);
             this.statCardDiemThapNhat.TabIndex = 16;
             // 
             // statCardDaNhap
             // 
             this.statCardDaNhap.BackColor = System.Drawing.Color.White;
             this.statCardDaNhap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statCardDaNhap.Location = new System.Drawing.Point(916, 83);
+            this.statCardDaNhap.Location = new System.Drawing.Point(882, 67);
+            this.statCardDaNhap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardDaNhap.Name = "statCardDaNhap";
-            this.statCardDaNhap.Size = new System.Drawing.Size(248, 142);
+            this.statCardDaNhap.Size = new System.Drawing.Size(262, 136);
             this.statCardDaNhap.TabIndex = 15;
             // 
             // headerQuanLiNhapDiem
             // 
             this.headerQuanLiNhapDiem.BackColor = System.Drawing.Color.White;
             this.headerQuanLiNhapDiem.Location = new System.Drawing.Point(0, 0);
+            this.headerQuanLiNhapDiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.headerQuanLiNhapDiem.Name = "headerQuanLiNhapDiem";
-            this.headerQuanLiNhapDiem.Size = new System.Drawing.Size(1184, 0);
+            this.headerQuanLiNhapDiem.Size = new System.Drawing.Size(888, 0);
             this.headerQuanLiNhapDiem.TabIndex = 0;
             this.headerQuanLiNhapDiem.Visible = false;
             this.headerQuanLiNhapDiem.Load += new System.EventHandler(this.headerQuanLiNhapDiem_Load);
             // 
             // DiemSo_NhapDiem
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.Controls.Add(this.btnKhoaDiem);
@@ -491,8 +506,9 @@
             this.Controls.Add(this.cbLop);
             this.Controls.Add(this.cbMonHoc);
             this.Controls.Add(this.headerQuanLiNhapDiem);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "DiemSo_NhapDiem";
-            this.Size = new System.Drawing.Size(1184, 820);
+            this.Size = new System.Drawing.Size(1168, 768);
             this.Load += new System.EventHandler(this.DiemSo_NhapDiem_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tableNhapDiem)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tableXemBangDiem)).EndInit();

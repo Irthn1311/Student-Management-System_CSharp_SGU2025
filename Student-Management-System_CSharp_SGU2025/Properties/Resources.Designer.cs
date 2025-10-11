@@ -203,16 +203,6 @@ namespace Student_Management_System_CSharp_SGU2025.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap education1 {
-            get {
-                object obj = ResourceManager.GetObject("education1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap exam {
             get {
                 object obj = ResourceManager.GetObject("exam", resourceCulture);
@@ -243,9 +233,39 @@ namespace Student_Management_System_CSharp_SGU2025.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap icon_edit {
+            get {
+                object obj = ResourceManager.GetObject("icon_edit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap icon_eye {
+            get {
+                object obj = ResourceManager.GetObject("icon_eye", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap list {
             get {
                 object obj = ResourceManager.GetObject("list", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap logoChaoMung {
+            get {
+                object obj = ResourceManager.GetObject("logoChaoMung", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -303,9 +323,9 @@ namespace Student_Management_System_CSharp_SGU2025.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap padlock1 {
+        public static System.Drawing.Bitmap padlock___Black {
             get {
-                object obj = ResourceManager.GetObject("padlock1", resourceCulture);
+                object obj = ResourceManager.GetObject("padlock - Black", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -316,26 +336,6 @@ namespace Student_Management_System_CSharp_SGU2025.Properties {
         public static System.Drawing.Bitmap people {
             get {
                 object obj = ResourceManager.GetObject("people", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap people1 {
-            get {
-                object obj = ResourceManager.GetObject("people1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap people2 {
-            get {
-                object obj = ResourceManager.GetObject("people2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -386,16 +386,6 @@ namespace Student_Management_System_CSharp_SGU2025.Properties {
         public static System.Drawing.Bitmap school {
             get {
                 object obj = ResourceManager.GetObject("school", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap school1 {
-            get {
-                object obj = ResourceManager.GetObject("school1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -44,12 +44,12 @@
             this.pnlHeader.Controls.Add(this.txtSearch);
             this.pnlHeader.Controls.Add(this.lblBreadcrumb);
             this.pnlHeader.Controls.Add(this.lblTitle);
-            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlHeader.FillColor = System.Drawing.Color.White;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Padding = new System.Windows.Forms.Padding(27, 18, 27, 18);
-            this.pnlHeader.Size = new System.Drawing.Size(1184, 80);
+            this.pnlHeader.Size = new System.Drawing.Size(1184, 81);
             this.pnlHeader.TabIndex = 1;
             // 
             // pnlUser
@@ -61,6 +61,7 @@
             // 
             // btnNotifications
             // 
+            this.btnNotifications.BackColor = System.Drawing.Color.White;
             this.btnNotifications.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.btnNotifications.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.btnNotifications.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
@@ -98,6 +99,7 @@
             // lblBreadcrumb
             // 
             this.lblBreadcrumb.AutoSize = true;
+            this.lblBreadcrumb.BackColor = System.Drawing.Color.White;
             this.lblBreadcrumb.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblBreadcrumb.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBreadcrumb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(115)))), ((int)(((byte)(128)))));
@@ -110,6 +112,7 @@
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
+            this.lblTitle.BackColor = System.Drawing.Color.White;
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
@@ -125,7 +128,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnlHeader);
             this.Name = "ucHeader";
-            this.Size = new System.Drawing.Size(1184, 80);
+            this.Size = new System.Drawing.Size(1184, 81);
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
             this.ResumeLayout(false);

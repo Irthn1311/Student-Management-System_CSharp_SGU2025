@@ -18,32 +18,42 @@
         {
             this.ucSidebar1 = new Student_Management_System_CSharp_SGU2025.GUI.ucSidebar();
             this.ucHeader1 = new Student_Management_System_CSharp_SGU2025.GUI.ucHeader();
+            this.panelContent = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // ucSidebar1
             // 
+            this.ucSidebar1.Dock = System.Windows.Forms.DockStyle.Left;
             this.ucSidebar1.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ucSidebar1.Location = new System.Drawing.Point(0, 0);
-            this.ucSidebar1.Margin = new System.Windows.Forms.Padding(2);
             this.ucSidebar1.Name = "ucSidebar1";
-            this.ucSidebar1.Size = new System.Drawing.Size(256, 900);
-            this.ucSidebar1.TabIndex = 0;
+            this.ucSidebar1.Size = new System.Drawing.Size(256, 861);
+            this.ucSidebar1.TabIndex = 3;
             // 
             // ucHeader1
             // 
             this.ucHeader1.Location = new System.Drawing.Point(256, 0);
             this.ucHeader1.Name = "ucHeader1";
-            this.ucHeader1.Size = new System.Drawing.Size(1184, 80);
+            this.ucHeader1.Size = new System.Drawing.Size(1184, 96);
             this.ucHeader1.TabIndex = 2;
+            // 
+            // panelContent
+            // 
+            this.panelContent.BackColor = System.Drawing.Color.Yellow;
+            this.panelContent.Location = new System.Drawing.Point(256, 93);
+            this.panelContent.Name = "panelContent";
+            this.panelContent.Size = new System.Drawing.Size(1168, 768);
+            this.panelContent.TabIndex = 4;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1440, 900);
-            this.Controls.Add(this.ucHeader1);
+            this.ClientSize = new System.Drawing.Size(1424, 861);
+            this.Controls.Add(this.panelContent);
             this.Controls.Add(this.ucSidebar1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Controls.Add(this.ucHeader1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -53,8 +63,8 @@
         }
 
         #endregion
-
-        private ucSidebar ucSidebar1;
         private ucHeader ucHeader1;
+        private ucSidebar ucSidebar1;
+        private System.Windows.Forms.Panel panelContent;
     }
 }
