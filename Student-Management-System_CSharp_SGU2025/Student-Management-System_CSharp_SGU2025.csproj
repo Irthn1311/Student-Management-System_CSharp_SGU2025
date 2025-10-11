@@ -89,6 +89,22 @@
     <Compile Include="GUI\Forms\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\GiaBao\FrmGiaoVien.cs" />
+    <Compile Include="GUI\GiaBao\FrmGiaoVien.Designer.cs">
+      <DependentUpon>FrmGiaoVien.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\GiaBao\FrmNamHocHocKi.cs" />
+    <Compile Include="GUI\GiaBao\FrmNamHocHocKi.Designer.cs">
+      <DependentUpon>FrmNamHocHocKi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\GiaBao\FrmThoiKhoaBieu.cs" />
+    <Compile Include="GUI\GiaBao\FrmThoiKhoaBieu.Designer.cs">
+      <DependentUpon>FrmThoiKhoaBieu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\GiaBao\obj\Debug\net8.0-windows\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" />
+    <Compile Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.AssemblyInfo.cs" />
+    <Compile Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.GlobalUsings.g.cs" />
+    <Compile Include="GUI\GiaBao\Program.cs" />
     <Compile Include="GUI\HanhKiem\HanhKiem.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -229,6 +245,18 @@
     <EmbeddedResource Include="GUI\DangNhap\FrmDangNhap.resx">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\GiaBao\FrmGiaoVien.resx">
+      <DependentUpon>FrmGiaoVien.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\GiaBao\FrmNamHocHocKi.resx">
+      <DependentUpon>FrmNamHocHocKi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\GiaBao\FrmThoiKhoaBieu.resx">
+      <DependentUpon>FrmThoiKhoaBieu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.FrmGiaoVien.resources" />
+    <EmbeddedResource Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.FrmNamHocHocKi.resources" />
+    <EmbeddedResource Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.FrmThoiKhoaBieu.resources" />
     <EmbeddedResource Include="GUI\HanhKiem\HanhKiem.resx">
       <DependentUpon>HanhKiem.cs</DependentUpon>
     </EmbeddedResource>
@@ -286,6 +314,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="GUI\GiaBao\bin\Debug\net8.0-windows\WinFormsApp2.deps.json" />
+    <None Include="GUI\GiaBao\bin\Debug\net8.0-windows\WinFormsApp2.runtimeconfig.json" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinForms.CF340A35.Up2Date" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.AssemblyInfoInputs.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.assets.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.AssemblyReference.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.BuildWithSkipAnalyzers" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.CoreCompileInputs.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.GenerateResource.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.designer.deps.json" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.designer.runtimeconfig.json" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.GeneratedMSBuildEditorConfig.editorconfig" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.genruntimeconfig.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.sourcelink.json" />
+    <None Include="GUI\GiaBao\obj\project.assets.json" />
+    <None Include="GUI\GiaBao\obj\project.nuget.cache" />
+    <None Include="GUI\GiaBao\obj\WinFormsApp2.csproj.nuget.dgspec.json" />
+    <None Include="GUI\GiaBao\obj\WinFormsApp2.csproj.nuget.g.props" />
+    <None Include="GUI\GiaBao\obj\WinFormsApp2.csproj.nuget.g.targets" />
+    <None Include="GUI\GiaBao\WinFormsApp2.csproj" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -297,6 +345,19 @@
     <Folder Include="DAO\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GUI\GiaBao\bin\Debug\net8.0-windows\Guna.UI2.dll" />
+    <Content Include="GUI\GiaBao\bin\Debug\net8.0-windows\runtimes\win\lib\net7.0\System.Management.dll" />
+    <Content Include="GUI\GiaBao\bin\Debug\net8.0-windows\System.Management.dll" />
+    <Content Include="GUI\GiaBao\bin\Debug\net8.0-windows\WinFormsApp2.dll" />
+    <Content Include="GUI\GiaBao\bin\Debug\net8.0-windows\WinFormsApp2.exe" />
+    <Content Include="GUI\GiaBao\bin\Debug\net8.0-windows\WinFormsApp2.pdb" />
+    <Content Include="GUI\GiaBao\obj\Debug\net8.0-windows\apphost.exe" />
+    <Content Include="GUI\GiaBao\obj\Debug\net8.0-windows\refint\WinFormsApp2.dll" />
+    <Content Include="GUI\GiaBao\obj\Debug\net8.0-windows\ref\WinFormsApp2.dll" />
+    <Content Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.FileListAbsolute.txt" />
+    <Content Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.dll" />
+    <Content Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.pdb" />
+    <Content Include="GUI\GiaBao\WinFormsApp2.csproj.user" />
     <Content Include="Images\3que.png" />
     <None Include="Images\download.png" />
     <None Include="Images\diskette.png" />
