@@ -36,6 +36,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lbChaoMung2 = new System.Windows.Forms.Label();
             this.lbChaoMung1 = new System.Windows.Forms.Label();
+            this.logoChaoMung = new Guna.UI2.WinForms.Guna2Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lbTenDangNhap = new System.Windows.Forms.Label();
