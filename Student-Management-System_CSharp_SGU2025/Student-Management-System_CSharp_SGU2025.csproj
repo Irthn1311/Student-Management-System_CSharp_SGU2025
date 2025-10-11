@@ -71,11 +71,77 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\MonHoc.cs" />
-    <Compile Include="GUI\FrmDangNhap.cs">
+    <Compile Include="GUI\DiemSo\DiemSo_NhapDiem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\DiemSo\DiemSo_NhapDiem.Designer.cs">
+      <DependentUpon>DiemSo_NhapDiem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DangNhap\FrmDangNhap.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\FrmDangNhap.Designer.cs">
+    <Compile Include="GUI\DangNhap\FrmDangNhap.Designer.cs">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\HanhKiem\HanhKiem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\HanhKiem\HanhKiem.Designer.cs">
+      <DependentUpon>HanhKiem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\HocSinh\HocSinh.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\HocSinh\HocSinh.Designer.cs">
+      <DependentUpon>HocSinh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\LopKhoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\LopKhoi.Designer.cs">
+      <DependentUpon>LopKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\MonHoc\FrmMonHoc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\MonHoc\FrmMonHoc.Designer.cs">
+      <DependentUpon>FrmMonHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\PhanCongGiangDay\PhanCongGiangDay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\PhanCongGiangDay\PhanCongGiangDay.Designer.cs">
+      <DependentUpon>PhanCongGiangDay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardKhoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardKhoi.Designer.cs">
+      <DependentUpon>StatCardKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardPhanCongGiangDay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\StatCardPhanCongGiangDay.Designer.cs">
+      <DependentUpon>StatCardPhanCongGiangDay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\TaiSuDung\HeaderQuanLiHocSinh.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\TaiSuDung\HeaderQuanLiHocSinh.Designer.cs">
+      <DependentUpon>HeaderQuanLiHocSinh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.Designer.cs">
+      <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
       <SubType>UserControl</SubType>
@@ -83,48 +149,68 @@
     <Compile Include="GUI\RecentActivityItem.Designer.cs">
       <DependentUpon>RecentActivityItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\SidebarMenuItem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\SidebarMenuItem.Designer.cs">
-      <DependentUpon>SidebarMenuItem.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\StatCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\StatCard.Designer.cs">
       <DependentUpon>StatCard.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\FrmMonHoc.cs">
+    <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.Designer.cs">
+      <DependentUpon>ucBaoCaoBangDiem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCao.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCao.Designer.cs">
+      <DependentUpon>ucBaoCao.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCaoDanhSachLop.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCaoDanhSachLop.Designer.cs">
+      <DependentUpon>ucBaoCaoDanhSachLop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Dashboard\ucDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Dashboard\ucDashboard.Designer.cs">
+      <DependentUpon>ucDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Controls\ucHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Controls\ucHeader.Designer.cs">
+      <DependentUpon>ucHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Controls\ucSidebar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Controls\ucSidebar.Designer.cs">
+      <DependentUpon>ucSidebar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.Designer.cs">
+      <DependentUpon>ucBaoCaoThongKeHocLuc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemHoSoHocSinh.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\FrmMonHoc.Designer.cs">
-      <DependentUpon>FrmMonHoc.cs</DependentUpon>
+    <Compile Include="GUI\ThemHoSoHocSinh.Designer.cs">
+      <DependentUpon>ThemHoSoHocSinh.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\TrangChu.cs">
-      <SubType>Form</SubType>
+    <Compile Include="GUI\XepLoai\ucXepLoai.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\TrangChu.Designer.cs">
-      <DependentUpon>TrangChu.cs</DependentUpon>
+    <Compile Include="GUI\XepLoai\ucXepLoai.Designer.cs">
+      <DependentUpon>ucXepLoai.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="GUI\FrmDangNhap.resx">
-      <DependentUpon>FrmDangNhap.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\TrangChu.resx">
-      <DependentUpon>TrangChu.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -132,12 +218,79 @@
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GUI\DiemSo\DiemSo_NhapDiem.resx">
+      <DependentUpon>DiemSo_NhapDiem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\DangNhap\FrmDangNhap.resx">
+      <DependentUpon>FrmDangNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HanhKiem\HanhKiem.resx">
+      <DependentUpon>HanhKiem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HocSinh\HocSinh.resx">
+      <DependentUpon>HocSinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoBangDiem.resx">
+      <DependentUpon>ucBaoCaoBangDiem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\ucBaoCao.resx">
+      <DependentUpon>ucBaoCao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoDanhSachLop.resx">
+      <DependentUpon>ucBaoCaoDanhSachLop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Dashboard\ucDashboard.resx">
+      <DependentUpon>ucDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Controls\ucHeader.resx">
+      <DependentUpon>ucHeader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Controls\ucSidebar.resx">
+      <DependentUpon>ucSidebar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.resx">
+      <DependentUpon>ucBaoCaoThongKeHocLuc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\LopKhoi\LopKhoi.resx">
+      <DependentUpon>LopKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\MonHoc\FrmMonHoc.resx">
+      <DependentUpon>FrmMonHoc.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\PhanCongGiangDay\PhanCongGiangDay.resx">
+      <DependentUpon>PhanCongGiangDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\statcardLHP\StatCardKhoi.resx">
+      <DependentUpon>StatCardKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\statcardLHP\StatCardPhanCongGiangDay.resx">
+      <DependentUpon>StatCardPhanCongGiangDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.resx">
+      <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\XepLoai\ucXepLoai.resx">
+      <DependentUpon>ucXepLoai.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BUS\" />
@@ -145,11 +298,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\3que.png" />
+    <None Include="Images\download.png" />
+    <None Include="Images\diskette.png" />
     <Content Include="Images\education.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Images\people.png" />
     <None Include="Images\padlock.png" />
+    <None Include="Images\plus.png" />
     <Content Include="Images\repair.png" />
     <None Include="Images\school.png" />
   </ItemGroup>

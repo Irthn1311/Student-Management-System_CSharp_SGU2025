@@ -13,7 +13,7 @@ namespace Student_Management_System_CSharp_SGU2025
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new GUI.FrmDangNhap());
+            Application.Run(new GUI.MainForm());
         }
     }
 }
