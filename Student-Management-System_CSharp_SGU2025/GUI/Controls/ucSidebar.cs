@@ -27,7 +27,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         public Guna.UI2.WinForms.Guna2Button LopHocButton => btnLopHoc;
         public Guna.UI2.WinForms.Guna2Button MonHocButton => btnMonHoc;
         public Guna.UI2.WinForms.Guna2Button PhanCongButton => btnPhanCong;
-
+    
         private void pnlHeader_Paint(object sender, PaintEventArgs e)
         {
 

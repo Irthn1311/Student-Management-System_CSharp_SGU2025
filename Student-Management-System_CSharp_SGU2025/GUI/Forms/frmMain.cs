@@ -12,12 +12,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class MainForm : Form
     {
+        // Add this field to your MainForm class
+        // Đúng namespace và class
+        private Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu.ThoiKhoaBieu ucThoiKhoaBieu1;
+
         public MainForm()
         {
             InitializeComponent();
             InitializeNavigation();
 
-            // Set default page to Dashboard
+            // Add this initialization in your MainForm constructor after InitializeComponent();
+            ucThoiKhoaBieu1 = new Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu.ThoiKhoaBieu();
+            ucThoiKhoaBieu1.Visible = false;
+            ucThoiKhoaBieu1.Dock = DockStyle.Fill;
+            this.Controls.Add(ucThoiKhoaBieu1);
+
             ShowDashboard();
         }
 
@@ -33,6 +42,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucSidebar1.LopHocButton.Click += BtnLopHoc_Click;
             ucSidebar1.MonHocButton.Click += BtnMonHoc_Click;
             ucSidebar1.PhanCongButton.Click += BtnPhanCong_Click;
+            ucSidebar1.ThoiKhoaBieuButton.Click += BtnThoiKhoaBieu_Click;
         }
 
 
@@ -93,6 +103,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucLopKhoi1.Visible = false;
             ucFrmMonHoc1.Visible = false;
             ucPhanCongGiangDay1.Visible = false;
+            ucThoiKhoaBieu1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Bảng tin", "Trang chủ / Bảng tin");
@@ -113,6 +124,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucLopKhoi1.Visible = false;
             ucFrmMonHoc1.Visible = false;
             ucPhanCongGiangDay1.Visible = false;
+            ucThoiKhoaBieu1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Xếp loại & Tổng kết", "Trang chủ / Xếp loại & Tổng kết");
@@ -133,6 +145,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucLopKhoi1.Visible = false;
             ucFrmMonHoc1.Visible = false;
             ucPhanCongGiangDay1.Visible = false;
+            ucThoiKhoaBieu1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Báo cáo", "Trang chủ / Báo cáo");
@@ -153,6 +166,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucLopKhoi1.Visible = false;
             ucFrmMonHoc1.Visible = false;
             ucPhanCongGiangDay1.Visible = false;
+            ucThoiKhoaBieu1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Hạnh kiểm", "Trang chủ / Hạnh kiểm");
@@ -173,6 +187,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucLopKhoi1.Visible = false;
             ucFrmMonHoc1.Visible = false;
             ucPhanCongGiangDay1.Visible = false;
+            ucThoiKhoaBieu1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Hồ sơ Học sinh", "Trang chủ / Hồ sơ học sinh");
@@ -193,6 +208,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucLopKhoi1.Visible = false;
             ucFrmMonHoc1.Visible = false;
             ucPhanCongGiangDay1.Visible = false;
+            ucThoiKhoaBieu1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Điểm số", "Trang chủ / Điểm số");
@@ -213,6 +229,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucLopKhoi1.Visible = true;
             ucFrmMonHoc1.Visible = false;
             ucPhanCongGiangDay1.Visible = false;
+            ucThoiKhoaBieu1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Lớp học", "Trang chủ / Lớp học");
@@ -233,6 +250,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucLopKhoi1.Visible = false;
             ucFrmMonHoc1.Visible = true;
             ucPhanCongGiangDay1.Visible = false;
+            ucThoiKhoaBieu1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Môn học", "Trang chủ / Môn học");
@@ -253,6 +271,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucLopKhoi1.Visible = false;
             ucFrmMonHoc1.Visible = false;
             ucPhanCongGiangDay1.Visible = true;
+            ucThoiKhoaBieu1.Visible = false;
 
             // Update header
             ucHeader1.UpdateHeader("Phân công giảng dạy", "Trang chủ / Phân công giảng dạy");
@@ -264,6 +283,39 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void ucDashboard1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void ucSidebar1_Load(object sender, EventArgs e)
+        {
+
+        }// Add this method to your MainForm class
+
+        private void ShowThoiKhoaBieu()
+        {
+            // Hide all content panels
+            ucDashboard1.Visible = false;
+            ucXepLoai1.Visible = false;
+            ucBaoCao1.Visible = false;
+            ucHanhKiem1.Visible = false;
+            ucHocSinh1.Visible = false;
+            ucDiemSo1.Visible = false;
+            ucLopKhoi1.Visible = false;
+            ucFrmMonHoc1.Visible = false;
+            ucPhanCongGiangDay1.Visible = false;
+            ucThoiKhoaBieu1.Visible = true;
+            
+            // Add your timetable user control here, for example:
+            // ucThoiKhoaBieu1.Visible = true;
+
+            // Update header
+            ucHeader1.UpdateHeader("Thời khóa biểu", "Trang chủ / Thời khóa biểu");
+
+            // Bring to front
+            ucThoiKhoaBieu1.BringToFront();
+        }
+        private void BtnThoiKhoaBieu_Click(object sender, EventArgs e)
+        {
+            ShowThoiKhoaBieu();
         }
     }
 }

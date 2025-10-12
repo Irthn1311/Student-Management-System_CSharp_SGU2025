@@ -18,11 +18,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
             lblTenKhoi.Text = tenKhoi;
             lblSoLop.Text = soLop;
             lblSoHocSinh.Text = soHocSinh;
-           
+
 
 
 
         }
 
+        private void panelMain_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

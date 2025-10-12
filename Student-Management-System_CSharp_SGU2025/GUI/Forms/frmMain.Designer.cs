@@ -38,6 +38,7 @@
             this.ucDiemSo1 = new Student_Management_System_CSharp_SGU2025.GUI.DiemSo_NhapDiem();
             this.ucLopKhoi1 = new Student_Management_System_CSharp_SGU2025.GUI.LopKhoi();
             this.ucFrmMonHoc1 = new Student_Management_System_CSharp_SGU2025.GUI.FrmMonHoc();
+            this.ucThoiKhoaBieu1 = new Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu();
             this.ucPhanCongGiangDay1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.PhanCongGiangDay();
             this.SuspendLayout();
             // 
@@ -60,6 +61,7 @@
             this.ucSidebar1.Name = "ucSidebar1";
             this.ucSidebar1.Size = new System.Drawing.Size(256, 900);
             this.ucSidebar1.TabIndex = 0;
+            this.ucSidebar1.Load += new System.EventHandler(this.ucSidebar1_Load);
             // 
             // ucHeader1
             // 
@@ -92,9 +94,10 @@
             // 
             // ucHanhKiem1
             // 
+            this.ucHanhKiem1.AutoScroll = true;
             this.ucHanhKiem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
             this.ucHanhKiem1.Location = new System.Drawing.Point(256, 80);
-            this.ucHanhKiem1.Margin = new System.Windows.Forms.Padding(2);
+            this.ucHanhKiem1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ucHanhKiem1.Name = "ucHanhKiem1";
             this.ucHanhKiem1.Size = new System.Drawing.Size(1184, 900);
             this.ucHanhKiem1.TabIndex = 5;
@@ -102,9 +105,10 @@
             // 
             // ucHocSinh1
             // 
+            this.ucHocSinh1.AutoScroll = true;
             this.ucHocSinh1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
             this.ucHocSinh1.Location = new System.Drawing.Point(256, 80);
-            this.ucHocSinh1.Margin = new System.Windows.Forms.Padding(2);
+            this.ucHocSinh1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ucHocSinh1.Name = "ucHocSinh1";
             this.ucHocSinh1.Size = new System.Drawing.Size(1184, 900);
             this.ucHocSinh1.TabIndex = 6;
@@ -112,9 +116,10 @@
             // 
             // ucDiemSo1
             // 
+            this.ucDiemSo1.AutoScroll = true;
             this.ucDiemSo1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
             this.ucDiemSo1.Location = new System.Drawing.Point(256, 80);
-            this.ucDiemSo1.Margin = new System.Windows.Forms.Padding(2);
+            this.ucDiemSo1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ucDiemSo1.Name = "ucDiemSo1";
             this.ucDiemSo1.Size = new System.Drawing.Size(1184, 900);
             this.ucDiemSo1.TabIndex = 7;
@@ -166,6 +171,7 @@
             this.Controls.Add(this.ucLopKhoi1);
             this.Controls.Add(this.ucDashboard1);
             this.Controls.Add(this.ucSidebar1);
+            this.Controls.Add(this.ucThoiKhoaBieu1); // <-- Thêm dòng này
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainForm";
@@ -188,5 +194,6 @@
         private LopKhoi ucLopKhoi1;
         private FrmMonHoc ucFrmMonHoc1;
         private Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.PhanCongGiangDay ucPhanCongGiangDay1;
+        private ThoiKhoaBieu ucThoiKhoaBieu1;
     }
 }

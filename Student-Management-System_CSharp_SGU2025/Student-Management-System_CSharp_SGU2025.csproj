@@ -95,6 +95,30 @@
     <Compile Include="GUI\HanhKiem\HanhKiem.Designer.cs">
       <DependentUpon>HanhKiem.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\statcardLHP\statcardMonHoc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\statcardLHP\statcardMonHoc.Designer.cs">
+      <DependentUpon>statcardMonHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThoiKhoaBieu\StatCardTKB.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\ThoiKhoaBieu\StatCardTKB.Designer.cs">
+      <DependentUpon>StatCardTKB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.Designer.cs">
+      <DependentUpon>SuaLopHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\ThemLopHoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\ThemLopHoc.Designer.cs">
+      <DependentUpon>ThemLopHoc.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\LopKhoi\LopKhoi.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -245,6 +269,12 @@
     <Compile Include="GUI\ThemHoSoHocSinh.Designer.cs">
       <DependentUpon>ThemHoSoHocSinh.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ThoiKhoaBieu\ThoiKhoaBieu.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\ThoiKhoaBieu\ThoiKhoaBieu.Designer.cs">
+      <DependentUpon>ThoiKhoaBieu.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\XepLoai\ucXepLoai.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -280,6 +310,21 @@
     <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.resx">
       <DependentUpon>ucBaoCaoThongKeHocLuc.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\statcardLHP\statcardMonHoc.resx">
+      <DependentUpon>statcardMonHoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThoiKhoaBieu\StatCardTKB.resx">
+      <DependentUpon>StatCardTKB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.resx">
+      <DependentUpon>SuaLopHoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\ThemLopHoc.resx">
+      <DependentUpon>ThemLopHoc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\LopKhoi\LopKhoi.resx">
       <DependentUpon>LopKhoi.cs</DependentUpon>
     </EmbeddedResource>
@@ -298,6 +343,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.resx">
       <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThoiKhoaBieu\ThoiKhoaBieu.resx">
+      <DependentUpon>ThoiKhoaBieu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\XepLoai\ucXepLoai.resx">
       <DependentUpon>ucXepLoai.cs</DependentUpon>
@@ -334,6 +382,7 @@
     <Content Include="Images\3que.png" />
     <None Include="Images\download.png" />
     <None Include="Images\diskette.png" />
+    <None Include="Images\class.png" />
     <Content Include="Images\education.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

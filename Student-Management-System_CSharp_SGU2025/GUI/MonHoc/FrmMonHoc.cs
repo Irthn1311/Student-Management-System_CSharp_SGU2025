@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -26,6 +27,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // ==== Gắn sự kiện ====
             dgvMonHoc.CellPainting += dgvMonHoc_CellPainting;
             dgvMonHoc.CellClick += dgvMonHoc_CellClick;
+
+
+
+
+            // --- Thông tin thống kê 3 khối ---
+            statcardMonHoc1.SetData("4", "Môn chính", "Toán,Văn,Anh");
+            statcardMonHoc2.SetData("3", "Khoa học tự nhiên", "Lý,Hóa,Sinh");
+            statcardMonHoc3.SetData("3", "Khoa học xã hội", "GDCD,Sử,Địa");
+            statcardMonHoc4.SetData("3", "Kỹ năng khác", "GDCD,TD,Qp");
+
+            // --- Cấu hình & nạp dữ liệu ---
+          
+        
         }
 
         private void dgvMonHoc_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
@@ -100,6 +114,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void guna2HtmlLabel2_Click(object sender, EventArgs e)
         {
             // Tùy chọn xử lý nếu cần
+        }
+
+        private void statcardMonHoc2_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void statcardMonHoc1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

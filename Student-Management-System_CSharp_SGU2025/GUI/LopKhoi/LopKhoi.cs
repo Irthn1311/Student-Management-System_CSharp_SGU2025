@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
-    public partial class LopKhoi : UserControl
+    public partial class LopKhoi :UserControl
     {
         public LopKhoi()
         {
@@ -46,6 +47,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns.Add("SiSo", "Sĩ số");
             dgvLop.Columns.Add("GVCN", "Giáo viên CN");
             dgvLop.Columns.Add("ThaoTac", "Thao tác");
+            // Đặt lại chế độ co giãn cột
+            dgvLop.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgvLop.Columns["ThaoTac"].Width = 60; // hoặc 70 nếu icon lớn hơn
+            dgvLop.Columns["ThaoTac"].Resizable = DataGridViewTriState.False;
+
+            // Các cột còn lại có thể set Fill nếu muốn
+            dgvLop.Columns["MaLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLop.Columns["TenLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLop.Columns["Khoi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLop.Columns["SiSo"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLop.Columns["GVCN"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             // Style cho tiêu đề
             dgvLop.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
@@ -91,10 +103,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             Image editIcon = Properties.Resources.edit_icon;   // ✏️
             Image deleteIcon = Properties.Resources.delete_icon; // 🗑️
 
-            int iconSize = 20;
-            int spacing = 10;
+            int iconSize = 20; // Kích thước icon nhỏ hơn
+            int spacing = 10;  // Khoảng cách giữa 2 icon
             int totalWidth = iconSize * 2 + spacing;
 
+            // Tính toán vị trí để căn giữa cell
             int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
             int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
 
@@ -117,7 +130,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             Point clickPoint = dgvLop.PointToClient(Cursor.Position);
             Rectangle cellRect = dgvLop.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
 
-            int iconSize = 20;
+            int iconSize = 18;
             int spacing = 10;
             int totalWidth = iconSize * 2 + spacing;
             int startX = cellRect.Left + (cellRect.Width - totalWidth) / 2;
@@ -127,7 +140,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // Xác định click vào icon nào
             if (clickPoint.X >= startX && clickPoint.X <= startX + iconSize)
             {
-                MessageBox.Show($"📝 Chỉnh sửa lớp: {maLop}", "Sửa lớp học");
+                SuaLopHoc frm = new SuaLopHoc();
+                frm.StartPosition = FormStartPosition.CenterParent; // 🔹 hiện giữa form cha
+                frm.ShowDialog();
                 // TODO: mở form chỉnh sửa
             }
             else if (clickPoint.X >= startX + iconSize + spacing && clickPoint.X <= startX + iconSize * 2 + spacing)
@@ -152,6 +167,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         private void statCardKhoi10_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+            ThemLopHoc frm = new ThemLopHoc();
+            frm.StartPosition = FormStartPosition.CenterParent; // 🔹 hiện giữa form cha
+            frm.ShowDialog();
+        }
+
+        private void guna2ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
