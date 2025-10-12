@@ -57,16 +57,17 @@
             this.cbLop.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbLop.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.cbLop.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbLop.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLop.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbLop.ItemHeight = 30;
             this.cbLop.Items.AddRange(new object[] {
             "Tất cả lớp",
             "Lớp 6A1",
             "Lớp 7A2"});
-            this.cbLop.Location = new System.Drawing.Point(998, 111);
+            this.cbLop.Location = new System.Drawing.Point(980, 29);
+            this.cbLop.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbLop.Name = "cbLop";
-            this.cbLop.Size = new System.Drawing.Size(168, 36);
+            this.cbLop.Size = new System.Drawing.Size(158, 36);
             this.cbLop.StartIndex = 0;
             this.cbLop.TabIndex = 11;
             // 
@@ -103,12 +104,13 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableHocSinh.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableHocSinh.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableHocSinh.Location = new System.Drawing.Point(23, 345);
+            this.tableHocSinh.Location = new System.Drawing.Point(17, 260);
+            this.tableHocSinh.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tableHocSinh.Name = "tableHocSinh";
             this.tableHocSinh.RowHeadersVisible = false;
             this.tableHocSinh.RowHeadersWidth = 51;
             this.tableHocSinh.RowTemplate.Height = 24;
-            this.tableHocSinh.Size = new System.Drawing.Size(1143, 510);
+            this.tableHocSinh.Size = new System.Drawing.Size(1132, 480);
             this.tableHocSinh.TabIndex = 12;
             this.tableHocSinh.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableHocSinh.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -189,13 +191,13 @@
             this.txtTimKiemHocSinh.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtTimKiemHocSinh.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.search;
             this.txtTimKiemHocSinh.IconLeftOffset = new System.Drawing.Point(7, 0);
-            this.txtTimKiemHocSinh.Location = new System.Drawing.Point(224, 118);
-            this.txtTimKiemHocSinh.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtTimKiemHocSinh.Location = new System.Drawing.Point(214, 24);
+            this.txtTimKiemHocSinh.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.txtTimKiemHocSinh.Name = "txtTimKiemHocSinh";
             this.txtTimKiemHocSinh.PlaceholderText = "Tìm kiếm học sinh ...";
             this.txtTimKiemHocSinh.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtTimKiemHocSinh.SelectedText = "";
-            this.txtTimKiemHocSinh.Size = new System.Drawing.Size(306, 35);
+            this.txtTimKiemHocSinh.Size = new System.Drawing.Size(323, 51);
             this.txtTimKiemHocSinh.TabIndex = 6;
             // 
             // btnThemHocSinh
@@ -209,9 +211,10 @@
             this.btnThemHocSinh.ForeColor = System.Drawing.Color.White;
             this.btnThemHocSinh.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
             this.btnThemHocSinh.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThemHocSinh.Location = new System.Drawing.Point(23, 111);
+            this.btnThemHocSinh.Location = new System.Drawing.Point(17, 24);
+            this.btnThemHocSinh.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnThemHocSinh.Name = "btnThemHocSinh";
-            this.btnThemHocSinh.Size = new System.Drawing.Size(168, 45);
+            this.btnThemHocSinh.Size = new System.Drawing.Size(168, 51);
             this.btnThemHocSinh.TabIndex = 1;
             this.btnThemHocSinh.Text = "Thêm học sinh";
             this.btnThemHocSinh.Click += new System.EventHandler(this.btnThemHocSinh_Click);
@@ -220,48 +223,54 @@
             // 
             this.headerQuanLiHocSinh.BackColor = System.Drawing.Color.White;
             this.headerQuanLiHocSinh.Location = new System.Drawing.Point(0, 0);
+            this.headerQuanLiHocSinh.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.headerQuanLiHocSinh.Name = "headerQuanLiHocSinh";
-            this.headerQuanLiHocSinh.Size = new System.Drawing.Size(1184, 81);
+            this.headerQuanLiHocSinh.Size = new System.Drawing.Size(888, 0);
             this.headerQuanLiHocSinh.TabIndex = 13;
+            this.headerQuanLiHocSinh.Visible = false;
             this.headerQuanLiHocSinh.Load += new System.EventHandler(this.headerQuanLiHocSinh_Load);
             // 
             // statCardDangHoc
             // 
             this.statCardDangHoc.BackColor = System.Drawing.Color.White;
-            this.statCardDangHoc.Location = new System.Drawing.Point(902, 173);
+            this.statCardDangHoc.Location = new System.Drawing.Point(887, 90);
+            this.statCardDangHoc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardDangHoc.Name = "statCardDangHoc";
-            this.statCardDangHoc.Size = new System.Drawing.Size(264, 142);
+            this.statCardDangHoc.Size = new System.Drawing.Size(262, 136);
             this.statCardDangHoc.TabIndex = 10;
             // 
             // statCardNu
             // 
             this.statCardNu.BackColor = System.Drawing.Color.White;
-            this.statCardNu.Location = new System.Drawing.Point(614, 173);
+            this.statCardNu.Location = new System.Drawing.Point(594, 90);
+            this.statCardNu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardNu.Name = "statCardNu";
-            this.statCardNu.Size = new System.Drawing.Size(264, 142);
+            this.statCardNu.Size = new System.Drawing.Size(262, 136);
             this.statCardNu.TabIndex = 9;
             // 
             // statCardNam
             // 
             this.statCardNam.BackColor = System.Drawing.Color.White;
-            this.statCardNam.Location = new System.Drawing.Point(317, 173);
+            this.statCardNam.Location = new System.Drawing.Point(305, 90);
+            this.statCardNam.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardNam.Name = "statCardNam";
-            this.statCardNam.Size = new System.Drawing.Size(264, 142);
+            this.statCardNam.Size = new System.Drawing.Size(262, 136);
             this.statCardNam.TabIndex = 8;
             this.statCardNam.Load += new System.EventHandler(this.statCardNam_Load);
             // 
             // statCardTongHocSinh
             // 
             this.statCardTongHocSinh.BackColor = System.Drawing.Color.White;
-            this.statCardTongHocSinh.Location = new System.Drawing.Point(23, 173);
+            this.statCardTongHocSinh.Location = new System.Drawing.Point(17, 90);
+            this.statCardTongHocSinh.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardTongHocSinh.Name = "statCardTongHocSinh";
-            this.statCardTongHocSinh.Size = new System.Drawing.Size(264, 142);
+            this.statCardTongHocSinh.Size = new System.Drawing.Size(262, 136);
             this.statCardTongHocSinh.TabIndex = 7;
             this.statCardTongHocSinh.Load += new System.EventHandler(this.statCardTongHocSinh_Load);
             // 
             // HocSinh
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.Controls.Add(this.headerQuanLiHocSinh);
@@ -273,8 +282,9 @@
             this.Controls.Add(this.statCardTongHocSinh);
             this.Controls.Add(this.txtTimKiemHocSinh);
             this.Controls.Add(this.btnThemHocSinh);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "HocSinh";
-            this.Size = new System.Drawing.Size(1184, 900);
+            this.Size = new System.Drawing.Size(1168, 768);
             this.Load += new System.EventHandler(this.HocSinh_Load_1);
             ((System.ComponentModel.ISupportInitialize)(this.tableHocSinh)).EndInit();
             this.ResumeLayout(false);

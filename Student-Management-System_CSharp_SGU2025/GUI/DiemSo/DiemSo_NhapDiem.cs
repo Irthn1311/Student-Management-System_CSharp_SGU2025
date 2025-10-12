@@ -393,8 +393,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             if (isLocked)
             {
-                string imagePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "unlock.png");
-                btnKhoaDiem.Image = Image.FromFile(imagePath);
+                btnKhoaDiem.Image = Properties.Resources.unlock;
                 btnKhoaDiem.Text = "Mở khóa điểm";
                 isLocked = false;
                 tableNhapDiem.ReadOnly = true; // Cho phép chỉnh sửa

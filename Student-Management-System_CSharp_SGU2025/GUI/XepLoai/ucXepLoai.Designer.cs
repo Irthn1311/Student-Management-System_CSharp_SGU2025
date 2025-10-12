@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.guna2ComboBox1 = new Guna.UI2.WinForms.Guna2ComboBox();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             this.label3 = new System.Windows.Forms.Label();
@@ -85,6 +85,9 @@
             this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.guna2Button2 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
+            this.label32 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label34 = new System.Windows.Forms.Label();
             this.guna2Panel1.SuspendLayout();
             this.guna2Panel2.SuspendLayout();
             this.guna2Panel3.SuspendLayout();
@@ -337,6 +340,9 @@
             this.guna2Panel5.Controls.Add(this.guna2ProgressBar2);
             this.guna2Panel5.Controls.Add(this.label15);
             this.guna2Panel5.Controls.Add(this.guna2ProgressBar1);
+            this.guna2Panel5.Controls.Add(this.label34);
+            this.guna2Panel5.Controls.Add(this.label33);
+            this.guna2Panel5.Controls.Add(this.label32);
             this.guna2Panel5.Controls.Add(this.label14);
             this.guna2Panel5.Controls.Add(this.label13);
             this.guna2Panel5.FillColor = System.Drawing.Color.White;
@@ -350,24 +356,24 @@
             // 
             this.label18.AutoSize = true;
             this.label18.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label18.ForeColor = System.Drawing.Color.White;
-            this.label18.Location = new System.Drawing.Point(355, 155);
+            this.label18.Location = new System.Drawing.Point(430, 299);
             this.label18.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(44, 17);
+            this.label18.Size = new System.Drawing.Size(65, 25);
             this.label18.TabIndex = 9;
             this.label18.Text = "7.3%";
             // 
             // guna2ProgressBar4
             // 
             this.guna2ProgressBar4.BorderRadius = 8;
-            this.guna2ProgressBar4.Location = new System.Drawing.Point(114, 151);
+            this.guna2ProgressBar4.Location = new System.Drawing.Point(165, 299);
             this.guna2ProgressBar4.Margin = new System.Windows.Forms.Padding(2);
             this.guna2ProgressBar4.Name = "guna2ProgressBar4";
             this.guna2ProgressBar4.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
             this.guna2ProgressBar4.ProgressColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-            this.guna2ProgressBar4.Size = new System.Drawing.Size(278, 21);
+            this.guna2ProgressBar4.Size = new System.Drawing.Size(277, 25);
             this.guna2ProgressBar4.TabIndex = 8;
             this.guna2ProgressBar4.Text = "guna2ProgressBar4";
             this.guna2ProgressBar4.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
@@ -377,24 +383,24 @@
             // 
             this.label17.AutoSize = true;
             this.label17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(115)))), ((int)(((byte)(22)))));
-            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label17.ForeColor = System.Drawing.Color.White;
-            this.label17.Location = new System.Drawing.Point(355, 121);
+            this.label17.Location = new System.Drawing.Point(430, 208);
             this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(48, 16);
+            this.label17.Size = new System.Drawing.Size(78, 25);
             this.label17.TabIndex = 7;
             this.label17.Text = "30.0%";
             // 
             // guna2ProgressBar3
             // 
             this.guna2ProgressBar3.BorderRadius = 8;
-            this.guna2ProgressBar3.Location = new System.Drawing.Point(114, 117);
+            this.guna2ProgressBar3.Location = new System.Drawing.Point(165, 208);
             this.guna2ProgressBar3.Margin = new System.Windows.Forms.Padding(2);
             this.guna2ProgressBar3.Name = "guna2ProgressBar3";
             this.guna2ProgressBar3.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(115)))), ((int)(((byte)(22)))));
             this.guna2ProgressBar3.ProgressColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(115)))), ((int)(((byte)(22)))));
-            this.guna2ProgressBar3.Size = new System.Drawing.Size(278, 21);
+            this.guna2ProgressBar3.Size = new System.Drawing.Size(278, 25);
             this.guna2ProgressBar3.TabIndex = 6;
             this.guna2ProgressBar3.Text = "guna2ProgressBar3";
             this.guna2ProgressBar3.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
@@ -404,24 +410,24 @@
             // 
             this.label16.AutoSize = true;
             this.label16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
-            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label16.ForeColor = System.Drawing.Color.White;
-            this.label16.Location = new System.Drawing.Point(355, 87);
+            this.label16.Location = new System.Drawing.Point(430, 130);
             this.label16.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(48, 16);
+            this.label16.Size = new System.Drawing.Size(78, 25);
             this.label16.TabIndex = 5;
             this.label16.Text = "39.9%";
             // 
             // guna2ProgressBar2
             // 
             this.guna2ProgressBar2.BorderRadius = 8;
-            this.guna2ProgressBar2.Location = new System.Drawing.Point(114, 83);
+            this.guna2ProgressBar2.Location = new System.Drawing.Point(165, 130);
             this.guna2ProgressBar2.Margin = new System.Windows.Forms.Padding(2);
             this.guna2ProgressBar2.Name = "guna2ProgressBar2";
             this.guna2ProgressBar2.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
             this.guna2ProgressBar2.ProgressColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
-            this.guna2ProgressBar2.Size = new System.Drawing.Size(278, 21);
+            this.guna2ProgressBar2.Size = new System.Drawing.Size(277, 25);
             this.guna2ProgressBar2.TabIndex = 4;
             this.guna2ProgressBar2.Text = "guna2ProgressBar2";
             this.guna2ProgressBar2.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
@@ -431,24 +437,24 @@
             // 
             this.label15.AutoSize = true;
             this.label15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
-            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label15.ForeColor = System.Drawing.Color.White;
-            this.label15.Location = new System.Drawing.Point(355, 53);
+            this.label15.Location = new System.Drawing.Point(430, 61);
             this.label15.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(53, 17);
+            this.label15.Size = new System.Drawing.Size(78, 25);
             this.label15.TabIndex = 3;
             this.label15.Text = "22.8%";
             // 
             // guna2ProgressBar1
             // 
             this.guna2ProgressBar1.BorderRadius = 8;
-            this.guna2ProgressBar1.Location = new System.Drawing.Point(114, 49);
+            this.guna2ProgressBar1.Location = new System.Drawing.Point(165, 61);
             this.guna2ProgressBar1.Margin = new System.Windows.Forms.Padding(2);
             this.guna2ProgressBar1.Name = "guna2ProgressBar1";
             this.guna2ProgressBar1.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
             this.guna2ProgressBar1.ProgressColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
-            this.guna2ProgressBar1.Size = new System.Drawing.Size(278, 21);
+            this.guna2ProgressBar1.Size = new System.Drawing.Size(277, 25);
             this.guna2ProgressBar1.TabIndex = 2;
             this.guna2ProgressBar1.Text = "guna2ProgressBar1";
             this.guna2ProgressBar1.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
@@ -457,18 +463,20 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.3F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.label14.BackColor = System.Drawing.Color.White;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this.label14.Location = new System.Drawing.Point(18, 52);
+            this.label14.Location = new System.Drawing.Point(27, 59);
             this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(37, 17);
+            this.label14.Size = new System.Drawing.Size(59, 24);
             this.label14.TabIndex = 1;
-            this.label14.Text = "Giỏi";
+            this.label14.Text = "Giỏi :";
             // 
             // label13
             // 
             this.label13.AutoSize = true;
+            this.label13.BackColor = System.Drawing.Color.White;
             this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.label13.Location = new System.Drawing.Point(25, 25);
@@ -499,10 +507,10 @@
             this.guna2Panel9.Controls.Add(this.label30);
             this.guna2Panel9.Controls.Add(this.label29);
             this.guna2Panel9.Controls.Add(this.label28);
-            this.guna2Panel9.Location = new System.Drawing.Point(18, 186);
+            this.guna2Panel9.Location = new System.Drawing.Point(18, 209);
             this.guna2Panel9.Margin = new System.Windows.Forms.Padding(2);
             this.guna2Panel9.Name = "guna2Panel9";
-            this.guna2Panel9.Size = new System.Drawing.Size(374, 63);
+            this.guna2Panel9.Size = new System.Drawing.Size(321, 63);
             this.guna2Panel9.TabIndex = 3;
             // 
             // label31
@@ -534,7 +542,7 @@
             this.label29.AutoSize = true;
             this.label29.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.label29.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.label29.Location = new System.Drawing.Point(302, 10);
+            this.label29.Location = new System.Drawing.Point(215, 12);
             this.label29.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(80, 16);
@@ -563,7 +571,7 @@
             this.guna2Panel8.Location = new System.Drawing.Point(18, 118);
             this.guna2Panel8.Margin = new System.Windows.Forms.Padding(2);
             this.guna2Panel8.Name = "guna2Panel8";
-            this.guna2Panel8.Size = new System.Drawing.Size(374, 63);
+            this.guna2Panel8.Size = new System.Drawing.Size(321, 63);
             this.guna2Panel8.TabIndex = 2;
             // 
             // label27
@@ -595,7 +603,7 @@
             this.label25.AutoSize = true;
             this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.label25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.label25.Location = new System.Drawing.Point(302, 10);
+            this.label25.Location = new System.Drawing.Point(215, 10);
             this.label25.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(80, 16);
@@ -624,7 +632,7 @@
             this.guna2Panel7.Location = new System.Drawing.Point(18, 49);
             this.guna2Panel7.Margin = new System.Windows.Forms.Padding(2);
             this.guna2Panel7.Name = "guna2Panel7";
-            this.guna2Panel7.Size = new System.Drawing.Size(374, 63);
+            this.guna2Panel7.Size = new System.Drawing.Size(321, 63);
             this.guna2Panel7.TabIndex = 1;
             // 
             // label23
@@ -656,7 +664,7 @@
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.label21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.label21.Location = new System.Drawing.Point(302, 10);
+            this.label21.Location = new System.Drawing.Point(215, 12);
             this.label21.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(80, 16);
@@ -700,14 +708,14 @@
             this.guna2DataGridView1.AllowUserToDeleteRows = false;
             this.guna2DataGridView1.AllowUserToResizeColumns = false;
             this.guna2DataGridView1.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            this.guna2DataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.guna2DataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.White;
+            this.guna2DataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            dataGridViewCellStyle8.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            this.guna2DataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this.guna2DataGridView1.ColumnHeadersHeight = 52;
             this.guna2DataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
@@ -715,23 +723,23 @@
             this.Column3,
             this.Column4,
             this.Column5});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            dataGridViewCellStyle3.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.guna2DataGridView1.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            dataGridViewCellStyle9.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.guna2DataGridView1.DefaultCellStyle = dataGridViewCellStyle9;
             this.guna2DataGridView1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.guna2DataGridView1.Location = new System.Drawing.Point(24, 689);
+            this.guna2DataGridView1.Location = new System.Drawing.Point(24, 684);
             this.guna2DataGridView1.Margin = new System.Windows.Forms.Padding(2);
             this.guna2DataGridView1.Name = "guna2DataGridView1";
             this.guna2DataGridView1.RowHeadersVisible = false;
             this.guna2DataGridView1.RowHeadersWidth = 51;
             this.guna2DataGridView1.RowTemplate.Height = 58;
-            this.guna2DataGridView1.Size = new System.Drawing.Size(1120, 405);
+            this.guna2DataGridView1.Size = new System.Drawing.Size(1120, 381);
             this.guna2DataGridView1.TabIndex = 9;
             this.guna2DataGridView1.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.guna2DataGridView1.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -830,6 +838,45 @@
             this.guna2Button1.Text = "Tính điểm tổng kết";
             this.guna2Button1.TextOffset = new System.Drawing.Point(4, 0);
             // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.BackColor = System.Drawing.Color.White;
+            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label32.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.label32.Location = new System.Drawing.Point(27, 130);
+            this.label32.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(58, 24);
+            this.label32.TabIndex = 1;
+            this.label32.Text = "Khá :";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.BackColor = System.Drawing.Color.White;
+            this.label33.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label33.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.label33.Location = new System.Drawing.Point(27, 209);
+            this.label33.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(120, 24);
+            this.label33.TabIndex = 1;
+            this.label33.Text = "Trung Bình:";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.BackColor = System.Drawing.Color.White;
+            this.label34.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label34.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.label34.Location = new System.Drawing.Point(27, 299);
+            this.label34.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(59, 24);
+            this.label34.TabIndex = 1;
+            this.label34.Text = "Giỏi :";
+            // 
             // ucXepLoai
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -849,7 +896,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ucXepLoai";
             this.Padding = new System.Windows.Forms.Padding(24);
-            this.Size = new System.Drawing.Size(1167, 883);
+            this.Size = new System.Drawing.Size(1151, 768);
             this.guna2Panel1.ResumeLayout(false);
             this.guna2Panel1.PerformLayout();
             this.guna2Panel2.ResumeLayout(false);
@@ -929,5 +976,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label label32;
     }
 }

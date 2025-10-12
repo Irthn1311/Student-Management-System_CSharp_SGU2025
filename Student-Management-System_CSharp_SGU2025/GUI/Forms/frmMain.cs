@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+
+// Đảm bảo bạn đã thêm các using cho các UserControl của mình, ví dụ:
+// using Student_Management_System_CSharp_SGU2025.GUI.userControl; 
+// using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
@@ -20,302 +18,103 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             InitializeComponent();
             InitializeNavigation();
-
-            // Add this initialization in your MainForm constructor after InitializeComponent();
-            ucThoiKhoaBieu1 = new Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu.ThoiKhoaBieu();
-            ucThoiKhoaBieu1.Visible = false;
-            ucThoiKhoaBieu1.Dock = DockStyle.Fill;
-            this.Controls.Add(ucThoiKhoaBieu1);
-
+            // Đặt trang mặc định là Dashboard khi form khởi chạy
             ShowDashboard();
         }
 
         private void InitializeNavigation()
         {
-            // Wire up sidebar button events using public properties
-            ucSidebar1.BangTinButton.Click += BtnBangTin_Click;
-            ucSidebar1.XepLoaiButton.Click += BtnXepLoai_Click;
-            ucSidebar1.BaoCaoButton.Click += BtnBaoCao_Click;
-            ucSidebar1.HanhKiemButton.Click += BtnHanhKiem_Click;
-            ucSidebar1.HocSinhButton.Click += BtnHocSinh_Click;
-            ucSidebar1.DiemSoButton.Click += BtnDiemSo_Click;
-            ucSidebar1.LopHocButton.Click += BtnLopHoc_Click;
-            ucSidebar1.MonHocButton.Click += BtnMonHoc_Click;
-            ucSidebar1.PhanCongButton.Click += BtnPhanCong_Click;
-            ucSidebar1.ThoiKhoaBieuButton.Click += BtnThoiKhoaBieu_Click;
+            // Gán sự kiện cho các nút ở sidebar
+            ucSidebar1.BangTinButton.Click += (s, e) => ShowDashboard();
+            ucSidebar1.XepLoaiButton.Click += (s, e) => ShowXepLoai();
+            ucSidebar1.BaoCaoButton.Click += (s, e) => ShowBaoCao();
+            ucSidebar1.HanhKiemButton.Click += (s, e) => ShowHanhKiem();
+            ucSidebar1.HocSinhButton.Click += (s, e) => ShowHocSinh();
+            ucSidebar1.DiemSoButton.Click += (s, e) => ShowDiemSo();
+            ucSidebar1.LopHocButton.Click += (s, e) => ShowLopKhoi();
+            ucSidebar1.MonHocButton.Click += (s, e) => ShowFrmMonHoc();
+            ucSidebar1.PhanCongButton.Click += (s, e) => ShowPhanCongGiangDay();
         }
 
-
-        private void BtnBangTin_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Phương thức chung để tải một UserControl vào panelContent.
+        /// </summary>
+        /// <typeparam name="T">Loại UserControl cần tải.</typeparam>
+        private void LoadControlToPanel<T>() where T : UserControl, new()
         {
-            ShowDashboard();
+            // 1. Xóa control hiện tại đang có trong panelContent (nếu có)
+            if (panelContent.Controls.Count > 0)
+            {
+                // Lấy control cũ ra và giải phóng bộ nhớ
+                Control oldControl = panelContent.Controls[0];
+                panelContent.Controls.Remove(oldControl);
+                oldControl.Dispose();
+            }
+
+            // 2. Tạo một thể hiện (instance) mới của UserControl bạn muốn hiển thị
+            T newControl = new T();
+
+            // 3. Quan trọng: Thiết lập để UserControl lấp đầy toàn bộ Panel
+            newControl.Dock = DockStyle.Fill;
+
+            // 4. Thêm UserControl mới này vào BÊN TRONG panelContent
+            panelContent.Controls.Add(newControl);
         }
 
-        private void BtnXepLoai_Click(object sender, EventArgs e)
-        {
-            ShowXepLoai();
-        }
-
-        private void BtnBaoCao_Click(object sender, EventArgs e)
-        {
-            ShowBaoCao();
-        }
-
-        private void BtnHanhKiem_Click(object sender, EventArgs e)
-        {
-            ShowHanhKiem();
-        }
-
-        private void BtnHocSinh_Click(object sender, EventArgs e)
-        {
-            ShowHocSinh();
-        }
-
-        private void BtnDiemSo_Click(object sender, EventArgs e)
-        {
-            ShowDiemSo();
-        }
-
-        private void BtnLopHoc_Click(object sender, EventArgs e)
-        {
-            ShowLopKhoi();
-        }
-
-        private void BtnMonHoc_Click(object sender, EventArgs e)
-        {
-            ShowFrmMonHoc();
-        }
-
-        private void BtnPhanCong_Click(object sender, EventArgs e)
-        {
-            ShowPhanCongGiangDay();
-        }
+        // --- Các phương thức Show... bây giờ rất gọn gàng ---
 
         private void ShowDashboard()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = true;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
-            ucThoiKhoaBieu1.Visible = false;
-
-            // Update header
             ucHeader1.UpdateHeader("Bảng tin", "Trang chủ / Bảng tin");
-
-            // Bring to front
-            ucDashboard1.BringToFront();
+            LoadControlToPanel<ucDashboard>();
         }
 
         private void ShowXepLoai()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = true;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
-            ucThoiKhoaBieu1.Visible = false;
-
-            // Update header
             ucHeader1.UpdateHeader("Xếp loại & Tổng kết", "Trang chủ / Xếp loại & Tổng kết");
-
-            // Bring to front
-            ucXepLoai1.BringToFront();
+            LoadControlToPanel<ucXepLoai>();
         }
 
         private void ShowBaoCao()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = true;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
-            ucThoiKhoaBieu1.Visible = false;
-
-            // Update header
             ucHeader1.UpdateHeader("Báo cáo", "Trang chủ / Báo cáo");
-
-            // Bring to front
-            ucBaoCao1.BringToFront();
+            LoadControlToPanel<ucBaoCao>();
         }
 
         private void ShowHanhKiem()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = true;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
-            ucThoiKhoaBieu1.Visible = false;
-
-            // Update header
             ucHeader1.UpdateHeader("Hạnh kiểm", "Trang chủ / Hạnh kiểm");
-
-            // Bring to front
-            ucHanhKiem1.BringToFront();
+            LoadControlToPanel<HanhKiem>();
         }
 
         private void ShowHocSinh()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = true;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
-            ucThoiKhoaBieu1.Visible = false;
-
-            // Update header
             ucHeader1.UpdateHeader("Hồ sơ Học sinh", "Trang chủ / Hồ sơ học sinh");
-
-            // Bring to front
-            ucHocSinh1.BringToFront();
+            LoadControlToPanel<HocSinh>();
         }
 
         private void ShowDiemSo()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = true;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
-            ucThoiKhoaBieu1.Visible = false;
-
-            // Update header
             ucHeader1.UpdateHeader("Điểm số", "Trang chủ / Điểm số");
-
-            // Bring to front
-            ucDiemSo1.BringToFront();
+            LoadControlToPanel<DiemSo_NhapDiem>();
         }
 
         private void ShowLopKhoi()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = true;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
-            ucThoiKhoaBieu1.Visible = false;
-
-            // Update header
             ucHeader1.UpdateHeader("Lớp học", "Trang chủ / Lớp học");
-
-            // Bring to front
-            ucLopKhoi1.BringToFront();
+            LoadControlToPanel<LopKhoi>();
         }
 
         private void ShowFrmMonHoc()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = true;
-            ucPhanCongGiangDay1.Visible = false;
-            ucThoiKhoaBieu1.Visible = false;
-
-            // Update header
             ucHeader1.UpdateHeader("Môn học", "Trang chủ / Môn học");
-
-            // Bring to front
-            ucFrmMonHoc1.BringToFront();
+            LoadControlToPanel<FrmMonHoc>();
         }
 
         private void ShowPhanCongGiangDay()
         {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = true;
-            ucThoiKhoaBieu1.Visible = false;
-
-            // Update header
             ucHeader1.UpdateHeader("Phân công giảng dạy", "Trang chủ / Phân công giảng dạy");
-
-            // Bring to front
-            ucPhanCongGiangDay1.BringToFront();
-        }
-
-        private void ucDashboard1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ucSidebar1_Load(object sender, EventArgs e)
-        {
-
-        }// Add this method to your MainForm class
-
-        private void ShowThoiKhoaBieu()
-        {
-            // Hide all content panels
-            ucDashboard1.Visible = false;
-            ucXepLoai1.Visible = false;
-            ucBaoCao1.Visible = false;
-            ucHanhKiem1.Visible = false;
-            ucHocSinh1.Visible = false;
-            ucDiemSo1.Visible = false;
-            ucLopKhoi1.Visible = false;
-            ucFrmMonHoc1.Visible = false;
-            ucPhanCongGiangDay1.Visible = false;
-            ucThoiKhoaBieu1.Visible = true;
-            
-            // Add your timetable user control here, for example:
-            // ucThoiKhoaBieu1.Visible = true;
-
-            // Update header
-            ucHeader1.UpdateHeader("Thời khóa biểu", "Trang chủ / Thời khóa biểu");
-
-            // Bring to front
-            ucThoiKhoaBieu1.BringToFront();
-        }
-        private void BtnThoiKhoaBieu_Click(object sender, EventArgs e)
-        {
-            ShowThoiKhoaBieu();
+            LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.PhanCongGiangDay>();
         }
     }
 }

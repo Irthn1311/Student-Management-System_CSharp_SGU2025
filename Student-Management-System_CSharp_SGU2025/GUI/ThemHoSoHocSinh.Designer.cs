@@ -70,7 +70,7 @@
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(16, 20);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(170, 31);
+            this.label1.Size = new System.Drawing.Size(139, 25);
             this.label1.TabIndex = 0;
             this.label1.Text = "Thêm học sinh";
             // 
@@ -112,7 +112,7 @@
             this.rbNu.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbNu.Location = new System.Drawing.Point(109, 18);
             this.rbNu.Name = "rbNu";
-            this.rbNu.Size = new System.Drawing.Size(54, 27);
+            this.rbNu.Size = new System.Drawing.Size(45, 23);
             this.rbNu.TabIndex = 19;
             this.rbNu.Text = "Nữ";
             this.rbNu.UncheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
@@ -131,7 +131,7 @@
             this.rbNam.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbNam.Location = new System.Drawing.Point(19, 18);
             this.rbNam.Name = "rbNam";
-            this.rbNam.Size = new System.Drawing.Size(68, 27);
+            this.rbNam.Size = new System.Drawing.Size(56, 23);
             this.rbNam.TabIndex = 18;
             this.rbNam.Text = "Nam";
             this.rbNam.UncheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
@@ -205,7 +205,7 @@
             this.lbTrangThai.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbTrangThai.Location = new System.Drawing.Point(32, 555);
             this.lbTrangThai.Name = "lbTrangThai";
-            this.lbTrangThai.Size = new System.Drawing.Size(98, 25);
+            this.lbTrangThai.Size = new System.Drawing.Size(82, 20);
             this.lbTrangThai.TabIndex = 43;
             this.lbTrangThai.Text = "Trạng thái :";
             // 
@@ -261,7 +261,7 @@
             this.lbEmail.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbEmail.Location = new System.Drawing.Point(32, 493);
             this.lbEmail.Name = "lbEmail";
-            this.lbEmail.Size = new System.Drawing.Size(63, 25);
+            this.lbEmail.Size = new System.Drawing.Size(53, 20);
             this.lbEmail.TabIndex = 40;
             this.lbEmail.Text = "Email :";
             // 
@@ -271,7 +271,7 @@
             this.lbSdt.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbSdt.Location = new System.Drawing.Point(32, 435);
             this.lbSdt.Name = "lbSdt";
-            this.lbSdt.Size = new System.Drawing.Size(126, 25);
+            this.lbSdt.Size = new System.Drawing.Size(104, 20);
             this.lbSdt.TabIndex = 39;
             this.lbSdt.Text = "Số điện thoại :";
             // 
@@ -297,7 +297,7 @@
             this.lbGioiTinh.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbGioiTinh.Location = new System.Drawing.Point(32, 381);
             this.lbGioiTinh.Name = "lbGioiTinh";
-            this.lbGioiTinh.Size = new System.Drawing.Size(87, 25);
+            this.lbGioiTinh.Size = new System.Drawing.Size(72, 20);
             this.lbGioiTinh.TabIndex = 37;
             this.lbGioiTinh.Text = "Giới tính :";
             // 
@@ -307,7 +307,7 @@
             this.lbNgaySinh.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbNgaySinh.Location = new System.Drawing.Point(32, 318);
             this.lbNgaySinh.Name = "lbNgaySinh";
-            this.lbNgaySinh.Size = new System.Drawing.Size(100, 25);
+            this.lbNgaySinh.Size = new System.Drawing.Size(81, 20);
             this.lbNgaySinh.TabIndex = 36;
             this.lbNgaySinh.Text = "Ngày sinh :";
             // 
@@ -323,7 +323,7 @@
             this.txtHovaTen.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtHovaTen.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtHovaTen.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtHovaTen.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.people2;
+            this.txtHovaTen.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.people;
             this.txtHovaTen.IconLeftOffset = new System.Drawing.Point(10, 0);
             this.txtHovaTen.Location = new System.Drawing.Point(194, 257);
             this.txtHovaTen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -340,7 +340,7 @@
             this.lbHovaTen.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbHovaTen.Location = new System.Drawing.Point(32, 261);
             this.lbHovaTen.Name = "lbHovaTen";
-            this.lbHovaTen.Size = new System.Drawing.Size(99, 25);
+            this.lbHovaTen.Size = new System.Drawing.Size(82, 20);
             this.lbHovaTen.TabIndex = 34;
             this.lbHovaTen.Text = "Họ và Tên :";
             // 
