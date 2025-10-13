@@ -299,7 +299,6 @@
             // guna2PictureBox1
             // 
             this.guna2PictureBox1.BackColor = System.Drawing.Color.Cyan;
-            this.guna2PictureBox1.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources._class;
             this.guna2PictureBox1.ImageRotate = 0F;
             this.guna2PictureBox1.Location = new System.Drawing.Point(169, 0);
             this.guna2PictureBox1.Name = "guna2PictureBox1";

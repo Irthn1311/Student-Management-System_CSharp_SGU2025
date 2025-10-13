@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Student_Management_System_CSharp_SGU2025.GUI
+namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
 {
     public partial class ThoiKhoaBieu : UserControl
     {
@@ -61,6 +61,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 👉 Bạn tiếp tục gán cho các card còn lại (statCardTKB7 → statCardTKB30)
         }
 
+        private void guna2HtmlLabel25_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2HtmlLabel6_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }
