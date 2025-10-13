@@ -8,10 +8,10 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
 {
     internal class KhoiLop
     {
-        public string maKhoi;
+        public int maKhoi;
         public string tenKhoi;
         public KhoiLop() { }
-        public KhoiLop(string maKhoi, string tenKhoi)
+        public KhoiLop(int maKhoi, string tenKhoi)
         {
             this.maKhoi = maKhoi;
             this.tenKhoi = tenKhoi;
@@ -20,12 +20,12 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         {
             Console.WriteLine("Huy doi tuong KhoiLop");
         }
-        public string MaKhoi
+        public int MaKhoi
         {
             get { return maKhoi; }
             set
             {
-                if (maKhoi == "")
+                if (maKhoi >0)
                 {
                     maKhoi = value;
                 }

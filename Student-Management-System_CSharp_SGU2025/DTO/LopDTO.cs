@@ -8,28 +8,30 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
 {
     internal class LopDTO
     {
-        public string maLop;
+        public int maLop;
         public string tenLop;
-        public string maKhoi;
+        public int siSo;
+        public int maKhoi;
         public string maGVCN;
         public LopDTO() { } 
-        public LopDTO(string maLop, string tenLop, string maKhoi, string maGVCN)
+        public LopDTO(int maLop, string tenLop, int maKhoi, string maGVCN, int siSo)
         {
             this.maLop = maLop;
             this.tenLop = tenLop;
             this.maKhoi = maKhoi;
             this.maGVCN = maGVCN;
+            this.siSo = siSo;
         }
         ~LopDTO()
         {
             Console.WriteLine("Huy doi tuong LopDTO");
         }
-        public string MaLop
+        public int MaLop
         {
             get { return maLop; }
             set
             {
-                if (maLop == "")
+                if (maLop >0)
                 {
                     maLop = value;
                 }
@@ -54,12 +56,12 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
                 }
             }
         }   
-        public string MaKhoi
+        public int MaKhoi
         {
             get { return maKhoi; }
             set
             {
-                if (maKhoi == "")
+                if (maKhoi >0)
                 {
                     maKhoi = value;
                 }
@@ -81,6 +83,21 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
                 else
                 {
                     Console.WriteLine("Ma giao vien khong duoc de trong");
+                }
+            }
+        }
+        public int SiSo
+        {
+            get { return siSo; }
+            set
+            {
+                if (siSo > 0)
+                {
+                    siSo = value;
+                }
+                else
+                {
+                    Console.WriteLine("Si so phai lon hon 0");
                 }
             }
         }

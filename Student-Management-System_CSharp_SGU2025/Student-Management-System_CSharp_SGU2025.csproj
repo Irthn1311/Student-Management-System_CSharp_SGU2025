@@ -124,6 +124,7 @@
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
     <Compile Include="DAO\LopHocDAO.cs" />
     <Compile Include="DAO\MonHocDAO.cs" />
+    <Compile Include="DAO\NamHocDAO.cs" />
     <Compile Include="DTO\KhoiLop.cs" />
     <Compile Include="DTO\LopDTO.cs" />
     <Compile Include="DTO\MonHocDTO.cs" />

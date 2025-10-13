@@ -1,85 +1,75 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
     internal class NamHocDTO
     {
-        public string maNamHoc;
-        public string tenNamHoc;
-        public DateTime ngayBD;
-        public DateTime ngayKT;
+        private int maNamHoc;
+        private string tenNamHoc;
+        private DateTime ngayBD;
+        private DateTime ngayKT;
+
         public NamHocDTO() { }
-        public NamHocDTO(string maNamHoc, string tenNamHoc, DateTime ngayBD, DateTime ngayKT)
+
+        public NamHocDTO(int maNamHoc, string tenNamHoc, DateTime ngayBD, DateTime ngayKT)
         {
             this.maNamHoc = maNamHoc;
             this.tenNamHoc = tenNamHoc;
             this.ngayBD = ngayBD;
             this.ngayKT = ngayKT;
-        }   
+        }
+
+        // Destructor
         ~NamHocDTO()
         {
-            Console.WriteLine("Huy doi tuong NamHocDTO");
+            Console.WriteLine("Hủy đối tượng NamHocDTO");
         }
-        public string MaNamHoc
+
+        public int MaNamHoc
         {
             get { return maNamHoc; }
             set
             {
-                if (maNamHoc == "")
-                {
+                if (value > 0)
                     maNamHoc = value;
-                }
                 else
-                {
-                    Console.WriteLine("Ma nam hoc khong duoc de trong");
-                }
+                    throw new ArgumentException("Mã năm học phải lớn hơn 0");
             }
         }
+
         public string TenNamHoc
         {
             get { return tenNamHoc; }
             set
             {
-                if (tenNamHoc == "")
-                {
+                if (!string.IsNullOrWhiteSpace(value))
                     tenNamHoc = value;
-                }
                 else
-                {
-                    Console.WriteLine("Ten nam hoc khong duoc de trong");
-                }
+                    throw new ArgumentException("Tên năm học không được để trống");
             }
         }
+
         public DateTime NgayBD
         {
             get { return ngayBD; }
             set
             {
-                if (ngayBD < ngayKT)
-                {
+                if (value < ngayKT || ngayKT == default)
                     ngayBD = value;
-                }
                 else
-                {
-                    Console.WriteLine("Ngay bat dau phai truoc ngay ket thuc");
-                }
+                    throw new ArgumentException("Ngày bắt đầu phải trước ngày kết thúc");
             }
         }
-        public DateTime NgayKT {             get { return ngayKT; }
+
+        public DateTime NgayKT
+        {
+            get { return ngayKT; }
             set
             {
-                if (ngayKT > ngayBD)
-                {
+                if (value > ngayBD || ngayBD == default)
                     ngayKT = value;
-                }
                 else
-                {
-                    Console.WriteLine("Ngay ket thuc phai sau ngay bat dau");
-                }
+                    throw new ArgumentException("Ngày kết thúc phải sau ngày bắt đầu");
             }
         }
     }
