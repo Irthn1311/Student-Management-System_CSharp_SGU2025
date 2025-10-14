@@ -160,6 +160,12 @@
     <Compile Include="GUI\Forms\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\GiaoVien\GiaoVien.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\GiaoVien\GiaoVien.Designer.cs">
+      <DependentUpon>GiaoVien.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\TaiKhoan\frmAddPhanQuyen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -283,12 +289,6 @@
     <Compile Include="GUI\BaoCao\ucBaoCao.Designer.cs">
       <DependentUpon>ucBaoCao.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoDanhSachLop.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoDanhSachLop.Designer.cs">
-      <DependentUpon>ucBaoCaoDanhSachLop.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\Dashboard\ucDashboard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -376,9 +376,6 @@
     <EmbeddedResource Include="GUI\BaoCao\ucBaoCao.resx">
       <DependentUpon>ucBaoCao.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoDanhSachLop.resx">
-      <DependentUpon>ucBaoCaoDanhSachLop.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Dashboard\ucDashboard.resx">
       <DependentUpon>ucDashboard.cs</DependentUpon>
     </EmbeddedResource>
@@ -393,6 +390,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\GiaoVien\GiaoVien.resx">
+      <DependentUpon>GiaoVien.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\TaiKhoan\frmAddPhanQuyen.resx">
       <DependentUpon>frmAddPhanQuyen.cs</DependentUpon>

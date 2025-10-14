@@ -31,6 +31,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucSidebar1.LopHocButton.Click += (s, e) => ShowLopKhoi();
             ucSidebar1.MonHocButton.Click += (s, e) => ShowFrmMonHoc();
             ucSidebar1.PhanCongButton.Click += (s, e) => ShowPhanCongGiangDay();
+            
+            // Kết nối các form mới
+            ucSidebar1.TaiKhoanButton.Click += (s, e) => ShowTaiKhoan();
+            ucSidebar1.CaiDatButton.Click += (s, e) => ShowCaiDat();
+            ucSidebar1.DanhGiaButton.Click += (s, e) => ShowDanhGia();
+            ucSidebar1.ThoiKhoaBieuButton.Click += (s, e) => ShowThoiKhoaBieu();
         }
 
         private void XepLoaiButton_Click(object sender, EventArgs e)
@@ -124,6 +130,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucHeader1.UpdateHeader("Giáo viên", "Trang chủ / Giáo viên");
             LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.GiaoVien.GiaoVien>();
 
+        }
+
+        private void ShowTaiKhoan()
+        {
+            ucHeader1.UpdateHeader("Tài khoản", "Trang chủ / Tài khoản");
+            LoadControlToPanel<TaiKhoan>();
+        }
+
+        private void ShowCaiDat()
+        {
+            ucHeader1.UpdateHeader("Cài đặt", "Trang chủ / Cài đặt");
+            LoadControlToPanel<CaiDat>();
+        }
+
+        private void ShowDanhGia()
+        {
+            ucHeader1.UpdateHeader("Đánh giá", "Trang chủ / Đánh giá");
+            LoadControlToPanel<DanhGia>();
+        }
+
+        private void ShowThoiKhoaBieu()
+        {
+            ucHeader1.UpdateHeader("Thời khóa biểu", "Trang chủ / Thời khóa biểu");
+            LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu.ThoiKhoaBieu>();
         }
 
         private void ucSidebar1_Load(object sender, EventArgs e)
