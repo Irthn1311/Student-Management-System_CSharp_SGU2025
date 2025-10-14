@@ -37,6 +37,8 @@
             // 
             // panelMain
             // 
+            this.panelMain.BorderRadius = 15;
+            this.panelMain.BorderThickness = 10;
             this.panelMain.Controls.Add(this.lblSoHocSinh);
             this.panelMain.Controls.Add(this.lblSoLop);
             this.panelMain.Controls.Add(this.lblTenKhoi);
@@ -45,33 +47,35 @@
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(229, 114);
             this.panelMain.TabIndex = 0;
+            this.panelMain.Paint += new System.Windows.Forms.PaintEventHandler(this.panelMain_Paint);
             // 
             // lblSoHocSinh
             // 
-         
-            this.lblSoHocSinh.Font = new System.Drawing.Font("Segoe UI", 8.830189F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSoHocSinh.Location = new System.Drawing.Point(83, 84);
+            this.lblSoHocSinh.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoHocSinh.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSoHocSinh.Location = new System.Drawing.Point(67, 79);
             this.lblSoHocSinh.Name = "lblSoHocSinh";
-            this.lblSoHocSinh.Size = new System.Drawing.Size(63, 19);
+            this.lblSoHocSinh.Size = new System.Drawing.Size(74, 23);
             this.lblSoHocSinh.TabIndex = 5;
             this.lblSoHocSinh.Text = "X học sinh";
             // 
             // lblSoLop
             // 
-          
-            this.lblSoLop.Font = new System.Drawing.Font("Segoe UI", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSoLop.Location = new System.Drawing.Point(83, 45);
+            this.lblSoLop.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoLop.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSoLop.Location = new System.Drawing.Point(77, 41);
             this.lblSoLop.Name = "lblSoLop";
-            this.lblSoLop.Size = new System.Drawing.Size(45, 27);
+            this.lblSoLop.Size = new System.Drawing.Size(53, 32);
             this.lblSoLop.TabIndex = 4;
             this.lblSoLop.Text = "X lớp";
             // 
             // lblTenKhoi
-            
+            // 
+            this.lblTenKhoi.BackColor = System.Drawing.Color.Transparent;
             this.lblTenKhoi.Font = new System.Drawing.Font("Segoe UI", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTenKhoi.Location = new System.Drawing.Point(83, 12);
+            this.lblTenKhoi.Location = new System.Drawing.Point(77, 12);
             this.lblTenKhoi.Name = "lblTenKhoi";
-            this.lblTenKhoi.Size = new System.Drawing.Size(54, 27);
+            this.lblTenKhoi.Size = new System.Drawing.Size(47, 23);
             this.lblTenKhoi.TabIndex = 3;
             this.lblTenKhoi.Text = "Khối X";
             // 

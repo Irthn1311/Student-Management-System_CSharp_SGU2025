@@ -61,6 +61,7 @@
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.White;
             this.pnlHeader.BorderRadius = 20;
+            this.pnlHeader.BorderThickness = 1;
             this.pnlHeader.Controls.Add(this.lblAppDescription);
             this.pnlHeader.Controls.Add(this.picLogo);
             this.pnlHeader.Controls.Add(this.lblAppName);
@@ -111,6 +112,7 @@
             // flpnlNav
             // 
             this.flpnlNav.AutoScroll = true;
+            this.flpnlNav.BackColor = System.Drawing.Color.White;
             this.flpnlNav.Controls.Add(this.btnBangTin);
             this.flpnlNav.Controls.Add(this.btnLopHoc);
             this.flpnlNav.Controls.Add(this.btnMonHoc);
@@ -531,6 +533,7 @@
             // 
             // pnlLogout
             // 
+            this.pnlLogout.BackColor = System.Drawing.Color.White;
             this.pnlLogout.Controls.Add(this.btnLogout);
             this.pnlLogout.Controls.Add(this.sprtLogout);
             this.pnlLogout.Dock = System.Windows.Forms.DockStyle.Bottom;

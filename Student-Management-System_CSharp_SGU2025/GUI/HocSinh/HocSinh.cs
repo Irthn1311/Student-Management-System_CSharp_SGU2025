@@ -131,23 +131,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // === Thêm icon vào cột thao tác ===
         private void AddRowWithIcons(string ma, string ten, string ns, string gioitinh, string lop, string trangthai)
         {
+            // Thêm dữ liệu dạng text vào các ô tương ứng
             int idx = tableHocSinh.Rows.Add(ma, ten, ns, gioitinh, lop, trangthai, null, null);
 
             try
             {
-                string eyePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "icon_eye.png");
-                string editPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "icon_edit.png");
-
-                // Chỉnh kích thước icon nhỏ lại cho phù hợp với cột
-
-                // Các phần còn lại là đúng:
-                if (System.IO.File.Exists(eyePath))
-                    tableHocSinh.Rows[idx].Cells["View"].Value = Image.FromFile(eyePath);
-                if (System.IO.File.Exists(editPath))
-                    tableHocSinh.Rows[idx].Cells["Edit"].Value = Image.FromFile(editPath);
+                // Gán trực tiếp ảnh từ Resources vào các ô chứa ảnh.
+                // Cách này không cần kiểm tra file tồn tại vì tài nguyên đã được nhúng vào chương trình.
+                tableHocSinh.Rows[idx].Cells["View"].Value = Properties.Resources.icon_eye;
+                tableHocSinh.Rows[idx].Cells["Edit"].Value = Properties.Resources.icon_edit;
             }
             catch (Exception ex)
             {
+                // Khối catch vẫn nên giữ lại để xử lý các lỗi không mong muốn khác
                 MessageBox.Show("Không thể load icon thao tác: " + ex.Message);
             }
         }

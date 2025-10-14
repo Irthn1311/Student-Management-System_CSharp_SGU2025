@@ -55,8 +55,9 @@
             // 
             this.headerHanhKiem.BackColor = System.Drawing.Color.White;
             this.headerHanhKiem.Location = new System.Drawing.Point(0, 0);
+            this.headerHanhKiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.headerHanhKiem.Name = "headerHanhKiem";
-            this.headerHanhKiem.Size = new System.Drawing.Size(1163, 0);
+            this.headerHanhKiem.Size = new System.Drawing.Size(872, 0);
             this.headerHanhKiem.TabIndex = 0;
             this.headerHanhKiem.Visible = false;
             this.headerHanhKiem.Load += new System.EventHandler(this.headerHanhKiem_Load);
@@ -68,7 +69,7 @@
             this.cbHocKyNamHoc.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbHocKyNamHoc.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.cbHocKyNamHoc.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbHocKyNamHoc.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbHocKyNamHoc.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbHocKyNamHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbHocKyNamHoc.ItemHeight = 30;
             this.cbHocKyNamHoc.Items.AddRange(new object[] {
@@ -77,9 +78,10 @@
             "Học Kỳ II - 2023 - 2024",
             "Học Kỳ I - 2024 - 2025",
             "Học Kỳ II - 2024 - 2025"});
-            this.cbHocKyNamHoc.Location = new System.Drawing.Point(19, 19);
+            this.cbHocKyNamHoc.Location = new System.Drawing.Point(28, 15);
+            this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
-            this.cbHocKyNamHoc.Size = new System.Drawing.Size(263, 36);
+            this.cbHocKyNamHoc.Size = new System.Drawing.Size(230, 36);
             this.cbHocKyNamHoc.StartIndex = 0;
             this.cbHocKyNamHoc.TabIndex = 15;
             this.cbHocKyNamHoc.SelectedIndexChanged += new System.EventHandler(this.cbHocKyNamHoc_SelectedIndexChanged);
@@ -91,16 +93,17 @@
             this.cbLop.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbLop.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.cbLop.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbLop.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLop.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbLop.ItemHeight = 30;
             this.cbLop.Items.AddRange(new object[] {
             "Tất cả lớp",
             "Lớp 6A1",
             "Lớp 7A2"});
-            this.cbLop.Location = new System.Drawing.Point(314, 19);
+            this.cbLop.Location = new System.Drawing.Point(293, 15);
+            this.cbLop.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbLop.Name = "cbLop";
-            this.cbLop.Size = new System.Drawing.Size(159, 36);
+            this.cbLop.Size = new System.Drawing.Size(161, 36);
             this.cbLop.StartIndex = 0;
             this.cbLop.TabIndex = 16;
             this.cbLop.SelectedIndexChanged += new System.EventHandler(this.cbLop_SelectedIndexChanged);
@@ -108,42 +111,47 @@
             // statCarHanhKiemTot
             // 
             this.statCarHanhKiemTot.BackColor = System.Drawing.Color.White;
-            this.statCarHanhKiemTot.Location = new System.Drawing.Point(126, 84);
+            this.statCarHanhKiemTot.Location = new System.Drawing.Point(28, 68);
+            this.statCarHanhKiemTot.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCarHanhKiemTot.Name = "statCarHanhKiemTot";
-            this.statCarHanhKiemTot.Size = new System.Drawing.Size(252, 142);
+            this.statCarHanhKiemTot.Size = new System.Drawing.Size(262, 136);
             this.statCarHanhKiemTot.TabIndex = 19;
             // 
             // statCardHanhKiemKha
             // 
             this.statCardHanhKiemKha.BackColor = System.Drawing.Color.White;
-            this.statCardHanhKiemKha.Location = new System.Drawing.Point(480, 84);
+            this.statCardHanhKiemKha.Location = new System.Drawing.Point(465, 68);
+            this.statCardHanhKiemKha.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardHanhKiemKha.Name = "statCardHanhKiemKha";
-            this.statCardHanhKiemKha.Size = new System.Drawing.Size(252, 142);
+            this.statCardHanhKiemKha.Size = new System.Drawing.Size(262, 136);
             this.statCardHanhKiemKha.TabIndex = 20;
             // 
             // statCardHanhKiemTrungBinh
             // 
             this.statCardHanhKiemTrungBinh.BackColor = System.Drawing.Color.White;
-            this.statCardHanhKiemTrungBinh.Location = new System.Drawing.Point(845, 84);
+            this.statCardHanhKiemTrungBinh.Location = new System.Drawing.Point(885, 68);
+            this.statCardHanhKiemTrungBinh.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardHanhKiemTrungBinh.Name = "statCardHanhKiemTrungBinh";
-            this.statCardHanhKiemTrungBinh.Size = new System.Drawing.Size(252, 142);
+            this.statCardHanhKiemTrungBinh.Size = new System.Drawing.Size(262, 136);
             this.statCardHanhKiemTrungBinh.TabIndex = 21;
             this.statCardHanhKiemTrungBinh.Load += new System.EventHandler(this.statCardHanhKiemTrungBinh_Load);
             // 
             // statCardChuaDanhGiaHanhKiem
             // 
             this.statCardChuaDanhGiaHanhKiem.BackColor = System.Drawing.Color.White;
-            this.statCardChuaDanhGiaHanhKiem.Location = new System.Drawing.Point(654, 280);
+            this.statCardChuaDanhGiaHanhKiem.Location = new System.Drawing.Point(670, 223);
+            this.statCardChuaDanhGiaHanhKiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardChuaDanhGiaHanhKiem.Name = "statCardChuaDanhGiaHanhKiem";
-            this.statCardChuaDanhGiaHanhKiem.Size = new System.Drawing.Size(252, 142);
+            this.statCardChuaDanhGiaHanhKiem.Size = new System.Drawing.Size(262, 136);
             this.statCardChuaDanhGiaHanhKiem.TabIndex = 22;
             // 
             // statCardHanhKiemYeu
             // 
             this.statCardHanhKiemYeu.BackColor = System.Drawing.Color.White;
-            this.statCardHanhKiemYeu.Location = new System.Drawing.Point(296, 280);
+            this.statCardHanhKiemYeu.Location = new System.Drawing.Point(236, 223);
+            this.statCardHanhKiemYeu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statCardHanhKiemYeu.Name = "statCardHanhKiemYeu";
-            this.statCardHanhKiemYeu.Size = new System.Drawing.Size(252, 142);
+            this.statCardHanhKiemYeu.Size = new System.Drawing.Size(262, 136);
             this.statCardHanhKiemYeu.TabIndex = 23;
             // 
             // btnLuuHanhKiem
@@ -158,9 +166,10 @@
             this.btnLuuHanhKiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnLuuHanhKiem.ForeColor = System.Drawing.Color.White;
             this.btnLuuHanhKiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.diskette;
-            this.btnLuuHanhKiem.Location = new System.Drawing.Point(955, 780);
+            this.btnLuuHanhKiem.Location = new System.Drawing.Point(961, 715);
+            this.btnLuuHanhKiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnLuuHanhKiem.Name = "btnLuuHanhKiem";
-            this.btnLuuHanhKiem.Size = new System.Drawing.Size(173, 44);
+            this.btnLuuHanhKiem.Size = new System.Drawing.Size(186, 37);
             this.btnLuuHanhKiem.TabIndex = 27;
             this.btnLuuHanhKiem.Text = "Lưu hạnh kiểm";
             this.btnLuuHanhKiem.Click += new System.EventHandler(this.btnLuuHanhKiem_Click);
@@ -202,12 +211,13 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableHanhKiem.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableHanhKiem.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableHanhKiem.Location = new System.Drawing.Point(20, 447);
+            this.tableHanhKiem.Location = new System.Drawing.Point(28, 378);
+            this.tableHanhKiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tableHanhKiem.Name = "tableHanhKiem";
             this.tableHanhKiem.RowHeadersVisible = false;
             this.tableHanhKiem.RowHeadersWidth = 51;
             this.tableHanhKiem.RowTemplate.Height = 24;
-            this.tableHanhKiem.Size = new System.Drawing.Size(1143, 325);
+            this.tableHanhKiem.Size = new System.Drawing.Size(1119, 325);
             this.tableHanhKiem.TabIndex = 29;
             this.tableHanhKiem.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableHanhKiem.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -269,7 +279,7 @@
             // 
             // HanhKiem
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.Controls.Add(this.tableHanhKiem);
@@ -283,8 +293,9 @@
             this.Controls.Add(this.cbLop);
             this.Controls.Add(this.cbHocKyNamHoc);
             this.Controls.Add(this.headerHanhKiem);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "HanhKiem";
-            this.Size = new System.Drawing.Size(1184, 820);
+            this.Size = new System.Drawing.Size(1168, 768);
             this.Load += new System.EventHandler(this.HanhKiem_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tableHanhKiem)).EndInit();
             this.ResumeLayout(false);

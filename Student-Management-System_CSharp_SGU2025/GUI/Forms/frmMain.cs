@@ -8,6 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+// Đảm bảo bạn đã thêm các using cho các UserControl của mình, ví dụ:
+// using Student_Management_System_CSharp_SGU2025.GUI.userControl; 
+// using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
+
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class MainForm : Form
@@ -19,55 +23,51 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             InitializeComponent();
             InitializeNavigation();
-
-            // Set default page to Dashboard
+            // Đặt trang mặc định là Dashboard khi form khởi chạy
             ShowDashboard();
         }
 
         private void InitializeNavigation()
         {
-            // Wire up sidebar button events using public properties
-            ucSidebar1.BangTinButton.Click += BtnBangTin_Click;
-            ucSidebar1.XepLoaiButton.Click += BtnXepLoai_Click;
-            ucSidebar1.BaoCaoButton.Click += BtnBaoCao_Click;
-            ucSidebar1.HanhKiemButton.Click += BtnHanhKiem_Click;
-            ucSidebar1.HocSinhButton.Click += BtnHocSinh_Click;
-            ucSidebar1.DiemSoButton.Click += BtnDiemSo_Click;
-            ucSidebar1.LopHocButton.Click += BtnLopHoc_Click;
-            ucSidebar1.MonHocButton.Click += BtnMonHoc_Click;
-            ucSidebar1.PhanCongButton.Click += BtnPhanCong_Click;
+            // Gán sự kiện cho các nút ở sidebar
+            ucSidebar1.BangTinButton.Click += (s, e) => ShowDashboard();
+            ucSidebar1.XepLoaiButton.Click += (s, e) => ShowXepLoai();
+            ucSidebar1.BaoCaoButton.Click += (s, e) => ShowBaoCao();
+            ucSidebar1.HanhKiemButton.Click += (s, e) => ShowHanhKiem();
+            ucSidebar1.HocSinhButton.Click += (s, e) => ShowHocSinh();
+            ucSidebar1.DiemSoButton.Click += (s, e) => ShowDiemSo();
+            ucSidebar1.LopHocButton.Click += (s, e) => ShowLopKhoi();
+            ucSidebar1.MonHocButton.Click += (s, e) => ShowFrmMonHoc();
+            ucSidebar1.PhanCongButton.Click += (s, e) => ShowPhanCongGiangDay();
+            ucSidebar1.ThoiKhoaBieuButton.Click += (s, e) => ShowThoiKhoaBieu();
         }
 
-
-        private void BtnBangTin_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Phương thức chung để tải một UserControl vào panelContent.
+        /// </summary>
+        /// <typeparam name="T">Loại UserControl cần tải.</typeparam>
+        private void LoadControlToPanel<T>() where T : UserControl, new()
         {
-            ShowDashboard();
+            // 1. Xóa control hiện tại đang có trong panelContent (nếu có)
+            if (panelContent.Controls.Count > 0)
+            {
+                // Lấy control cũ ra và giải phóng bộ nhớ
+                Control oldControl = panelContent.Controls[0];
+                panelContent.Controls.Remove(oldControl);
+                oldControl.Dispose();
+            }
+
+            // 2. Tạo một thể hiện (instance) mới của UserControl bạn muốn hiển thị
+            T newControl = new T();
+
+            // 3. Quan trọng: Thiết lập để UserControl lấp đầy toàn bộ Panel
+            newControl.Dock = DockStyle.Fill;
+
+            // 4. Thêm UserControl mới này vào BÊN TRONG panelContent
+            panelContent.Controls.Add(newControl);
         }
 
-        private void BtnXepLoai_Click(object sender, EventArgs e)
-        {
-            ShowXepLoai();
-        }
-
-        private void BtnBaoCao_Click(object sender, EventArgs e)
-        {
-            ShowBaoCao();
-        }
-
-        private void BtnHanhKiem_Click(object sender, EventArgs e)
-        {
-            ShowHanhKiem();
-        }
-
-        private void BtnHocSinh_Click(object sender, EventArgs e)
-        {
-            ShowHocSinh();
-        }
-
-        private void BtnDiemSo_Click(object sender, EventArgs e)
-        {
-            ShowDiemSo();
-        }
+        // --- Các phương thức Show... bây giờ rất gọn gàng ---
 
         private void BtnLopHoc_Click(object sender, EventArgs e)
         {
@@ -127,9 +127,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Bảng tin", "Trang chủ / Bảng tin");
-
-            // Bring to front
-            dashboard.BringToFront();
+            LoadControlToPanel<ucDashboard>();
         }
 
         private void ShowXepLoai()
@@ -153,9 +151,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Xếp loại & Tổng kết", "Trang chủ / Xếp loại & Tổng kết");
-
-            // Bring to front
-            xepLoai.BringToFront();
+            LoadControlToPanel<ucXepLoai>();
         }
 
         private void ShowBaoCao()
@@ -177,9 +173,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Báo cáo", "Trang chủ / Báo cáo");
-
-            // Bring to front
-            baoCao.BringToFront();
+            LoadControlToPanel<ucBaoCao>();
         }
 
         private void ShowHanhKiem()
@@ -201,9 +195,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Hạnh kiểm", "Trang chủ / Hạnh kiểm");
-
-            // Bring to front
-            hanhKiem.BringToFront();
+            LoadControlToPanel<HanhKiem>();
         }
 
         private void ShowHocSinh()
@@ -225,9 +217,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Hồ sơ Học sinh", "Trang chủ / Hồ sơ học sinh");
-
-            // Bring to front
-            hocSinh.BringToFront();
+            LoadControlToPanel<HocSinh>();
         }
 
         private void ShowDiemSo()
@@ -249,9 +239,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Điểm số", "Trang chủ / Điểm số");
-
-            // Bring to front
-            diemSo.BringToFront();
+            LoadControlToPanel<DiemSo_NhapDiem>();
         }
 
         private void ShowLopKhoi()
@@ -273,9 +261,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Lớp học", "Trang chủ / Lớp học");
-
-            // Bring to front
-            lopKhoi.BringToFront();
+            LoadControlToPanel<LopKhoi>();
         }
 
         private void ShowFrmMonHoc()
@@ -297,9 +283,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Môn học", "Trang chủ / Môn học");
-
-            // Bring to front
-            frmMonHoc.BringToFront();
+            LoadControlToPanel<FrmMonHoc>();
         }
 
         private void ShowPhanCongGiangDay()
@@ -321,10 +305,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Phân công giảng dạy", "Trang chủ / Phân công giảng dạy");
-
-            // Bring to front
-            phanCongGiangDay.BringToFront();
+            LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.PhanCongGiangDay>();
         }
 
+        private void ShowThoiKhoaBieu()
+        {
+            ucHeader1.UpdateHeader("Thời khóa biểu", "Trang chủ / Thời khóa biểu");
+            LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu.ThoiKhoaBieu>();
+        }
     }
 }

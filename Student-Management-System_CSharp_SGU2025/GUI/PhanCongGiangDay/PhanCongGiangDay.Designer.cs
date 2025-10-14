@@ -17,11 +17,15 @@
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelPhanCongGiangDay = new Guna.UI2.WinForms.Guna2Panel();
             this.panelShow = new System.Windows.Forms.TableLayoutPanel();
+            this.statCardPhanCongGiangDay1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardPhanCongGiangDay();
+            this.statCardPhanCongGiangDay3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardPhanCongGiangDay();
+            this.statCardPhanCongGiangDay4 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardPhanCongGiangDay();
+            this.statCardPhanCongGiangDay2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardPhanCongGiangDay();
             this.dgvPhanCong = new Guna.UI2.WinForms.Guna2DataGridView();
             this.btnTatCaKhoi = new Guna.UI2.WinForms.Guna2Button();
             this.btnLocTheoNam = new Guna.UI2.WinForms.Guna2Button();
@@ -61,6 +65,7 @@
             this.panelShow.Controls.Add(this.statCardPhanCongGiangDay2, 1, 0);
             this.panelShow.Controls.Add(this.statCardPhanCongGiangDay3, 2, 0);
             this.panelShow.Controls.Add(this.statCardPhanCongGiangDay4, 3, 0);
+            this.panelShow.Controls.Add(this.statCardPhanCongGiangDay2, 1, 0);
             this.panelShow.Location = new System.Drawing.Point(26, 87);
             this.panelShow.Name = "panelShow";
             this.panelShow.RowCount = 1;
@@ -68,27 +73,67 @@
             this.panelShow.Size = new System.Drawing.Size(1136, 132);
             this.panelShow.TabIndex = 8;
             // 
+            // statCardPhanCongGiangDay1
+            // 
+            this.statCardPhanCongGiangDay1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.statCardPhanCongGiangDay1.Location = new System.Drawing.Point(3, 3);
+            this.statCardPhanCongGiangDay1.Name = "statCardPhanCongGiangDay1";
+            this.statCardPhanCongGiangDay1.Size = new System.Drawing.Size(278, 126);
+            this.statCardPhanCongGiangDay1.TabIndex = 0;
+            this.statCardPhanCongGiangDay1.Title = "Tên Card";
+            this.statCardPhanCongGiangDay1.Value = "Số lượng";
+            // 
+            // statCardPhanCongGiangDay3
+            // 
+            this.statCardPhanCongGiangDay3.BackColor = System.Drawing.SystemColors.Window;
+            this.statCardPhanCongGiangDay3.Location = new System.Drawing.Point(571, 3);
+            this.statCardPhanCongGiangDay3.Name = "statCardPhanCongGiangDay3";
+            this.statCardPhanCongGiangDay3.Size = new System.Drawing.Size(278, 126);
+            this.statCardPhanCongGiangDay3.TabIndex = 2;
+            this.statCardPhanCongGiangDay3.Title = "Tên Card";
+            this.statCardPhanCongGiangDay3.Value = "Số lượng";
+            // 
+            // statCardPhanCongGiangDay4
+            // 
+            this.statCardPhanCongGiangDay4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.statCardPhanCongGiangDay4.Location = new System.Drawing.Point(855, 3);
+            this.statCardPhanCongGiangDay4.Name = "statCardPhanCongGiangDay4";
+            this.statCardPhanCongGiangDay4.Size = new System.Drawing.Size(278, 126);
+            this.statCardPhanCongGiangDay4.TabIndex = 3;
+            this.statCardPhanCongGiangDay4.Title = "Tên Card";
+            this.statCardPhanCongGiangDay4.Value = "Số lượng";
+            // 
+            // statCardPhanCongGiangDay2
+            // 
+            this.statCardPhanCongGiangDay2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.statCardPhanCongGiangDay2.Location = new System.Drawing.Point(287, 3);
+            this.statCardPhanCongGiangDay2.Name = "statCardPhanCongGiangDay2";
+            this.statCardPhanCongGiangDay2.Size = new System.Drawing.Size(278, 126);
+            this.statCardPhanCongGiangDay2.TabIndex = 1;
+            this.statCardPhanCongGiangDay2.Title = "Tên Card";
+            this.statCardPhanCongGiangDay2.Value = "Số lượng";
+            // 
             // dgvPhanCong
             // 
             this.dgvPhanCong.AllowUserToResizeColumns = false;
             this.dgvPhanCong.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.dgvPhanCong.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvPhanCong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvPhanCong.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPhanCong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvPhanCong.ColumnHeadersHeight = 40;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 10F);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(245)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvPhanCong.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10F);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(245)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPhanCong.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvPhanCong.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.dgvPhanCong.Location = new System.Drawing.Point(26, 232);
             this.dgvPhanCong.Name = "dgvPhanCong";

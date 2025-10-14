@@ -56,6 +56,10 @@
             this.SoTiet = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GhiChu = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TuyChinh = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.statcardMonHoc4 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
+            this.statcardMonHoc3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
+            this.statcardMonHoc2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
+            this.statcardMonHoc1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
             this.panelMonHoc.SuspendLayout();
             this.panelMonChinh.SuspendLayout();
             this.panelKNK.SuspendLayout();
@@ -66,6 +70,11 @@
             // 
             // panelMonHoc
             // 
+            this.panelMonHoc.Controls.Add(this.dgvMonHoc);
+            this.panelMonHoc.Controls.Add(this.statcardMonHoc4);
+            this.panelMonHoc.Controls.Add(this.statcardMonHoc3);
+            this.panelMonHoc.Controls.Add(this.statcardMonHoc2);
+            this.panelMonHoc.Controls.Add(this.statcardMonHoc1);
             this.panelMonHoc.Controls.Add(this.guna2Button1);
             this.panelMonHoc.Controls.Add(this.panelMonChinh);
             this.panelMonHoc.Controls.Add(this.panelKNK);
@@ -361,6 +370,40 @@
             this.TuyChinh.Name = "TuyChinh";
             this.TuyChinh.ReadOnly = true;
             // 
+            // statcardMonHoc4
+            // 
+            this.statcardMonHoc4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.statcardMonHoc4.Location = new System.Drawing.Point(902, 67);
+            this.statcardMonHoc4.Name = "statcardMonHoc4";
+            this.statcardMonHoc4.Size = new System.Drawing.Size(262, 136);
+            this.statcardMonHoc4.TabIndex = 7;
+            // 
+            // statcardMonHoc3
+            // 
+            this.statcardMonHoc3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.statcardMonHoc3.Location = new System.Drawing.Point(602, 67);
+            this.statcardMonHoc3.Name = "statcardMonHoc3";
+            this.statcardMonHoc3.Size = new System.Drawing.Size(262, 136);
+            this.statcardMonHoc3.TabIndex = 6;
+            // 
+            // statcardMonHoc2
+            // 
+            this.statcardMonHoc2.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.statcardMonHoc2.Location = new System.Drawing.Point(314, 67);
+            this.statcardMonHoc2.Name = "statcardMonHoc2";
+            this.statcardMonHoc2.Size = new System.Drawing.Size(262, 136);
+            this.statcardMonHoc2.TabIndex = 5;
+            this.statcardMonHoc2.Load += new System.EventHandler(this.statcardMonHoc2_Load);
+            // 
+            // statcardMonHoc1
+            // 
+            this.statcardMonHoc1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.statcardMonHoc1.Location = new System.Drawing.Point(20, 67);
+            this.statcardMonHoc1.Name = "statcardMonHoc1";
+            this.statcardMonHoc1.Size = new System.Drawing.Size(262, 136);
+            this.statcardMonHoc1.TabIndex = 4;
+            this.statcardMonHoc1.Load += new System.EventHandler(this.statcardMonHoc1_Load);
+            // 
             // FrmMonHoc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -409,5 +452,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SoTiet;
         private System.Windows.Forms.DataGridViewTextBoxColumn GhiChu;
         private System.Windows.Forms.DataGridViewTextBoxColumn TuyChinh;
+        private statcardLHP.statcardMonHoc statcardMonHoc2;
+        private statcardLHP.statcardMonHoc statcardMonHoc1;
+        private statcardLHP.statcardMonHoc statcardMonHoc4;
+        private statcardLHP.statcardMonHoc statcardMonHoc3;
     }
 }
