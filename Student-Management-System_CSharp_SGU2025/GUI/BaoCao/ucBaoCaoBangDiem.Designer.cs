@@ -44,8 +44,8 @@
             // 
             // pnlGradeTable
             // 
-            this.pnlGradeTable.BackColor = System.Drawing.Color.Transparent;
-            this.pnlGradeTable.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
+            this.pnlGradeTable.BackColor = System.Drawing.Color.White;
+            this.pnlGradeTable.BorderColor = System.Drawing.Color.White;
             this.pnlGradeTable.BorderRadius = 12;
             this.pnlGradeTable.BorderThickness = 1;
             this.pnlGradeTable.Controls.Add(this.dgvGrades);
@@ -87,13 +87,13 @@
             this.dgvGrades.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvGrades.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvGrades.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.dgvGrades.Location = new System.Drawing.Point(0, 40);
+            this.dgvGrades.Location = new System.Drawing.Point(0, 62);
             this.dgvGrades.MultiSelect = false;
             this.dgvGrades.Name = "dgvGrades";
             this.dgvGrades.ReadOnly = true;
             this.dgvGrades.RowHeadersVisible = false;
             this.dgvGrades.RowTemplate.Height = 48;
-            this.dgvGrades.Size = new System.Drawing.Size(1120, 617);
+            this.dgvGrades.Size = new System.Drawing.Size(1120, 595);
             this.dgvGrades.TabIndex = 1;
             this.dgvGrades.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvGrades.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -116,16 +116,18 @@
             this.dgvGrades.ThemeStyle.RowsStyle.Height = 48;
             this.dgvGrades.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
             this.dgvGrades.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.dgvGrades.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGrades_CellContentClick);
             // 
             // pnlGradeTableHeader
             // 
+            this.pnlGradeTableHeader.BackColor = System.Drawing.Color.White;
             this.pnlGradeTableHeader.Controls.Add(this.btnExportExcelGrade);
             this.pnlGradeTableHeader.Controls.Add(this.cboClassSelect);
             this.pnlGradeTableHeader.Controls.Add(this.lblGradeTableTitle);
             this.pnlGradeTableHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlGradeTableHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlGradeTableHeader.Name = "pnlGradeTableHeader";
-            this.pnlGradeTableHeader.Size = new System.Drawing.Size(1120, 40);
+            this.pnlGradeTableHeader.Size = new System.Drawing.Size(1120, 62);
             this.pnlGradeTableHeader.TabIndex = 0;
             // 
             // btnExportExcelGrade
@@ -139,7 +141,7 @@
             this.btnExportExcelGrade.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this.btnExportExcelGrade.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnExportExcelGrade.ForeColor = System.Drawing.Color.White;
-            this.btnExportExcelGrade.Location = new System.Drawing.Point(990, 0);
+            this.btnExportExcelGrade.Location = new System.Drawing.Point(990, 9);
             this.btnExportExcelGrade.Name = "btnExportExcelGrade";
             this.btnExportExcelGrade.Size = new System.Drawing.Size(130, 40);
             this.btnExportExcelGrade.TabIndex = 2;
@@ -166,7 +168,7 @@
             "Lớp 11A1",
             "Lớp 11A2",
             "Lớp 12A1"});
-            this.cboClassSelect.Location = new System.Drawing.Point(852, 0);
+            this.cboClassSelect.Location = new System.Drawing.Point(854, 9);
             this.cboClassSelect.Name = "cboClassSelect";
             this.cboClassSelect.Size = new System.Drawing.Size(130, 40);
             this.cboClassSelect.StartIndex = 0;
@@ -176,20 +178,21 @@
             // lblGradeTableTitle
             // 
             this.lblGradeTableTitle.AutoSize = true;
-            this.lblGradeTableTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.lblGradeTableTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblGradeTableTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblGradeTableTitle.Location = new System.Drawing.Point(0, 10);
+            this.lblGradeTableTitle.Location = new System.Drawing.Point(36, 22);
             this.lblGradeTableTitle.Name = "lblGradeTableTitle";
-            this.lblGradeTableTitle.Size = new System.Drawing.Size(163, 20);
+            this.lblGradeTableTitle.Size = new System.Drawing.Size(156, 21);
             this.lblGradeTableTitle.TabIndex = 0;
             this.lblGradeTableTitle.Text = "Báo cáo bảng điểm";
             // 
-            // ucBangDiem
+            // ucBaoCaoBangDiem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.pnlGradeTable);
-            this.Name = "ucBangDiem";
+            this.Name = "ucBaoCaoBangDiem";
             this.Size = new System.Drawing.Size(1120, 657);
             this.pnlGradeTable.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvGrades)).EndInit();

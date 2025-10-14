@@ -85,9 +85,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 dgvGrades.Columns.Add(col);
             }
 
+            // ✅ Giữ nguyên màu header khi chọn dòng
+            dgvGrades.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvGrades.ColumnHeadersDefaultCellStyle.SelectionBackColor = dgvGrades.ColumnHeadersDefaultCellStyle.BackColor;
+            dgvGrades.ColumnHeadersDefaultCellStyle.SelectionForeColor = dgvGrades.ColumnHeadersDefaultCellStyle.ForeColor;
+
             // Load sample data
             LoadGradeData();
         }
+
 
         private void LoadGradeData()
         {
@@ -119,6 +125,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         private void pnlGradeTable_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void dgvGrades_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }

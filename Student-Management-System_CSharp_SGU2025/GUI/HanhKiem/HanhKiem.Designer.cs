@@ -47,6 +47,7 @@
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.tableHanhKiem)).BeginInit();
             this.SuspendLayout();
             // 
@@ -78,7 +79,7 @@
             "Học Kỳ I - 2024 - 2025",
             "Học Kỳ II - 2024 - 2025"});
             this.cbHocKyNamHoc.Location = new System.Drawing.Point(28, 15);
-            this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
             this.cbHocKyNamHoc.Size = new System.Drawing.Size(230, 36);
             this.cbHocKyNamHoc.StartIndex = 0;
@@ -100,7 +101,7 @@
             "Lớp 6A1",
             "Lớp 7A2"});
             this.cbLop.Location = new System.Drawing.Point(293, 15);
-            this.cbLop.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbLop.Margin = new System.Windows.Forms.Padding(2);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(161, 36);
             this.cbLop.StartIndex = 0;
@@ -111,7 +112,7 @@
             // 
             this.statCarHanhKiemTot.BackColor = System.Drawing.Color.White;
             this.statCarHanhKiemTot.Location = new System.Drawing.Point(28, 68);
-            this.statCarHanhKiemTot.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.statCarHanhKiemTot.Margin = new System.Windows.Forms.Padding(2);
             this.statCarHanhKiemTot.Name = "statCarHanhKiemTot";
             this.statCarHanhKiemTot.Size = new System.Drawing.Size(262, 136);
             this.statCarHanhKiemTot.TabIndex = 19;
@@ -120,7 +121,7 @@
             // 
             this.statCardHanhKiemKha.BackColor = System.Drawing.Color.White;
             this.statCardHanhKiemKha.Location = new System.Drawing.Point(465, 68);
-            this.statCardHanhKiemKha.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.statCardHanhKiemKha.Margin = new System.Windows.Forms.Padding(2);
             this.statCardHanhKiemKha.Name = "statCardHanhKiemKha";
             this.statCardHanhKiemKha.Size = new System.Drawing.Size(262, 136);
             this.statCardHanhKiemKha.TabIndex = 20;
@@ -129,7 +130,7 @@
             // 
             this.statCardHanhKiemTrungBinh.BackColor = System.Drawing.Color.White;
             this.statCardHanhKiemTrungBinh.Location = new System.Drawing.Point(885, 68);
-            this.statCardHanhKiemTrungBinh.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.statCardHanhKiemTrungBinh.Margin = new System.Windows.Forms.Padding(2);
             this.statCardHanhKiemTrungBinh.Name = "statCardHanhKiemTrungBinh";
             this.statCardHanhKiemTrungBinh.Size = new System.Drawing.Size(262, 136);
             this.statCardHanhKiemTrungBinh.TabIndex = 21;
@@ -139,7 +140,7 @@
             // 
             this.statCardChuaDanhGiaHanhKiem.BackColor = System.Drawing.Color.White;
             this.statCardChuaDanhGiaHanhKiem.Location = new System.Drawing.Point(670, 223);
-            this.statCardChuaDanhGiaHanhKiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.statCardChuaDanhGiaHanhKiem.Margin = new System.Windows.Forms.Padding(2);
             this.statCardChuaDanhGiaHanhKiem.Name = "statCardChuaDanhGiaHanhKiem";
             this.statCardChuaDanhGiaHanhKiem.Size = new System.Drawing.Size(262, 136);
             this.statCardChuaDanhGiaHanhKiem.TabIndex = 22;
@@ -148,7 +149,7 @@
             // 
             this.statCardHanhKiemYeu.BackColor = System.Drawing.Color.White;
             this.statCardHanhKiemYeu.Location = new System.Drawing.Point(236, 223);
-            this.statCardHanhKiemYeu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.statCardHanhKiemYeu.Margin = new System.Windows.Forms.Padding(2);
             this.statCardHanhKiemYeu.Name = "statCardHanhKiemYeu";
             this.statCardHanhKiemYeu.Size = new System.Drawing.Size(262, 136);
             this.statCardHanhKiemYeu.TabIndex = 23;
@@ -165,8 +166,8 @@
             this.btnLuuHanhKiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnLuuHanhKiem.ForeColor = System.Drawing.Color.White;
             this.btnLuuHanhKiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.diskette;
-            this.btnLuuHanhKiem.Location = new System.Drawing.Point(961, 715);
-            this.btnLuuHanhKiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnLuuHanhKiem.Location = new System.Drawing.Point(950, 826);
+            this.btnLuuHanhKiem.Margin = new System.Windows.Forms.Padding(2);
             this.btnLuuHanhKiem.Name = "btnLuuHanhKiem";
             this.btnLuuHanhKiem.Size = new System.Drawing.Size(186, 37);
             this.btnLuuHanhKiem.TabIndex = 27;
@@ -203,13 +204,13 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableHanhKiem.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableHanhKiem.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableHanhKiem.Location = new System.Drawing.Point(28, 378);
-            this.tableHanhKiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableHanhKiem.Location = new System.Drawing.Point(28, 372);
+            this.tableHanhKiem.Margin = new System.Windows.Forms.Padding(2);
             this.tableHanhKiem.Name = "tableHanhKiem";
             this.tableHanhKiem.RowHeadersVisible = false;
             this.tableHanhKiem.RowHeadersWidth = 51;
             this.tableHanhKiem.RowTemplate.Height = 24;
-            this.tableHanhKiem.Size = new System.Drawing.Size(1119, 325);
+            this.tableHanhKiem.Size = new System.Drawing.Size(1119, 430);
             this.tableHanhKiem.TabIndex = 29;
             this.tableHanhKiem.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableHanhKiem.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -269,11 +270,19 @@
             this.Column6.MinimumWidth = 6;
             this.Column6.Name = "Column6";
             // 
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(335, 807);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(200, 68);
+            this.panel1.TabIndex = 30;
+            // 
             // HanhKiem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.tableHanhKiem);
             this.Controls.Add(this.btnLuuHanhKiem);
             this.Controls.Add(this.statCardHanhKiemYeu);
@@ -284,9 +293,9 @@
             this.Controls.Add(this.cbLop);
             this.Controls.Add(this.cbHocKyNamHoc);
             this.Controls.Add(this.headerHanhKiem);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "HanhKiem";
-            this.Size = new System.Drawing.Size(1168, 768);
+            this.Size = new System.Drawing.Size(1151, 768);
             this.Load += new System.EventHandler(this.HanhKiem_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tableHanhKiem)).EndInit();
             this.ResumeLayout(false);
@@ -311,5 +320,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.Panel panel1;
     }
 }

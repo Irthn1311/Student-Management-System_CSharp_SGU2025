@@ -12,39 +12,34 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class ucBaoCao : UserControl
     {
-        private ucBaoCaoDanhSachLop ucDanhSachLop;
+        
         private ucBaoCaoBangDiem ucBangDiem;
         private ucBaoCaoThongKeHocLuc ucThongKeHocLuc;
 
         public ucBaoCao()
         {
             InitializeComponent();
-            SetupFont();
+           
             SetupCardHoverEffects();
             InitializeUserControls();
             AttachEventHandlers();
         }
 
-        private void SetupFont()
-        {
-            // Set font Inter for all controls if available
-            try
-            {
-                var interFont = new Font("Inter", 10F, FontStyle.Regular);
-                // Font is available
-            }
-            catch
-            {
-                // Inter font not installed, will use default
-            }
-        }
+        
+        
 
         private void SetupCardHoverEffects()
         {
             // Add hover effects to cards
-            SetupCardHover(cardBaoCaoHocSinh);
             SetupCardHover(cardThongKeDiem);
             SetupCardHover(cardBaoCaoTongHop);
+        }
+
+        private void ShowDefaultPanels(bool visible)
+        {
+            // Ẩn/hiện 2 panel gốc trong pnlContent
+            pnlClassListHeader.Visible = visible;
+            pnlClassesContainer.Visible = visible;
         }
 
         private void SetupCardHover(Guna.UI2.WinForms.Guna2Panel card)
@@ -54,7 +49,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 card.ShadowDecoration.Depth = 10;
                 card.Cursor = Cursors.Hand;
             };
-            
+
             card.MouseLeave += (s, e) =>
             {
                 card.ShadowDecoration.Depth = 5;
@@ -64,50 +59,53 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void InitializeUserControls()
         {
-            // Initialize UserControls
-            ucDanhSachLop = new ucBaoCaoDanhSachLop();
+            // Khởi tạo 2 UserControl chính
             ucBangDiem = new ucBaoCaoBangDiem();
             ucThongKeHocLuc = new ucBaoCaoThongKeHocLuc();
 
-            // Add to content panel
-            pnlContent.Controls.Add(ucDanhSachLop);
+            // Thêm vào panel (ẩn hết lúc đầu)
             pnlContent.Controls.Add(ucBangDiem);
             pnlContent.Controls.Add(ucThongKeHocLuc);
 
-            // Set initial visibility
-            ucDanhSachLop.Visible = true;
+            ucBangDiem.Dock = DockStyle.Fill;
+            ucThongKeHocLuc.Dock = DockStyle.Fill;
+
             ucBangDiem.Visible = false;
             ucThongKeHocLuc.Visible = false;
         }
 
         private void AttachEventHandlers()
         {
-            // Tab buttons
+            // 3 nút điều hướng
             btnDanhSachLop.Click += BtnTab_Click;
             btnBangDiem.Click += BtnTab_Click;
             btnThongKeHocLuc.Click += BtnTab_Click;
 
-            // Card click handlers
+            // 3 card điều hướng tương ứng
             cardBaoCaoHocSinh.Click += (s, e) => BtnTab_Click(btnDanhSachLop, e);
             cardThongKeDiem.Click += (s, e) => BtnTab_Click(btnBangDiem, e);
             cardBaoCaoTongHop.Click += (s, e) => BtnTab_Click(btnThongKeHocLuc, e);
 
-            // ComboBox
+            // Combobox chọn học kỳ
             cboHocKy.SelectedIndexChanged += CboHocKy_SelectedIndexChanged;
         }
 
         private void BtnTab_Click(object sender, EventArgs e)
         {
-            // Hide all UserControls
-            ucDanhSachLop.Visible = false;
+            // Ẩn tất cả các usercontrol trước
             ucBangDiem.Visible = false;
             ucThongKeHocLuc.Visible = false;
 
-            // Show corresponding UserControl based on sender
+            // Ẩn tạm 2 panel gốc
+            ShowDefaultPanels(false);
+
+            // Kiểm tra nút được nhấn
             if (sender == btnDanhSachLop || sender == cardBaoCaoHocSinh)
             {
-                ucDanhSachLop.Visible = true;
-                ucDanhSachLop.BringToFront();
+                // Hiện lại panel danh sách lớp
+                ShowDefaultPanels(true);
+
+                // Đặt trạng thái Checked cho nút
                 btnDanhSachLop.Checked = true;
                 btnBangDiem.Checked = false;
                 btnThongKeHocLuc.Checked = false;
@@ -116,6 +114,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 ucBangDiem.Visible = true;
                 ucBangDiem.BringToFront();
+
                 btnDanhSachLop.Checked = false;
                 btnBangDiem.Checked = true;
                 btnThongKeHocLuc.Checked = false;
@@ -124,24 +123,44 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 ucThongKeHocLuc.Visible = true;
                 ucThongKeHocLuc.BringToFront();
+
                 btnDanhSachLop.Checked = false;
                 btnBangDiem.Checked = false;
                 btnThongKeHocLuc.Checked = true;
             }
         }
 
+
         private void CboHocKy_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Handle semester change
             string selectedSemester = cboHocKy.SelectedItem?.ToString();
             if (!string.IsNullOrEmpty(selectedSemester))
             {
-                // Reload data based on selected semester
-                // MessageBox.Show($"Đã chọn {selectedSemester}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Tùy chọn: nạp lại dữ liệu tương ứng học kỳ
             }
         }
 
         private void pnlContent_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void cboHocKy_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cardThongKeDiem_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void btnExportExcel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cardBaoCaoHocSinh_Paint(object sender, PaintEventArgs e)
         {
 
         }

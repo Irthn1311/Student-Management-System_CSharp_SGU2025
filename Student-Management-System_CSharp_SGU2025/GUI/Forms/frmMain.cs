@@ -23,6 +23,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // Gán sự kiện cho các nút ở sidebar
             ucSidebar1.BangTinButton.Click += (s, e) => ShowDashboard();
             ucSidebar1.XepLoaiButton.Click += (s, e) => ShowXepLoai();
+            ucSidebar1.GiaoVienButton.Click += (s, e)=> ShowGiaoVien();
             ucSidebar1.BaoCaoButton.Click += (s, e) => ShowBaoCao();
             ucSidebar1.HanhKiemButton.Click += (s, e) => ShowHanhKiem();
             ucSidebar1.HocSinhButton.Click += (s, e) => ShowHocSinh();
@@ -30,6 +31,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucSidebar1.LopHocButton.Click += (s, e) => ShowLopKhoi();
             ucSidebar1.MonHocButton.Click += (s, e) => ShowFrmMonHoc();
             ucSidebar1.PhanCongButton.Click += (s, e) => ShowPhanCongGiangDay();
+        }
+
+        private void XepLoaiButton_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -57,7 +63,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             panelContent.Controls.Add(newControl);
         }
 
-        // --- Các phương thức Show... bây giờ rất gọn gàng ---
+        // --- Các phương thức Show... 
 
         private void ShowDashboard()
         {
@@ -111,6 +117,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             ucHeader1.UpdateHeader("Phân công giảng dạy", "Trang chủ / Phân công giảng dạy");
             LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.PhanCongGiangDay>();
+        }
+
+        private void ShowGiaoVien()
+        {
+            ucHeader1.UpdateHeader("Giáo viên", "Trang chủ / Giáo viên");
+            LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.GiaoVien.GiaoVien>();
+
+        }
+
+        private void ucSidebar1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
