@@ -50,7 +50,6 @@
             this.btnCaiDat = new Guna.UI2.WinForms.Guna2Button();
             this.pnlLogout = new Guna.UI2.WinForms.Guna2Panel();
             this.btnLogout = new Guna.UI2.WinForms.Guna2Button();
-            this.sprtLogout = new Guna.UI2.WinForms.Guna2Separator();
             this.pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.flpnlNav.SuspendLayout();
@@ -60,11 +59,13 @@
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.White;
-            this.pnlHeader.BorderRadius = 20;
-            this.pnlHeader.BorderThickness = 1;
+            this.pnlHeader.BorderColor = System.Drawing.Color.Black;
             this.pnlHeader.Controls.Add(this.lblAppDescription);
             this.pnlHeader.Controls.Add(this.picLogo);
             this.pnlHeader.Controls.Add(this.lblAppName);
+            this.pnlHeader.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.pnlHeader.CustomBorderColor = System.Drawing.Color.DimGray;
+            this.pnlHeader.CustomBorderThickness = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
@@ -90,12 +91,12 @@
             this.picLogo.BackColor = System.Drawing.Color.Transparent;
             this.picLogo.BorderRadius = 8;
             this.picLogo.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
-            this.picLogo.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.education;
+            this.picLogo.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.school;
             this.picLogo.ImageRotate = 0F;
-            this.picLogo.Location = new System.Drawing.Point(27, 26);
+            this.picLogo.Location = new System.Drawing.Point(16, 21);
             this.picLogo.Name = "picLogo";
-            this.picLogo.Size = new System.Drawing.Size(40, 40);
-            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.picLogo.Size = new System.Drawing.Size(55, 46);
+            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picLogo.TabIndex = 1;
             this.picLogo.TabStop = false;
             // 
@@ -128,6 +129,7 @@
             this.flpnlNav.Controls.Add(this.btnBaoCao);
             this.flpnlNav.Controls.Add(this.btnTaiKhoan);
             this.flpnlNav.Controls.Add(this.btnCaiDat);
+            this.flpnlNav.Cursor = System.Windows.Forms.Cursors.Hand;
             this.flpnlNav.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpnlNav.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpnlNav.Location = new System.Drawing.Point(0, 93);
@@ -535,7 +537,9 @@
             // 
             this.pnlLogout.BackColor = System.Drawing.Color.White;
             this.pnlLogout.Controls.Add(this.btnLogout);
-            this.pnlLogout.Controls.Add(this.sprtLogout);
+            this.pnlLogout.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pnlLogout.CustomBorderColor = System.Drawing.Color.DimGray;
+            this.pnlLogout.CustomBorderThickness = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.pnlLogout.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlLogout.Location = new System.Drawing.Point(0, 835);
             this.pnlLogout.Name = "pnlLogout";
@@ -545,8 +549,8 @@
             // 
             // btnLogout
             // 
-            this.btnLogout.BorderRadius = 8;
-            this.btnLogout.Checked = true;
+            this.btnLogout.CustomBorderColor = System.Drawing.Color.DimGray;
+            this.btnLogout.CustomBorderThickness = new System.Windows.Forms.Padding(0, 1, 0, 0);
             this.btnLogout.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.btnLogout.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.btnLogout.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
@@ -554,28 +558,15 @@
             this.btnLogout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnLogout.FillColor = System.Drawing.Color.Transparent;
             this.btnLogout.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogout.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.btnLogout.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
+            this.btnLogout.ForeColor = System.Drawing.Color.Red;
             this.btnLogout.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.logout;
             this.btnLogout.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnLogout.ImageOffset = new System.Drawing.Point(12, 0);
-            this.btnLogout.Location = new System.Drawing.Point(12, 22);
-            this.btnLogout.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.btnLogout.Location = new System.Drawing.Point(12, 12);
             this.btnLogout.Name = "btnLogout";
-            this.btnLogout.Size = new System.Drawing.Size(232, 31);
-            this.btnLogout.TabIndex = 15;
+            this.btnLogout.Size = new System.Drawing.Size(232, 41);
+            this.btnLogout.TabIndex = 1;
             this.btnLogout.Text = "Đăng xuất";
             this.btnLogout.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnLogout.TextOffset = new System.Drawing.Point(20, 0);
-            // 
-            // sprtLogout
-            // 
-            this.sprtLogout.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sprtLogout.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.sprtLogout.Location = new System.Drawing.Point(12, 12);
-            this.sprtLogout.Name = "sprtLogout";
-            this.sprtLogout.Size = new System.Drawing.Size(232, 10);
-            this.sprtLogout.TabIndex = 0;
             // 
             // ucSidebar
             // 
@@ -620,6 +611,5 @@
         private Guna.UI2.WinForms.Guna2Button btnCaiDat;
         private Guna.UI2.WinForms.Guna2Panel pnlLogout;
         private Guna.UI2.WinForms.Guna2Button btnLogout;
-        private Guna.UI2.WinForms.Guna2Separator sprtLogout;
     }
 }

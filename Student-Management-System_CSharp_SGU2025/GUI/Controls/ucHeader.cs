@@ -33,5 +33,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             lblBreadcrumb.Text = breadcrumb;
         }
+
+        private void pnlHeader_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

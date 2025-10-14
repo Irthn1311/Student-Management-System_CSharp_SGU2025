@@ -72,13 +72,13 @@
             this.pgbYeu = new Guna.UI2.WinForms.Guna2ProgressBar();
             this.pnlThongBaoGanDay = new Guna.UI2.WinForms.Guna2Panel();
             this.lblThongBaoGanDay = new System.Windows.Forms.Label();
-            this.pnlHoatDongNoiBat = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblHoatDongNoiBat = new System.Windows.Forms.Label();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.recentActivityItem1 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
             this.recentActivityItem2 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
             this.recentActivityItem3 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
             this.recentActivityItem4 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
+            this.pnlHoatDongNoiBat = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblHoatDongNoiBat = new System.Windows.Forms.Label();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.statCard1 = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
             this.statCard2 = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
             this.statCard3 = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
@@ -468,9 +468,9 @@
             this.guna2ComboBox1.Items.AddRange(new object[] {
             "Học kỳ I",
             "Học kỳ II"});
-            this.guna2ComboBox1.Location = new System.Drawing.Point(604, 24);
+            this.guna2ComboBox1.Location = new System.Drawing.Point(588, 24);
             this.guna2ComboBox1.Name = "guna2ComboBox1";
-            this.guna2ComboBox1.Size = new System.Drawing.Size(110, 30);
+            this.guna2ComboBox1.Size = new System.Drawing.Size(126, 30);
             this.guna2ComboBox1.TabIndex = 1;
             // 
             // pnlGioi
@@ -685,46 +685,6 @@
             this.lblThongBaoGanDay.TabIndex = 0;
             this.lblThongBaoGanDay.Text = "Thông báo gần đây";
             // 
-            // pnlHoatDongNoiBat
-            // 
-            this.pnlHoatDongNoiBat.BackColor = System.Drawing.Color.Transparent;
-            this.pnlHoatDongNoiBat.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlHoatDongNoiBat.BorderRadius = 12;
-            this.pnlHoatDongNoiBat.BorderThickness = 1;
-            this.pnlHoatDongNoiBat.Controls.Add(this.lblHoatDongNoiBat);
-            this.pnlHoatDongNoiBat.Controls.Add(this.flowLayoutPanel3);
-            this.pnlHoatDongNoiBat.FillColor = System.Drawing.Color.White;
-            this.pnlHoatDongNoiBat.Location = new System.Drawing.Point(24, 558);
-            this.pnlHoatDongNoiBat.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlHoatDongNoiBat.Name = "pnlHoatDongNoiBat";
-            this.pnlHoatDongNoiBat.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
-            this.pnlHoatDongNoiBat.ShadowDecoration.Depth = 10;
-            this.pnlHoatDongNoiBat.ShadowDecoration.Enabled = true;
-            this.pnlHoatDongNoiBat.Size = new System.Drawing.Size(1126, 251);
-            this.pnlHoatDongNoiBat.TabIndex = 5;
-            // 
-            // lblHoatDongNoiBat
-            // 
-            this.lblHoatDongNoiBat.AutoSize = true;
-            this.lblHoatDongNoiBat.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHoatDongNoiBat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblHoatDongNoiBat.Location = new System.Drawing.Point(24, 20);
-            this.lblHoatDongNoiBat.Name = "lblHoatDongNoiBat";
-            this.lblHoatDongNoiBat.Size = new System.Drawing.Size(203, 30);
-            this.lblHoatDongNoiBat.TabIndex = 0;
-            this.lblHoatDongNoiBat.Text = "Hoạt động nổi bật";
-            // 
-            // flowLayoutPanel3
-            // 
-            this.flowLayoutPanel3.Controls.Add(this.statCard1);
-            this.flowLayoutPanel3.Controls.Add(this.statCard2);
-            this.flowLayoutPanel3.Controls.Add(this.statCard3);
-            this.flowLayoutPanel3.Controls.Add(this.statCard4);
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(24, 63);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(1071, 165);
-            this.flowLayoutPanel3.TabIndex = 1;
-            // 
             // recentActivityItem1
             // 
             this.recentActivityItem1.ActivityText = "Họp phụ huynh lớp 12";
@@ -764,6 +724,46 @@
             this.recentActivityItem4.Size = new System.Drawing.Size(308, 40);
             this.recentActivityItem4.TabIndex = 4;
             this.recentActivityItem4.TimeText = "Ngày 8/10/2024";
+            // 
+            // pnlHoatDongNoiBat
+            // 
+            this.pnlHoatDongNoiBat.BackColor = System.Drawing.Color.Transparent;
+            this.pnlHoatDongNoiBat.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
+            this.pnlHoatDongNoiBat.BorderRadius = 12;
+            this.pnlHoatDongNoiBat.BorderThickness = 1;
+            this.pnlHoatDongNoiBat.Controls.Add(this.lblHoatDongNoiBat);
+            this.pnlHoatDongNoiBat.Controls.Add(this.flowLayoutPanel3);
+            this.pnlHoatDongNoiBat.FillColor = System.Drawing.Color.White;
+            this.pnlHoatDongNoiBat.Location = new System.Drawing.Point(24, 558);
+            this.pnlHoatDongNoiBat.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlHoatDongNoiBat.Name = "pnlHoatDongNoiBat";
+            this.pnlHoatDongNoiBat.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
+            this.pnlHoatDongNoiBat.ShadowDecoration.Depth = 10;
+            this.pnlHoatDongNoiBat.ShadowDecoration.Enabled = true;
+            this.pnlHoatDongNoiBat.Size = new System.Drawing.Size(1126, 251);
+            this.pnlHoatDongNoiBat.TabIndex = 5;
+            // 
+            // lblHoatDongNoiBat
+            // 
+            this.lblHoatDongNoiBat.AutoSize = true;
+            this.lblHoatDongNoiBat.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHoatDongNoiBat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.lblHoatDongNoiBat.Location = new System.Drawing.Point(24, 20);
+            this.lblHoatDongNoiBat.Name = "lblHoatDongNoiBat";
+            this.lblHoatDongNoiBat.Size = new System.Drawing.Size(203, 30);
+            this.lblHoatDongNoiBat.TabIndex = 0;
+            this.lblHoatDongNoiBat.Text = "Hoạt động nổi bật";
+            // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.Controls.Add(this.statCard1);
+            this.flowLayoutPanel3.Controls.Add(this.statCard2);
+            this.flowLayoutPanel3.Controls.Add(this.statCard3);
+            this.flowLayoutPanel3.Controls.Add(this.statCard4);
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(24, 63);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(1071, 165);
+            this.flowLayoutPanel3.TabIndex = 1;
             // 
             // statCard1
             // 

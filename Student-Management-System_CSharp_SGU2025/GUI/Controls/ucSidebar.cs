@@ -20,6 +20,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // Public properties to expose buttons for better maintainability
         public Guna.UI2.WinForms.Guna2Button BangTinButton => btnBangTin;
         public Guna.UI2.WinForms.Guna2Button XepLoaiButton => btnXepLoai;
+        public Guna.UI2.WinForms.Guna2Button GiaoVienButton => btnGiaoVien;
         public Guna.UI2.WinForms.Guna2Button BaoCaoButton => btnBaoCao;
         public Guna.UI2.WinForms.Guna2Button HanhKiemButton => btnHanhKiem;
         public Guna.UI2.WinForms.Guna2Button HocSinhButton => btnHocSinh;
@@ -28,6 +29,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         public Guna.UI2.WinForms.Guna2Button MonHocButton => btnMonHoc;
         public Guna.UI2.WinForms.Guna2Button PhanCongButton => btnPhanCong;
         public Guna.UI2.WinForms.Guna2Button ThoiKhoaBieuButton => btnThoiKhoaBieu;
+        public Guna.UI2.WinForms.Guna2Button TaiKhoanButton => btnTaiKhoan;
+        public Guna.UI2.WinForms.Guna2Button CaiDatButton => btnCaiDat;
+        public Guna.UI2.WinForms.Guna2Button DanhGiaButton => btnKhenThuong;
     
         private void pnlHeader_Paint(object sender, PaintEventArgs e)
         {
@@ -55,6 +59,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         private void btnTaiKhoan_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
         {
 
         }

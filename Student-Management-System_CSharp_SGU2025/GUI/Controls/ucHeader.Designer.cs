@@ -54,7 +54,7 @@
             // 
             // pnlUser
             // 
-            this.pnlUser.Location = new System.Drawing.Point(976, 19);
+            this.pnlUser.Location = new System.Drawing.Point(976, 29);
             this.pnlUser.Name = "pnlUser";
             this.pnlUser.Size = new System.Drawing.Size(178, 40);
             this.pnlUser.TabIndex = 4;
@@ -71,7 +71,7 @@
             this.btnNotifications.ForeColor = System.Drawing.Color.White;
             this.btnNotifications.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
             this.btnNotifications.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.notification_bell;
-            this.btnNotifications.Location = new System.Drawing.Point(914, 19);
+            this.btnNotifications.Location = new System.Drawing.Point(914, 29);
             this.btnNotifications.Name = "btnNotifications";
             this.btnNotifications.Size = new System.Drawing.Size(40, 40);
             this.btnNotifications.TabIndex = 3;
@@ -89,7 +89,7 @@
             this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtSearch.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtSearch.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.search;
-            this.txtSearch.Location = new System.Drawing.Point(628, 19);
+            this.txtSearch.Location = new System.Drawing.Point(628, 29);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.PlaceholderText = "Tìm kiếm...";
             this.txtSearch.SelectedText = "";

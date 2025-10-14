@@ -95,7 +95,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tableHocSinh.Columns.Add(colView);
             tableHocSinh.Columns.Add(colEdit);
 
-            int viewColWidth = 70;
+            int viewColWidth = 70; 
             int editColWidth = 34;
 
             tableHocSinh.Columns["View"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -139,7 +139,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Gán trực tiếp ảnh từ Resources vào các ô chứa ảnh.
                 // Cách này không cần kiểm tra file tồn tại vì tài nguyên đã được nhúng vào chương trình.
                 tableHocSinh.Rows[idx].Cells["View"].Value = Properties.Resources.icon_eye;
-                tableHocSinh.Rows[idx].Cells["Edit"].Value = Properties.Resources.icon_edit;
+                tableHocSinh.Rows[idx].Cells["Edit"].Value = Properties.Resources.deleteicon;
             }
             catch (Exception ex)
             {
@@ -151,12 +151,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // === Hàm xử lý click icon (hiện tại rỗng) ===
         private void HandleViewClick(int rowIndex)
         {
-            // TODO: Hiển thị chi tiết học sinh
+            // TODO: Hiển thị chi tiết học sinh và chỉnh sửa
         }
 
         private void HandleEditClick(int rowIndex)
         {
-            // TODO: Mở form chỉnh sửa học sinh
+            // TODO: Xóa học sinh
         }
 
 
@@ -204,7 +204,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
 
             // chèn dữ liệu mẫu vào bảng
-            // === Dữ liệu mẫu có icon thao tác ===
             tableHocSinh.Rows.Clear();
 
             AddRowWithIcons("HS001", "Nguyễn Văn An", "15/03/2008", "Nam", "10A1", "Đang học");

@@ -5,7 +5,7 @@
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        
 
 
         #region Windows Form Designer generated code
@@ -30,6 +30,7 @@
             this.ucSidebar1.Name = "ucSidebar1";
             this.ucSidebar1.Size = new System.Drawing.Size(256, 861);
             this.ucSidebar1.TabIndex = 3;
+            this.ucSidebar1.Load += new System.EventHandler(this.ucSidebar1_Load);
             // 
             // ucHeader1
             // 
@@ -40,7 +41,7 @@
             // 
             // panelContent
             // 
-            this.panelContent.BackColor = System.Drawing.Color.Yellow;
+            this.panelContent.BackColor = System.Drawing.SystemColors.Control;
             this.panelContent.Location = new System.Drawing.Point(256, 93);
             this.panelContent.Name = "panelContent";
             this.panelContent.Size = new System.Drawing.Size(1168, 768);
@@ -67,7 +68,6 @@
 
         private ucSidebar ucSidebar1;
         private ucHeader ucHeader1;
-        private ucSidebar ucSidebar1;
         private System.Windows.Forms.Panel panelContent;
     }
 }
