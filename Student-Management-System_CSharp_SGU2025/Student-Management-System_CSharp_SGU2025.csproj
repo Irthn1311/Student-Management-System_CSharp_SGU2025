@@ -274,48 +274,6 @@
     <Compile Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.Designer.cs">
       <DependentUpon>ucBaoCaoThongKeHocLuc.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.Designer.cs">
-      <DependentUpon>ucBaoCaoBangDiem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCao.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCao.Designer.cs">
-      <DependentUpon>ucBaoCao.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoDanhSachLop.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoDanhSachLop.Designer.cs">
-      <DependentUpon>ucBaoCaoDanhSachLop.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Dashboard\ucDashboard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\Dashboard\ucDashboard.Designer.cs">
-      <DependentUpon>ucDashboard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Controls\ucHeader.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\ucHeader.Designer.cs">
-      <DependentUpon>ucHeader.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Controls\ucSidebar.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\ucSidebar.Designer.cs">
-      <DependentUpon>ucSidebar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.Designer.cs">
-      <DependentUpon>ucBaoCaoThongKeHocLuc.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.cs">
       <SubType>UserControl</SubType>
     </Compile>
