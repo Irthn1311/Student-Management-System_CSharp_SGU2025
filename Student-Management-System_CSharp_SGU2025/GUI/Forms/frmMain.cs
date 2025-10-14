@@ -30,6 +30,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucSidebar1.LopHocButton.Click += (s, e) => ShowLopKhoi();
             ucSidebar1.MonHocButton.Click += (s, e) => ShowFrmMonHoc();
             ucSidebar1.PhanCongButton.Click += (s, e) => ShowPhanCongGiangDay();
+            ucSidebar1.ThoiKhoaBieuButton.Click += (s, e) => ShowThoiKhoaBieu();
         }
 
         /// <summary>
@@ -111,6 +112,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             ucHeader1.UpdateHeader("Phân công giảng dạy", "Trang chủ / Phân công giảng dạy");
             LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.PhanCongGiangDay>();
+        }
+
+        private void ShowThoiKhoaBieu()
+        {
+            ucHeader1.UpdateHeader("Thời khóa biểu", "Trang chủ / Thời khóa biểu");
+            LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu.ThoiKhoaBieu>();
         }
     }
 }
