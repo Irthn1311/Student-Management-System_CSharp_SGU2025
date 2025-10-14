@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -171,14 +170,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             DataGridViewImageColumn btnEditKL = new DataGridViewImageColumn();
             btnEditKL.Name = "suaKL";
             btnEditKL.HeaderText = "Sửa";
-            btnEditKL.Image = Image.FromFile(Path.Combine(Application.StartupPath, @"..\..\Images\repair.png"));
+            btnEditKL.Image = Properties.Resources.repair;
             btnEditKL.ImageLayout = DataGridViewImageCellLayout.Zoom;
             tbKyLuat.Columns.Add(btnEditKL);
 
             DataGridViewImageColumn btnDeleteKL = new DataGridViewImageColumn();
             btnDeleteKL.Name = "xoaKL";
             btnDeleteKL.HeaderText = "Xóa";
-            btnDeleteKL.Image = Image.FromFile(Path.Combine(Application.StartupPath, @"..\..\Images\bin.png"));
+            btnDeleteKL.Image = Properties.Resources.bin;
             btnDeleteKL.ImageLayout = DataGridViewImageCellLayout.Zoom;
             tbKyLuat.Columns.Add(btnDeleteKL);
 
@@ -269,8 +268,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 int xDelete = e.CellBounds.Left + iconSize + 3 * padding;
                 int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
 
-                Image editIcon = Image.FromFile(Path.Combine(Application.StartupPath, @"..\..\Images\repair.png"));
-                Image deleteIcon = Image.FromFile(Path.Combine(Application.StartupPath, @"..\..\Images\bin.png"));
+                Image editIcon = Properties.Resources.repair;
+                Image deleteIcon = Properties.Resources.bin;
 
                 e.Graphics.DrawImage(editIcon, new Rectangle(xEdit, y, iconSize, iconSize));
                 e.Graphics.DrawImage(deleteIcon, new Rectangle(xDelete, y, iconSize, iconSize));

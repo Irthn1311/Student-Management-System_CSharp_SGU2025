@@ -130,6 +130,18 @@
     <Compile Include="DTO\MonHocDTO.cs" />
     <Compile Include="DTO\NamHocDTO.cs" />
     <Compile Include="DTO\PhanCongGiangDay.cs" />
+    <Compile Include="GUI\CaiDat\CaiDat.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\CaiDat\CaiDat.Designer.cs">
+      <DependentUpon>CaiDat.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DanhGia\DanhGia.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\DanhGia\DanhGia.Designer.cs">
+      <DependentUpon>DanhGia.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\DiemSo\DiemSo_NhapDiem.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -148,11 +160,35 @@
     <Compile Include="GUI\Forms\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\TaiKhoan\frmAddPhanQuyen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\frmAddPhanQuyen.Designer.cs">
+      <DependentUpon>frmAddPhanQuyen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\frmPhanQuyen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\frmPhanQuyen.Designer.cs">
+      <DependentUpon>frmPhanQuyen.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\HanhKiem\HanhKiem.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\HanhKiem\HanhKiem.Designer.cs">
       <DependentUpon>HanhKiem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\RoleItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\RoleItem.Designer.cs">
+      <DependentUpon>RoleItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\RecentActivityItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\RecentActivityItem.Designer.cs">
+      <DependentUpon>RecentActivityItem.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\statcardLHP\statcardMonHoc.cs">
       <SubType>UserControl</SubType>
@@ -165,6 +201,12 @@
     </Compile>
     <Compile Include="GUI\statcardLHP\StatCardTKB.Designer.cs">
       <DependentUpon>StatCardTKB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\TaiKhoan.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\TaiKhoan.Designer.cs">
+      <DependentUpon>TaiKhoan.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.cs">
       <SubType>Form</SubType>
@@ -219,9 +261,6 @@
     </Compile>
     <Compile Include="GUI\HocSinh\HocSinh.Designer.cs">
       <DependentUpon>HocSinh.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\RecentActivityItem.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\HanhKiem\HanhKiem.Designer.cs">
       <DependentUpon>HanhKiem.cs</DependentUpon>
@@ -298,6 +337,12 @@
     <Compile Include="GUI\ThoiKhoaBieu\ucThoiKhoaBieu.Designer.cs">
       <DependentUpon>ucThoiKhoaBieu.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ThongKeCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\ThongKeCard.Designer.cs">
+      <DependentUpon>ThongKeCard.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\XepLoai\ucXepLoai.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -306,11 +351,24 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\CaiDat\CaiDat.resx">
+      <DependentUpon>CaiDat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\DanhGia\DanhGia.resx">
+      <DependentUpon>DanhGia.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\DiemSo\DiemSo_NhapDiem.resx">
       <DependentUpon>DiemSo_NhapDiem.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\DangNhap\FrmDangNhap.resx">
       <DependentUpon>FrmDangNhap.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\BaoCao\ucBaoCaoBangDiem.resx">
       <DependentUpon>ucBaoCaoBangDiem.cs</DependentUpon>
@@ -336,11 +394,23 @@
     <EmbeddedResource Include="GUI\Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\TaiKhoan\frmAddPhanQuyen.resx">
+      <DependentUpon>frmAddPhanQuyen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\TaiKhoan\frmPhanQuyen.resx">
+      <DependentUpon>frmPhanQuyen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\TaiKhoan\RoleItem.resx">
+      <DependentUpon>RoleItem.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\statcardLHP\statcardMonHoc.resx">
       <DependentUpon>statcardMonHoc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\statcardLHP\StatCardTKB.resx">
       <DependentUpon>StatCardTKB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\TaiKhoan\TaiKhoan.resx">
+      <DependentUpon>TaiKhoan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.resx">
       <DependentUpon>SuaLopHoc.cs</DependentUpon>
@@ -370,6 +440,9 @@
     <EmbeddedResource Include="GUI\ThoiKhoaBieu\ThoiKhoaBieu.resx">
       <DependentUpon>ThoiKhoaBieu.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThongKeCard.resx">
+      <DependentUpon>ThongKeCard.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\XepLoai\ucXepLoai.resx">
       <DependentUpon>ucXepLoai.cs</DependentUpon>
     </EmbeddedResource>
@@ -381,26 +454,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="GUI\GiaBao\bin\Debug\net8.0-windows\WinFormsApp2.deps.json" />
-    <None Include="GUI\GiaBao\bin\Debug\net8.0-windows\WinFormsApp2.runtimeconfig.json" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinForms.CF340A35.Up2Date" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.AssemblyInfoInputs.cache" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.assets.cache" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.AssemblyReference.cache" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.BuildWithSkipAnalyzers" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.CoreCompileInputs.cache" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.GenerateResource.cache" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.designer.deps.json" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.designer.runtimeconfig.json" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.GeneratedMSBuildEditorConfig.editorconfig" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.genruntimeconfig.cache" />
-    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.sourcelink.json" />
-    <None Include="GUI\GiaBao\obj\project.assets.json" />
-    <None Include="GUI\GiaBao\obj\project.nuget.cache" />
-    <None Include="GUI\GiaBao\obj\WinFormsApp2.csproj.nuget.dgspec.json" />
-    <None Include="GUI\GiaBao\obj\WinFormsApp2.csproj.nuget.g.props" />
-    <None Include="GUI\GiaBao\obj\WinFormsApp2.csproj.nuget.g.targets" />
-    <None Include="GUI\GiaBao\WinFormsApp2.csproj" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

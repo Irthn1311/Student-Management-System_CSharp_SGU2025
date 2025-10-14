@@ -290,7 +290,7 @@
             this.txtTenDangNhap.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtTenDangNhap.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtTenDangNhap.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtTenDangNhap.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.people2;
+            this.txtTenDangNhap.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.people;
             this.txtTenDangNhap.IconLeftOffset = new System.Drawing.Point(10, 0);
             this.txtTenDangNhap.Location = new System.Drawing.Point(846, 305);
             this.txtTenDangNhap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);

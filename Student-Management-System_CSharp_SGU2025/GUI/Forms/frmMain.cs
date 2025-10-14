@@ -40,6 +40,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucSidebar1.MonHocButton.Click += (s, e) => ShowFrmMonHoc();
             ucSidebar1.PhanCongButton.Click += (s, e) => ShowPhanCongGiangDay();
             ucSidebar1.ThoiKhoaBieuButton.Click += (s, e) => ShowThoiKhoaBieu();
+            ucSidebar1.TaiKhoanButton.Click += (s, e) => ShowTaiKhoan();
+            ucSidebar1.CaiDatButton.Click += (s, e) => ShowCaiDat();
+            ucSidebar1.DanhGiaButton.Click += (s, e) => ShowDanhGia();
         }
 
         /// <summary>
@@ -312,6 +315,72 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             ucHeader1.UpdateHeader("Thời khóa biểu", "Trang chủ / Thời khóa biểu");
             LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu.ThoiKhoaBieu>();
+        }
+
+        private void ShowTaiKhoan()
+        {
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show TaiKhoan
+            var taiKhoan = new TaiKhoan();
+            taiKhoan.BackColor = Color.FromArgb(243, 244, 246);
+            taiKhoan.Location = new Point(256, 80);
+            taiKhoan.Margin = new Padding(2);
+            taiKhoan.Name = "ucTaiKhoan1";
+            taiKhoan.Size = new Size(1184, 900);
+            taiKhoan.TabIndex = 11;
+
+            this.Controls.Add(taiKhoan);
+            currentUserControl = taiKhoan;
+
+            // Update header
+            ucHeader1.UpdateHeader("Tài khoản", "Trang chủ / Tài khoản");
+            LoadControlToPanel<TaiKhoan>();
+        }
+
+        private void ShowCaiDat()
+        {
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show CaiDat
+            var caiDat = new CaiDat();
+            caiDat.BackColor = Color.FromArgb(243, 244, 246);
+            caiDat.Location = new Point(256, 80);
+            caiDat.Margin = new Padding(2);
+            caiDat.Name = "ucCaiDat1";
+            caiDat.Size = new Size(1184, 900);
+            caiDat.TabIndex = 12;
+
+            this.Controls.Add(caiDat);
+            currentUserControl = caiDat;
+
+            // Update header
+            ucHeader1.UpdateHeader("Cài đặt", "Trang chủ / Cài đặt");
+            LoadControlToPanel<CaiDat>();
+        }
+
+        private void ShowDanhGia()
+        {
+            // Dispose current user control if exists
+            DisposeCurrentUserControl();
+
+            // Create and show DanhGia
+            var danhGia = new DanhGia();
+            danhGia.BackColor = Color.FromArgb(243, 244, 246);
+            danhGia.Location = new Point(256, 80);
+            danhGia.Margin = new Padding(2);
+            danhGia.Name = "ucDanhGia1";
+            danhGia.Size = new Size(1184, 900);
+            danhGia.TabIndex = 13;
+
+            this.Controls.Add(danhGia);
+            currentUserControl = danhGia;
+
+            // Update header
+            ucHeader1.UpdateHeader("Đánh giá", "Trang chủ / Đánh giá");
+            LoadControlToPanel<DanhGia>();
         }
     }
 }

@@ -161,10 +161,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
-        private void panelThongKe_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
 
         private void statCardKhoi10_Load(object sender, EventArgs e)
         {

@@ -10,7 +10,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private Guna2Panel guna2Panel1;
         private Guna2Button guna2Button1;
         private Guna2Button guna2Button2;
-        private Guna2Panel panelThongKe;
 
         private StatCardKhoi statCardKhoi10;
         private StatCardKhoi statCardKhoi11;
@@ -39,7 +38,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLop)).BeginInit();
-            this.panelThongKe.SuspendLayout();
             this.SuspendLayout();
             // 
             // guna2Panel1
@@ -234,7 +232,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.Size = new System.Drawing.Size(1184, 819);
             this.guna2Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvLop)).EndInit();
-            this.panelThongKe.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -246,7 +243,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private DataGridViewTextBoxColumn SiSo;
         private DataGridViewTextBoxColumn GVCN;
         private DataGridViewTextBoxColumn ThaoTac;
-        private StatCardKhoi statCardKhoi10;
         private Guna2ComboBox guna2ComboBox1;
     }
 }

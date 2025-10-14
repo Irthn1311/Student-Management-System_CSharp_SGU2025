@@ -67,7 +67,6 @@
 
         private ucSidebar ucSidebar1;
         private ucHeader ucHeader1;
-        private ucSidebar ucSidebar1;
         private System.Windows.Forms.Panel panelContent;
     }
 }

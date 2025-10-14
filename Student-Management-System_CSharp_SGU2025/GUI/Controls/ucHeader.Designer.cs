@@ -47,16 +47,19 @@
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlHeader.FillColor = System.Drawing.Color.White;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Padding = new System.Windows.Forms.Padding(27, 18, 27, 18);
-            this.pnlHeader.Size = new System.Drawing.Size(1184, 81);
+            this.pnlHeader.Padding = new System.Windows.Forms.Padding(40, 28, 40, 28);
+            this.pnlHeader.Size = new System.Drawing.Size(1776, 125);
             this.pnlHeader.TabIndex = 1;
+            this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint);
             // 
             // pnlUser
             // 
-            this.pnlUser.Location = new System.Drawing.Point(976, 19);
+            this.pnlUser.Location = new System.Drawing.Point(1464, 29);
+            this.pnlUser.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pnlUser.Name = "pnlUser";
-            this.pnlUser.Size = new System.Drawing.Size(178, 40);
+            this.pnlUser.Size = new System.Drawing.Size(267, 62);
             this.pnlUser.TabIndex = 4;
             // 
             // btnNotifications
@@ -70,10 +73,11 @@
             this.btnNotifications.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnNotifications.ForeColor = System.Drawing.Color.White;
             this.btnNotifications.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.btnNotifications.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.notification_bell;
-            this.btnNotifications.Location = new System.Drawing.Point(914, 19);
+            this.btnNotifications.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.notificationbell;
+            this.btnNotifications.Location = new System.Drawing.Point(1371, 29);
+            this.btnNotifications.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnNotifications.Name = "btnNotifications";
-            this.btnNotifications.Size = new System.Drawing.Size(40, 40);
+            this.btnNotifications.Size = new System.Drawing.Size(60, 62);
             this.btnNotifications.TabIndex = 3;
             // 
             // txtSearch
@@ -89,11 +93,12 @@
             this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtSearch.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtSearch.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.search;
-            this.txtSearch.Location = new System.Drawing.Point(628, 19);
+            this.txtSearch.Location = new System.Drawing.Point(942, 29);
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.PlaceholderText = "Tìm kiếm...";
             this.txtSearch.SelectedText = "";
-            this.txtSearch.Size = new System.Drawing.Size(256, 40);
+            this.txtSearch.Size = new System.Drawing.Size(384, 62);
             this.txtSearch.TabIndex = 2;
             // 
             // lblBreadcrumb
@@ -103,7 +108,8 @@
             this.lblBreadcrumb.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblBreadcrumb.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBreadcrumb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(115)))), ((int)(((byte)(128)))));
-            this.lblBreadcrumb.Location = new System.Drawing.Point(27, 55);
+            this.lblBreadcrumb.Location = new System.Drawing.Point(40, 65);
+            this.lblBreadcrumb.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblBreadcrumb.Name = "lblBreadcrumb";
             this.lblBreadcrumb.Size = new System.Drawing.Size(167, 23);
             this.lblBreadcrumb.TabIndex = 1;
@@ -116,7 +122,8 @@
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblTitle.Location = new System.Drawing.Point(27, 18);
+            this.lblTitle.Location = new System.Drawing.Point(40, 28);
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(124, 37);
             this.lblTitle.TabIndex = 0;
@@ -124,11 +131,12 @@
             // 
             // ucHeader
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnlHeader);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ucHeader";
-            this.Size = new System.Drawing.Size(1184, 81);
+            this.Size = new System.Drawing.Size(1776, 125);
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
             this.ResumeLayout(false);
