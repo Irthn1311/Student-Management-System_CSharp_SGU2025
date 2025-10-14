@@ -124,12 +124,12 @@
             // 
             // pnlStatisticsFooter
             // 
-            this.pnlStatisticsFooter.BackColor = System.Drawing.Color.Transparent;
+            this.pnlStatisticsFooter.BackColor = System.Drawing.SystemColors.Control;
             this.pnlStatisticsFooter.Controls.Add(this.btnExportStatistics);
             this.pnlStatisticsFooter.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlStatisticsFooter.Location = new System.Drawing.Point(0, 597);
+            this.pnlStatisticsFooter.Location = new System.Drawing.Point(0, 582);
             this.pnlStatisticsFooter.Name = "pnlStatisticsFooter";
-            this.pnlStatisticsFooter.Size = new System.Drawing.Size(1120, 60);
+            this.pnlStatisticsFooter.Size = new System.Drawing.Size(1120, 75);
             this.pnlStatisticsFooter.TabIndex = 2;
             // 
             // btnExportStatistics
@@ -143,7 +143,7 @@
             this.btnExportStatistics.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnExportStatistics.ForeColor = System.Drawing.Color.White;
             this.btnExportStatistics.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
-            this.btnExportStatistics.Location = new System.Drawing.Point(879, 9);
+            this.btnExportStatistics.Location = new System.Drawing.Point(861, 15);
             this.btnExportStatistics.Name = "btnExportStatistics";
             this.btnExportStatistics.Size = new System.Drawing.Size(238, 48);
             this.btnExportStatistics.TabIndex = 0;
@@ -152,16 +152,16 @@
             // 
             // pnlStatisticsContent
             // 
-            this.pnlStatisticsContent.BackColor = System.Drawing.Color.Transparent;
+            this.pnlStatisticsContent.BackColor = System.Drawing.Color.White;
             this.pnlStatisticsContent.Controls.Add(this.pnlKhoi10);
             this.pnlStatisticsContent.Controls.Add(this.pnlKhoi11);
             this.pnlStatisticsContent.Controls.Add(this.pnlKhoi12);
             this.pnlStatisticsContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlStatisticsContent.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.pnlStatisticsContent.Location = new System.Drawing.Point(0, 40);
+            this.pnlStatisticsContent.Location = new System.Drawing.Point(0, 69);
             this.pnlStatisticsContent.Name = "pnlStatisticsContent";
             this.pnlStatisticsContent.Padding = new System.Windows.Forms.Padding(0, 0, 0, 60);
-            this.pnlStatisticsContent.Size = new System.Drawing.Size(1120, 617);
+            this.pnlStatisticsContent.Size = new System.Drawing.Size(1120, 588);
             this.pnlStatisticsContent.TabIndex = 1;
             this.pnlStatisticsContent.WrapContents = false;
             // 
@@ -173,7 +173,7 @@
             this.pnlKhoi10.Location = new System.Drawing.Point(3, 3);
             this.pnlKhoi10.Margin = new System.Windows.Forms.Padding(3, 3, 3, 20);
             this.pnlKhoi10.Name = "pnlKhoi10";
-            this.pnlKhoi10.Size = new System.Drawing.Size(1096, 140);
+            this.pnlKhoi10.Size = new System.Drawing.Size(1096, 143);
             this.pnlKhoi10.TabIndex = 0;
             // 
             // lblKhoi10Title
@@ -206,6 +206,8 @@
             this.pnlGoi10.BorderRadius = 4;
             this.pnlGoi10.Controls.Add(this.lblGoi10Count);
             this.pnlGoi10.Controls.Add(this.lblGoi10Label);
+            this.pnlGoi10.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
+            this.pnlGoi10.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlGoi10.Location = new System.Drawing.Point(3, 3);
             this.pnlGoi10.Margin = new System.Windows.Forms.Padding(3, 3, 16, 3);
             this.pnlGoi10.Name = "pnlGoi10";
@@ -241,6 +243,8 @@
             this.pnlKha10.BorderRadius = 4;
             this.pnlKha10.Controls.Add(this.lblKha10Count);
             this.pnlKha10.Controls.Add(this.lblKha10Label);
+            this.pnlKha10.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
+            this.pnlKha10.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlKha10.Location = new System.Drawing.Point(277, 3);
             this.pnlKha10.Margin = new System.Windows.Forms.Padding(3, 3, 16, 3);
             this.pnlKha10.Name = "pnlKha10";
@@ -276,6 +280,8 @@
             this.pnlTrungBinh10.BorderRadius = 4;
             this.pnlTrungBinh10.Controls.Add(this.lblTrungBinh10Count);
             this.pnlTrungBinh10.Controls.Add(this.lblTrungBinh10Label);
+            this.pnlTrungBinh10.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(88)))), ((int)(((byte)(12)))));
+            this.pnlTrungBinh10.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlTrungBinh10.Location = new System.Drawing.Point(551, 3);
             this.pnlTrungBinh10.Margin = new System.Windows.Forms.Padding(3, 3, 16, 3);
             this.pnlTrungBinh10.Name = "pnlTrungBinh10";
@@ -311,6 +317,8 @@
             this.pnlYeu10.BorderRadius = 4;
             this.pnlYeu10.Controls.Add(this.lblYeu10Count);
             this.pnlYeu10.Controls.Add(this.lblYeu10Label);
+            this.pnlYeu10.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.pnlYeu10.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlYeu10.Location = new System.Drawing.Point(825, 3);
             this.pnlYeu10.Name = "pnlYeu10";
             this.pnlYeu10.Padding = new System.Windows.Forms.Padding(16, 16, 20, 16);
@@ -344,7 +352,7 @@
             this.pnlKhoi11.BackColor = System.Drawing.Color.Transparent;
             this.pnlKhoi11.Controls.Add(this.lblKhoi11Title);
             this.pnlKhoi11.Controls.Add(this.flpnlKhoi11Stats);
-            this.pnlKhoi11.Location = new System.Drawing.Point(3, 166);
+            this.pnlKhoi11.Location = new System.Drawing.Point(3, 169);
             this.pnlKhoi11.Margin = new System.Windows.Forms.Padding(3, 3, 3, 20);
             this.pnlKhoi11.Name = "pnlKhoi11";
             this.pnlKhoi11.Size = new System.Drawing.Size(1096, 140);
@@ -380,6 +388,8 @@
             this.pnlGoi11.BorderRadius = 4;
             this.pnlGoi11.Controls.Add(this.lblGoi11Count);
             this.pnlGoi11.Controls.Add(this.lblGoi11Label);
+            this.pnlGoi11.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
+            this.pnlGoi11.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlGoi11.Location = new System.Drawing.Point(3, 3);
             this.pnlGoi11.Margin = new System.Windows.Forms.Padding(3, 3, 16, 3);
             this.pnlGoi11.Name = "pnlGoi11";
@@ -415,6 +425,8 @@
             this.pnlKha11.BorderRadius = 4;
             this.pnlKha11.Controls.Add(this.lblKha11Count);
             this.pnlKha11.Controls.Add(this.lblKha11Label);
+            this.pnlKha11.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
+            this.pnlKha11.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlKha11.Location = new System.Drawing.Point(277, 3);
             this.pnlKha11.Margin = new System.Windows.Forms.Padding(3, 3, 16, 3);
             this.pnlKha11.Name = "pnlKha11";
@@ -450,6 +462,8 @@
             this.pnlTrungBinh11.BorderRadius = 4;
             this.pnlTrungBinh11.Controls.Add(this.lblTrungBinh11Count);
             this.pnlTrungBinh11.Controls.Add(this.lblTrungBinh11Label);
+            this.pnlTrungBinh11.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(88)))), ((int)(((byte)(12)))));
+            this.pnlTrungBinh11.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlTrungBinh11.Location = new System.Drawing.Point(551, 3);
             this.pnlTrungBinh11.Margin = new System.Windows.Forms.Padding(3, 3, 16, 3);
             this.pnlTrungBinh11.Name = "pnlTrungBinh11";
@@ -485,6 +499,8 @@
             this.pnlYeu11.BorderRadius = 4;
             this.pnlYeu11.Controls.Add(this.lblYeu11Count);
             this.pnlYeu11.Controls.Add(this.lblYeu11Label);
+            this.pnlYeu11.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.pnlYeu11.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlYeu11.Location = new System.Drawing.Point(825, 3);
             this.pnlYeu11.Name = "pnlYeu11";
             this.pnlYeu11.Padding = new System.Windows.Forms.Padding(16, 16, 20, 16);
@@ -518,7 +534,7 @@
             this.pnlKhoi12.BackColor = System.Drawing.Color.Transparent;
             this.pnlKhoi12.Controls.Add(this.lblKhoi12Title);
             this.pnlKhoi12.Controls.Add(this.flpnlKhoi12Stats);
-            this.pnlKhoi12.Location = new System.Drawing.Point(3, 329);
+            this.pnlKhoi12.Location = new System.Drawing.Point(3, 332);
             this.pnlKhoi12.Margin = new System.Windows.Forms.Padding(3, 3, 3, 20);
             this.pnlKhoi12.Name = "pnlKhoi12";
             this.pnlKhoi12.Size = new System.Drawing.Size(1096, 140);
@@ -554,6 +570,8 @@
             this.pnlGoi12.BorderRadius = 4;
             this.pnlGoi12.Controls.Add(this.lblGoi12Count);
             this.pnlGoi12.Controls.Add(this.lblGoi12Label);
+            this.pnlGoi12.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
+            this.pnlGoi12.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlGoi12.Location = new System.Drawing.Point(3, 3);
             this.pnlGoi12.Margin = new System.Windows.Forms.Padding(3, 3, 16, 3);
             this.pnlGoi12.Name = "pnlGoi12";
@@ -589,6 +607,8 @@
             this.pnlKha12.BorderRadius = 4;
             this.pnlKha12.Controls.Add(this.lblKha12Count);
             this.pnlKha12.Controls.Add(this.lblKha12Label);
+            this.pnlKha12.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
+            this.pnlKha12.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlKha12.Location = new System.Drawing.Point(277, 3);
             this.pnlKha12.Margin = new System.Windows.Forms.Padding(3, 3, 16, 3);
             this.pnlKha12.Name = "pnlKha12";
@@ -624,6 +644,8 @@
             this.pnlTrungBinh12.BorderRadius = 4;
             this.pnlTrungBinh12.Controls.Add(this.lblTrungBinh12Count);
             this.pnlTrungBinh12.Controls.Add(this.lblTrungBinh12Label);
+            this.pnlTrungBinh12.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(88)))), ((int)(((byte)(12)))));
+            this.pnlTrungBinh12.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlTrungBinh12.Location = new System.Drawing.Point(551, 3);
             this.pnlTrungBinh12.Margin = new System.Windows.Forms.Padding(3, 3, 16, 3);
             this.pnlTrungBinh12.Name = "pnlTrungBinh12";
@@ -659,6 +681,8 @@
             this.pnlYeu12.BorderRadius = 4;
             this.pnlYeu12.Controls.Add(this.lblYeu12Count);
             this.pnlYeu12.Controls.Add(this.lblYeu12Label);
+            this.pnlYeu12.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.pnlYeu12.CustomBorderThickness = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.pnlYeu12.Location = new System.Drawing.Point(825, 3);
             this.pnlYeu12.Name = "pnlYeu12";
             this.pnlYeu12.Padding = new System.Windows.Forms.Padding(16, 16, 20, 16);
@@ -689,31 +713,31 @@
             // 
             // pnlStatisticsHeader
             // 
-            this.pnlStatisticsHeader.BackColor = System.Drawing.Color.Transparent;
+            this.pnlStatisticsHeader.BackColor = System.Drawing.Color.White;
             this.pnlStatisticsHeader.Controls.Add(this.lblStatisticsTitle);
             this.pnlStatisticsHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlStatisticsHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlStatisticsHeader.Name = "pnlStatisticsHeader";
-            this.pnlStatisticsHeader.Size = new System.Drawing.Size(1120, 40);
+            this.pnlStatisticsHeader.Size = new System.Drawing.Size(1120, 69);
             this.pnlStatisticsHeader.TabIndex = 0;
             // 
             // lblStatisticsTitle
             // 
             this.lblStatisticsTitle.AutoSize = true;
-            this.lblStatisticsTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.lblStatisticsTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblStatisticsTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblStatisticsTitle.Location = new System.Drawing.Point(0, 8);
+            this.lblStatisticsTitle.Location = new System.Drawing.Point(24, 25);
             this.lblStatisticsTitle.Name = "lblStatisticsTitle";
-            this.lblStatisticsTitle.Size = new System.Drawing.Size(224, 20);
+            this.lblStatisticsTitle.Size = new System.Drawing.Size(218, 21);
             this.lblStatisticsTitle.TabIndex = 0;
             this.lblStatisticsTitle.Text = "Thống kê học lực theo khối";
             // 
-            // ucThongKeHocLuc
+            // ucBaoCaoThongKeHocLuc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnlStatistics);
-            this.Name = "ucThongKeHocLuc";
+            this.Name = "ucBaoCaoThongKeHocLuc";
             this.Size = new System.Drawing.Size(1120, 657);
             this.pnlStatistics.ResumeLayout(false);
             this.pnlStatisticsFooter.ResumeLayout(false);
@@ -765,19 +789,6 @@
         private System.Windows.Forms.FlowLayoutPanel pnlStatisticsContent;
         private Guna.UI2.WinForms.Guna2Panel pnlKhoi10;
         private System.Windows.Forms.Label lblKhoi10Title;
-        private System.Windows.Forms.FlowLayoutPanel flpnlKhoi10Stats;
-        private Guna.UI2.WinForms.Guna2Panel pnlGoi10;
-        private System.Windows.Forms.Label lblGoi10Count;
-        private System.Windows.Forms.Label lblGoi10Label;
-        private Guna.UI2.WinForms.Guna2Panel pnlKha10;
-        private System.Windows.Forms.Label lblKha10Count;
-        private System.Windows.Forms.Label lblKha10Label;
-        private Guna.UI2.WinForms.Guna2Panel pnlTrungBinh10;
-        private System.Windows.Forms.Label lblTrungBinh10Count;
-        private System.Windows.Forms.Label lblTrungBinh10Label;
-        private Guna.UI2.WinForms.Guna2Panel pnlYeu10;
-        private System.Windows.Forms.Label lblYeu10Count;
-        private System.Windows.Forms.Label lblYeu10Label;
         private Guna.UI2.WinForms.Guna2Panel pnlKhoi11;
         private System.Windows.Forms.Label lblKhoi11Title;
         private System.Windows.Forms.FlowLayoutPanel flpnlKhoi11Stats;
@@ -810,5 +821,18 @@
         private System.Windows.Forms.Label lblYeu12Label;
         private Guna.UI2.WinForms.Guna2Panel pnlStatisticsHeader;
         private System.Windows.Forms.Label lblStatisticsTitle;
+        private System.Windows.Forms.FlowLayoutPanel flpnlKhoi10Stats;
+        private Guna.UI2.WinForms.Guna2Panel pnlGoi10;
+        private System.Windows.Forms.Label lblGoi10Count;
+        private System.Windows.Forms.Label lblGoi10Label;
+        private Guna.UI2.WinForms.Guna2Panel pnlKha10;
+        private System.Windows.Forms.Label lblKha10Count;
+        private System.Windows.Forms.Label lblKha10Label;
+        private Guna.UI2.WinForms.Guna2Panel pnlTrungBinh10;
+        private System.Windows.Forms.Label lblTrungBinh10Count;
+        private System.Windows.Forms.Label lblTrungBinh10Label;
+        private Guna.UI2.WinForms.Guna2Panel pnlYeu10;
+        private System.Windows.Forms.Label lblYeu10Count;
+        private System.Windows.Forms.Label lblYeu10Label;
     }
 }
