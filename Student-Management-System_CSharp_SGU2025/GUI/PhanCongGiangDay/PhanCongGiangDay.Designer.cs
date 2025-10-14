@@ -30,6 +30,10 @@
             this.btnTatCaKhoi = new Guna.UI2.WinForms.Guna2Button();
             this.btnLocTheoNam = new Guna.UI2.WinForms.Guna2Button();
             this.btnPhanCongMoi = new Guna.UI2.WinForms.Guna2Button();
+            this.statCardPhanCongGiangDay1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardPhanCongGiangDay();
+            this.statCardPhanCongGiangDay2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardPhanCongGiangDay();
+            this.statCardPhanCongGiangDay3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardPhanCongGiangDay();
+            this.statCardPhanCongGiangDay4 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardPhanCongGiangDay();
             this.panelPhanCongGiangDay.SuspendLayout();
             this.panelShow.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhanCong)).BeginInit();
@@ -58,6 +62,7 @@
             this.panelShow.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.panelShow.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.panelShow.Controls.Add(this.statCardPhanCongGiangDay1, 0, 0);
+            this.panelShow.Controls.Add(this.statCardPhanCongGiangDay2, 1, 0);
             this.panelShow.Controls.Add(this.statCardPhanCongGiangDay3, 2, 0);
             this.panelShow.Controls.Add(this.statCardPhanCongGiangDay4, 3, 0);
             this.panelShow.Controls.Add(this.statCardPhanCongGiangDay2, 1, 0);
@@ -195,6 +200,46 @@
             this.btnPhanCongMoi.Size = new System.Drawing.Size(180, 45);
             this.btnPhanCongMoi.TabIndex = 1;
             this.btnPhanCongMoi.Text = "Phân công mới";
+            // 
+            // statCardPhanCongGiangDay1
+            // 
+            this.statCardPhanCongGiangDay1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.statCardPhanCongGiangDay1.Location = new System.Drawing.Point(3, 3);
+            this.statCardPhanCongGiangDay1.Name = "statCardPhanCongGiangDay1";
+            this.statCardPhanCongGiangDay1.Size = new System.Drawing.Size(278, 126);
+            this.statCardPhanCongGiangDay1.TabIndex = 0;
+            this.statCardPhanCongGiangDay1.Title = "Tên Card";
+            this.statCardPhanCongGiangDay1.Value = "Số lượng";
+            // 
+            // statCardPhanCongGiangDay2
+            // 
+            this.statCardPhanCongGiangDay2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.statCardPhanCongGiangDay2.Location = new System.Drawing.Point(287, 3);
+            this.statCardPhanCongGiangDay2.Name = "statCardPhanCongGiangDay2";
+            this.statCardPhanCongGiangDay2.Size = new System.Drawing.Size(278, 126);
+            this.statCardPhanCongGiangDay2.TabIndex = 1;
+            this.statCardPhanCongGiangDay2.Title = "Tên Card";
+            this.statCardPhanCongGiangDay2.Value = "Số lượng";
+            // 
+            // statCardPhanCongGiangDay3
+            // 
+            this.statCardPhanCongGiangDay3.BackColor = System.Drawing.SystemColors.Window;
+            this.statCardPhanCongGiangDay3.Location = new System.Drawing.Point(571, 3);
+            this.statCardPhanCongGiangDay3.Name = "statCardPhanCongGiangDay3";
+            this.statCardPhanCongGiangDay3.Size = new System.Drawing.Size(278, 126);
+            this.statCardPhanCongGiangDay3.TabIndex = 2;
+            this.statCardPhanCongGiangDay3.Title = "Tên Card";
+            this.statCardPhanCongGiangDay3.Value = "Số lượng";
+            // 
+            // statCardPhanCongGiangDay4
+            // 
+            this.statCardPhanCongGiangDay4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.statCardPhanCongGiangDay4.Location = new System.Drawing.Point(855, 3);
+            this.statCardPhanCongGiangDay4.Name = "statCardPhanCongGiangDay4";
+            this.statCardPhanCongGiangDay4.Size = new System.Drawing.Size(278, 126);
+            this.statCardPhanCongGiangDay4.TabIndex = 3;
+            this.statCardPhanCongGiangDay4.Title = "Tên Card";
+            this.statCardPhanCongGiangDay4.Value = "Số lượng";
             // 
             // PhanCongGiangDay
             // 

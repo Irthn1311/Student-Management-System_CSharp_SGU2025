@@ -34,6 +34,22 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelMonHoc = new Guna.UI2.WinForms.Guna2Panel();
             this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
+            this.panelMonChinh = new Guna.UI2.WinForms.Guna2Panel();
+            this.guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2HtmlLabel3 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.panelKNK = new Guna.UI2.WinForms.Guna2Panel();
+            this.guna2HtmlLabel10 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2HtmlLabel11 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2HtmlLabel12 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.panelKHXH = new Guna.UI2.WinForms.Guna2Panel();
+            this.guna2HtmlLabel7 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2HtmlLabel8 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2HtmlLabel9 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.panelKHTN = new Guna.UI2.WinForms.Guna2Panel();
+            this.guna2HtmlLabel4 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2HtmlLabel5 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2HtmlLabel6 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.dgvMonHoc = new Guna.UI2.WinForms.Guna2DataGridView();
             this.MaMon = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TenMon = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,6 +61,10 @@
             this.statcardMonHoc2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
             this.statcardMonHoc1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
             this.panelMonHoc.SuspendLayout();
+            this.panelMonChinh.SuspendLayout();
+            this.panelKNK.SuspendLayout();
+            this.panelKHXH.SuspendLayout();
+            this.panelKHTN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMonHoc)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,6 +76,11 @@
             this.panelMonHoc.Controls.Add(this.statcardMonHoc2);
             this.panelMonHoc.Controls.Add(this.statcardMonHoc1);
             this.panelMonHoc.Controls.Add(this.guna2Button1);
+            this.panelMonHoc.Controls.Add(this.panelMonChinh);
+            this.panelMonHoc.Controls.Add(this.panelKNK);
+            this.panelMonHoc.Controls.Add(this.panelKHXH);
+            this.panelMonHoc.Controls.Add(this.panelKHTN);
+            this.panelMonHoc.Controls.Add(this.dgvMonHoc);
             this.panelMonHoc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMonHoc.Location = new System.Drawing.Point(0, 0);
             this.panelMonHoc.Name = "panelMonHoc";
@@ -73,6 +98,179 @@
             this.guna2Button1.Size = new System.Drawing.Size(174, 40);
             this.guna2Button1.TabIndex = 0;
             this.guna2Button1.Text = "+ Thêm môn học";
+            // 
+            // panelMonChinh
+            // 
+            this.panelMonChinh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.panelMonChinh.BorderRadius = 10;
+            this.panelMonChinh.Controls.Add(this.guna2HtmlLabel1);
+            this.panelMonChinh.Controls.Add(this.guna2HtmlLabel2);
+            this.panelMonChinh.Controls.Add(this.guna2HtmlLabel3);
+            this.panelMonChinh.Location = new System.Drawing.Point(20, 80);
+            this.panelMonChinh.Name = "panelMonChinh";
+            this.panelMonChinh.Size = new System.Drawing.Size(250, 120);
+            this.panelMonChinh.TabIndex = 2;
+            // 
+            // guna2HtmlLabel1
+            // 
+            this.guna2HtmlLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.guna2HtmlLabel1.Location = new System.Drawing.Point(56, 38);
+            this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
+            this.guna2HtmlLabel1.Size = new System.Drawing.Size(94, 27);
+            this.guna2HtmlLabel1.TabIndex = 0;
+            this.guna2HtmlLabel1.Text = "Môn chính";
+            // 
+            // guna2HtmlLabel2
+            // 
+            this.guna2HtmlLabel2.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel2.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.guna2HtmlLabel2.Location = new System.Drawing.Point(90, 0);
+            this.guna2HtmlLabel2.Name = "guna2HtmlLabel2";
+            this.guna2HtmlLabel2.Size = new System.Drawing.Size(15, 32);
+            this.guna2HtmlLabel2.TabIndex = 1;
+            this.guna2HtmlLabel2.Text = "3";
+            this.guna2HtmlLabel2.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+
+            // 
+            // guna2HtmlLabel3
+            // 
+            this.guna2HtmlLabel3.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel3.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.guna2HtmlLabel3.Location = new System.Drawing.Point(56, 71);
+            this.guna2HtmlLabel3.Name = "guna2HtmlLabel3";
+            this.guna2HtmlLabel3.Size = new System.Drawing.Size(81, 22);
+            this.guna2HtmlLabel3.TabIndex = 2;
+            this.guna2HtmlLabel3.Text = "[Danh sách]";
+            // 
+            // panelKNK
+            // 
+            this.panelKNK.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.panelKNK.BorderRadius = 10;
+            this.panelKNK.Controls.Add(this.guna2HtmlLabel10);
+            this.panelKNK.Controls.Add(this.guna2HtmlLabel11);
+            this.panelKNK.Controls.Add(this.guna2HtmlLabel12);
+            this.panelKNK.Location = new System.Drawing.Point(914, 80);
+            this.panelKNK.Name = "panelKNK";
+            this.panelKNK.Size = new System.Drawing.Size(250, 120);
+            this.panelKNK.TabIndex = 3;
+            // 
+            // guna2HtmlLabel10
+            // 
+            this.guna2HtmlLabel10.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel10.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.guna2HtmlLabel10.Location = new System.Drawing.Point(84, 75);
+            this.guna2HtmlLabel10.Name = "guna2HtmlLabel10";
+            this.guna2HtmlLabel10.Size = new System.Drawing.Size(81, 22);
+            this.guna2HtmlLabel10.TabIndex = 5;
+            this.guna2HtmlLabel10.Text = "[Danh sách]";
+            // 
+            // guna2HtmlLabel11
+            // 
+            this.guna2HtmlLabel11.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel11.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.guna2HtmlLabel11.Location = new System.Drawing.Point(113, 3);
+            this.guna2HtmlLabel11.Name = "guna2HtmlLabel11";
+            this.guna2HtmlLabel11.Size = new System.Drawing.Size(15, 32);
+            this.guna2HtmlLabel11.TabIndex = 4;
+            this.guna2HtmlLabel11.Text = "3";
+            this.guna2HtmlLabel11.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // guna2HtmlLabel12
+            // 
+            this.guna2HtmlLabel12.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel12.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.guna2HtmlLabel12.Location = new System.Drawing.Point(65, 41);
+            this.guna2HtmlLabel12.Name = "guna2HtmlLabel12";
+            this.guna2HtmlLabel12.Size = new System.Drawing.Size(118, 27);
+            this.guna2HtmlLabel12.TabIndex = 3;
+            this.guna2HtmlLabel12.Text = "Kỹ năng khác";
+            // 
+            // panelKHXH
+            // 
+            this.panelKHXH.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.panelKHXH.BorderRadius = 10;
+            this.panelKHXH.Controls.Add(this.guna2HtmlLabel7);
+            this.panelKHXH.Controls.Add(this.guna2HtmlLabel8);
+            this.panelKHXH.Controls.Add(this.guna2HtmlLabel9);
+            this.panelKHXH.Location = new System.Drawing.Point(618, 80);
+            this.panelKHXH.Name = "panelKHXH";
+            this.panelKHXH.Size = new System.Drawing.Size(250, 120);
+            this.panelKHXH.TabIndex = 3;
+            // 
+            // guna2HtmlLabel7
+            // 
+            this.guna2HtmlLabel7.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel7.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.guna2HtmlLabel7.Location = new System.Drawing.Point(84, 75);
+            this.guna2HtmlLabel7.Name = "guna2HtmlLabel7";
+            this.guna2HtmlLabel7.Size = new System.Drawing.Size(81, 22);
+            this.guna2HtmlLabel7.TabIndex = 5;
+            this.guna2HtmlLabel7.Text = "[Danh sách]";
+            // 
+            // guna2HtmlLabel8
+            // 
+            this.guna2HtmlLabel8.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel8.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.guna2HtmlLabel8.Location = new System.Drawing.Point(110, 3);
+            this.guna2HtmlLabel8.Name = "guna2HtmlLabel8";
+            this.guna2HtmlLabel8.Size = new System.Drawing.Size(15, 32);
+            this.guna2HtmlLabel8.TabIndex = 4;
+            this.guna2HtmlLabel8.Text = "2";
+            this.guna2HtmlLabel8.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // guna2HtmlLabel9
+            // 
+            this.guna2HtmlLabel9.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel9.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.guna2HtmlLabel9.Location = new System.Drawing.Point(62, 41);
+            this.guna2HtmlLabel9.Name = "guna2HtmlLabel9";
+            this.guna2HtmlLabel9.Size = new System.Drawing.Size(140, 27);
+            this.guna2HtmlLabel9.TabIndex = 3;
+            this.guna2HtmlLabel9.Text = "Khoa học xã hội";
+            // 
+            // panelKHTN
+            // 
+            this.panelKHTN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.panelKHTN.BorderRadius = 10;
+            this.panelKHTN.Controls.Add(this.guna2HtmlLabel4);
+            this.panelKHTN.Controls.Add(this.guna2HtmlLabel5);
+            this.panelKHTN.Controls.Add(this.guna2HtmlLabel6);
+            this.panelKHTN.Location = new System.Drawing.Point(318, 80);
+            this.panelKHTN.Name = "panelKHTN";
+            this.panelKHTN.Size = new System.Drawing.Size(250, 120);
+            this.panelKHTN.TabIndex = 3;
+            // 
+            // guna2HtmlLabel4
+            // 
+            this.guna2HtmlLabel4.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel4.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.guna2HtmlLabel4.Location = new System.Drawing.Point(82, 75);
+            this.guna2HtmlLabel4.Name = "guna2HtmlLabel4";
+            this.guna2HtmlLabel4.Size = new System.Drawing.Size(81, 22);
+            this.guna2HtmlLabel4.TabIndex = 5;
+            this.guna2HtmlLabel4.Text = "[Danh sách]";
+            // 
+            // guna2HtmlLabel5
+            // 
+            this.guna2HtmlLabel5.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel5.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.guna2HtmlLabel5.Location = new System.Drawing.Point(108, 3);
+            this.guna2HtmlLabel5.Name = "guna2HtmlLabel5";
+            this.guna2HtmlLabel5.Size = new System.Drawing.Size(15, 32);
+            this.guna2HtmlLabel5.TabIndex = 4;
+            this.guna2HtmlLabel5.Text = "3";
+            this.guna2HtmlLabel5.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // guna2HtmlLabel6
+            // 
+            this.guna2HtmlLabel6.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel6.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.guna2HtmlLabel6.Location = new System.Drawing.Point(48, 41);
+            this.guna2HtmlLabel6.Name = "guna2HtmlLabel6";
+            this.guna2HtmlLabel6.Size = new System.Drawing.Size(160, 27);
+            this.guna2HtmlLabel6.TabIndex = 3;
+            this.guna2HtmlLabel6.Text = "Khoa học tự nhiên";
             // 
             // dgvMonHoc
             // 
@@ -215,6 +413,14 @@
             this.Size = new System.Drawing.Size(1184, 819);
             this.Load += new System.EventHandler(this.FrmMonHoc_Load);
             this.panelMonHoc.ResumeLayout(false);
+            this.panelMonChinh.ResumeLayout(false);
+            this.panelMonChinh.PerformLayout();
+            this.panelKNK.ResumeLayout(false);
+            this.panelKNK.PerformLayout();
+            this.panelKHXH.ResumeLayout(false);
+            this.panelKHXH.PerformLayout();
+            this.panelKHTN.ResumeLayout(false);
+            this.panelKHTN.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMonHoc)).EndInit();
             this.ResumeLayout(false);
 
@@ -224,7 +430,23 @@
 
         private Guna.UI2.WinForms.Guna2Panel panelMonHoc;
         private Guna.UI2.WinForms.Guna2Button guna2Button1;
+        private Guna.UI2.WinForms.Guna2Panel panelKNK;
+        private Guna.UI2.WinForms.Guna2Panel panelKHXH;
+        private Guna.UI2.WinForms.Guna2Panel panelKHTN;
+        private Guna.UI2.WinForms.Guna2Panel panelMonChinh;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel2;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel3;
         private Guna.UI2.WinForms.Guna2DataGridView dgvMonHoc;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel10;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel11;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel12;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel7;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel8;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel9;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel4;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel5;
+        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel6;
         private System.Windows.Forms.DataGridViewTextBoxColumn MaMon;
         private System.Windows.Forms.DataGridViewTextBoxColumn TenMon;
         private System.Windows.Forms.DataGridViewTextBoxColumn SoTiet;

@@ -42,6 +42,7 @@
             this.panelMain.Controls.Add(this.lblSoHocSinh);
             this.panelMain.Controls.Add(this.lblSoLop);
             this.panelMain.Controls.Add(this.lblTenKhoi);
+            this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 0);
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(229, 114);

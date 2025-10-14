@@ -36,12 +36,15 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lbChaoMung2 = new System.Windows.Forms.Label();
             this.lbChaoMung1 = new System.Windows.Forms.Label();
+            this.logoChaoMung = new Guna.UI2.WinForms.Guna2Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lbTenDangNhap = new System.Windows.Forms.Label();
             this.lbMatKhau = new System.Windows.Forms.Label();
             this.btnDangNhap = new Guna.UI2.WinForms.Guna2Button();
             this.linkLbQuenMatKhau = new System.Windows.Forms.LinkLabel();
+            this.txtMatKhau = new Guna.UI2.WinForms.Guna2TextBox();
+            this.txtTenDangNhap = new Guna.UI2.WinForms.Guna2TextBox();
             this.lbVaiTro = new System.Windows.Forms.Label();
             this.cbVaiTro = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbGhiNhoDangNhap = new System.Windows.Forms.CheckBox();
@@ -158,6 +161,16 @@
             this.lbChaoMung1.Text = "Hệ Thống \r\nQuản Lí Học Sinh";
             this.lbChaoMung1.Click += new System.EventHandler(this.label1_Click);
             // 
+            // logoChaoMung
+            // 
+            this.logoChaoMung.BackColor = System.Drawing.Color.Transparent;
+            this.logoChaoMung.BackgroundImage = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.school;
+            this.logoChaoMung.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.logoChaoMung.Location = new System.Drawing.Point(136, 197);
+            this.logoChaoMung.Name = "logoChaoMung";
+            this.logoChaoMung.Size = new System.Drawing.Size(90, 93);
+            this.logoChaoMung.TabIndex = 0;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -241,6 +254,52 @@
             this.linkLbQuenMatKhau.TabIndex = 10;
             this.linkLbQuenMatKhau.TabStop = true;
             this.linkLbQuenMatKhau.Text = "Quên mật khẩu ?";
+            // 
+            // txtMatKhau
+            // 
+            this.txtMatKhau.BorderRadius = 7;
+            this.txtMatKhau.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtMatKhau.DefaultText = "";
+            this.txtMatKhau.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtMatKhau.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtMatKhau.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtMatKhau.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtMatKhau.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtMatKhau.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtMatKhau.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtMatKhau.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.padlock;
+            this.txtMatKhau.IconLeftOffset = new System.Drawing.Point(10, 0);
+            this.txtMatKhau.Location = new System.Drawing.Point(846, 406);
+            this.txtMatKhau.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtMatKhau.Name = "txtMatKhau";
+            this.txtMatKhau.PlaceholderText = "Nhập mật khẩu";
+            this.txtMatKhau.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtMatKhau.SelectedText = "";
+            this.txtMatKhau.Size = new System.Drawing.Size(466, 40);
+            this.txtMatKhau.TabIndex = 8;
+            // 
+            // txtTenDangNhap
+            // 
+            this.txtTenDangNhap.BorderRadius = 7;
+            this.txtTenDangNhap.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtTenDangNhap.DefaultText = "";
+            this.txtTenDangNhap.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtTenDangNhap.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtTenDangNhap.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtTenDangNhap.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtTenDangNhap.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtTenDangNhap.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtTenDangNhap.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtTenDangNhap.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.people2;
+            this.txtTenDangNhap.IconLeftOffset = new System.Drawing.Point(10, 0);
+            this.txtTenDangNhap.Location = new System.Drawing.Point(846, 305);
+            this.txtTenDangNhap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtTenDangNhap.Name = "txtTenDangNhap";
+            this.txtTenDangNhap.PlaceholderText = "Nhập tên đăng nhập";
+            this.txtTenDangNhap.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtTenDangNhap.SelectedText = "";
+            this.txtTenDangNhap.Size = new System.Drawing.Size(466, 40);
+            this.txtTenDangNhap.TabIndex = 6;
             // 
             // lbVaiTro
             // 

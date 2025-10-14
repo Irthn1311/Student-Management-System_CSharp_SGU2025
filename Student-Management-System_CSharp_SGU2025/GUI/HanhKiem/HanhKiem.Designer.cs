@@ -40,6 +40,7 @@
             this.statCardChuaDanhGiaHanhKiem = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardHanhKiemYeu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.btnLuuHanhKiem = new Guna.UI2.WinForms.Guna2Button();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.tableHanhKiem = new Guna.UI2.WinForms.Guna2DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -173,6 +174,13 @@
             this.btnLuuHanhKiem.Text = "Lưu hạnh kiểm";
             this.btnLuuHanhKiem.Click += new System.EventHandler(this.btnLuuHanhKiem_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(237, 780);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(200, 64);
+            this.panel1.TabIndex = 28;
+            // 
             // tableHanhKiem
             // 
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
@@ -275,6 +283,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.Controls.Add(this.tableHanhKiem);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnLuuHanhKiem);
             this.Controls.Add(this.statCardHanhKiemYeu);
             this.Controls.Add(this.statCardChuaDanhGiaHanhKiem);
@@ -304,6 +313,7 @@
         private StatCardQuanLiHocSinh statCardChuaDanhGiaHanhKiem;
         private StatCardQuanLiHocSinh statCardHanhKiemYeu;
         private Guna.UI2.WinForms.Guna2Button btnLuuHanhKiem;
+        private System.Windows.Forms.Panel panel1;
         private Guna.UI2.WinForms.Guna2DataGridView tableHanhKiem;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;

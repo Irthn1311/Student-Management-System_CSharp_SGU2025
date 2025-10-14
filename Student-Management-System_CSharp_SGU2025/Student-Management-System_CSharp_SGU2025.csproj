@@ -223,56 +223,14 @@
     <Compile Include="GUI\RecentActivityItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\RecentActivityItem.Designer.cs">
-      <DependentUpon>RecentActivityItem.cs</DependentUpon>
+    <Compile Include="GUI\HanhKiem\HanhKiem.Designer.cs">
+      <DependentUpon>HanhKiem.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\StatCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\StatCard.Designer.cs">
       <DependentUpon>StatCard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.Designer.cs">
-      <DependentUpon>ucBaoCaoBangDiem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCao.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCao.Designer.cs">
-      <DependentUpon>ucBaoCao.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoDanhSachLop.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoDanhSachLop.Designer.cs">
-      <DependentUpon>ucBaoCaoDanhSachLop.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Dashboard\ucDashboard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\Dashboard\ucDashboard.Designer.cs">
-      <DependentUpon>ucDashboard.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Controls\ucHeader.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\ucHeader.Designer.cs">
-      <DependentUpon>ucHeader.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Controls\ucSidebar.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\ucSidebar.Designer.cs">
-      <DependentUpon>ucSidebar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\BaoCao\ucBaoCaoThongKeHocLuc.Designer.cs">
-      <DependentUpon>ucBaoCaoThongKeHocLuc.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\BaoCao\ucBaoCaoBangDiem.cs">
       <SubType>UserControl</SubType>
@@ -420,24 +378,34 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="GUI\GiaBao\bin\Debug\net8.0-windows\WinFormsApp2.deps.json" />
+    <None Include="GUI\GiaBao\bin\Debug\net8.0-windows\WinFormsApp2.runtimeconfig.json" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinForms.CF340A35.Up2Date" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.AssemblyInfoInputs.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.assets.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.AssemblyReference.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.BuildWithSkipAnalyzers" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.CoreCompileInputs.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.csproj.GenerateResource.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.designer.deps.json" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.designer.runtimeconfig.json" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.GeneratedMSBuildEditorConfig.editorconfig" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.genruntimeconfig.cache" />
+    <None Include="GUI\GiaBao\obj\Debug\net8.0-windows\WinFormsApp2.sourcelink.json" />
+    <None Include="GUI\GiaBao\obj\project.assets.json" />
+    <None Include="GUI\GiaBao\obj\project.nuget.cache" />
+    <None Include="GUI\GiaBao\obj\WinFormsApp2.csproj.nuget.dgspec.json" />
+    <None Include="GUI\GiaBao\obj\WinFormsApp2.csproj.nuget.g.props" />
+    <None Include="GUI\GiaBao\obj\WinFormsApp2.csproj.nuget.g.targets" />
+    <None Include="GUI\GiaBao\WinFormsApp2.csproj" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BUS\" />
