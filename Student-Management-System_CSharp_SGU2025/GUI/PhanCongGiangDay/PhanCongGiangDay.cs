@@ -3,6 +3,7 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
+using System.Drawing.Imaging;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
 {
@@ -64,48 +65,85 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
                 panelShow.Controls.Add(cards[i]);
             }
             */
-          
-        
+
+
             // Ví dụ dữ liệu mẫu
             statCardPhanCongGiangDay1.Title = "Tổng phân công";
             statCardPhanCongGiangDay1.Value = "36";
 
             statCardPhanCongGiangDay2.Title = "Giáo viên";
             statCardPhanCongGiangDay2.Value = "36";
+            statCardPhanCongGiangDay2.TitleColor = Color.FromArgb(30, 136, 229);
 
             statCardPhanCongGiangDay3.Title = "Môn học";
             statCardPhanCongGiangDay3.Value = "20";
+            statCardPhanCongGiangDay3.TitleColor = Color.FromArgb(20, 163, 74);
 
             statCardPhanCongGiangDay4.Title = "Lớp học";
             statCardPhanCongGiangDay4.Value = "235";
-        
+            statCardPhanCongGiangDay4.TitleColor = Color.FromArgb(234, 88, 12);
+
 
         }
         
 
         private void LoadData()
         {
+            // ===================================
+            // 1️⃣ CẤU HÌNH DATAGRIDVIEW
+            // ===================================
+
+            // --- Cài đặt cơ bản ---
+            dgvPhanCong.Columns.Clear();
+            dgvPhanCong.Rows.Clear();
             dgvPhanCong.AutoGenerateColumns = false;
             dgvPhanCong.AllowUserToAddRows = false;
-            dgvPhanCong.RowTemplate.Height = 40;
             dgvPhanCong.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvPhanCong.ReadOnly = true;
-            dgvPhanCong.Columns.Clear(); // xóa cột cũ (nếu có)
 
-            // ==== Tạo cột thủ công ====
-            dgvPhanCong.Columns.Add("Giáo viên", "Giáo viên");
-            dgvPhanCong.Columns.Add("Môn học", "Môn học");
-            dgvPhanCong.Columns.Add("Lớp", "Lớp");
-            dgvPhanCong.Columns.Add("Học kỳ", "Học kỳ");
-            dgvPhanCong.Columns.Add("Số tiết", "Số tiết");
+            // --- Thiết lập giao diện ---
+            dgvPhanCong.BackgroundColor = Color.White;
+            dgvPhanCong.BorderStyle = BorderStyle.None;
+            dgvPhanCong.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvPhanCong.RowHeadersVisible = false;
 
-            // Cột thao tác
-            DataGridViewTextBoxColumn thaoTac = new DataGridViewTextBoxColumn();
-            thaoTac.Name = "ThaoTac";
-            thaoTac.HeaderText = "Thao tác";
-            dgvPhanCong.Columns.Add(thaoTac);
+            // --- Style cho tiêu đề cột ---
+            dgvPhanCong.EnableHeadersVisualStyles = false;
+            dgvPhanCong.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvPhanCong.ColumnHeadersHeight = 50; // Tăng chiều cao tiêu đề
+            dgvPhanCong.ColumnHeadersDefaultCellStyle.BackColor = Color.White; // Nền trắng cho tiêu đề
+            dgvPhanCong.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(100, 116, 139); // Màu chữ xám cho tiêu đề
+            dgvPhanCong.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            dgvPhanCong.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.White; // Ngăn đổi màu khi click
+            dgvPhanCong.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Căn giữa tiêu đề
 
-            // ==== Thêm dữ liệu mẫu ====
+            // --- Style cho các dòng dữ liệu ---
+            dgvPhanCong.RowTemplate.Height = 45; // Tăng chiều cao dòng
+            dgvPhanCong.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
+            dgvPhanCong.DefaultCellStyle.ForeColor = Color.FromArgb(30, 41, 59); // Màu chữ chính
+            dgvPhanCong.DefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252); // Màu nền khi chọn dòng
+            dgvPhanCong.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59); // Màu chữ khi chọn dòng
+            dgvPhanCong.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Căn giữa nội dung
+            dgvPhanCong.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252); // Màu xen kẽ cho dễ nhìn
+
+            // ===================================
+            // 2️⃣ TẠO CỘT VÀ THIẾT LẬP ĐỘ RỘNG
+            // ===================================
+            dgvPhanCong.Columns.Add("GiaoVien", "Giáo viên");
+            dgvPhanCong.Columns.Add("MonHoc", "Môn học");
+            dgvPhanCong.Columns.Add("Lop", "Lớp");
+            dgvPhanCong.Columns.Add("HocKy", "Học kỳ");
+            dgvPhanCong.Columns.Add("SoTiet", "Số tiết");
+            dgvPhanCong.Columns.Add("ThaoTac", "Thao tác");
+
+            // Thiết lập chế độ co giãn
+            dgvPhanCong.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvPhanCong.Columns["ThaoTac"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvPhanCong.Columns["ThaoTac"].Width = 80;
+
+            // ===================================
+            // 3️⃣ NẠP DỮ LIỆU MẪU
+            // ===================================
             dgvPhanCong.Rows.Add("Nguyễn Thị Hoa", "Toán học", "10A1", "HK I", "5 tiết/tuần");
             dgvPhanCong.Rows.Add("Trần Văn Nam", "Ngữ văn", "10A1", "HK I", "5 tiết/tuần");
             dgvPhanCong.Rows.Add("Lê Thị Mai", "Tiếng Anh", "10A2", "HK I", "4 tiết/tuần");
@@ -115,13 +153,36 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
             dgvPhanCong.Rows.Add("Đỗ Thị Thu", "Lịch sử", "12A1", "HK I", "2 tiết/tuần");
             dgvPhanCong.Rows.Add("Bùi Văn Toàn", "Địa lý", "12A2", "HK I", "2 tiết/tuần");
 
-            // ==== Gắn sự kiện ====
+            // ===================================
+            // 4️⃣ GẮN SỰ KIỆN
+            // ===================================
             dgvPhanCong.CellPainting += dgvPhanCong_CellPainting;
             dgvPhanCong.CellClick += dgvPhanCong_CellClick;
         }
 
         private void dgvPhanCong_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
+            // --- Tô màu cho cột "Lớp" ---
+            if (dgvPhanCong.Columns[e.ColumnIndex].Name == "Lop")
+            {
+                string lopText = e.Value?.ToString();
+                if (!string.IsNullOrEmpty(lopText))
+                {
+                    if (lopText.StartsWith("10"))
+                    {
+                        e.CellStyle.ForeColor = Color.FromArgb(59, 130, 246);   // Màu xanh dương
+                    }
+                    else if (lopText.StartsWith("11"))
+                    {
+                        e.CellStyle.ForeColor = Color.FromArgb(34, 197, 94);    // Màu xanh lá
+                    }
+                    else if (lopText.StartsWith("12"))
+                    {
+                        e.CellStyle.ForeColor = Color.FromArgb(249, 115, 22);   // Màu cam
+                    }
+                }
+            }
+
             // Kiểm tra nếu đang vẽ ô trong cột "TuyChinh"
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvPhanCong.Columns["ThaoTac"].Index)
             {
@@ -142,9 +203,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
 
         private void dgvPhanCong_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // Chỉ xử lý khi click vào cột "ThaoTac" và không phải hàng tiêu đề
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvPhanCong.Columns["ThaoTac"].Index)
             {
-                string gv = dgvPhanCong.Rows[e.RowIndex].Cells["Giáo viên"].Value.ToString();
+                // SỬA LẠI TÊN CỘT Ở ĐÂY
+                string gv = dgvPhanCong.Rows[e.RowIndex].Cells["GiaoVien"].Value.ToString();
+
                 if (MessageBox.Show($"Xóa phân công của {gv}?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     dgvPhanCong.Rows.RemoveAt(e.RowIndex);
@@ -158,6 +222,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
         }
 
         private void panelShow_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panelPhanCongGiangDay_Paint(object sender, PaintEventArgs e)
         {
 
         }

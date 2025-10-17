@@ -26,7 +26,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void FrmLopHocComponent_Load(object sender, EventArgs e)
         {
-
+            lbHeader.BackColor = guna2HtmlLabel1.BackColor;
         }
 
         private void guna2HtmlLabel6_Click(object sender, EventArgs e)
@@ -81,6 +81,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         private void guna2PictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lbHeader_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void txtSoHocSinh_TextChanged(object sender, EventArgs e)
         {
 
         }

@@ -14,32 +14,74 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void FrmMonHoc_Load(object sender, EventArgs e)
         {
-            // ==== Cấu hình DataGridView ====
+            // ===================================
+            // 1️⃣ CẤU HÌNH DATAGRIDVIEW
+            // ===================================
+
+            // --- Cài đặt cơ bản ---
             dgvMonHoc.AutoGenerateColumns = false;
             dgvMonHoc.AllowUserToAddRows = false;
-            dgvMonHoc.RowTemplate.Height = 40;
+            dgvMonHoc.RowTemplate.Height = 40; // Chiều cao mỗi dòng dữ liệu
 
-            // ==== Thêm dữ liệu mẫu ====
+            // --- Style cho tiêu đề cột ---
+            dgvMonHoc.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            dgvMonHoc.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 136, 229); // <-- Thay đổi màu nền tiêu đề
+            dgvMonHoc.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvMonHoc.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(30, 136, 229); // <-- Ngăn đổi màu khi click
+            dgvMonHoc.ColumnHeadersHeight = 40; // <-- Tăng chiều cao tiêu đề
+            dgvMonHoc.EnableHeadersVisualStyles = false;
+
+            // --- Style cho các dòng dữ liệu ---
+            dgvMonHoc.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
+            dgvMonHoc.DefaultCellStyle.SelectionBackColor = Color.FromArgb(230, 240, 255);
+            dgvMonHoc.DefaultCellStyle.SelectionForeColor = Color.Black;
+
+            // ===================================
+            // 2️⃣ NẠP DỮ LIỆU MẪU
+            // ===================================
+            dgvMonHoc.Rows.Clear(); // Xóa dữ liệu cũ trước khi nạp mới
             dgvMonHoc.Rows.Add("TOAN", "Toán học", "5 tiết", "Môn chính");
             dgvMonHoc.Rows.Add("VAN", "Ngữ văn", "5 tiết", "Môn chính");
             dgvMonHoc.Rows.Add("LY", "Vật lý", "3 tiết", "Tự nhiên");
+            dgvMonHoc.Rows.Add("HOA", "Hóa học", "3 tiết", "Tự nhiên");
+            dgvMonHoc.Rows.Add("SINH", "Sinh học", "3 tiết", "Tự nhiên");
+            dgvMonHoc.Rows.Add("SU", "Lịch sử", "2 tiết", "Xã hội");
+            dgvMonHoc.Rows.Add("DIA", "Địa lý", "2 tiết", "Xã hội");
+            dgvMonHoc.Rows.Add("GDCD", "Giáo dục công dân", "1 tiết", "Xã hội");
+            dgvMonHoc.Rows.Add("TIN", "Tin học", "2 tiết", "Kỹ năng khác");
+            dgvMonHoc.Rows.Add("TD", "Thể dục", "2 tiết", "Kỹ năng khác");
+            dgvMonHoc.Rows.Add("QPAN", "Giáo dục Quốc phòng", "2 tiết", "Kỹ năng khác");
+            dgvMonHoc.Rows.Add("NHAC", "Âm nhạc", "1 tiết", "Nghệ thuật");
+            dgvMonHoc.Rows.Add("MT", "Mỹ thuật", "1 tiết", "Nghệ thuật");
 
-            // ==== Gắn sự kiện ====
+            // ===================================
+            // 3️⃣ GẮN SỰ KIỆN
+            // ===================================
             dgvMonHoc.CellPainting += dgvMonHoc_CellPainting;
             dgvMonHoc.CellClick += dgvMonHoc_CellClick;
 
-
-
-
-            // --- Thông tin thống kê 3 khối ---
+            // ===================================
+            // 4️⃣ THIẾT LẬP CÁC STAT CARD
+            // ===================================
+            // Card 1
             statcardMonHoc1.SetData("4", "Môn chính", "Toán,Văn,Anh");
-            statcardMonHoc2.SetData("3", "Khoa học tự nhiên", "Lý,Hóa,Sinh");
-            statcardMonHoc3.SetData("3", "Khoa học xã hội", "GDCD,Sử,Địa");
-            statcardMonHoc4.SetData("3", "Kỹ năng khác", "GDCD,TD,Qp");
+            statcardMonHoc1.PanelBackgroundColor = Color.FromArgb(219, 234, 254);
+            statcardMonHoc1.SoLuongForeColor = Color.FromArgb(30, 136, 229);
 
-            // --- Cấu hình & nạp dữ liệu ---
-          
-        
+            // Card 2
+            statcardMonHoc2.SetData("3", "Khoa học tự nhiên", "Lý,Hóa,Sinh");
+            statcardMonHoc2.PanelBackgroundColor = Color.FromArgb(220, 252, 231);
+            statcardMonHoc2.SoLuongForeColor = Color.FromArgb(22, 163, 74);
+
+            // Card 3
+            statcardMonHoc3.SetData("3", "Khoa học xã hội", "GDCD,Sử,Địa");
+            statcardMonHoc3.PanelBackgroundColor = Color.FromArgb(255, 237, 213);
+            statcardMonHoc3.SoLuongForeColor = Color.FromArgb(234, 88, 12);
+
+            // Card 4
+            statcardMonHoc4.SetData("3", "Kỹ năng khác", "GDCD,TD,Qp");
+            statcardMonHoc4.PanelBackgroundColor = Color.FromArgb(243, 243, 255);
+            statcardMonHoc4.SoLuongForeColor = Color.FromArgb(147, 51, 234);
         }
 
         private void dgvMonHoc_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
@@ -122,6 +164,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         private void statcardMonHoc1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panelMonHoc_Paint(object sender, PaintEventArgs e)
         {
 
         }

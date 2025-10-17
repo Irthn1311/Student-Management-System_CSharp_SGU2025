@@ -39,25 +39,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             thongKeCard1.TieuDe1 = "Tổng khen thưởng";
             thongKeCard1.TieuDe2 = "142";
             thongKeCard1.TieuDe3 = "Năm học này";
-            thongKeCard1.BackColor = Color.FromArgb(52, 199, 89); // Xanh lá
+            thongKeCard1.FillColor = Color.FromArgb(34,197,94); // Xanh lá
 
             // Thẻ 2: Cấp trường
             thongKeCard2.TieuDe1 = "Cấp trường";
             thongKeCard2.TieuDe2 = "98";
             thongKeCard2.TieuDe3 = "69% tổng số";
-            thongKeCard2.BackColor = Color.FromArgb(0, 122, 255); // Xanh dương
+            thongKeCard2.FillColor = Color.FromArgb(59,130,246); // Xanh dương
 
             // Thẻ 3: Cấp tỉnh
             thongKeCard3.TieuDe1 = "Cấp tỉnh";
             thongKeCard3.TieuDe2 = "32";
             thongKeCard3.TieuDe3 = "23% tổng số";
-            thongKeCard3.BackColor = Color.FromArgb(255, 149, 0); // Cam
+            thongKeCard3.FillColor = Color.FromArgb(249,115,22); // Cam
 
             // Thẻ 4: Vi phạm kỷ luật
             thongKeCard4.TieuDe1 = "Vi phạm kỷ luật";
             thongKeCard4.TieuDe2 = "28";
             thongKeCard4.TieuDe3 = "2.2% học sinh";
-            thongKeCard4.BackColor = Color.FromArgb(255, 59, 48); // Đỏ
+            thongKeCard4.FillColor = Color.FromArgb(239,68,68); // Đỏ
         }
 
         // 🌸 Hàm thiết kế giao diện cho bảng khen thưởng
@@ -101,6 +101,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbKhenThuong.DefaultCellStyle.Font = new Font("Segoe UI", 10);
             tbKhenThuong.DefaultCellStyle.SelectionBackColor = Color.FromArgb(240, 240, 240);
             tbKhenThuong.DefaultCellStyle.SelectionForeColor = Color.Black;
+            tbKhenThuong.RowTemplate.Height = 40; // Chiều cao mỗi dòng dữ liệu
 
             // 🔹 Padding nhẹ giữa các ô
             tbKhenThuong.DefaultCellStyle.Padding = new Padding(8, 5, 8, 5);
@@ -204,6 +205,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbKyLuat.DefaultCellStyle.Font = new Font("Segoe UI", 10);
             tbKyLuat.DefaultCellStyle.SelectionBackColor = Color.FromArgb(240, 240, 240);
             tbKyLuat.DefaultCellStyle.SelectionForeColor = Color.Black;
+            tbKyLuat.RowTemplate.Height = 40; // Chiều cao mỗi dòng dữ liệu
 
             // 🔹 Padding nhẹ giữa các ô
             tbKyLuat.DefaultCellStyle.Padding = new Padding(8, 5, 8, 5);
