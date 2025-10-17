@@ -27,6 +27,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             guna2DataGridView1.Rows.Add("Phạm Thị Dung", "10A2", "8.8", "Tốt", "Giỏi");
             guna2DataGridView1.Rows.Add("Hoàng Văn Em", "11A1", "6.5", "Khá", "Trung bình");
             guna2DataGridView1.Rows.Add("Vũ Thị Hoa", "11A1", "7.5", "Khá", "Khá");
+            guna2DataGridView1.Rows.Add("Vũ Thị A", "11A2", "9.5", "Tốt", "Giỏi");
         }
 
         private void guna2DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -40,19 +41,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     {
                         case "Tốt":
                         case "Giỏi":
-                            e.CellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
                             e.CellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
                             break;
                         case "Khá":
-                            e.CellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(234)))), ((int)(((byte)(254)))));
                             e.CellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(78)))), ((int)(((byte)(216)))));
                             break;
                         case "Trung bình":
-                            e.CellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(237)))), ((int)(((byte)(213)))));
                             e.CellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(194)))), ((int)(((byte)(65)))), ((int)(((byte)(12)))));
                             break;
                         case "Yếu":
-                            e.CellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
                             e.CellStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
                             break;
                     }

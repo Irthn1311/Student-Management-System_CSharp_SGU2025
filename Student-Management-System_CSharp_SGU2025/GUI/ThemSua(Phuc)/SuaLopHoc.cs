@@ -26,5 +26,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_
         {this.Close();
 
         }
+
+        private void SuaLopHoc_Load(object sender, EventArgs e)
+        {
+            lbHeader.BackColor = guna2HtmlLabel1.BackColor;
+        }
     }
 }

@@ -34,13 +34,8 @@
             this.headerHanhKiem = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbLop = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.statCarHanhKiemTot = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardHanhKiemKha = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardHanhKiemTrungBinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardChuaDanhGiaHanhKiem = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardHanhKiemYeu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.btnLuuHanhKiem = new Guna.UI2.WinForms.Guna2Button();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.paneltrong = new System.Windows.Forms.Panel();
             this.tableHanhKiem = new Guna.UI2.WinForms.Guna2DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -48,7 +43,11 @@
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.statCarHanhKiemTot = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardHanhKiemKha = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardHanhKiemTrungBinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardHanhKiemYeu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardChuaDanhGiaHanhKiem = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             ((System.ComponentModel.ISupportInitialize)(this.tableHanhKiem)).BeginInit();
             this.SuspendLayout();
             // 
@@ -109,52 +108,6 @@
             this.cbLop.TabIndex = 16;
             this.cbLop.SelectedIndexChanged += new System.EventHandler(this.cbLop_SelectedIndexChanged);
             // 
-            // statCarHanhKiemTot
-            // 
-            this.statCarHanhKiemTot.BackColor = System.Drawing.Color.White;
-            this.statCarHanhKiemTot.Location = new System.Drawing.Point(28, 68);
-            this.statCarHanhKiemTot.Margin = new System.Windows.Forms.Padding(2);
-            this.statCarHanhKiemTot.Name = "statCarHanhKiemTot";
-            this.statCarHanhKiemTot.Size = new System.Drawing.Size(262, 136);
-            this.statCarHanhKiemTot.TabIndex = 19;
-            // 
-            // statCardHanhKiemKha
-            // 
-            this.statCardHanhKiemKha.BackColor = System.Drawing.Color.White;
-            this.statCardHanhKiemKha.Location = new System.Drawing.Point(465, 68);
-            this.statCardHanhKiemKha.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardHanhKiemKha.Name = "statCardHanhKiemKha";
-            this.statCardHanhKiemKha.Size = new System.Drawing.Size(262, 136);
-            this.statCardHanhKiemKha.TabIndex = 20;
-            // 
-            // statCardHanhKiemTrungBinh
-            // 
-            this.statCardHanhKiemTrungBinh.BackColor = System.Drawing.Color.White;
-            this.statCardHanhKiemTrungBinh.Location = new System.Drawing.Point(885, 68);
-            this.statCardHanhKiemTrungBinh.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardHanhKiemTrungBinh.Name = "statCardHanhKiemTrungBinh";
-            this.statCardHanhKiemTrungBinh.Size = new System.Drawing.Size(262, 136);
-            this.statCardHanhKiemTrungBinh.TabIndex = 21;
-            this.statCardHanhKiemTrungBinh.Load += new System.EventHandler(this.statCardHanhKiemTrungBinh_Load);
-            // 
-            // statCardChuaDanhGiaHanhKiem
-            // 
-            this.statCardChuaDanhGiaHanhKiem.BackColor = System.Drawing.Color.White;
-            this.statCardChuaDanhGiaHanhKiem.Location = new System.Drawing.Point(670, 223);
-            this.statCardChuaDanhGiaHanhKiem.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardChuaDanhGiaHanhKiem.Name = "statCardChuaDanhGiaHanhKiem";
-            this.statCardChuaDanhGiaHanhKiem.Size = new System.Drawing.Size(262, 136);
-            this.statCardChuaDanhGiaHanhKiem.TabIndex = 22;
-            // 
-            // statCardHanhKiemYeu
-            // 
-            this.statCardHanhKiemYeu.BackColor = System.Drawing.Color.White;
-            this.statCardHanhKiemYeu.Location = new System.Drawing.Point(236, 223);
-            this.statCardHanhKiemYeu.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardHanhKiemYeu.Name = "statCardHanhKiemYeu";
-            this.statCardHanhKiemYeu.Size = new System.Drawing.Size(262, 136);
-            this.statCardHanhKiemYeu.TabIndex = 23;
-            // 
             // btnLuuHanhKiem
             // 
             this.btnLuuHanhKiem.BackColor = System.Drawing.Color.Transparent;
@@ -175,12 +128,12 @@
             this.btnLuuHanhKiem.Text = "Lưu hạnh kiểm";
             this.btnLuuHanhKiem.Click += new System.EventHandler(this.btnLuuHanhKiem_Click);
             // 
-            // panel1
+            // paneltrong
             // 
-            this.panel1.Location = new System.Drawing.Point(237, 780);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 64);
-            this.panel1.TabIndex = 28;
+            this.paneltrong.Location = new System.Drawing.Point(248, 817);
+            this.paneltrong.Name = "paneltrong";
+            this.paneltrong.Size = new System.Drawing.Size(200, 64);
+            this.paneltrong.TabIndex = 28;
             // 
             // tableHanhKiem
             // 
@@ -278,27 +231,64 @@
             this.Column6.MinimumWidth = 6;
             this.Column6.Name = "Column6";
             // 
-            // panel1
+            // statCarHanhKiemTot
             // 
-            this.panel1.Location = new System.Drawing.Point(335, 807);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 68);
-            this.panel1.TabIndex = 30;
+            this.statCarHanhKiemTot.BackColor = System.Drawing.Color.Transparent;
+            this.statCarHanhKiemTot.Location = new System.Drawing.Point(28, 68);
+            this.statCarHanhKiemTot.Margin = new System.Windows.Forms.Padding(2);
+            this.statCarHanhKiemTot.Name = "statCarHanhKiemTot";
+            this.statCarHanhKiemTot.Size = new System.Drawing.Size(262, 136);
+            this.statCarHanhKiemTot.TabIndex = 30;
+            // 
+            // statCardHanhKiemKha
+            // 
+            this.statCardHanhKiemKha.BackColor = System.Drawing.Color.Transparent;
+            this.statCardHanhKiemKha.Location = new System.Drawing.Point(451, 68);
+            this.statCardHanhKiemKha.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardHanhKiemKha.Name = "statCardHanhKiemKha";
+            this.statCardHanhKiemKha.Size = new System.Drawing.Size(262, 136);
+            this.statCardHanhKiemKha.TabIndex = 30;
+            // 
+            // statCardHanhKiemTrungBinh
+            // 
+            this.statCardHanhKiemTrungBinh.BackColor = System.Drawing.Color.Transparent;
+            this.statCardHanhKiemTrungBinh.Location = new System.Drawing.Point(885, 68);
+            this.statCardHanhKiemTrungBinh.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardHanhKiemTrungBinh.Name = "statCardHanhKiemTrungBinh";
+            this.statCardHanhKiemTrungBinh.Size = new System.Drawing.Size(262, 136);
+            this.statCardHanhKiemTrungBinh.TabIndex = 30;
+            // 
+            // statCardHanhKiemYeu
+            // 
+            this.statCardHanhKiemYeu.BackColor = System.Drawing.Color.Transparent;
+            this.statCardHanhKiemYeu.Location = new System.Drawing.Point(235, 223);
+            this.statCardHanhKiemYeu.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardHanhKiemYeu.Name = "statCardHanhKiemYeu";
+            this.statCardHanhKiemYeu.Size = new System.Drawing.Size(262, 136);
+            this.statCardHanhKiemYeu.TabIndex = 30;
+            // 
+            // statCardChuaDanhGiaHanhKiem
+            // 
+            this.statCardChuaDanhGiaHanhKiem.BackColor = System.Drawing.Color.Transparent;
+            this.statCardChuaDanhGiaHanhKiem.Location = new System.Drawing.Point(666, 223);
+            this.statCardChuaDanhGiaHanhKiem.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardChuaDanhGiaHanhKiem.Name = "statCardChuaDanhGiaHanhKiem";
+            this.statCardChuaDanhGiaHanhKiem.Size = new System.Drawing.Size(262, 136);
+            this.statCardChuaDanhGiaHanhKiem.TabIndex = 30;
             // 
             // HanhKiem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.tableHanhKiem);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.btnLuuHanhKiem);
-            this.Controls.Add(this.statCardHanhKiemYeu);
-            this.Controls.Add(this.statCardChuaDanhGiaHanhKiem);
             this.Controls.Add(this.statCardHanhKiemTrungBinh);
+            this.Controls.Add(this.statCardChuaDanhGiaHanhKiem);
             this.Controls.Add(this.statCardHanhKiemKha);
+            this.Controls.Add(this.statCardHanhKiemYeu);
             this.Controls.Add(this.statCarHanhKiemTot);
+            this.Controls.Add(this.paneltrong);
+            this.Controls.Add(this.tableHanhKiem);
+            this.Controls.Add(this.btnLuuHanhKiem);
             this.Controls.Add(this.cbLop);
             this.Controls.Add(this.cbHocKyNamHoc);
             this.Controls.Add(this.headerHanhKiem);
@@ -316,13 +306,8 @@
         private HeaderQuanLiHocSinh headerHanhKiem;
         private Guna.UI2.WinForms.Guna2ComboBox cbHocKyNamHoc;
         private Guna.UI2.WinForms.Guna2ComboBox cbLop;
-        private StatCardQuanLiHocSinh statCarHanhKiemTot;
-        private StatCardQuanLiHocSinh statCardHanhKiemKha;
-        private StatCardQuanLiHocSinh statCardHanhKiemTrungBinh;
-        private StatCardQuanLiHocSinh statCardChuaDanhGiaHanhKiem;
-        private StatCardQuanLiHocSinh statCardHanhKiemYeu;
         private Guna.UI2.WinForms.Guna2Button btnLuuHanhKiem;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel paneltrong;
         private Guna.UI2.WinForms.Guna2DataGridView tableHanhKiem;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
@@ -330,5 +315,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private StatCardQuanLiHocSinh statCarHanhKiemTot;
+        private StatCardQuanLiHocSinh statCardHanhKiemKha;
+        private StatCardQuanLiHocSinh statCardHanhKiemTrungBinh;
+        private StatCardQuanLiHocSinh statCardHanhKiemYeu;
+        private StatCardQuanLiHocSinh statCardChuaDanhGiaHanhKiem;
     }
 }

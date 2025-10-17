@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
 {
@@ -16,35 +17,31 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
         {
             InitializeComponent();
         }
-        private string _monHoc;
-        public string MonHoc
+        public void SetData(string monHoc, string giaoVien, string lop,
+                        Color textColor, Color progressColor1, Color progressColor2)
         {
-            get => _monHoc;
-            set { _monHoc = value; lblMonHoc.Text = value; }
-        }
+            // 1. Gán dữ liệu text
+            lblMonHoc.Text = monHoc;
+            lblGiaoVien.Text = giaoVien;
+            lblLop.Text = lop;
 
-        private string _giaoVien;
-        public string GiaoVien
-        {
-            get => _giaoVien;
-            set { _giaoVien = value; lblGiaoVien.Text = value; }
-        }
+            // 2. Gán màu chữ (ForeColor)s
+            lblMonHoc.ForeColor = textColor;
+            lblGiaoVien.ForeColor = textColor;
+            lblLop.ForeColor = textColor;
 
-        private string _phong;
-        public string Phong
-        {
-            get => _phong;
-            set { _phong = value; lblPhong.Text = value; }
+            // 3. Gán màu cho ProgressBar (Guna2ProgressBar)
+            // Giả sử ProgressBar của bạn tên là 'progressBar'
+            progressBar.ProgressColor = progressColor1;
+            panelStatTKB.FillColor = progressColor2;
+            progressBar.Value = 7; // Đặt giá trị để thanh màu hiển thị
         }
-
-        private Color _mauNen;
-        public Color MauNen
-        {
-            get => _mauNen;
-            set { _mauNen = value; guna2Panel1.FillColor = value; }
-        }
-
         private void lblPhong_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2ProgressBar1_ValueChanged(object sender, EventArgs e)
         {
 
         }

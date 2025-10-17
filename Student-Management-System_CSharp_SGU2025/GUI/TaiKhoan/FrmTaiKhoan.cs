@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
-    public partial class TaiKhoan : UserControl
+    public partial class FrmTaiKhoan : UserControl
     {
-        public TaiKhoan()
+        public FrmTaiKhoan()
         {
             InitializeComponent();
         }
@@ -31,50 +31,33 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void SetupThongKeCards()
         {
-            // 🔹 Card 1: Tổng tài khoản (Xanh dương)
-            thongKeTK1.TieuDe2 = "Tổng tài khoản";
-            thongKeTK1.TieuDe3 = "1,358";
-            thongKeTK1.TieuDe1 = "";
-            thongKeTK1.BackColor = Color.FromArgb(59, 130, 246);
+            // Card 1: Xanh dương
+            statCardThongKeTaiKhoan1.TitleGhiChu = "Tổng tài khoản";
+            statCardThongKeTaiKhoan1.TitleLietKe = "1,250";
+            statCardThongKeTaiKhoan1.Icon = Properties.Resources.icons8_protect_white;
+            statCardThongKeTaiKhoan1.IconFillColor = Color.FromArgb(147, 197, 253); // <-- Màu xanh dương nhạt
+            statCardThongKeTaiKhoan1.PanelBackgroundColor = Color.FromArgb(59, 130, 246);
 
-            // Thiết lập font và màu
-            thongKeTK1.Font2 = new Font("Segoe UI", 11, FontStyle.Bold);
-            thongKeTK1.Font3 = new Font("Segoe UI", 16, FontStyle.Bold);
-            thongKeTK1.ForeColor2 = Color.White;
-            thongKeTK1.ForeColor3 = Color.White;
+            // Card 2: Xanh lá
+            statCardThongKeTaiKhoan2.TitleGhiChu = "Tài khoản hoạt động";
+            statCardThongKeTaiKhoan2.TitleLietKe = "1,100";
+            statCardThongKeTaiKhoan2.Icon = Properties.Resources.icons8_protect_white;
+            statCardThongKeTaiKhoan2.IconFillColor = Color.FromArgb(134, 239, 172); // <-- Màu xanh lá nhạt
+            statCardThongKeTaiKhoan2.PanelBackgroundColor = Color.FromArgb(34, 197, 94);
 
-            // 🔹 Card 2: Đang hoạt động (Xanh lá)
-            thongKeTK2.TieuDe2 = "Đang hoạt động";
-            thongKeTK2.TieuDe3 = "1,346";
-            thongKeTK2.TieuDe1 = "";
-            thongKeTK2.BackColor = Color.FromArgb(34, 197, 94);
+            // Card 3: Đỏ
+            statCardThongKeTaiKhoan3.TitleGhiChu = "Tài khoản bị khóa";
+            statCardThongKeTaiKhoan3.TitleLietKe = "150";
+            statCardThongKeTaiKhoan3.Icon = Properties.Resources.icons8_lock_white;
+            statCardThongKeTaiKhoan3.IconFillColor = Color.FromArgb(252, 165, 165); // <-- Màu đỏ nhạt
+            statCardThongKeTaiKhoan3.PanelBackgroundColor = Color.FromArgb(239, 68, 68);
 
-            thongKeTK2.Font2 = new Font("Segoe UI", 11, FontStyle.Bold);
-            thongKeTK2.Font3 = new Font("Segoe UI", 16, FontStyle.Bold);
-            thongKeTK2.ForeColor2 = Color.White;
-            thongKeTK2.ForeColor3 = Color.White;
-
-            // 🔹 Card 3: Bị khóa (Đỏ)
-            thongKeTK3.TieuDe2 = "Bị khóa";
-            thongKeTK3.TieuDe3 = "12";
-            thongKeTK3.TieuDe1 = "";
-            thongKeTK3.BackColor = Color.FromArgb(239, 68, 68);
-
-            thongKeTK3.Font2 = new Font("Segoe UI", 11, FontStyle.Bold);
-            thongKeTK3.Font3 = new Font("Segoe UI", 16, FontStyle.Bold);
-            thongKeTK3.ForeColor2 = Color.White;
-            thongKeTK3.ForeColor3 = Color.White;
-
-            // 🔹 Card 4: Admin (Cam)
-            thongKeTK4.TieuDe2 = "Admin";
-            thongKeTK4.TieuDe3 = "3";
-            thongKeTK4.TieuDe1 = "";
-            thongKeTK4.BackColor = Color.FromArgb(249, 115, 22);
-
-            thongKeTK4.Font2 = new Font("Segoe UI", 11, FontStyle.Bold);
-            thongKeTK4.Font3 = new Font("Segoe UI", 16, FontStyle.Bold);
-            thongKeTK4.ForeColor2 = Color.White;
-            thongKeTK4.ForeColor3 = Color.White;
+            // Card 4: Cam
+            statCardThongKeTaiKhoan4.TitleGhiChu = "Tài khoản Admin";
+            statCardThongKeTaiKhoan4.TitleLietKe = "5";
+            statCardThongKeTaiKhoan4.Icon = Properties.Resources.icons8_protect_white;
+            statCardThongKeTaiKhoan4.IconFillColor = Color.FromArgb(253, 186, 116); // <-- Màu cam nhạt
+            statCardThongKeTaiKhoan4.PanelBackgroundColor = Color.FromArgb(249, 115, 22);
         }
 
         // 🌸 Hàm thiết kế giao diện cho bảng tài khoản
@@ -106,14 +89,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbTaiKhoan.DefaultCellStyle.SelectionBackColor = Color.FromArgb(240, 249, 255);
             tbTaiKhoan.DefaultCellStyle.SelectionForeColor = Color.Black;
 
-           
+            tbTaiKhoan.Columns["tenTaiKhoan"].DefaultCellStyle.Padding = new Padding(17, 0, 0, 0);
 
             // 🌸 Header style (theo Figma)
             tbTaiKhoan.ColumnHeadersDefaultCellStyle.BackColor = Color.White;
             tbTaiKhoan.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42);
             tbTaiKhoan.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
             tbTaiKhoan.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            tbTaiKhoan.ColumnHeadersHeight = 40;
+            tbTaiKhoan.ColumnHeadersHeight = 50;
             tbTaiKhoan.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
 
             tbTaiKhoan.EnableHeadersVisualStyles = false;

@@ -138,7 +138,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Bảng tin", "Trang chủ / Bảng tin");
-            LoadControlToPanel<ucDashboard>();
+            LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.Dashboard.ucDashboard>();
         }
 
         private void ShowXepLoai()
@@ -329,7 +329,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void ShowTaiKhoan()
         {
             ucHeader1.UpdateHeader("Tài khoản", "Trang chủ / Tài khoản");
-            LoadControlToPanel<TaiKhoan>();
+            LoadControlToPanel<FrmTaiKhoan>();
         }
 
         private void ShowCaiDat()

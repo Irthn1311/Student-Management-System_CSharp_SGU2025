@@ -136,11 +136,23 @@
     <Compile Include="GUI\CaiDat\CaiDat.Designer.cs">
       <DependentUpon>CaiDat.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\CardHoatDongNoiBatDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\CardHoatDongNoiBatDashboard.Designer.cs">
+      <DependentUpon>CardHoatDongNoiBatDashboard.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\DanhGia\DanhGia.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\DanhGia\DanhGia.Designer.cs">
       <DependentUpon>DanhGia.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Dashboard\ucDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Dashboard\ucDashboard.Designer.cs">
+      <DependentUpon>ucDashboard.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\DiemSo\DiemSo_NhapDiem.cs">
       <SubType>UserControl</SubType>
@@ -166,6 +178,12 @@
     <Compile Include="GUI\GiaoVien\GiaoVien.Designer.cs">
       <DependentUpon>GiaoVien.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\RecentActivityItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\RecentActivityItem.Designer.cs">
+      <DependentUpon>RecentActivityItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\TaiKhoan\frmAddPhanQuyen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -190,12 +208,6 @@
     <Compile Include="GUI\TaiKhoan\RoleItem.Designer.cs">
       <DependentUpon>RoleItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\RecentActivityItem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\RecentActivityItem.Designer.cs">
-      <DependentUpon>RecentActivityItem.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\statcardLHP\statcardMonHoc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -208,11 +220,17 @@
     <Compile Include="GUI\statcardLHP\StatCardTKB.Designer.cs">
       <DependentUpon>StatCardTKB.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\TaiKhoan\TaiKhoan.cs">
+    <Compile Include="GUI\TaiKhoan\statCardThongKeTaiKhoan.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GUI\TaiKhoan\TaiKhoan.Designer.cs">
-      <DependentUpon>TaiKhoan.cs</DependentUpon>
+    <Compile Include="GUI\TaiKhoan\statCardThongKeTaiKhoan.Designer.cs">
+      <DependentUpon>statCardThongKeTaiKhoan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\FrmTaiKhoan.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\FrmTaiKhoan.Designer.cs">
+      <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.cs">
       <SubType>Form</SubType>
@@ -289,12 +307,6 @@
     <Compile Include="GUI\BaoCao\ucBaoCao.Designer.cs">
       <DependentUpon>ucBaoCao.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Dashboard\ucDashboard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\Dashboard\ucDashboard.Designer.cs">
-      <DependentUpon>ucDashboard.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\Controls\ucHeader.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -331,12 +343,6 @@
     <Compile Include="GUI\ThoiKhoaBieu\ThoiKhoaBieu.Designer.cs">
       <DependentUpon>ThoiKhoaBieu.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\ThoiKhoaBieu\ucThoiKhoaBieu.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\ThoiKhoaBieu\ucThoiKhoaBieu.Designer.cs">
-      <DependentUpon>ucThoiKhoaBieu.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\ThongKeCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -356,11 +362,22 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="GUI\CaiDat\CaiDat.resx">
       <DependentUpon>CaiDat.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\CardHoatDongNoiBatDashboard.resx">
+      <DependentUpon>CardHoatDongNoiBatDashboard.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\DanhGia\DanhGia.resx">
       <DependentUpon>DanhGia.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Dashboard\ucDashboard.resx">
+      <DependentUpon>ucDashboard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\DiemSo\DiemSo_NhapDiem.resx">
       <DependentUpon>DiemSo_NhapDiem.cs</DependentUpon>
@@ -375,9 +392,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\BaoCao\ucBaoCao.resx">
       <DependentUpon>ucBaoCao.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Dashboard\ucDashboard.resx">
-      <DependentUpon>ucDashboard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Controls\ucHeader.resx">
       <DependentUpon>ucHeader.cs</DependentUpon>
@@ -394,6 +408,15 @@
     <EmbeddedResource Include="GUI\GiaoVien\GiaoVien.resx">
       <DependentUpon>GiaoVien.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HanhKiem\HanhKiem.resx">
+      <DependentUpon>HanhKiem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HocSinh\HocSinh.resx">
+      <DependentUpon>HocSinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\RecentActivityItem.resx">
+      <DependentUpon>RecentActivityItem.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\TaiKhoan\frmAddPhanQuyen.resx">
       <DependentUpon>frmAddPhanQuyen.cs</DependentUpon>
     </EmbeddedResource>
@@ -409,8 +432,11 @@
     <EmbeddedResource Include="GUI\statcardLHP\StatCardTKB.resx">
       <DependentUpon>StatCardTKB.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\TaiKhoan\TaiKhoan.resx">
-      <DependentUpon>TaiKhoan.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\TaiKhoan\statCardThongKeTaiKhoan.resx">
+      <DependentUpon>statCardThongKeTaiKhoan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\TaiKhoan\FrmTaiKhoan.resx">
+      <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.resx">
       <DependentUpon>SuaLopHoc.cs</DependentUpon>
@@ -482,6 +508,10 @@
     <Content Include="GUI\Images\exam.png" />
     <Content Include="GUI\Images\filter.png" />
     <Content Include="GUI\Images\home.png" />
+    <None Include="GUI\Images\icons8-student-blue.png" />
+    <None Include="GUI\Images\icons8-group-tim.png" />
+    <None Include="GUI\Images\icons8-book-xanhla.png" />
+    <None Include="GUI\Images\icons8-timetable-cam.png" />
     <Content Include="GUI\Images\icon_edit.png" />
     <Content Include="GUI\Images\icon_eye.png" />
     <Content Include="GUI\Images\list.png" />

@@ -1,4 +1,4 @@
-﻿namespace Student_Management_System_CSharp_SGU2025.GUI
+﻿namespace Student_Management_System_CSharp_SGU2025.GUI.Dashboard
 {
     partial class ucDashboard
     {
@@ -28,29 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.pnlTongHocSinh = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblTongHocSinh = new System.Windows.Forms.Label();
-            this.lblDemSoHocSinh = new System.Windows.Forms.Label();
-            this.lblThayDoiHocSinh = new System.Windows.Forms.Label();
-            this.pnlIcon = new Guna.UI2.WinForms.Guna2PictureBox();
-            this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblGiaoVien = new System.Windows.Forms.Label();
-            this.lblDemGiaoVien = new System.Windows.Forms.Label();
-            this.lblThayDoiGiaoVien = new System.Windows.Forms.Label();
-            this.pbGiaoVienIcon = new Guna.UI2.WinForms.Guna2PictureBox();
-            this.guna2Panel2 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblLopHoc = new System.Windows.Forms.Label();
-            this.lblDemLopHoc = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.pbLopHocIcon = new Guna.UI2.WinForms.Guna2PictureBox();
-            this.guna2Panel3 = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblNamHoc = new System.Windows.Forms.Label();
-            this.lblNamHocHienTai = new System.Windows.Forms.Label();
-            this.lblTrangThaiNamHoc = new System.Windows.Forms.Label();
-            this.pbNamHocIcon = new Guna.UI2.WinForms.Guna2PictureBox();
-            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlThongKeHocLuc = new Guna.UI2.WinForms.Guna2Panel();
             this.lblThongKeHocLuc = new System.Windows.Forms.Label();
             this.guna2ComboBox1 = new Guna.UI2.WinForms.Guna2ComboBox();
@@ -71,354 +48,54 @@
             this.lblYeu = new System.Windows.Forms.Label();
             this.pgbYeu = new Guna.UI2.WinForms.Guna2ProgressBar();
             this.pnlThongBaoGanDay = new Guna.UI2.WinForms.Guna2Panel();
+            this.recentActivityItemThongBao4 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
+            this.recentActivityItemThongBao3 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
+            this.recentActivityItemThongBao2 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
+            this.recentActivityItemThongBao1 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
             this.lblThongBaoGanDay = new System.Windows.Forms.Label();
-            this.recentActivityItem1 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
-            this.recentActivityItem2 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
-            this.recentActivityItem3 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
-            this.recentActivityItem4 = new Student_Management_System_CSharp_SGU2025.GUI.RecentActivityItem();
-            this.pnlHoatDongNoiBat = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblHoatDongNoiBat = new System.Windows.Forms.Label();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.statCard1 = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
-            this.statCard2 = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
-            this.statCard3 = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
-            this.statCard4 = new Student_Management_System_CSharp_SGU2025.GUI.StatCard();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
-            this.pnlTongHocSinh.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pnlIcon)).BeginInit();
-            this.guna2Panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbGiaoVienIcon)).BeginInit();
-            this.guna2Panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLopHocIcon)).BeginInit();
-            this.guna2Panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbNamHocIcon)).BeginInit();
-            this.flowLayoutPanel4.SuspendLayout();
+            this.pnlTongHocSinh = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblTongHocSinh = new System.Windows.Forms.Label();
+            this.lblDemSoHocSinh = new System.Windows.Forms.Label();
+            this.lblThayDoiHocSinh = new System.Windows.Forms.Label();
+            this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblGiaoVien = new System.Windows.Forms.Label();
+            this.lblDemGiaoVien = new System.Windows.Forms.Label();
+            this.lblThayDoiGiaoVien = new System.Windows.Forms.Label();
+            this.guna2Panel2 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblLopHoc = new System.Windows.Forms.Label();
+            this.lblDemLopHoc = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.guna2Panel3 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblNamHoc = new System.Windows.Forms.Label();
+            this.lblNamHocHienTai = new System.Windows.Forms.Label();
+            this.lblTrangThaiNamHoc = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.cardHoatDongNoiBatDashboard4 = new Student_Management_System_CSharp_SGU2025.GUI.CardHoatDongNoiBatDashboard();
+            this.cardHoatDongNoiBatDashboard3 = new Student_Management_System_CSharp_SGU2025.GUI.CardHoatDongNoiBatDashboard();
+            this.cardHoatDongNoiBatDashboard2 = new Student_Management_System_CSharp_SGU2025.GUI.CardHoatDongNoiBatDashboard();
+            this.cardHoatDongNoiBatDashboard1 = new Student_Management_System_CSharp_SGU2025.GUI.CardHoatDongNoiBatDashboard();
+            this.lbHoatDongNoiBat = new System.Windows.Forms.Label();
+            this.guna2CustomGradientPanel1 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
+            this.pnlIcon = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.pbGiaoVienIcon = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.pbLopHocIcon = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.pbNamHocIcon = new Guna.UI2.WinForms.Guna2PictureBox();
             this.pnlThongKeHocLuc.SuspendLayout();
             this.pnlGioi.SuspendLayout();
             this.pnlKha.SuspendLayout();
             this.pnlTrungBinh.SuspendLayout();
             this.pnlYeu.SuspendLayout();
             this.pnlThongBaoGanDay.SuspendLayout();
-            this.pnlHoatDongNoiBat.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
+            this.pnlTongHocSinh.SuspendLayout();
+            this.guna2Panel1.SuspendLayout();
+            this.guna2Panel2.SuspendLayout();
+            this.guna2Panel3.SuspendLayout();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pnlIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbGiaoVienIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLopHocIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbNamHocIcon)).BeginInit();
             this.SuspendLayout();
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.AutoScroll = true;
-            this.flowLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
-            this.flowLayoutPanel1.Controls.Add(this.flowLayoutPanel2);
-            this.flowLayoutPanel1.Controls.Add(this.flowLayoutPanel4);
-            this.flowLayoutPanel1.Controls.Add(this.pnlHoatDongNoiBat);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(24);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(1184, 820);
-            this.flowLayoutPanel1.TabIndex = 1;
-            this.flowLayoutPanel1.WrapContents = false;
-            this.flowLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanel1_Paint);
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel2.Controls.Add(this.pnlTongHocSinh);
-            this.flowLayoutPanel2.Controls.Add(this.guna2Panel1);
-            this.flowLayoutPanel2.Controls.Add(this.guna2Panel2);
-            this.flowLayoutPanel2.Controls.Add(this.guna2Panel3);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(24, 24);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 24);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(1126, 171);
-            this.flowLayoutPanel2.TabIndex = 0;
-            this.flowLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanel2_Paint);
-            // 
-            // pnlTongHocSinh
-            // 
-            this.pnlTongHocSinh.BackColor = System.Drawing.Color.Transparent;
-            this.pnlTongHocSinh.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.pnlTongHocSinh.BorderRadius = 12;
-            this.pnlTongHocSinh.BorderThickness = 1;
-            this.pnlTongHocSinh.Controls.Add(this.lblTongHocSinh);
-            this.pnlTongHocSinh.Controls.Add(this.lblDemSoHocSinh);
-            this.pnlTongHocSinh.Controls.Add(this.lblThayDoiHocSinh);
-            this.pnlTongHocSinh.Controls.Add(this.pnlIcon);
-            this.pnlTongHocSinh.FillColor = System.Drawing.Color.White;
-            this.pnlTongHocSinh.Location = new System.Drawing.Point(3, 3);
-            this.pnlTongHocSinh.Margin = new System.Windows.Forms.Padding(3, 3, 12, 3);
-            this.pnlTongHocSinh.Name = "pnlTongHocSinh";
-            this.pnlTongHocSinh.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
-            this.pnlTongHocSinh.ShadowDecoration.Depth = 10;
-            this.pnlTongHocSinh.ShadowDecoration.Enabled = true;
-            this.pnlTongHocSinh.Size = new System.Drawing.Size(262, 165);
-            this.pnlTongHocSinh.TabIndex = 0;
-            // 
-            // lblTongHocSinh
-            // 
-            this.lblTongHocSinh.AutoSize = true;
-            this.lblTongHocSinh.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTongHocSinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblTongHocSinh.Location = new System.Drawing.Point(25, 120);
-            this.lblTongHocSinh.Name = "lblTongHocSinh";
-            this.lblTongHocSinh.Size = new System.Drawing.Size(140, 23);
-            this.lblTongHocSinh.TabIndex = 3;
-            this.lblTongHocSinh.Text = "Tổng số học sinh";
-            // 
-            // lblDemSoHocSinh
-            // 
-            this.lblDemSoHocSinh.AutoSize = true;
-            this.lblDemSoHocSinh.Font = new System.Drawing.Font("Segoe UI", 23F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDemSoHocSinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblDemSoHocSinh.Location = new System.Drawing.Point(22, 78);
-            this.lblDemSoHocSinh.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDemSoHocSinh.Name = "lblDemSoHocSinh";
-            this.lblDemSoHocSinh.Size = new System.Drawing.Size(98, 42);
-            this.lblDemSoHocSinh.TabIndex = 2;
-            this.lblDemSoHocSinh.Text = "1,247";
-            this.lblDemSoHocSinh.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // lblThayDoiHocSinh
-            // 
-            this.lblThayDoiHocSinh.AutoSize = true;
-            this.lblThayDoiHocSinh.Font = new System.Drawing.Font("Segoe UI Semibold", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblThayDoiHocSinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
-            this.lblThayDoiHocSinh.Location = new System.Drawing.Point(201, 38);
-            this.lblThayDoiHocSinh.Name = "lblThayDoiHocSinh";
-            this.lblThayDoiHocSinh.Size = new System.Drawing.Size(58, 23);
-            this.lblThayDoiHocSinh.TabIndex = 1;
-            this.lblThayDoiHocSinh.Text = "+5.2%";
-            this.lblThayDoiHocSinh.Click += new System.EventHandler(this.lblThayDoiHocSinh_Click);
-            // 
-            // pnlIcon
-            // 
-            this.pnlIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(181)))), ((int)(((byte)(245)))));
-            this.pnlIcon.BorderRadius = 12;
-            this.pnlIcon.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.student_2;
-            this.pnlIcon.ImageRotate = 0F;
-            this.pnlIcon.Location = new System.Drawing.Point(24, 24);
-            this.pnlIcon.Name = "pnlIcon";
-            this.pnlIcon.Size = new System.Drawing.Size(48, 48);
-            this.pnlIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pnlIcon.TabIndex = 0;
-            this.pnlIcon.TabStop = false;
-            // 
-            // guna2Panel1
-            // 
-            this.guna2Panel1.BackColor = System.Drawing.Color.Transparent;
-            this.guna2Panel1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.guna2Panel1.BorderRadius = 12;
-            this.guna2Panel1.BorderThickness = 1;
-            this.guna2Panel1.Controls.Add(this.lblGiaoVien);
-            this.guna2Panel1.Controls.Add(this.lblDemGiaoVien);
-            this.guna2Panel1.Controls.Add(this.lblThayDoiGiaoVien);
-            this.guna2Panel1.Controls.Add(this.pbGiaoVienIcon);
-            this.guna2Panel1.FillColor = System.Drawing.Color.White;
-            this.guna2Panel1.Location = new System.Drawing.Point(289, 3);
-            this.guna2Panel1.Margin = new System.Windows.Forms.Padding(12, 3, 12, 3);
-            this.guna2Panel1.Name = "guna2Panel1";
-            this.guna2Panel1.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
-            this.guna2Panel1.ShadowDecoration.Depth = 10;
-            this.guna2Panel1.ShadowDecoration.Enabled = true;
-            this.guna2Panel1.Size = new System.Drawing.Size(262, 165);
-            this.guna2Panel1.TabIndex = 1;
-            // 
-            // lblGiaoVien
-            // 
-            this.lblGiaoVien.AutoSize = true;
-            this.lblGiaoVien.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGiaoVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblGiaoVien.Location = new System.Drawing.Point(25, 120);
-            this.lblGiaoVien.Name = "lblGiaoVien";
-            this.lblGiaoVien.Size = new System.Drawing.Size(81, 23);
-            this.lblGiaoVien.TabIndex = 3;
-            this.lblGiaoVien.Text = "Giáo viên";
-            // 
-            // lblDemGiaoVien
-            // 
-            this.lblDemGiaoVien.AutoSize = true;
-            this.lblDemGiaoVien.Font = new System.Drawing.Font("Segoe UI", 23F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDemGiaoVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblDemGiaoVien.Location = new System.Drawing.Point(22, 78);
-            this.lblDemGiaoVien.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDemGiaoVien.Name = "lblDemGiaoVien";
-            this.lblDemGiaoVien.Size = new System.Drawing.Size(54, 42);
-            this.lblDemGiaoVien.TabIndex = 2;
-            this.lblDemGiaoVien.Text = "87";
-            this.lblDemGiaoVien.Click += new System.EventHandler(this.label2_Click);
-            // 
-            // lblThayDoiGiaoVien
-            // 
-            this.lblThayDoiGiaoVien.AutoSize = true;
-            this.lblThayDoiGiaoVien.Font = new System.Drawing.Font("Segoe UI Semibold", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblThayDoiGiaoVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
-            this.lblThayDoiGiaoVien.Location = new System.Drawing.Point(203, 38);
-            this.lblThayDoiGiaoVien.Name = "lblThayDoiGiaoVien";
-            this.lblThayDoiGiaoVien.Size = new System.Drawing.Size(56, 23);
-            this.lblThayDoiGiaoVien.TabIndex = 1;
-            this.lblThayDoiGiaoVien.Text = "+2.1%";
-            this.lblThayDoiGiaoVien.Click += new System.EventHandler(this.label3_Click);
-            // 
-            // pbGiaoVienIcon
-            // 
-            this.pbGiaoVienIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
-            this.pbGiaoVienIcon.BorderRadius = 12;
-            this.pbGiaoVienIcon.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.people;
-            this.pbGiaoVienIcon.ImageRotate = 0F;
-            this.pbGiaoVienIcon.Location = new System.Drawing.Point(24, 24);
-            this.pbGiaoVienIcon.Name = "pbGiaoVienIcon";
-            this.pbGiaoVienIcon.Size = new System.Drawing.Size(48, 48);
-            this.pbGiaoVienIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbGiaoVienIcon.TabIndex = 0;
-            this.pbGiaoVienIcon.TabStop = false;
-            // 
-            // guna2Panel2
-            // 
-            this.guna2Panel2.BackColor = System.Drawing.Color.Transparent;
-            this.guna2Panel2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.guna2Panel2.BorderRadius = 12;
-            this.guna2Panel2.BorderThickness = 1;
-            this.guna2Panel2.Controls.Add(this.lblLopHoc);
-            this.guna2Panel2.Controls.Add(this.lblDemLopHoc);
-            this.guna2Panel2.Controls.Add(this.label6);
-            this.guna2Panel2.Controls.Add(this.pbLopHocIcon);
-            this.guna2Panel2.FillColor = System.Drawing.Color.White;
-            this.guna2Panel2.Location = new System.Drawing.Point(575, 3);
-            this.guna2Panel2.Margin = new System.Windows.Forms.Padding(12, 3, 12, 3);
-            this.guna2Panel2.Name = "guna2Panel2";
-            this.guna2Panel2.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
-            this.guna2Panel2.ShadowDecoration.Depth = 10;
-            this.guna2Panel2.ShadowDecoration.Enabled = true;
-            this.guna2Panel2.Size = new System.Drawing.Size(262, 165);
-            this.guna2Panel2.TabIndex = 2;
-            // 
-            // lblLopHoc
-            // 
-            this.lblLopHoc.AutoSize = true;
-            this.lblLopHoc.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLopHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblLopHoc.Location = new System.Drawing.Point(25, 120);
-            this.lblLopHoc.Name = "lblLopHoc";
-            this.lblLopHoc.Size = new System.Drawing.Size(71, 23);
-            this.lblLopHoc.TabIndex = 3;
-            this.lblLopHoc.Text = "Lớp học";
-            // 
-            // lblDemLopHoc
-            // 
-            this.lblDemLopHoc.AutoSize = true;
-            this.lblDemLopHoc.Font = new System.Drawing.Font("Segoe UI", 23F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDemLopHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblDemLopHoc.Location = new System.Drawing.Point(22, 78);
-            this.lblDemLopHoc.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDemLopHoc.Name = "lblDemLopHoc";
-            this.lblDemLopHoc.Size = new System.Drawing.Size(54, 42);
-            this.lblDemLopHoc.TabIndex = 2;
-            this.lblDemLopHoc.Text = "36";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Segoe UI Semibold", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
-            this.label6.Location = new System.Drawing.Point(231, 38);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(28, 23);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "36";
-            // 
-            // pbLopHocIcon
-            // 
-            this.pbLopHocIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
-            this.pbLopHocIcon.BorderRadius = 12;
-            this.pbLopHocIcon.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.book;
-            this.pbLopHocIcon.ImageRotate = 0F;
-            this.pbLopHocIcon.Location = new System.Drawing.Point(24, 24);
-            this.pbLopHocIcon.Name = "pbLopHocIcon";
-            this.pbLopHocIcon.Size = new System.Drawing.Size(48, 48);
-            this.pbLopHocIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbLopHocIcon.TabIndex = 0;
-            this.pbLopHocIcon.TabStop = false;
-            // 
-            // guna2Panel3
-            // 
-            this.guna2Panel3.BackColor = System.Drawing.Color.Transparent;
-            this.guna2Panel3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.guna2Panel3.BorderRadius = 12;
-            this.guna2Panel3.BorderThickness = 1;
-            this.guna2Panel3.Controls.Add(this.lblNamHoc);
-            this.guna2Panel3.Controls.Add(this.lblNamHocHienTai);
-            this.guna2Panel3.Controls.Add(this.lblTrangThaiNamHoc);
-            this.guna2Panel3.Controls.Add(this.pbNamHocIcon);
-            this.guna2Panel3.FillColor = System.Drawing.Color.White;
-            this.guna2Panel3.Location = new System.Drawing.Point(861, 3);
-            this.guna2Panel3.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
-            this.guna2Panel3.Name = "guna2Panel3";
-            this.guna2Panel3.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
-            this.guna2Panel3.ShadowDecoration.Depth = 10;
-            this.guna2Panel3.ShadowDecoration.Enabled = true;
-            this.guna2Panel3.Size = new System.Drawing.Size(262, 165);
-            this.guna2Panel3.TabIndex = 3;
-            // 
-            // lblNamHoc
-            // 
-            this.lblNamHoc.AutoSize = true;
-            this.lblNamHoc.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNamHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblNamHoc.Location = new System.Drawing.Point(25, 120);
-            this.lblNamHoc.Name = "lblNamHoc";
-            this.lblNamHoc.Size = new System.Drawing.Size(142, 23);
-            this.lblNamHoc.TabIndex = 3;
-            this.lblNamHoc.Text = "Năm học hiện tại";
-            // 
-            // lblNamHocHienTai
-            // 
-            this.lblNamHocHienTai.AutoSize = true;
-            this.lblNamHocHienTai.Font = new System.Drawing.Font("Segoe UI", 23F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNamHocHienTai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblNamHocHienTai.Location = new System.Drawing.Point(22, 78);
-            this.lblNamHocHienTai.Margin = new System.Windows.Forms.Padding(0);
-            this.lblNamHocHienTai.Name = "lblNamHocHienTai";
-            this.lblNamHocHienTai.Size = new System.Drawing.Size(175, 42);
-            this.lblNamHocHienTai.TabIndex = 2;
-            this.lblNamHocHienTai.Text = "2024-2025";
-            // 
-            // lblTrangThaiNamHoc
-            // 
-            this.lblTrangThaiNamHoc.AutoSize = true;
-            this.lblTrangThaiNamHoc.Font = new System.Drawing.Font("Segoe UI Semibold", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTrangThaiNamHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
-            this.lblTrangThaiNamHoc.Location = new System.Drawing.Point(150, 38);
-            this.lblTrangThaiNamHoc.Name = "lblTrangThaiNamHoc";
-            this.lblTrangThaiNamHoc.Size = new System.Drawing.Size(109, 23);
-            this.lblTrangThaiNamHoc.TabIndex = 1;
-            this.lblTrangThaiNamHoc.Text = "Đang diễn ra";
-            // 
-            // pbNamHocIcon
-            // 
-            this.pbNamHocIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(237)))), ((int)(((byte)(213)))));
-            this.pbNamHocIcon.BorderRadius = 12;
-            this.pbNamHocIcon.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.calendar;
-            this.pbNamHocIcon.ImageRotate = 0F;
-            this.pbNamHocIcon.Location = new System.Drawing.Point(24, 24);
-            this.pbNamHocIcon.Name = "pbNamHocIcon";
-            this.pbNamHocIcon.Size = new System.Drawing.Size(48, 48);
-            this.pbNamHocIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbNamHocIcon.TabIndex = 0;
-            this.pbNamHocIcon.TabStop = false;
-            // 
-            // flowLayoutPanel4
-            // 
-            this.flowLayoutPanel4.AutoSize = true;
-            this.flowLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel4.Controls.Add(this.pnlThongKeHocLuc);
-            this.flowLayoutPanel4.Controls.Add(this.pnlThongBaoGanDay);
-            this.flowLayoutPanel4.Location = new System.Drawing.Point(24, 219);
-            this.flowLayoutPanel4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 24);
-            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(1126, 315);
-            this.flowLayoutPanel4.TabIndex = 4;
             // 
             // pnlThongKeHocLuc
             // 
@@ -433,14 +110,14 @@
             this.pnlThongKeHocLuc.Controls.Add(this.pnlTrungBinh);
             this.pnlThongKeHocLuc.Controls.Add(this.pnlYeu);
             this.pnlThongKeHocLuc.FillColor = System.Drawing.Color.White;
-            this.pnlThongKeHocLuc.Location = new System.Drawing.Point(3, 3);
+            this.pnlThongKeHocLuc.Location = new System.Drawing.Point(19, 207);
             this.pnlThongKeHocLuc.Margin = new System.Windows.Forms.Padding(3, 3, 24, 3);
             this.pnlThongKeHocLuc.Name = "pnlThongKeHocLuc";
             this.pnlThongKeHocLuc.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
             this.pnlThongKeHocLuc.ShadowDecoration.Depth = 10;
             this.pnlThongKeHocLuc.ShadowDecoration.Enabled = true;
-            this.pnlThongKeHocLuc.Size = new System.Drawing.Size(739, 309);
-            this.pnlThongKeHocLuc.TabIndex = 0;
+            this.pnlThongKeHocLuc.Size = new System.Drawing.Size(739, 315);
+            this.pnlThongKeHocLuc.TabIndex = 18;
             // 
             // lblThongKeHocLuc
             // 
@@ -493,7 +170,6 @@
             this.lblGioiPhanTram.Size = new System.Drawing.Size(168, 23);
             this.lblGioiPhanTram.TabIndex = 1;
             this.lblGioiPhanTram.Text = "285 học sinh (22.8%)";
-            this.lblGioiPhanTram.Click += new System.EventHandler(this.lblGioiPhanTram_Click);
             // 
             // lblGioi
             // 
@@ -660,19 +336,51 @@
             this.pnlThongBaoGanDay.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
             this.pnlThongBaoGanDay.BorderRadius = 12;
             this.pnlThongBaoGanDay.BorderThickness = 1;
+            this.pnlThongBaoGanDay.Controls.Add(this.recentActivityItemThongBao4);
+            this.pnlThongBaoGanDay.Controls.Add(this.recentActivityItemThongBao3);
+            this.pnlThongBaoGanDay.Controls.Add(this.recentActivityItemThongBao2);
+            this.pnlThongBaoGanDay.Controls.Add(this.recentActivityItemThongBao1);
             this.pnlThongBaoGanDay.Controls.Add(this.lblThongBaoGanDay);
-            this.pnlThongBaoGanDay.Controls.Add(this.recentActivityItem1);
-            this.pnlThongBaoGanDay.Controls.Add(this.recentActivityItem2);
-            this.pnlThongBaoGanDay.Controls.Add(this.recentActivityItem3);
-            this.pnlThongBaoGanDay.Controls.Add(this.recentActivityItem4);
             this.pnlThongBaoGanDay.FillColor = System.Drawing.Color.White;
-            this.pnlThongBaoGanDay.Location = new System.Drawing.Point(769, 3);
+            this.pnlThongBaoGanDay.Location = new System.Drawing.Point(775, 207);
             this.pnlThongBaoGanDay.Name = "pnlThongBaoGanDay";
             this.pnlThongBaoGanDay.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
             this.pnlThongBaoGanDay.ShadowDecoration.Depth = 10;
             this.pnlThongBaoGanDay.ShadowDecoration.Enabled = true;
-            this.pnlThongBaoGanDay.Size = new System.Drawing.Size(354, 309);
-            this.pnlThongBaoGanDay.TabIndex = 1;
+            this.pnlThongBaoGanDay.Size = new System.Drawing.Size(365, 316);
+            this.pnlThongBaoGanDay.TabIndex = 19;
+            // 
+            // recentActivityItemThongBao4
+            // 
+            this.recentActivityItemThongBao4.Location = new System.Drawing.Point(28, 231);
+            this.recentActivityItemThongBao4.Margin = new System.Windows.Forms.Padding(13, 16, 13, 16);
+            this.recentActivityItemThongBao4.Name = "recentActivityItemThongBao4";
+            this.recentActivityItemThongBao4.Size = new System.Drawing.Size(308, 41);
+            this.recentActivityItemThongBao4.TabIndex = 2;
+            // 
+            // recentActivityItemThongBao3
+            // 
+            this.recentActivityItemThongBao3.Location = new System.Drawing.Point(28, 176);
+            this.recentActivityItemThongBao3.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
+            this.recentActivityItemThongBao3.Name = "recentActivityItemThongBao3";
+            this.recentActivityItemThongBao3.Size = new System.Drawing.Size(308, 41);
+            this.recentActivityItemThongBao3.TabIndex = 2;
+            // 
+            // recentActivityItemThongBao2
+            // 
+            this.recentActivityItemThongBao2.Location = new System.Drawing.Point(28, 118);
+            this.recentActivityItemThongBao2.Margin = new System.Windows.Forms.Padding(5);
+            this.recentActivityItemThongBao2.Name = "recentActivityItemThongBao2";
+            this.recentActivityItemThongBao2.Size = new System.Drawing.Size(308, 41);
+            this.recentActivityItemThongBao2.TabIndex = 2;
+            // 
+            // recentActivityItemThongBao1
+            // 
+            this.recentActivityItemThongBao1.Location = new System.Drawing.Point(28, 64);
+            this.recentActivityItemThongBao1.Margin = new System.Windows.Forms.Padding(5);
+            this.recentActivityItemThongBao1.Name = "recentActivityItemThongBao1";
+            this.recentActivityItemThongBao1.Size = new System.Drawing.Size(308, 41);
+            this.recentActivityItemThongBao1.TabIndex = 1;
             // 
             // lblThongBaoGanDay
             // 
@@ -685,158 +393,363 @@
             this.lblThongBaoGanDay.TabIndex = 0;
             this.lblThongBaoGanDay.Text = "Thông báo gần đây";
             // 
-            // recentActivityItem1
+            // pnlTongHocSinh
             // 
-            this.recentActivityItem1.ActivityText = "Họp phụ huynh lớp 12";
-            this.recentActivityItem1.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
-            this.recentActivityItem1.Location = new System.Drawing.Point(24, 80);
-            this.recentActivityItem1.Name = "recentActivityItem1";
-            this.recentActivityItem1.Size = new System.Drawing.Size(308, 40);
-            this.recentActivityItem1.TabIndex = 1;
-            this.recentActivityItem1.TimeText = "Ngày 15/10/2024 - 8:00 AM";
+            this.pnlTongHocSinh.BackColor = System.Drawing.Color.Transparent;
+            this.pnlTongHocSinh.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
+            this.pnlTongHocSinh.BorderRadius = 12;
+            this.pnlTongHocSinh.BorderThickness = 1;
+            this.pnlTongHocSinh.Controls.Add(this.lblTongHocSinh);
+            this.pnlTongHocSinh.Controls.Add(this.lblDemSoHocSinh);
+            this.pnlTongHocSinh.Controls.Add(this.lblThayDoiHocSinh);
+            this.pnlTongHocSinh.Controls.Add(this.pnlIcon);
+            this.pnlTongHocSinh.FillColor = System.Drawing.Color.White;
+            this.pnlTongHocSinh.Location = new System.Drawing.Point(19, 21);
+            this.pnlTongHocSinh.Margin = new System.Windows.Forms.Padding(3, 3, 12, 3);
+            this.pnlTongHocSinh.Name = "pnlTongHocSinh";
+            this.pnlTongHocSinh.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
+            this.pnlTongHocSinh.ShadowDecoration.Depth = 10;
+            this.pnlTongHocSinh.ShadowDecoration.Enabled = true;
+            this.pnlTongHocSinh.Size = new System.Drawing.Size(262, 165);
+            this.pnlTongHocSinh.TabIndex = 14;
             // 
-            // recentActivityItem2
+            // lblTongHocSinh
             // 
-            this.recentActivityItem2.ActivityText = "Khen thưởng học sinh giỏi";
-            this.recentActivityItem2.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
-            this.recentActivityItem2.Location = new System.Drawing.Point(24, 136);
-            this.recentActivityItem2.Name = "recentActivityItem2";
-            this.recentActivityItem2.Size = new System.Drawing.Size(308, 40);
-            this.recentActivityItem2.TabIndex = 2;
-            this.recentActivityItem2.TimeText = "Ngày 12/10/2024";
+            this.lblTongHocSinh.AutoSize = true;
+            this.lblTongHocSinh.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTongHocSinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
+            this.lblTongHocSinh.Location = new System.Drawing.Point(25, 120);
+            this.lblTongHocSinh.Name = "lblTongHocSinh";
+            this.lblTongHocSinh.Size = new System.Drawing.Size(140, 23);
+            this.lblTongHocSinh.TabIndex = 3;
+            this.lblTongHocSinh.Text = "Tổng số học sinh";
             // 
-            // recentActivityItem3
+            // lblDemSoHocSinh
             // 
-            this.recentActivityItem3.ActivityText = "Báo cáo kết quả học tập";
-            this.recentActivityItem3.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(179)))), ((int)(((byte)(8)))));
-            this.recentActivityItem3.Location = new System.Drawing.Point(24, 192);
-            this.recentActivityItem3.Name = "recentActivityItem3";
-            this.recentActivityItem3.Size = new System.Drawing.Size(308, 40);
-            this.recentActivityItem3.TabIndex = 3;
-            this.recentActivityItem3.TimeText = "Ngày 10/10/2024";
+            this.lblDemSoHocSinh.AutoSize = true;
+            this.lblDemSoHocSinh.Font = new System.Drawing.Font("Segoe UI", 23F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDemSoHocSinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.lblDemSoHocSinh.Location = new System.Drawing.Point(22, 78);
+            this.lblDemSoHocSinh.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDemSoHocSinh.Name = "lblDemSoHocSinh";
+            this.lblDemSoHocSinh.Size = new System.Drawing.Size(98, 42);
+            this.lblDemSoHocSinh.TabIndex = 2;
+            this.lblDemSoHocSinh.Text = "1,247";
             // 
-            // recentActivityItem4
+            // lblThayDoiHocSinh
             // 
-            this.recentActivityItem4.ActivityText = "Lịch thi giữa kỳ";
-            this.recentActivityItem4.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(51)))), ((int)(((byte)(234)))));
-            this.recentActivityItem4.Location = new System.Drawing.Point(24, 248);
-            this.recentActivityItem4.Name = "recentActivityItem4";
-            this.recentActivityItem4.Size = new System.Drawing.Size(308, 40);
-            this.recentActivityItem4.TabIndex = 4;
-            this.recentActivityItem4.TimeText = "Ngày 8/10/2024";
+            this.lblThayDoiHocSinh.AutoSize = true;
+            this.lblThayDoiHocSinh.Font = new System.Drawing.Font("Segoe UI Semibold", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblThayDoiHocSinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
+            this.lblThayDoiHocSinh.Location = new System.Drawing.Point(194, 38);
+            this.lblThayDoiHocSinh.Name = "lblThayDoiHocSinh";
+            this.lblThayDoiHocSinh.Size = new System.Drawing.Size(58, 23);
+            this.lblThayDoiHocSinh.TabIndex = 1;
+            this.lblThayDoiHocSinh.Text = "+5.2%";
             // 
-            // pnlHoatDongNoiBat
+            // guna2Panel1
             // 
-            this.pnlHoatDongNoiBat.BackColor = System.Drawing.Color.Transparent;
-            this.pnlHoatDongNoiBat.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
-            this.pnlHoatDongNoiBat.BorderRadius = 12;
-            this.pnlHoatDongNoiBat.BorderThickness = 1;
-            this.pnlHoatDongNoiBat.Controls.Add(this.lblHoatDongNoiBat);
-            this.pnlHoatDongNoiBat.Controls.Add(this.flowLayoutPanel3);
-            this.pnlHoatDongNoiBat.FillColor = System.Drawing.Color.White;
-            this.pnlHoatDongNoiBat.Location = new System.Drawing.Point(24, 558);
-            this.pnlHoatDongNoiBat.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlHoatDongNoiBat.Name = "pnlHoatDongNoiBat";
-            this.pnlHoatDongNoiBat.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
-            this.pnlHoatDongNoiBat.ShadowDecoration.Depth = 10;
-            this.pnlHoatDongNoiBat.ShadowDecoration.Enabled = true;
-            this.pnlHoatDongNoiBat.Size = new System.Drawing.Size(1126, 251);
-            this.pnlHoatDongNoiBat.TabIndex = 5;
+            this.guna2Panel1.BackColor = System.Drawing.Color.Transparent;
+            this.guna2Panel1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
+            this.guna2Panel1.BorderRadius = 12;
+            this.guna2Panel1.BorderThickness = 1;
+            this.guna2Panel1.Controls.Add(this.lblGiaoVien);
+            this.guna2Panel1.Controls.Add(this.lblDemGiaoVien);
+            this.guna2Panel1.Controls.Add(this.lblThayDoiGiaoVien);
+            this.guna2Panel1.Controls.Add(this.pbGiaoVienIcon);
+            this.guna2Panel1.FillColor = System.Drawing.Color.White;
+            this.guna2Panel1.Location = new System.Drawing.Point(305, 21);
+            this.guna2Panel1.Margin = new System.Windows.Forms.Padding(12, 3, 12, 3);
+            this.guna2Panel1.Name = "guna2Panel1";
+            this.guna2Panel1.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
+            this.guna2Panel1.ShadowDecoration.Depth = 10;
+            this.guna2Panel1.ShadowDecoration.Enabled = true;
+            this.guna2Panel1.Size = new System.Drawing.Size(262, 165);
+            this.guna2Panel1.TabIndex = 15;
             // 
-            // lblHoatDongNoiBat
+            // lblGiaoVien
             // 
-            this.lblHoatDongNoiBat.AutoSize = true;
-            this.lblHoatDongNoiBat.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHoatDongNoiBat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblHoatDongNoiBat.Location = new System.Drawing.Point(24, 20);
-            this.lblHoatDongNoiBat.Name = "lblHoatDongNoiBat";
-            this.lblHoatDongNoiBat.Size = new System.Drawing.Size(203, 30);
-            this.lblHoatDongNoiBat.TabIndex = 0;
-            this.lblHoatDongNoiBat.Text = "Hoạt động nổi bật";
+            this.lblGiaoVien.AutoSize = true;
+            this.lblGiaoVien.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGiaoVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
+            this.lblGiaoVien.Location = new System.Drawing.Point(25, 120);
+            this.lblGiaoVien.Name = "lblGiaoVien";
+            this.lblGiaoVien.Size = new System.Drawing.Size(81, 23);
+            this.lblGiaoVien.TabIndex = 3;
+            this.lblGiaoVien.Text = "Giáo viên";
             // 
-            // flowLayoutPanel3
+            // lblDemGiaoVien
             // 
-            this.flowLayoutPanel3.Controls.Add(this.statCard1);
-            this.flowLayoutPanel3.Controls.Add(this.statCard2);
-            this.flowLayoutPanel3.Controls.Add(this.statCard3);
-            this.flowLayoutPanel3.Controls.Add(this.statCard4);
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(24, 63);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(1071, 165);
-            this.flowLayoutPanel3.TabIndex = 1;
+            this.lblDemGiaoVien.AutoSize = true;
+            this.lblDemGiaoVien.Font = new System.Drawing.Font("Segoe UI", 23F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDemGiaoVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.lblDemGiaoVien.Location = new System.Drawing.Point(22, 78);
+            this.lblDemGiaoVien.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDemGiaoVien.Name = "lblDemGiaoVien";
+            this.lblDemGiaoVien.Size = new System.Drawing.Size(54, 42);
+            this.lblDemGiaoVien.TabIndex = 2;
+            this.lblDemGiaoVien.Text = "87";
             // 
-            // statCard1
+            // lblThayDoiGiaoVien
             // 
-            this.statCard1.BackColor = System.Drawing.Color.White;
-            this.statCard1.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.student_2;
-            this.statCard1.Location = new System.Drawing.Point(3, 3);
-            this.statCard1.Name = "statCard1";
-            this.statCard1.Size = new System.Drawing.Size(256, 165);
-            this.statCard1.TabIndex = 0;
-            this.statCard1.Title = "Học sinh mới";
-            this.statCard1.Value = "42";
+            this.lblThayDoiGiaoVien.AutoSize = true;
+            this.lblThayDoiGiaoVien.Font = new System.Drawing.Font("Segoe UI Semibold", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblThayDoiGiaoVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
+            this.lblThayDoiGiaoVien.Location = new System.Drawing.Point(194, 38);
+            this.lblThayDoiGiaoVien.Name = "lblThayDoiGiaoVien";
+            this.lblThayDoiGiaoVien.Size = new System.Drawing.Size(56, 23);
+            this.lblThayDoiGiaoVien.TabIndex = 1;
+            this.lblThayDoiGiaoVien.Text = "+2.1%";
             // 
-            // statCard2
+            // guna2Panel2
             // 
-            this.statCard2.BackColor = System.Drawing.Color.White;
-            this.statCard2.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.medal;
-            this.statCard2.Location = new System.Drawing.Point(278, 3);
-            this.statCard2.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
-            this.statCard2.Name = "statCard2";
-            this.statCard2.Size = new System.Drawing.Size(256, 165);
-            this.statCard2.TabIndex = 1;
-            this.statCard2.Title = "Khen thưởng";
-            this.statCard2.Value = "18";
+            this.guna2Panel2.BackColor = System.Drawing.Color.Transparent;
+            this.guna2Panel2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
+            this.guna2Panel2.BorderRadius = 12;
+            this.guna2Panel2.BorderThickness = 1;
+            this.guna2Panel2.Controls.Add(this.lblLopHoc);
+            this.guna2Panel2.Controls.Add(this.lblDemLopHoc);
+            this.guna2Panel2.Controls.Add(this.label6);
+            this.guna2Panel2.Controls.Add(this.pbLopHocIcon);
+            this.guna2Panel2.FillColor = System.Drawing.Color.White;
+            this.guna2Panel2.Location = new System.Drawing.Point(591, 21);
+            this.guna2Panel2.Margin = new System.Windows.Forms.Padding(12, 3, 12, 3);
+            this.guna2Panel2.Name = "guna2Panel2";
+            this.guna2Panel2.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
+            this.guna2Panel2.ShadowDecoration.Depth = 10;
+            this.guna2Panel2.ShadowDecoration.Enabled = true;
+            this.guna2Panel2.Size = new System.Drawing.Size(262, 165);
+            this.guna2Panel2.TabIndex = 16;
             // 
-            // statCard3
+            // lblLopHoc
             // 
-            this.statCard3.BackColor = System.Drawing.Color.White;
-            this.statCard3.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.calendar;
-            this.statCard3.Location = new System.Drawing.Point(540, 3);
-            this.statCard3.Margin = new System.Windows.Forms.Padding(3, 3, 16, 3);
-            this.statCard3.Name = "statCard3";
-            this.statCard3.Size = new System.Drawing.Size(256, 165);
-            this.statCard3.TabIndex = 2;
-            this.statCard3.Title = "Sự kiện";
-            this.statCard3.Value = "5";
+            this.lblLopHoc.AutoSize = true;
+            this.lblLopHoc.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLopHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
+            this.lblLopHoc.Location = new System.Drawing.Point(25, 120);
+            this.lblLopHoc.Name = "lblLopHoc";
+            this.lblLopHoc.Size = new System.Drawing.Size(71, 23);
+            this.lblLopHoc.TabIndex = 3;
+            this.lblLopHoc.Text = "Lớp học";
             // 
-            // statCard4
+            // lblDemLopHoc
             // 
-            this.statCard4.BackColor = System.Drawing.Color.White;
-            this.statCard4.Icon = global::Student_Management_System_CSharp_SGU2025.Properties.Resources._3que;
-            this.statCard4.Location = new System.Drawing.Point(812, 0);
-            this.statCard4.Margin = new System.Windows.Forms.Padding(0);
-            this.statCard4.Name = "statCard4";
-            this.statCard4.Size = new System.Drawing.Size(256, 165);
-            this.statCard4.TabIndex = 3;
-            this.statCard4.Title = "Điểm TB tăng";
-            this.statCard4.Value = "+0.4";
+            this.lblDemLopHoc.AutoSize = true;
+            this.lblDemLopHoc.Font = new System.Drawing.Font("Segoe UI", 23F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDemLopHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.lblDemLopHoc.Location = new System.Drawing.Point(22, 78);
+            this.lblDemLopHoc.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDemLopHoc.Name = "lblDemLopHoc";
+            this.lblDemLopHoc.Size = new System.Drawing.Size(54, 42);
+            this.lblDemLopHoc.TabIndex = 2;
+            this.lblDemLopHoc.Text = "36";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Segoe UI Semibold", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
+            this.label6.Location = new System.Drawing.Point(222, 38);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(28, 23);
+            this.label6.TabIndex = 1;
+            this.label6.Text = "36";
+            // 
+            // guna2Panel3
+            // 
+            this.guna2Panel3.BackColor = System.Drawing.Color.Transparent;
+            this.guna2Panel3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
+            this.guna2Panel3.BorderRadius = 12;
+            this.guna2Panel3.BorderThickness = 1;
+            this.guna2Panel3.Controls.Add(this.lblNamHoc);
+            this.guna2Panel3.Controls.Add(this.lblNamHocHienTai);
+            this.guna2Panel3.Controls.Add(this.lblTrangThaiNamHoc);
+            this.guna2Panel3.Controls.Add(this.pbNamHocIcon);
+            this.guna2Panel3.FillColor = System.Drawing.Color.White;
+            this.guna2Panel3.Location = new System.Drawing.Point(878, 21);
+            this.guna2Panel3.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
+            this.guna2Panel3.Name = "guna2Panel3";
+            this.guna2Panel3.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))), ((int)(((byte)(13)))));
+            this.guna2Panel3.ShadowDecoration.Depth = 10;
+            this.guna2Panel3.ShadowDecoration.Enabled = true;
+            this.guna2Panel3.Size = new System.Drawing.Size(262, 165);
+            this.guna2Panel3.TabIndex = 17;
+            // 
+            // lblNamHoc
+            // 
+            this.lblNamHoc.AutoSize = true;
+            this.lblNamHoc.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNamHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
+            this.lblNamHoc.Location = new System.Drawing.Point(25, 120);
+            this.lblNamHoc.Name = "lblNamHoc";
+            this.lblNamHoc.Size = new System.Drawing.Size(142, 23);
+            this.lblNamHoc.TabIndex = 3;
+            this.lblNamHoc.Text = "Năm học hiện tại";
+            // 
+            // lblNamHocHienTai
+            // 
+            this.lblNamHocHienTai.AutoSize = true;
+            this.lblNamHocHienTai.Font = new System.Drawing.Font("Segoe UI", 23F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNamHocHienTai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.lblNamHocHienTai.Location = new System.Drawing.Point(22, 78);
+            this.lblNamHocHienTai.Margin = new System.Windows.Forms.Padding(0);
+            this.lblNamHocHienTai.Name = "lblNamHocHienTai";
+            this.lblNamHocHienTai.Size = new System.Drawing.Size(175, 42);
+            this.lblNamHocHienTai.TabIndex = 2;
+            this.lblNamHocHienTai.Text = "2024-2025";
+            // 
+            // lblTrangThaiNamHoc
+            // 
+            this.lblTrangThaiNamHoc.AutoSize = true;
+            this.lblTrangThaiNamHoc.Font = new System.Drawing.Font("Segoe UI Semibold", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTrangThaiNamHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
+            this.lblTrangThaiNamHoc.Location = new System.Drawing.Point(141, 38);
+            this.lblTrangThaiNamHoc.Name = "lblTrangThaiNamHoc";
+            this.lblTrangThaiNamHoc.Size = new System.Drawing.Size(109, 23);
+            this.lblTrangThaiNamHoc.TabIndex = 1;
+            this.lblTrangThaiNamHoc.Text = "Đang diễn ra";
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.cardHoatDongNoiBatDashboard4);
+            this.panel1.Controls.Add(this.cardHoatDongNoiBatDashboard3);
+            this.panel1.Controls.Add(this.cardHoatDongNoiBatDashboard2);
+            this.panel1.Controls.Add(this.cardHoatDongNoiBatDashboard1);
+            this.panel1.Controls.Add(this.lbHoatDongNoiBat);
+            this.panel1.Location = new System.Drawing.Point(19, 546);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1121, 267);
+            this.panel1.TabIndex = 20;
+            // 
+            // cardHoatDongNoiBatDashboard4
+            // 
+            this.cardHoatDongNoiBatDashboard4.BackColor = System.Drawing.Color.Transparent;
+            this.cardHoatDongNoiBatDashboard4.Location = new System.Drawing.Point(853, 76);
+            this.cardHoatDongNoiBatDashboard4.MaximumSize = new System.Drawing.Size(256, 165);
+            this.cardHoatDongNoiBatDashboard4.Name = "cardHoatDongNoiBatDashboard4";
+            this.cardHoatDongNoiBatDashboard4.Size = new System.Drawing.Size(256, 165);
+            this.cardHoatDongNoiBatDashboard4.TabIndex = 4;
+            // 
+            // cardHoatDongNoiBatDashboard3
+            // 
+            this.cardHoatDongNoiBatDashboard3.BackColor = System.Drawing.Color.Transparent;
+            this.cardHoatDongNoiBatDashboard3.Location = new System.Drawing.Point(578, 76);
+            this.cardHoatDongNoiBatDashboard3.MaximumSize = new System.Drawing.Size(256, 165);
+            this.cardHoatDongNoiBatDashboard3.Name = "cardHoatDongNoiBatDashboard3";
+            this.cardHoatDongNoiBatDashboard3.Size = new System.Drawing.Size(256, 165);
+            this.cardHoatDongNoiBatDashboard3.TabIndex = 4;
+            // 
+            // cardHoatDongNoiBatDashboard2
+            // 
+            this.cardHoatDongNoiBatDashboard2.BackColor = System.Drawing.Color.Transparent;
+            this.cardHoatDongNoiBatDashboard2.Location = new System.Drawing.Point(301, 76);
+            this.cardHoatDongNoiBatDashboard2.MaximumSize = new System.Drawing.Size(256, 165);
+            this.cardHoatDongNoiBatDashboard2.Name = "cardHoatDongNoiBatDashboard2";
+            this.cardHoatDongNoiBatDashboard2.Size = new System.Drawing.Size(256, 165);
+            this.cardHoatDongNoiBatDashboard2.TabIndex = 4;
+            // 
+            // cardHoatDongNoiBatDashboard1
+            // 
+            this.cardHoatDongNoiBatDashboard1.BackColor = System.Drawing.Color.Transparent;
+            this.cardHoatDongNoiBatDashboard1.Location = new System.Drawing.Point(29, 76);
+            this.cardHoatDongNoiBatDashboard1.MaximumSize = new System.Drawing.Size(256, 165);
+            this.cardHoatDongNoiBatDashboard1.Name = "cardHoatDongNoiBatDashboard1";
+            this.cardHoatDongNoiBatDashboard1.Size = new System.Drawing.Size(256, 165);
+            this.cardHoatDongNoiBatDashboard1.TabIndex = 4;
+            // 
+            // lbHoatDongNoiBat
+            // 
+            this.lbHoatDongNoiBat.AutoSize = true;
+            this.lbHoatDongNoiBat.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbHoatDongNoiBat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.lbHoatDongNoiBat.Location = new System.Drawing.Point(24, 23);
+            this.lbHoatDongNoiBat.Name = "lbHoatDongNoiBat";
+            this.lbHoatDongNoiBat.Size = new System.Drawing.Size(203, 30);
+            this.lbHoatDongNoiBat.TabIndex = 1;
+            this.lbHoatDongNoiBat.Text = "Hoạt động nổi bật";
+            // 
+            // guna2CustomGradientPanel1
+            // 
+            this.guna2CustomGradientPanel1.BackColor = System.Drawing.Color.Transparent;
+            this.guna2CustomGradientPanel1.FillColor = System.Drawing.Color.Transparent;
+            this.guna2CustomGradientPanel1.FillColor2 = System.Drawing.Color.Transparent;
+            this.guna2CustomGradientPanel1.FillColor3 = System.Drawing.Color.Transparent;
+            this.guna2CustomGradientPanel1.FillColor4 = System.Drawing.Color.Transparent;
+            this.guna2CustomGradientPanel1.Location = new System.Drawing.Point(679, 819);
+            this.guna2CustomGradientPanel1.Name = "guna2CustomGradientPanel1";
+            this.guna2CustomGradientPanel1.Size = new System.Drawing.Size(200, 20);
+            this.guna2CustomGradientPanel1.TabIndex = 0;
+            // 
+            // pnlIcon
+            // 
+            this.pnlIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(234)))), ((int)(((byte)(254)))));
+            this.pnlIcon.BorderRadius = 5;
+            this.pnlIcon.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.icons8_student_blue;
+            this.pnlIcon.ImageRotate = 0F;
+            this.pnlIcon.Location = new System.Drawing.Point(24, 24);
+            this.pnlIcon.Name = "pnlIcon";
+            this.pnlIcon.Size = new System.Drawing.Size(48, 48);
+            this.pnlIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pnlIcon.TabIndex = 0;
+            this.pnlIcon.TabStop = false;
+            // 
+            // pbGiaoVienIcon
+            // 
+            this.pbGiaoVienIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            this.pbGiaoVienIcon.BorderRadius = 12;
+            this.pbGiaoVienIcon.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.icons8_group_tim;
+            this.pbGiaoVienIcon.ImageRotate = 0F;
+            this.pbGiaoVienIcon.Location = new System.Drawing.Point(24, 24);
+            this.pbGiaoVienIcon.Name = "pbGiaoVienIcon";
+            this.pbGiaoVienIcon.Size = new System.Drawing.Size(48, 48);
+            this.pbGiaoVienIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pbGiaoVienIcon.TabIndex = 0;
+            this.pbGiaoVienIcon.TabStop = false;
+            // 
+            // pbLopHocIcon
+            // 
+            this.pbLopHocIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
+            this.pbLopHocIcon.BorderRadius = 12;
+            this.pbLopHocIcon.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.icons8_book_xanhla1;
+            this.pbLopHocIcon.ImageRotate = 0F;
+            this.pbLopHocIcon.Location = new System.Drawing.Point(24, 24);
+            this.pbLopHocIcon.Name = "pbLopHocIcon";
+            this.pbLopHocIcon.Size = new System.Drawing.Size(48, 48);
+            this.pbLopHocIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pbLopHocIcon.TabIndex = 0;
+            this.pbLopHocIcon.TabStop = false;
+            // 
+            // pbNamHocIcon
+            // 
+            this.pbNamHocIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(237)))), ((int)(((byte)(213)))));
+            this.pbNamHocIcon.BorderRadius = 12;
+            this.pbNamHocIcon.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.icons8_timetable_cam;
+            this.pbNamHocIcon.ImageRotate = 0F;
+            this.pbNamHocIcon.Location = new System.Drawing.Point(24, 24);
+            this.pbNamHocIcon.Name = "pbNamHocIcon";
+            this.pbNamHocIcon.Size = new System.Drawing.Size(48, 48);
+            this.pbNamHocIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pbNamHocIcon.TabIndex = 0;
+            this.pbNamHocIcon.TabStop = false;
             // 
             // ucDashboard
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 23F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.Controls.Add(this.flowLayoutPanel1);
-            this.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AutoScroll = true;
+            this.Controls.Add(this.guna2CustomGradientPanel1);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pnlThongKeHocLuc);
+            this.Controls.Add(this.pnlThongBaoGanDay);
+            this.Controls.Add(this.pnlTongHocSinh);
+            this.Controls.Add(this.guna2Panel1);
+            this.Controls.Add(this.guna2Panel2);
+            this.Controls.Add(this.guna2Panel3);
+            this.MinimumSize = new System.Drawing.Size(1168, 768);
             this.Name = "ucDashboard";
-            this.Size = new System.Drawing.Size(1184, 820);
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.pnlTongHocSinh.ResumeLayout(false);
-            this.pnlTongHocSinh.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pnlIcon)).EndInit();
-            this.guna2Panel1.ResumeLayout(false);
-            this.guna2Panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbGiaoVienIcon)).EndInit();
-            this.guna2Panel2.ResumeLayout(false);
-            this.guna2Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLopHocIcon)).EndInit();
-            this.guna2Panel3.ResumeLayout(false);
-            this.guna2Panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbNamHocIcon)).EndInit();
-            this.flowLayoutPanel4.ResumeLayout(false);
+            this.Size = new System.Drawing.Size(1151, 768);
+            this.Load += new System.EventHandler(this.ucDashboard_Load);
             this.pnlThongKeHocLuc.ResumeLayout(false);
             this.pnlThongKeHocLuc.PerformLayout();
             this.pnlGioi.ResumeLayout(false);
@@ -849,37 +762,26 @@
             this.pnlYeu.PerformLayout();
             this.pnlThongBaoGanDay.ResumeLayout(false);
             this.pnlThongBaoGanDay.PerformLayout();
-            this.pnlHoatDongNoiBat.ResumeLayout(false);
-            this.pnlHoatDongNoiBat.PerformLayout();
-            this.flowLayoutPanel3.ResumeLayout(false);
+            this.pnlTongHocSinh.ResumeLayout(false);
+            this.pnlTongHocSinh.PerformLayout();
+            this.guna2Panel1.ResumeLayout(false);
+            this.guna2Panel1.PerformLayout();
+            this.guna2Panel2.ResumeLayout(false);
+            this.guna2Panel2.PerformLayout();
+            this.guna2Panel3.ResumeLayout(false);
+            this.guna2Panel3.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pnlIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbGiaoVienIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLopHocIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbNamHocIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private Guna.UI2.WinForms.Guna2Panel pnlTongHocSinh;
-        private Guna.UI2.WinForms.Guna2PictureBox pnlIcon;
-        private System.Windows.Forms.Label lblThayDoiHocSinh;
-        private System.Windows.Forms.Label lblDemSoHocSinh;
-        private System.Windows.Forms.Label lblTongHocSinh;
-        private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
-        private System.Windows.Forms.Label lblGiaoVien;
-        private System.Windows.Forms.Label lblDemGiaoVien;
-        private System.Windows.Forms.Label lblThayDoiGiaoVien;
-        private Guna.UI2.WinForms.Guna2PictureBox pbGiaoVienIcon;
-        private Guna.UI2.WinForms.Guna2Panel guna2Panel2;
-        private System.Windows.Forms.Label lblLopHoc;
-        private System.Windows.Forms.Label lblDemLopHoc;
-        private System.Windows.Forms.Label label6;
-        private Guna.UI2.WinForms.Guna2PictureBox pbLopHocIcon;
-        private Guna.UI2.WinForms.Guna2Panel guna2Panel3;
-        private System.Windows.Forms.Label lblNamHoc;
-        private System.Windows.Forms.Label lblNamHocHienTai;
-        private System.Windows.Forms.Label lblTrangThaiNamHoc;
-        private Guna.UI2.WinForms.Guna2PictureBox pbNamHocIcon;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
+
         private Guna.UI2.WinForms.Guna2Panel pnlThongKeHocLuc;
         private System.Windows.Forms.Label lblThongKeHocLuc;
         private Guna.UI2.WinForms.Guna2ComboBox guna2ComboBox1;
@@ -900,17 +802,37 @@
         private System.Windows.Forms.Label lblYeu;
         private Guna.UI2.WinForms.Guna2ProgressBar pgbYeu;
         private Guna.UI2.WinForms.Guna2Panel pnlThongBaoGanDay;
+        public RecentActivityItem recentActivityItemThongBao4;
+        public RecentActivityItem recentActivityItemThongBao3;
+        public RecentActivityItem recentActivityItemThongBao2;
+        public RecentActivityItem recentActivityItemThongBao1;
         private System.Windows.Forms.Label lblThongBaoGanDay;
-        private RecentActivityItem recentActivityItem1;
-        private RecentActivityItem recentActivityItem2;
-        private RecentActivityItem recentActivityItem3;
-        private RecentActivityItem recentActivityItem4;
-        private Guna.UI2.WinForms.Guna2Panel pnlHoatDongNoiBat;
-        private System.Windows.Forms.Label lblHoatDongNoiBat;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
-        private StatCard statCard1;
-        private StatCard statCard2;
-        private StatCard statCard3;
-        private StatCard statCard4;
+        private Guna.UI2.WinForms.Guna2Panel pnlTongHocSinh;
+        private System.Windows.Forms.Label lblTongHocSinh;
+        private System.Windows.Forms.Label lblDemSoHocSinh;
+        private System.Windows.Forms.Label lblThayDoiHocSinh;
+        private Guna.UI2.WinForms.Guna2PictureBox pnlIcon;
+        private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
+        private System.Windows.Forms.Label lblGiaoVien;
+        private System.Windows.Forms.Label lblDemGiaoVien;
+        private System.Windows.Forms.Label lblThayDoiGiaoVien;
+        private Guna.UI2.WinForms.Guna2PictureBox pbGiaoVienIcon;
+        private Guna.UI2.WinForms.Guna2Panel guna2Panel2;
+        private System.Windows.Forms.Label lblLopHoc;
+        private System.Windows.Forms.Label lblDemLopHoc;
+        private System.Windows.Forms.Label label6;
+        private Guna.UI2.WinForms.Guna2PictureBox pbLopHocIcon;
+        private Guna.UI2.WinForms.Guna2Panel guna2Panel3;
+        private System.Windows.Forms.Label lblNamHoc;
+        private System.Windows.Forms.Label lblNamHocHienTai;
+        private System.Windows.Forms.Label lblTrangThaiNamHoc;
+        private Guna.UI2.WinForms.Guna2PictureBox pbNamHocIcon;
+        private System.Windows.Forms.Panel panel1;
+        private Guna.UI2.WinForms.Guna2CustomGradientPanel guna2CustomGradientPanel1;
+        private System.Windows.Forms.Label lbHoatDongNoiBat;
+        private CardHoatDongNoiBatDashboard cardHoatDongNoiBatDashboard4;
+        private CardHoatDongNoiBatDashboard cardHoatDongNoiBatDashboard3;
+        private CardHoatDongNoiBatDashboard cardHoatDongNoiBatDashboard2;
+        private CardHoatDongNoiBatDashboard cardHoatDongNoiBatDashboard1;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
+﻿using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
+using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -20,9 +21,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (dgvLop == null) return; // tránh lỗi khi chưa có DataGridView trong Designer
 
             // --- Thông tin thống kê 3 khối ---
-            statCardKhoi10.SetData("Khối 10", "5 lớp", "200 học sinh");
-            statCardKhoi11.SetData("Khối 11", "4 lớp", "180 học sinh");
-            statCardKhoi12.SetData("Khối 12", "3 lớp", "150 học sinh");
+            statCardKhoi1.SetData("Khối 10", "5 lớp", "200 học sinh");
+            statCardKhoi2.SetData("Khối 11", "4 lớp", "180 học sinh");
+            statCardKhoi3.SetData("Khối 12", "3 lớp", "150 học sinh");
+
+            // SỬ DỤNG PROPERTY MỚI ĐỂ THAY ĐỔI MÀU
+            statCardKhoi1.PanelColor = Color.FromArgb(59, 130, 246);
+            statCardKhoi1.TextColor = Color.White;
+
+            statCardKhoi2.PanelColor = Color.FromArgb(34, 197, 94);
+            statCardKhoi2.TextColor = Color.White;
+
+            statCardKhoi3.PanelColor = Color.FromArgb(249, 115, 22);
+            statCardKhoi3.TextColor = Color.White;
+
 
             // --- Cấu hình & nạp dữ liệu ---
             SetupDataGridView();
@@ -52,6 +64,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns["ThaoTac"].Width = 60; // hoặc 70 nếu icon lớn hơn
             dgvLop.Columns["ThaoTac"].Resizable = DataGridViewTriState.False;
 
+            dgvLop.ColumnHeadersHeight = 50;
+
             // Các cột còn lại có thể set Fill nếu muốn
             dgvLop.Columns["MaLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvLop.Columns["TenLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -64,6 +78,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 102, 204);
             dgvLop.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvLop.EnableHeadersVisualStyles = false;
+
+            dgvLop.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 102, 204);
+
 
             // Style cho dữ liệu
             dgvLop.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
@@ -175,6 +192,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         private void guna2ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void LopKhoi_Load_1(object sender, EventArgs e)
         {
 
         }

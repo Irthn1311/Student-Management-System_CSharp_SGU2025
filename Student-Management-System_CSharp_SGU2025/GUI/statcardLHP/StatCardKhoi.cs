@@ -18,10 +18,33 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
             lblTenKhoi.Text = tenKhoi;
             lblSoLop.Text = soLop;
             lblSoHocSinh.Text = soHocSinh;
+        }
 
+        public Color PanelColor
+        {
+            get { return panelMain.FillColor; }  // <-- Sửa thành FillColor
+            set { panelMain.FillColor = value; }  // <-- Sửa thành FillColor
+        }
 
+        
+        public Color BorderColor
+        {
+            get { return panelMain.BorderColor; }
+            set { panelMain.BorderColor = value; }
+        }
 
-
+        // Property để điều khiển MÀU CHỮ của các Label
+        public Color TextColor
+        {
+            // Chỉ cần lấy màu của 1 label làm đại diện
+            get { return lblTenKhoi.ForeColor; } 
+            set
+            {
+              
+                lblTenKhoi.ForeColor = value;    
+                lblSoLop.ForeColor = value;  
+                lblSoHocSinh.ForeColor = value; 
+            }
         }
 
         private void panelMain_Paint(object sender, PaintEventArgs e)

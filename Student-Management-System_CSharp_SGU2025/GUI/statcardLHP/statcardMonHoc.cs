@@ -27,12 +27,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
             lblMon.Text = mon;
             lblLietKe.Text = lk;
 
+        }
+
+        public Color PanelBackgroundColor
+        {
+            get { return panelMauNen.FillColor; }
+            set { panelMauNen.FillColor = value; }
+        }
+
+        public Color SoLuongForeColor
+        {
+            get { return lblSoLuong.ForeColor; }
+            set { lblSoLuong.ForeColor = value; }
+        }
 
 
+
+        private void lblSoLuong_Click(object sender, EventArgs e)
+        {
 
         }
 
-        private void lblSoLuong_Click(object sender, EventArgs e)
+        private void guna2Panel2_Paint(object sender, PaintEventArgs e)
         {
 
         }

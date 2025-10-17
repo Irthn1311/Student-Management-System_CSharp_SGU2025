@@ -34,10 +34,6 @@
             this.btnThemGiaoVien = new Guna.UI2.WinForms.Guna2Button();
             this.txtTimKiemGiaoVien = new Guna.UI2.WinForms.Guna2TextBox();
             this.cbBoMon = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.statCardTongGiaoVien = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardGiaoVienNam = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardGiaoVienNu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardBoMon = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.tableGiaoVien = new Guna.UI2.WinForms.Guna2DataGridView();
             this.MãHS = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -46,6 +42,10 @@
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.statCardTongGiaoVien = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardGiaoVienNam = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardGiaoVienNu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardBoMon = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             ((System.ComponentModel.ISupportInitialize)(this.tableGiaoVien)).BeginInit();
             this.SuspendLayout();
             // 
@@ -112,42 +112,6 @@
             this.cbBoMon.Size = new System.Drawing.Size(158, 36);
             this.cbBoMon.StartIndex = 0;
             this.cbBoMon.TabIndex = 12;
-            // 
-            // statCardTongGiaoVien
-            // 
-            this.statCardTongGiaoVien.BackColor = System.Drawing.Color.White;
-            this.statCardTongGiaoVien.Location = new System.Drawing.Point(18, 91);
-            this.statCardTongGiaoVien.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardTongGiaoVien.Name = "statCardTongGiaoVien";
-            this.statCardTongGiaoVien.Size = new System.Drawing.Size(262, 114);
-            this.statCardTongGiaoVien.TabIndex = 13;
-            // 
-            // statCardGiaoVienNam
-            // 
-            this.statCardGiaoVienNam.BackColor = System.Drawing.Color.White;
-            this.statCardGiaoVienNam.Location = new System.Drawing.Point(306, 91);
-            this.statCardGiaoVienNam.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardGiaoVienNam.Name = "statCardGiaoVienNam";
-            this.statCardGiaoVienNam.Size = new System.Drawing.Size(262, 114);
-            this.statCardGiaoVienNam.TabIndex = 13;
-            // 
-            // statCardGiaoVienNu
-            // 
-            this.statCardGiaoVienNu.BackColor = System.Drawing.Color.White;
-            this.statCardGiaoVienNu.Location = new System.Drawing.Point(597, 91);
-            this.statCardGiaoVienNu.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardGiaoVienNu.Name = "statCardGiaoVienNu";
-            this.statCardGiaoVienNu.Size = new System.Drawing.Size(262, 114);
-            this.statCardGiaoVienNu.TabIndex = 13;
-            // 
-            // statCardBoMon
-            // 
-            this.statCardBoMon.BackColor = System.Drawing.Color.White;
-            this.statCardBoMon.Location = new System.Drawing.Point(890, 91);
-            this.statCardBoMon.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardBoMon.Name = "statCardBoMon";
-            this.statCardBoMon.Size = new System.Drawing.Size(262, 114);
-            this.statCardBoMon.TabIndex = 13;
             // 
             // tableGiaoVien
             // 
@@ -254,15 +218,51 @@
             this.Column9.MinimumWidth = 6;
             this.Column9.Name = "Column9";
             // 
+            // statCardTongGiaoVien
+            // 
+            this.statCardTongGiaoVien.BackColor = System.Drawing.Color.Transparent;
+            this.statCardTongGiaoVien.Location = new System.Drawing.Point(18, 91);
+            this.statCardTongGiaoVien.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardTongGiaoVien.Name = "statCardTongGiaoVien";
+            this.statCardTongGiaoVien.Size = new System.Drawing.Size(262, 114);
+            this.statCardTongGiaoVien.TabIndex = 15;
+            // 
+            // statCardGiaoVienNam
+            // 
+            this.statCardGiaoVienNam.BackColor = System.Drawing.Color.Transparent;
+            this.statCardGiaoVienNam.Location = new System.Drawing.Point(306, 91);
+            this.statCardGiaoVienNam.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardGiaoVienNam.Name = "statCardGiaoVienNam";
+            this.statCardGiaoVienNam.Size = new System.Drawing.Size(262, 114);
+            this.statCardGiaoVienNam.TabIndex = 15;
+            // 
+            // statCardGiaoVienNu
+            // 
+            this.statCardGiaoVienNu.BackColor = System.Drawing.Color.Transparent;
+            this.statCardGiaoVienNu.Location = new System.Drawing.Point(594, 91);
+            this.statCardGiaoVienNu.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardGiaoVienNu.Name = "statCardGiaoVienNu";
+            this.statCardGiaoVienNu.Size = new System.Drawing.Size(262, 114);
+            this.statCardGiaoVienNu.TabIndex = 15;
+            // 
+            // statCardBoMon
+            // 
+            this.statCardBoMon.BackColor = System.Drawing.Color.Transparent;
+            this.statCardBoMon.Location = new System.Drawing.Point(888, 91);
+            this.statCardBoMon.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardBoMon.Name = "statCardBoMon";
+            this.statCardBoMon.Size = new System.Drawing.Size(262, 114);
+            this.statCardBoMon.TabIndex = 15;
+            // 
             // GiaoVien
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tableGiaoVien);
             this.Controls.Add(this.statCardBoMon);
             this.Controls.Add(this.statCardGiaoVienNu);
             this.Controls.Add(this.statCardGiaoVienNam);
             this.Controls.Add(this.statCardTongGiaoVien);
+            this.Controls.Add(this.tableGiaoVien);
             this.Controls.Add(this.cbBoMon);
             this.Controls.Add(this.txtTimKiemGiaoVien);
             this.Controls.Add(this.btnThemGiaoVien);
@@ -279,10 +279,6 @@
         private Guna.UI2.WinForms.Guna2Button btnThemGiaoVien;
         private Guna.UI2.WinForms.Guna2TextBox txtTimKiemGiaoVien;
         private Guna.UI2.WinForms.Guna2ComboBox cbBoMon;
-        private StatCardQuanLiHocSinh statCardTongGiaoVien;
-        private StatCardQuanLiHocSinh statCardGiaoVienNam;
-        private StatCardQuanLiHocSinh statCardGiaoVienNu;
-        private StatCardQuanLiHocSinh statCardBoMon;
         private Guna.UI2.WinForms.Guna2DataGridView tableGiaoVien;
         private System.Windows.Forms.DataGridViewTextBoxColumn MãHS;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
@@ -291,5 +287,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
+        private StatCardQuanLiHocSinh statCardTongGiaoVien;
+        private StatCardQuanLiHocSinh statCardGiaoVienNam;
+        private StatCardQuanLiHocSinh statCardGiaoVienNu;
+        private StatCardQuanLiHocSinh statCardBoMon;
     }
 }
