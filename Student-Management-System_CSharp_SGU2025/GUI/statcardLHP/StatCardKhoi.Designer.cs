@@ -37,41 +37,48 @@
             // 
             // panelMain
             // 
+            this.panelMain.BackColor = System.Drawing.Color.Transparent;
+            this.panelMain.BorderColor = System.Drawing.Color.White;
+            this.panelMain.BorderRadius = 15;
+            this.panelMain.BorderThickness = 1;
             this.panelMain.Controls.Add(this.lblSoHocSinh);
             this.panelMain.Controls.Add(this.lblSoLop);
             this.panelMain.Controls.Add(this.lblTenKhoi);
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelMain.FillColor = System.Drawing.Color.White;
             this.panelMain.Location = new System.Drawing.Point(0, 0);
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(229, 114);
             this.panelMain.TabIndex = 0;
+            this.panelMain.Paint += new System.Windows.Forms.PaintEventHandler(this.panelMain_Paint);
             // 
             // lblSoHocSinh
             // 
-         
-            this.lblSoHocSinh.Font = new System.Drawing.Font("Segoe UI", 8.830189F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSoHocSinh.Location = new System.Drawing.Point(83, 84);
+            this.lblSoHocSinh.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoHocSinh.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSoHocSinh.Location = new System.Drawing.Point(19, 80);
             this.lblSoHocSinh.Name = "lblSoHocSinh";
-            this.lblSoHocSinh.Size = new System.Drawing.Size(63, 19);
+            this.lblSoHocSinh.Size = new System.Drawing.Size(74, 23);
             this.lblSoHocSinh.TabIndex = 5;
             this.lblSoHocSinh.Text = "X học sinh";
             // 
             // lblSoLop
             // 
-          
-            this.lblSoLop.Font = new System.Drawing.Font("Segoe UI", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSoLop.Location = new System.Drawing.Point(83, 45);
+            this.lblSoLop.BackColor = System.Drawing.Color.Transparent;
+            this.lblSoLop.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSoLop.Location = new System.Drawing.Point(19, 42);
             this.lblSoLop.Name = "lblSoLop";
-            this.lblSoLop.Size = new System.Drawing.Size(45, 27);
+            this.lblSoLop.Size = new System.Drawing.Size(55, 32);
             this.lblSoLop.TabIndex = 4;
             this.lblSoLop.Text = "X lớp";
             // 
             // lblTenKhoi
-            
+            // 
+            this.lblTenKhoi.BackColor = System.Drawing.Color.Transparent;
             this.lblTenKhoi.Font = new System.Drawing.Font("Segoe UI", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTenKhoi.Location = new System.Drawing.Point(83, 12);
+            this.lblTenKhoi.Location = new System.Drawing.Point(19, 13);
             this.lblTenKhoi.Name = "lblTenKhoi";
-            this.lblTenKhoi.Size = new System.Drawing.Size(54, 27);
+            this.lblTenKhoi.Size = new System.Drawing.Size(47, 23);
             this.lblTenKhoi.TabIndex = 3;
             this.lblTenKhoi.Text = "Khối X";
             // 
@@ -79,6 +86,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.panelMain);
             this.Name = "StatCardKhoi";
             this.Size = new System.Drawing.Size(229, 114);
@@ -90,9 +98,9 @@
 
         #endregion
 
-        private Guna.UI2.WinForms.Guna2Panel panelMain;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblSoHocSinh;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblSoLop;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblTenKhoi;
+        public Guna.UI2.WinForms.Guna2Panel panelMain;
+        public Guna.UI2.WinForms.Guna2HtmlLabel lblSoHocSinh;
+        public Guna.UI2.WinForms.Guna2HtmlLabel lblSoLop;
+        public Guna.UI2.WinForms.Guna2HtmlLabel lblTenKhoi;
     }
 }

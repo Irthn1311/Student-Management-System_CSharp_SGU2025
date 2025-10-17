@@ -34,7 +34,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
             set => lblSoLuong.Text = value;
         }
 
+        public Color TitleColor
+        {
+            get => lblTen.ForeColor;
+            set => lblTen.ForeColor = value;
+        }
+
         private void lblSoLuong_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2Panel1_Paint(object sender, PaintEventArgs e)
         {
 
         }

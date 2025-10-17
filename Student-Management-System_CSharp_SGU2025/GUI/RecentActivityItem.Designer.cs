@@ -2,12 +2,12 @@
 {
     partial class RecentActivityItem
     {
-        /// <summary>
+        /// <summary> 
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
+        /// <summary> 
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -22,56 +22,60 @@
 
         #region Component Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            this.panelIndicator = new System.Windows.Forms.Panel();
-            this.labelActivityText = new System.Windows.Forms.Label();
-            this.labelTimeText = new System.Windows.Forms.Label();
+            this.lbTextName = new System.Windows.Forms.Label();
+            this.lbNote = new System.Windows.Forms.Label();
+            this.PictureBoxThongBao = new Guna.UI2.WinForms.Guna2PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBoxThongBao)).BeginInit();
             this.SuspendLayout();
             // 
-            // panelIndicator
+            // lbTextName
             // 
-            this.panelIndicator.BackColor = System.Drawing.Color.Blue;
-            this.panelIndicator.Location = new System.Drawing.Point(12, 12);
-            this.panelIndicator.Name = "panelIndicator";
-            this.panelIndicator.Size = new System.Drawing.Size(8, 8);
-            this.panelIndicator.TabIndex = 0;
+            this.lbTextName.AutoSize = true;
+            this.lbTextName.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbTextName.Location = new System.Drawing.Point(46, 0);
+            this.lbTextName.Name = "lbTextName";
+            this.lbTextName.Size = new System.Drawing.Size(70, 17);
+            this.lbTextName.TabIndex = 1;
+            this.lbTextName.Text = "TextName";
             // 
-            // labelActivityText
+            // lbNote
             // 
-            this.labelActivityText.AutoSize = true;
-            this.labelActivityText.Font = new System.Drawing.Font("Inter", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelActivityText.Location = new System.Drawing.Point(30, 10);
-            this.labelActivityText.Name = "labelActivityText";
-            this.labelActivityText.Size = new System.Drawing.Size(95, 16);
-            this.labelActivityText.TabIndex = 1;
-            this.labelActivityText.Text = "Activity Text";
+            this.lbNote.AutoSize = true;
+            this.lbNote.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbNote.ForeColor = System.Drawing.Color.DimGray;
+            this.lbNote.Location = new System.Drawing.Point(46, 17);
+            this.lbNote.Name = "lbNote";
+            this.lbNote.Size = new System.Drawing.Size(32, 13);
+            this.lbNote.TabIndex = 2;
+            this.lbNote.Text = "Note";
             // 
-            // labelTimeText
+            // PictureBoxThongBao
             // 
-            this.labelTimeText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelTimeText.AutoSize = true;
-            this.labelTimeText.Font = new System.Drawing.Font("Inter", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelTimeText.ForeColor = System.Drawing.Color.Gray;
-            this.labelTimeText.Location = new System.Drawing.Point(200, 12);
-            this.labelTimeText.Name = "labelTimeText";
-            this.labelTimeText.Size = new System.Drawing.Size(60, 14);
-            this.labelTimeText.TabIndex = 2;
-            this.labelTimeText.Text = "Time Text";
+            this.PictureBoxThongBao.FillColor = System.Drawing.Color.RosyBrown;
+            this.PictureBoxThongBao.ImageRotate = 0F;
+            this.PictureBoxThongBao.Location = new System.Drawing.Point(0, 0);
+            this.PictureBoxThongBao.MaximumSize = new System.Drawing.Size(40, 40);
+            this.PictureBoxThongBao.Name = "PictureBoxThongBao";
+            this.PictureBoxThongBao.Size = new System.Drawing.Size(40, 40);
+            this.PictureBoxThongBao.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.PictureBoxThongBao.TabIndex = 0;
+            this.PictureBoxThongBao.TabStop = false;
             // 
             // RecentActivityItem
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.labelTimeText);
-            this.Controls.Add(this.labelActivityText);
-            this.Controls.Add(this.panelIndicator);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Controls.Add(this.lbNote);
+            this.Controls.Add(this.lbTextName);
+            this.Controls.Add(this.PictureBoxThongBao);
             this.Name = "RecentActivityItem";
-            this.Size = new System.Drawing.Size(300, 32);
+            this.Size = new System.Drawing.Size(308, 40);
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBoxThongBao)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -79,8 +83,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panelIndicator;
-        private System.Windows.Forms.Label labelActivityText;
-        private System.Windows.Forms.Label labelTimeText;
+        public Guna.UI2.WinForms.Guna2PictureBox PictureBoxThongBao;
+        public System.Windows.Forms.Label lbTextName;
+        public System.Windows.Forms.Label lbNote;
     }
 }

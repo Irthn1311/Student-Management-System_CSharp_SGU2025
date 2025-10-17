@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
+using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
-    public partial class LopKhoi : UserControl
+    public partial class LopKhoi :UserControl
     {
         public LopKhoi()
         {
@@ -19,9 +21,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (dgvLop == null) return; // tránh lỗi khi chưa có DataGridView trong Designer
 
             // --- Thông tin thống kê 3 khối ---
-            statCardKhoi10.SetData("Khối 10", "5 lớp", "200 học sinh");
-            statCardKhoi11.SetData("Khối 11", "4 lớp", "180 học sinh");
-            statCardKhoi12.SetData("Khối 12", "3 lớp", "150 học sinh");
+            statCardKhoi1.SetData("Khối 10", "5 lớp", "200 học sinh");
+            statCardKhoi2.SetData("Khối 11", "4 lớp", "180 học sinh");
+            statCardKhoi3.SetData("Khối 12", "3 lớp", "150 học sinh");
+
+            // SỬ DỤNG PROPERTY MỚI ĐỂ THAY ĐỔI MÀU
+            statCardKhoi1.PanelColor = Color.FromArgb(59, 130, 246);
+            statCardKhoi1.TextColor = Color.White;
+
+            statCardKhoi2.PanelColor = Color.FromArgb(34, 197, 94);
+            statCardKhoi2.TextColor = Color.White;
+
+            statCardKhoi3.PanelColor = Color.FromArgb(249, 115, 22);
+            statCardKhoi3.TextColor = Color.White;
+
 
             // --- Cấu hình & nạp dữ liệu ---
             SetupDataGridView();
@@ -46,12 +59,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns.Add("SiSo", "Sĩ số");
             dgvLop.Columns.Add("GVCN", "Giáo viên CN");
             dgvLop.Columns.Add("ThaoTac", "Thao tác");
+            // Đặt lại chế độ co giãn cột
+            dgvLop.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgvLop.Columns["ThaoTac"].Width = 60; // hoặc 70 nếu icon lớn hơn
+            dgvLop.Columns["ThaoTac"].Resizable = DataGridViewTriState.False;
+
+            dgvLop.ColumnHeadersHeight = 50;
+
+            // Các cột còn lại có thể set Fill nếu muốn
+            dgvLop.Columns["MaLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLop.Columns["TenLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLop.Columns["Khoi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLop.Columns["SiSo"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLop.Columns["GVCN"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             // Style cho tiêu đề
             dgvLop.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
             dgvLop.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 102, 204);
             dgvLop.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvLop.EnableHeadersVisualStyles = false;
+
+            dgvLop.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 102, 204);
+
 
             // Style cho dữ liệu
             dgvLop.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
@@ -91,10 +120,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             Image editIcon = Properties.Resources.edit_icon;   // ✏️
             Image deleteIcon = Properties.Resources.delete_icon; // 🗑️
 
-            int iconSize = 20;
-            int spacing = 10;
+            int iconSize = 20; // Kích thước icon nhỏ hơn
+            int spacing = 10;  // Khoảng cách giữa 2 icon
             int totalWidth = iconSize * 2 + spacing;
 
+            // Tính toán vị trí để căn giữa cell
             int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
             int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
 
@@ -117,7 +147,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             Point clickPoint = dgvLop.PointToClient(Cursor.Position);
             Rectangle cellRect = dgvLop.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
 
-            int iconSize = 20;
+            int iconSize = 18;
             int spacing = 10;
             int totalWidth = iconSize * 2 + spacing;
             int startX = cellRect.Left + (cellRect.Width - totalWidth) / 2;
@@ -127,7 +157,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // Xác định click vào icon nào
             if (clickPoint.X >= startX && clickPoint.X <= startX + iconSize)
             {
-                MessageBox.Show($"📝 Chỉnh sửa lớp: {maLop}", "Sửa lớp học");
+                SuaLopHoc frm = new SuaLopHoc();
+                frm.StartPosition = FormStartPosition.CenterParent; // 🔹 hiện giữa form cha
+                frm.ShowDialog();
                 // TODO: mở form chỉnh sửa
             }
             else if (clickPoint.X >= startX + iconSize + spacing && clickPoint.X <= startX + iconSize * 2 + spacing)
@@ -146,12 +178,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
-        private void panelThongKe_Paint(object sender, PaintEventArgs e)
+
+        private void statCardKhoi10_Load(object sender, EventArgs e)
         {
 
         }
 
-        private void statCardKhoi10_Load(object sender, EventArgs e)
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+            ThemLopHoc frm = new ThemLopHoc();
+            frm.StartPosition = FormStartPosition.CenterParent; // 🔹 hiện giữa form cha
+            frm.ShowDialog();
+        }
+
+        private void guna2ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void LopKhoi_Load_1(object sender, EventArgs e)
         {
 
         }

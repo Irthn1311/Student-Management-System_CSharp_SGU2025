@@ -40,13 +40,13 @@
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.statCardDangHoc = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardNu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardNam = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardTongHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.txtTimKiemHocSinh = new Guna.UI2.WinForms.Guna2TextBox();
             this.btnThemHocSinh = new Guna.UI2.WinForms.Guna2Button();
             this.headerQuanLiHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
+            this.statCardTongHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardNam = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardNu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardDangHoc = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             ((System.ComponentModel.ISupportInitialize)(this.tableHocSinh)).BeginInit();
             this.SuspendLayout();
             // 
@@ -177,44 +177,6 @@
             this.Column9.MinimumWidth = 6;
             this.Column9.Name = "Column9";
             // 
-            // statCardDangHoc
-            // 
-            this.statCardDangHoc.BackColor = System.Drawing.Color.White;
-            this.statCardDangHoc.Location = new System.Drawing.Point(887, 90);
-            this.statCardDangHoc.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardDangHoc.Name = "statCardDangHoc";
-            this.statCardDangHoc.Size = new System.Drawing.Size(262, 136);
-            this.statCardDangHoc.TabIndex = 10;
-            // 
-            // statCardNu
-            // 
-            this.statCardNu.BackColor = System.Drawing.Color.White;
-            this.statCardNu.Location = new System.Drawing.Point(594, 90);
-            this.statCardNu.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardNu.Name = "statCardNu";
-            this.statCardNu.Size = new System.Drawing.Size(262, 136);
-            this.statCardNu.TabIndex = 9;
-            // 
-            // statCardNam
-            // 
-            this.statCardNam.BackColor = System.Drawing.Color.White;
-            this.statCardNam.Location = new System.Drawing.Point(305, 90);
-            this.statCardNam.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardNam.Name = "statCardNam";
-            this.statCardNam.Size = new System.Drawing.Size(262, 136);
-            this.statCardNam.TabIndex = 8;
-            this.statCardNam.Load += new System.EventHandler(this.statCardNam_Load);
-            // 
-            // statCardTongHocSinh
-            // 
-            this.statCardTongHocSinh.BackColor = System.Drawing.Color.White;
-            this.statCardTongHocSinh.Location = new System.Drawing.Point(17, 90);
-            this.statCardTongHocSinh.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardTongHocSinh.Name = "statCardTongHocSinh";
-            this.statCardTongHocSinh.Size = new System.Drawing.Size(262, 136);
-            this.statCardTongHocSinh.TabIndex = 7;
-            this.statCardTongHocSinh.Load += new System.EventHandler(this.statCardTongHocSinh_Load);
-            // 
             // txtTimKiemHocSinh
             // 
             this.txtTimKiemHocSinh.BorderRadius = 7;
@@ -244,7 +206,7 @@
             this.btnThemHocSinh.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.btnThemHocSinh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
             this.btnThemHocSinh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnThemHocSinh.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnThemHocSinh.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnThemHocSinh.ForeColor = System.Drawing.Color.White;
             this.btnThemHocSinh.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
             this.btnThemHocSinh.ImageSize = new System.Drawing.Size(15, 15);
@@ -267,18 +229,54 @@
             this.headerQuanLiHocSinh.Visible = false;
             this.headerQuanLiHocSinh.Load += new System.EventHandler(this.headerQuanLiHocSinh_Load);
             // 
+            // statCardTongHocSinh
+            // 
+            this.statCardTongHocSinh.BackColor = System.Drawing.Color.Transparent;
+            this.statCardTongHocSinh.Location = new System.Drawing.Point(17, 90);
+            this.statCardTongHocSinh.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardTongHocSinh.Name = "statCardTongHocSinh";
+            this.statCardTongHocSinh.Size = new System.Drawing.Size(262, 136);
+            this.statCardTongHocSinh.TabIndex = 14;
+            // 
+            // statCardNam
+            // 
+            this.statCardNam.BackColor = System.Drawing.Color.Transparent;
+            this.statCardNam.Location = new System.Drawing.Point(305, 90);
+            this.statCardNam.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardNam.Name = "statCardNam";
+            this.statCardNam.Size = new System.Drawing.Size(262, 136);
+            this.statCardNam.TabIndex = 14;
+            // 
+            // statCardNu
+            // 
+            this.statCardNu.BackColor = System.Drawing.Color.Transparent;
+            this.statCardNu.Location = new System.Drawing.Point(597, 90);
+            this.statCardNu.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardNu.Name = "statCardNu";
+            this.statCardNu.Size = new System.Drawing.Size(262, 136);
+            this.statCardNu.TabIndex = 14;
+            // 
+            // statCardDangHoc
+            // 
+            this.statCardDangHoc.BackColor = System.Drawing.Color.Transparent;
+            this.statCardDangHoc.Location = new System.Drawing.Point(887, 90);
+            this.statCardDangHoc.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardDangHoc.Name = "statCardDangHoc";
+            this.statCardDangHoc.Size = new System.Drawing.Size(262, 136);
+            this.statCardDangHoc.TabIndex = 14;
+            // 
             // HocSinh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.Controls.Add(this.headerQuanLiHocSinh);
-            this.Controls.Add(this.tableHocSinh);
-            this.Controls.Add(this.cbLop);
             this.Controls.Add(this.statCardDangHoc);
             this.Controls.Add(this.statCardNu);
             this.Controls.Add(this.statCardNam);
             this.Controls.Add(this.statCardTongHocSinh);
+            this.Controls.Add(this.headerQuanLiHocSinh);
+            this.Controls.Add(this.tableHocSinh);
+            this.Controls.Add(this.cbLop);
             this.Controls.Add(this.txtTimKiemHocSinh);
             this.Controls.Add(this.btnThemHocSinh);
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -293,10 +291,6 @@
         #endregion
         private Guna.UI2.WinForms.Guna2Button btnThemHocSinh;
         private Guna.UI2.WinForms.Guna2TextBox txtTimKiemHocSinh;
-        private StatCardQuanLiHocSinh statCardTongHocSinh;
-        private StatCardQuanLiHocSinh statCardNam;
-        private StatCardQuanLiHocSinh statCardNu;
-        private StatCardQuanLiHocSinh statCardDangHoc;
         private Guna.UI2.WinForms.Guna2ComboBox cbLop;
         private Guna.UI2.WinForms.Guna2DataGridView tableHocSinh;
         private System.Windows.Forms.DataGridViewTextBoxColumn MãHS;
@@ -307,5 +301,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
         private HeaderQuanLiHocSinh headerQuanLiHocSinh;
+        private StatCardQuanLiHocSinh statCardTongHocSinh;
+        private StatCardQuanLiHocSinh statCardNam;
+        private StatCardQuanLiHocSinh statCardNu;
+        private StatCardQuanLiHocSinh statCardDangHoc;
     }
 }

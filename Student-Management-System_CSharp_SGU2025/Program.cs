@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Student_Management_System_CSharp_SGU2025
         [STAThread]
         static void Main()
         {
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new GUI.MainForm());
