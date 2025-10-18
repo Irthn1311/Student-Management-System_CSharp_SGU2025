@@ -244,6 +244,7 @@
             this.btnNamHoc.Text = "Năm học";
             this.btnNamHoc.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnNamHoc.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnNamHoc.Click += new System.EventHandler(this.btnNamHoc_Click);
             // 
             // btnPhanCong
             // 
