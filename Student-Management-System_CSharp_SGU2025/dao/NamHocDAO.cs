@@ -12,22 +12,23 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
     internal class NamHocDAO
     {
         /*CREATE TABLE NamHoc (
-    Ma_Nam_Hoc INT PRIMARY KEY AUTO_INCREMENT,
-    Ten_Nam_Hoc VARCHAR(50) NOT NULL, -- Ví dụ: '2024-2025'
-    Ngay_Bat_Dau DATE,
-    Ngay_Ket_Thuc DATE
+        MaNamHoc VARCHAR(10) PRIMARY KEY,
+        TenNamHoc VARCHAR(50) NOT NULL,
+        NgayBatDau DATE,
+        NgayKetThuc DATE
+);
 );*/
         public bool themNamHoc(NamHocDTO namHoc)
         {
-            string query = "insert into NamHoc(Ten_Nam_Hoc, Ngay_Bat_Dau, Ngay_Ket_Thuc) values(@Ten_Nam_Hoc,@Ngay_Bat_Dau,@Ngay_Ket_Thuc)";
+            string query = "insert into NamHoc(TenNamHoc, NgayBatDau, NgayKetThuc) values(@TenNamHoc,@NgayBatDau,@NgayKetThuc)";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Ten_Nam_Hoc", namHoc.TenNamHoc);
-                    cmd.Parameters.AddWithValue("@Ngay_Bat_Dau", namHoc.NgayBD);
-                    cmd.Parameters.AddWithValue("@Ngay_Ket_Thuc", namHoc.NgayKT);
+                    cmd.Parameters.AddWithValue("@TenNamHoc", namHoc.TenNamHoc);
+                    cmd.Parameters.AddWithValue("@NgayBatDau", namHoc.NgayBD);
+                    cmd.Parameters.AddWithValue("@NgayKetThuc", namHoc.NgayKT);
                     int result = cmd.ExecuteNonQuery();
                     return result > 0;
 
@@ -38,7 +39,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public List<NamHocDTO> DocDSNamHoc()
         {
             List<NamHocDTO> ds = new List<NamHocDTO>();
-            string query = "select Ma_Nam_Hoc, Ten_Nam_Hoc, Ngay_Bat_Dau, Ngay_Ket_Thuc from NamHoc";
+            string query = "select MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc from NamHoc";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -49,10 +50,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         while (reader.Read())
                         {
                             NamHocDTO nh = new NamHocDTO();
-                            nh.MaNamHoc = reader.GetInt32("Ma_Nam_Hoc");
-                            nh.TenNamHoc = reader.GetString("Ten_Nam_Hoc");
-                            nh.NgayBD = reader.GetDateTime("Ngay_Bat_Dau");
-                            nh.NgayKT = reader.GetDateTime("Ngay_Ket_Thuc");
+                            nh.MaNamHoc = reader.GetString("MaNamHoc");
+                            nh.TenNamHoc = reader.GetString("TenNamHoc");
+                            nh.NgayBD = reader.GetDateTime("NgayBatDau");
+                            nh.NgayKT = reader.GetDateTime("NgayKetThuc");
                             ds.Add(nh);
                         }
                     }
@@ -63,7 +64,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public NamHocDTO LayNamHocTheoId(int maNamHoc)
         {
             NamHocDTO namHoc = null;
-            string query = "select Ma_Nam_Hoc, Ten_Nam_Hoc, Ngay_Bat_Dau, Ngay_Ket_Thuc from NamHoc where Ma_Nam_Hoc=@MaNamHoc";
+            string query = "select MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc from NamHoc where MaNamHoc=@MaNamHoc";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -75,10 +76,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         if (reader.Read())
                         {
                             namHoc = new NamHocDTO();
-                            namHoc.MaNamHoc = reader.GetInt32("Ma_Nam_Hoc");
-                            namHoc.TenNamHoc = reader.GetString("Ten_Nam_Hoc");
-                            namHoc.NgayBD = reader.GetDateTime("Ngay_Bat_Dau");
-                            namHoc.NgayKT = reader.GetDateTime("Ngay_Ket_Thuc");
+                            namHoc.MaNamHoc = reader.GetString("MaNamHoc");
+                            namHoc.TenNamHoc = reader.GetString("TenNamHoc");
+                            namHoc.NgayBD = reader.GetDateTime("NgayBatDau");
+                            namHoc.NgayKT = reader.GetDateTime("NgayKetThuc");
                         }
                     }
                 }
@@ -88,7 +89,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public NamHocDTO LayNamHocTheoTen(string tenNamHoc)
         {
             NamHocDTO namHoc = null;
-            string query = "select Ma_Nam_Hoc, Ngay_Bat_Dau, Ngay_Ket_Thuc from NamHoc where Ten_Nam_Hoc=@TenNamHoc";
+            string query = "select MaNamHoc, NgayBatDau, NgayKetThuc from NamHoc where TenNamHoc=@TenNamHoc";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -100,10 +101,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         if (reader.Read())
                         {
                             namHoc = new NamHocDTO();
-                            namHoc.MaNamHoc = reader.GetInt32("Ma_Nam_Hoc");
+                            namHoc.MaNamHoc = reader.GetString("MaNamHoc");
                             namHoc.TenNamHoc = tenNamHoc;
-                            namHoc.NgayBD = reader.GetDateTime("Ngay_Bat_Dau");
-                            namHoc.NgayKT = reader.GetDateTime("Ngay_Ket_Thuc");
+                            namHoc.NgayBD = reader.GetDateTime("NgayBatDau");
+                            namHoc.NgayKT = reader.GetDateTime("NgayKetThuc");
                         }
                     }
                 }
@@ -111,16 +112,16 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
         public bool updateNamHoc(NamHocDTO namHoc)
         {
-            string query = "update NamHoc set Ten_Nam_Hoc=@Ten_Nam_Hoc,Ngay_Bat_Dau=@Ngay_Bat_Dau,Ngay_Ket_Thuc=@Ngay_Ket_Thuc where Ma_Nam_Hoc=@Ma_Nam_Hoc";
+            string query = "update NamHoc set TenNamHoc=@TenNamHoc,NgayBatDau=@NgayBatDau,NgayKetThuc=@NgayKetThuc where MaNamHoc=@MaNamHoc";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Ten_Nam_Hoc", namHoc.TenNamHoc);
-                    cmd.Parameters.AddWithValue("@Ngay_Bat_Dau", namHoc.NgayBD);
-                    cmd.Parameters.AddWithValue("@Ngay_Ket_Thuc", namHoc.NgayKT);
-                    cmd.Parameters.AddWithValue("@Ma_Nam_Hoc", namHoc.MaNamHoc);
+                    cmd.Parameters.AddWithValue("@TenNamHoc", namHoc.TenNamHoc);
+                    cmd.Parameters.AddWithValue("@NgayBatDau", namHoc.NgayBD);
+                    cmd.Parameters.AddWithValue("@NgayKetThuc", namHoc.NgayKT);
+                    cmd.Parameters.AddWithValue("@MaNamHoc", namHoc.MaNamHoc);
                     int result=cmd.ExecuteNonQuery();
                     return result > 0;
                 }
@@ -129,13 +130,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
         public bool XoaNamHoc(int maNamHoc)
         {
-            string query = "DELETE FROM NamHoc WHERE Ma_Nam_Hoc = @Ma_Nam_Hoc";
+            string query = "DELETE FROM NamHoc WHERE MaNamHoc = @MaNamHoc";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Ma_Nam_Hoc", maNamHoc);
+                    cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
                     int result = cmd.ExecuteNonQuery();
                     return result > 0;
                 }

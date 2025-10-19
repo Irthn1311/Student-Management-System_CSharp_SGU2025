@@ -33,13 +33,13 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelMonHoc = new Guna.UI2.WinForms.Guna2Panel();
+            this.btnThemMonHoc = new Guna.UI2.WinForms.Guna2Button();
             this.dgvMonHoc = new Guna.UI2.WinForms.Guna2DataGridView();
             this.MaMon = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TenMon = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SoTiet = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GhiChu = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TuyChinh = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnThemMonHoc = new Guna.UI2.WinForms.Guna2Button();
             this.statcardMonHoc4 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
             this.statcardMonHoc3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
             this.statcardMonHoc2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
@@ -63,6 +63,20 @@
             this.panelMonHoc.Size = new System.Drawing.Size(1168, 768);
             this.panelMonHoc.TabIndex = 0;
             this.panelMonHoc.Paint += new System.Windows.Forms.PaintEventHandler(this.panelMonHoc_Paint);
+            // 
+            // btnThemMonHoc
+            // 
+            this.btnThemMonHoc.BorderRadius = 10;
+            this.btnThemMonHoc.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.btnThemMonHoc.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
+            this.btnThemMonHoc.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.btnThemMonHoc.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus1;
+            this.btnThemMonHoc.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnThemMonHoc.Location = new System.Drawing.Point(20, 17);
+            this.btnThemMonHoc.Name = "btnThemMonHoc";
+            this.btnThemMonHoc.Size = new System.Drawing.Size(156, 40);
+            this.btnThemMonHoc.TabIndex = 2;
+            this.btnThemMonHoc.Text = "Thêm môn học";
             // 
             // dgvMonHoc
             // 
@@ -94,7 +108,7 @@
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvMonHoc.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvMonHoc.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.dgvMonHoc.Location = new System.Drawing.Point(20, 265);
+            this.dgvMonHoc.Location = new System.Drawing.Point(33, 261);
             this.dgvMonHoc.Name = "dgvMonHoc";
             this.dgvMonHoc.ReadOnly = true;
             this.dgvMonHoc.RowHeadersVisible = false;
@@ -161,20 +175,6 @@
             this.TuyChinh.MinimumWidth = 6;
             this.TuyChinh.Name = "TuyChinh";
             this.TuyChinh.ReadOnly = true;
-            // 
-            // btnThemMonHoc
-            // 
-            this.btnThemMonHoc.BorderRadius = 10;
-            this.btnThemMonHoc.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
-            this.btnThemMonHoc.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.btnThemMonHoc.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.btnThemMonHoc.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus1;
-            this.btnThemMonHoc.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThemMonHoc.Location = new System.Drawing.Point(20, 17);
-            this.btnThemMonHoc.Name = "btnThemMonHoc";
-            this.btnThemMonHoc.Size = new System.Drawing.Size(156, 40);
-            this.btnThemMonHoc.TabIndex = 2;
-            this.btnThemMonHoc.Text = "Thêm môn học";
             // 
             // statcardMonHoc4
             // 

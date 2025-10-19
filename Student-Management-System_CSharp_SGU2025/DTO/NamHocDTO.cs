@@ -4,14 +4,14 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
 {
     internal class NamHocDTO
     {
-        private int maNamHoc;
+        private string maNamHoc;
         private string tenNamHoc;
         private DateTime ngayBD;
         private DateTime ngayKT;
 
         public NamHocDTO() { }
 
-        public NamHocDTO(int maNamHoc, string tenNamHoc, DateTime ngayBD, DateTime ngayKT)
+        public NamHocDTO(string maNamHoc, string tenNamHoc, DateTime ngayBD, DateTime ngayKT)
         {
             this.maNamHoc = maNamHoc;
             this.tenNamHoc = tenNamHoc;
@@ -25,15 +25,15 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             Console.WriteLine("Hủy đối tượng NamHocDTO");
         }
 
-        public int MaNamHoc
+        public string MaNamHoc
         {
             get { return maNamHoc; }
             set
             {
-                if (value > 0)
+                if (value == "")
                     maNamHoc = value;
                 else
-                    throw new ArgumentException("Mã năm học phải lớn hơn 0");
+                    throw new ArgumentException("Mã năm học phải là chuỗi");
             }
         }
 

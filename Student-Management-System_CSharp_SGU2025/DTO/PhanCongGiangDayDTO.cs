@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
-    internal class PhanCongGiangDay
+    internal class PhanCongGiangDayDTO
     {
         private int maPhanCong;
         private int maLop;
-        private int maGiaoVien;
+        private string maGiaoVien;
         private int maMonHoc;
         private int maHocKy;
         private DateTime tuNgay;
         private DateTime denNgay;
        
-        public PhanCongGiangDay() { }
-        public PhanCongGiangDay(int maPhanCong, int maLop, int maGiaoVien, int maMonHoc, int maHocKy, DateTime tuNgay, DateTime denNgay)
+        public PhanCongGiangDayDTO() { }
+        public PhanCongGiangDayDTO(int maPhanCong, int maLop, string maGiaoVien, int maMonHoc, int maHocKy, DateTime tuNgay, DateTime denNgay)
         {
             this.maPhanCong = maPhanCong;
             this.maLop = maLop;
@@ -28,7 +28,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.denNgay = denNgay;
             
         }
-        ~PhanCongGiangDay()
+        ~PhanCongGiangDayDTO()
         {
             Console.WriteLine("Huy doi tuong PhanCongGiangDay");
         }
@@ -62,12 +62,12 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
                 }
             }
         }
-        public int MaGiaoVien
+        public string MaGiaoVien
         {
             get { return maGiaoVien; }
             set
             {
-                if (maGiaoVien > 0)
+                if (maGiaoVien == "")
                 {
                     maGiaoVien = value;
                 }

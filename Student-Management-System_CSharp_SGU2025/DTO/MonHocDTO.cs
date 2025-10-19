@@ -8,11 +8,11 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
 {
     internal class MonHocDTO
     {
-        public string maMon;
+        public int maMon;
         public string tenMon;
         public int soTiet;
         public MonHocDTO() { }
-        public MonHocDTO(string maMon, string tenMon, int soTiet)
+        public MonHocDTO(int maMon, string tenMon, int soTiet)
         {
             this.maMon = maMon;
             this.tenMon = tenMon;
@@ -22,12 +22,12 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         {
             Console.WriteLine("Huy doi tuong MonHocDTO");
         }
-        public string MaMon
+        public int MaMon
         {
             get { return maMon; }
             set
             {
-                if (maMon == "")
+                if (maMon >0)
                 {
                     maMon = value;
                 }

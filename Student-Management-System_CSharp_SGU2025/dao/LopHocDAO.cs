@@ -6,20 +6,20 @@ using System.Collections.Generic;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
-    internal class LopDAO
+    internal class LopHocDAO
     {
         //  Thêm lớp học
         public bool ThemLop(LopDTO lop)
         {
-            string query = "INSERT INTO LopHoc (Ten_Lop, Ma_Khoi,Si_So, Giao_Vien_Chu_Nhiem) VALUES (@Ten_Lop,@Ma_Khoi, @Si_So, @GVCN)";
+            string query = "INSERT INTO LopHoc (TenLop, MaKhoi, MaGiaoVienChuNhiem) VALUES (@TenLop,@MaKhoi, @GVCN)";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Ten_Lop", lop.tenLop);
-                    cmd.Parameters.AddWithValue("@Ma_Khoi",lop.maKhoi); 
-                    cmd.Parameters.AddWithValue("@Si_So", lop.siSo);
+                    cmd.Parameters.AddWithValue("@TenLop", lop.tenLop);
+                    cmd.Parameters.AddWithValue("@MaKhoi",lop.maKhoi); 
+                    
                     cmd.Parameters.AddWithValue("@GVCN", lop.maGVCN);
                     int result = cmd.ExecuteNonQuery();
                     return result > 0;
@@ -31,7 +31,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public List<LopDTO> DocDSLop()
         {
             List<LopDTO> ds = new List<LopDTO>();
-            string query = "SELECT Ma_Lop, Ten_Lop,Ma_Khoi, Si_So, Giao_Vien_Chu_Nhiem FROM LopHoc";
+            string query = "SELECT MaLop, TenLop,MaKhoi, MaGiaoVienChuNhiem FROM LopHoc";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -42,11 +42,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         while (reader.Read())
                         {
                             LopDTO lop = new LopDTO();
-                            lop.maLop = reader.GetInt32("Ma_Lop");
-                            lop.tenLop = reader.GetString("Ten_Lop");
-                            lop.maKhoi = reader.GetInt32("Ma_Khoi");
-                            lop.siSo = reader.GetInt32("Si_So");
-                            lop.maGVCN = reader.GetString("Giao_Vien_Chu_Nhiem");
+                            lop.maLop = reader.GetInt32("MaLop");
+                            lop.tenLop = reader.GetString("TenLop");
+                            lop.maKhoi = reader.GetInt32("MaKhoi");
+                            
+                            lop.maGVCN = reader.GetString("MaGiaoVienChuNhiem");
                             ds.Add(lop);
                         }
                     }
@@ -59,23 +59,23 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public LopDTO LayLopTheoId(int maLop)
         {
             LopDTO lop = null;
-            string query = "SELECT Ma_Lop, Ten_Lop,Ma_Khoi, Si_So, Giao_Vien_Chu_Nhiem FROM LopHoc WHERE Ma_Lop = @Ma_Lop";
+            string query = "SELECT MaLop, TenLop,MaKhoi, MaGiaoVienChuNhiem FROM LopHoc WHERE MaLop = @MaLop";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Ma_Lop", maLop);
+                    cmd.Parameters.AddWithValue("@MaLop", maLop);
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
                             lop = new LopDTO();
-                            lop.maLop = reader.GetInt32("Ma_Lop");
-                            lop.tenLop = reader.GetString("Ten_Lop");
-                            lop.maKhoi = reader.GetInt32("Ma_Khoi");
-                            lop.siSo = reader.GetInt32("Si_So");
-                            lop.maGVCN = reader.GetString("Giao_Vien_Chu_Nhiem");
+                            lop.maLop = reader.GetInt32("MaLop");
+                            lop.tenLop = reader.GetString("TenLop");
+                            lop.maKhoi = reader.GetInt32("MaKhoi");
+                            
+                            lop.maGVCN = reader.GetString("MaGiaoVienChuNhiem");
                         }
                     }
                 }
@@ -87,23 +87,23 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public LopDTO LayLopTheoTen(string tenLop)
         {
             LopDTO lop = null;
-            string query = "SELECT Ma_Lop, Ten_Lop,Ma_Khoi, Si_So, Giao_Vien_Chu_Nhiem FROM LopHoc WHERE Ten_Lop = @Ten_Lop";
+            string query = "SELECT MaLop, TenLop,MaKhoi, MaGiaoVienChuNhiem FROM LopHoc WHERE TenLop = @TenLop";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Ten_Lop",tenLop);
+                    cmd.Parameters.AddWithValue("@TenLop",tenLop);
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
                             lop = new LopDTO();
-                            lop.maLop = reader.GetInt32("Ma_Lop");
-                            lop.tenLop = reader.GetString("Ten_Lop");
-                            lop.maKhoi = reader.GetInt32("Ma_Khoi");
-                            lop.siSo = reader.GetInt32("Si_So");
-                            lop.maGVCN = reader.GetString("Giao_Vien_Chu_Nhiem");
+                            lop.maLop = reader.GetInt32("MaLop");
+                            lop.tenLop = reader.GetString("TenLop");
+                            lop.maKhoi = reader.GetInt32("MaKhoi");
+                            
+                            lop.maGVCN = reader.GetString("MaGiaoVienChuNhiem");
                         }
                     }
                 }
@@ -113,7 +113,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         //  Cập nhật lớp học
         public bool CapNhatLop(LopDTO lop)
         {
-            string query = "UPDATE LopHoc SET Ten_Lop = @Ten_Lop, Ma_Khoi=@Ma_Khoi Si_So = @Si_So, Giao_Vien_Chu_Nhiem = @GVCN WHERE Ma_Lop = @Ma_Lop";
+            string query = "UPDATE LopHoc SET TenLop = @Ten_Lop, MaKhoi=@Ma_Khoi, MaGiaoVienChuNhiem = @GVCN WHERE MaLop = @Ma_Lop";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -122,7 +122,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     
                     cmd.Parameters.AddWithValue("@Ten_Lop", lop.tenLop);
                     cmd.Parameters.AddWithValue("@Ma_khoi", lop.maKhoi);
-                    cmd.Parameters.AddWithValue("@Si_So", lop.siSo);
+                   
                     cmd.Parameters.AddWithValue("@GVCN", lop.maGVCN);
                     cmd.Parameters.AddWithValue("@Ma_Lop", lop.maLop);
                     int result = cmd.ExecuteNonQuery();
@@ -134,7 +134,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         //  Xóa lớp học
         public bool XoaLop(int maLop)
         {
-            string query = "DELETE FROM LopHoc WHERE Ma_Lop = @Ma_Lop";
+            string query = "DELETE FROM LopHoc WHERE MaLop = @Ma_Lop";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
