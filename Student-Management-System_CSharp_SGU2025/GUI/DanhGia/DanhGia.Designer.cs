@@ -75,7 +75,7 @@
             this.btnKhenThuong.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnKhenThuong.ForeColor = System.Drawing.Color.White;
             this.btnKhenThuong.Location = new System.Drawing.Point(9, 8);
-            this.btnKhenThuong.Margin = new System.Windows.Forms.Padding(2);
+            this.btnKhenThuong.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnKhenThuong.Name = "btnKhenThuong";
             this.btnKhenThuong.Size = new System.Drawing.Size(112, 37);
             this.btnKhenThuong.TabIndex = 1;
@@ -93,7 +93,7 @@
             this.btnKyLuat.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnKyLuat.ForeColor = System.Drawing.Color.White;
             this.btnKyLuat.Location = new System.Drawing.Point(115, 8);
-            this.btnKyLuat.Margin = new System.Windows.Forms.Padding(2);
+            this.btnKyLuat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnKyLuat.Name = "btnKyLuat";
             this.btnKyLuat.Size = new System.Drawing.Size(96, 37);
             this.btnKyLuat.TabIndex = 2;
@@ -129,7 +129,7 @@
             this.tbKhenThuong.DefaultCellStyle = dataGridViewCellStyle3;
             this.tbKhenThuong.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tbKhenThuong.Location = new System.Drawing.Point(26, 265);
-            this.tbKhenThuong.Margin = new System.Windows.Forms.Padding(2);
+            this.tbKhenThuong.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tbKhenThuong.Name = "tbKhenThuong";
             this.tbKhenThuong.RowHeadersVisible = false;
             this.tbKhenThuong.RowHeadersWidth = 51;
@@ -213,7 +213,7 @@
             this.tbKyLuat.DefaultCellStyle = dataGridViewCellStyle6;
             this.tbKyLuat.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tbKyLuat.Location = new System.Drawing.Point(26, 265);
-            this.tbKyLuat.Margin = new System.Windows.Forms.Padding(2);
+            this.tbKyLuat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tbKyLuat.Name = "tbKyLuat";
             this.tbKyLuat.RowHeadersVisible = false;
             this.tbKyLuat.RowHeadersWidth = 51;
@@ -297,7 +297,7 @@
             this.guna2DataGridView3.DefaultCellStyle = dataGridViewCellStyle9;
             this.guna2DataGridView3.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.guna2DataGridView3.Location = new System.Drawing.Point(564, 503);
-            this.guna2DataGridView3.Margin = new System.Windows.Forms.Padding(2);
+            this.guna2DataGridView3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.guna2DataGridView3.Name = "guna2DataGridView3";
             this.guna2DataGridView3.RowHeadersVisible = false;
             this.guna2DataGridView3.RowHeadersWidth = 51;
@@ -339,7 +339,7 @@
             this.btnAddKhen.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus5;
             this.btnAddKhen.ImageSize = new System.Drawing.Size(15, 15);
             this.btnAddKhen.Location = new System.Drawing.Point(963, 35);
-            this.btnAddKhen.Margin = new System.Windows.Forms.Padding(2);
+            this.btnAddKhen.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnAddKhen.Name = "btnAddKhen";
             this.btnAddKhen.Size = new System.Drawing.Size(189, 37);
             this.btnAddKhen.TabIndex = 12;
