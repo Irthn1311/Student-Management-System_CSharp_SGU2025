@@ -178,6 +178,12 @@
     <Compile Include="GUI\GiaoVien\GiaoVien.Designer.cs">
       <DependentUpon>GiaoVien.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\NamHoc\ucNamHoc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\NamHoc\ucNamHoc.Designer.cs">
+      <DependentUpon>ucNamHoc.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -413,6 +419,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\HocSinh\HocSinh.resx">
       <DependentUpon>HocSinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\NamHoc\ucNamHoc.resx">
+      <DependentUpon>ucNamHoc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\RecentActivityItem.resx">
       <DependentUpon>RecentActivityItem.cs</DependentUpon>
