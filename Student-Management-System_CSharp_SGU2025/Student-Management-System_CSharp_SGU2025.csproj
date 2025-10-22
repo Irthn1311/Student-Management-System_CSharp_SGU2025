@@ -122,14 +122,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
+    <Compile Include="ConnectDatabase\GiaoVienBUS.cs" />
+    <Compile Include="ConnectDatabase\HanhKiemBUS.cs" />
+    <Compile Include="DAO\GiaoVienDAO.cs" />
+    <Compile Include="DAO\HanhKiemDAO.cs" />
     <Compile Include="DAO\LopHocDAO.cs" />
     <Compile Include="DAO\MonHocDAO.cs" />
     <Compile Include="DAO\NamHocDAO.cs" />
+    <Compile Include="DTO\GiaoVienDTO.cs" />
+    <Compile Include="DTO\HanhKiemDTO.cs" />
     <Compile Include="DTO\KhoiLop.cs" />
     <Compile Include="DTO\LopDTO.cs" />
     <Compile Include="DTO\MonHocDTO.cs" />
     <Compile Include="DTO\NamHocDTO.cs" />
     <Compile Include="DTO\PhanCongGiangDay.cs" />
+    <Compile Include="DTO\ThoiKhoaBieuDTO.cs" />
     <Compile Include="GUI\CaiDat\CaiDat.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -495,9 +502,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BUS\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="GUI\Images\3que.png" />
     <Content Include="GUI\Images\add.png" />
