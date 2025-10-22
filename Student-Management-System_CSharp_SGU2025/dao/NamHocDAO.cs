@@ -3,143 +3,171 @@ using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
     internal class NamHocDAO
     {
-        /*CREATE TABLE NamHoc (
-        MaNamHoc VARCHAR(10) PRIMARY KEY,
-        TenNamHoc VARCHAR(50) NOT NULL,
-        NgayBatDau DATE,
-        NgayKetThuc DATE
-);
-);*/
         public bool themNamHoc(NamHocDTO namHoc)
         {
-            string query = "insert into NamHoc(TenNamHoc, NgayBatDau, NgayKetThuc) values(@TenNamHoc,@NgayBatDau,@NgayKetThuc)";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            string query = "INSERT INTO NamHoc(MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc) VALUES(@MaNamHoc, @TenNamHoc, @NgayBatDau, @NgayKetThuc)";
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    cmd.Parameters.AddWithValue("@TenNamHoc", namHoc.TenNamHoc);
-                    cmd.Parameters.AddWithValue("@NgayBatDau", namHoc.NgayBD);
-                    cmd.Parameters.AddWithValue("@NgayKetThuc", namHoc.NgayKT);
-                    int result = cmd.ExecuteNonQuery();
-                    return result > 0;
-
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaNamHoc", namHoc.MaNamHoc);
+                        cmd.Parameters.AddWithValue("@TenNamHoc", namHoc.TenNamHoc);
+                        cmd.Parameters.AddWithValue("@NgayBatDau", namHoc.NgayBD);
+                        cmd.Parameters.AddWithValue("@NgayKetThuc", namHoc.NgayKT);
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
                 }
-
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi themNamHoc: {ex.Message}");
+                throw;
             }
         }
+
         public List<NamHocDTO> DocDSNamHoc()
         {
             List<NamHocDTO> ds = new List<NamHocDTO>();
-            string query = "select MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc from NamHoc";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            string query = "SELECT MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc FROM NamHoc ORDER BY NgayBatDau DESC";
+
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
-                        while (reader.Read())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            NamHocDTO nh = new NamHocDTO();
-                            nh.MaNamHoc = reader.GetString("MaNamHoc");
-                            nh.TenNamHoc = reader.GetString("TenNamHoc");
-                            nh.NgayBD = reader.GetDateTime("NgayBatDau");
-                            nh.NgayKT = reader.GetDateTime("NgayKetThuc");
-                            ds.Add(nh);
+                            while (reader.Read())
+                            {
+                                NamHocDTO nh = new NamHocDTO
+                                {
+                                    MaNamHoc = reader.GetString("MaNamHoc"),
+                                    TenNamHoc = reader.GetString("TenNamHoc"),
+                                    NgayBD = reader.GetDateTime("NgayBatDau"),
+                                    NgayKT = reader.GetDateTime("NgayKetThuc")
+                                };
+                                ds.Add(nh);
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi DocDSNamHoc: {ex.Message}");
+                throw;
+            }
+
             return ds;
         }
-        public NamHocDTO LayNamHocTheoId(int maNamHoc)
+
+        public NamHocDTO LayNamHocTheoMa(string maNamHoc)
         {
             NamHocDTO namHoc = null;
-            string query = "select MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc from NamHoc where MaNamHoc=@MaNamHoc";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            string query = "SELECT MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc FROM NamHoc WHERE MaNamHoc=@MaNamHoc";
+
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
-                        if (reader.Read())
+                        cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            namHoc = new NamHocDTO();
-                            namHoc.MaNamHoc = reader.GetString("MaNamHoc");
-                            namHoc.TenNamHoc = reader.GetString("TenNamHoc");
-                            namHoc.NgayBD = reader.GetDateTime("NgayBatDau");
-                            namHoc.NgayKT = reader.GetDateTime("NgayKetThuc");
+                            if (reader.Read())
+                            {
+                                namHoc = new NamHocDTO
+                                {
+                                    MaNamHoc = reader.GetString("MaNamHoc"),
+                                    TenNamHoc = reader.GetString("TenNamHoc"),
+                                    NgayBD = reader.GetDateTime("NgayBatDau"),
+                                    NgayKT = reader.GetDateTime("NgayKetThuc")
+                                };
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayNamHocTheoMa: {ex.Message}");
+                throw;
+            }
+
             return namHoc;
         }
-        public NamHocDTO LayNamHocTheoTen(string tenNamHoc)
-        {
-            NamHocDTO namHoc = null;
-            string query = "select MaNamHoc, NgayBatDau, NgayKetThuc from NamHoc where TenNamHoc=@TenNamHoc";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@TenNamHoc", tenNamHoc);
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            namHoc = new NamHocDTO();
-                            namHoc.MaNamHoc = reader.GetString("MaNamHoc");
-                            namHoc.TenNamHoc = tenNamHoc;
-                            namHoc.NgayBD = reader.GetDateTime("NgayBatDau");
-                            namHoc.NgayKT = reader.GetDateTime("NgayKetThuc");
-                        }
-                    }
-                }
-            }return namHoc;
-        }
+
         public bool updateNamHoc(NamHocDTO namHoc)
         {
-            string query = "update NamHoc set TenNamHoc=@TenNamHoc,NgayBatDau=@NgayBatDau,NgayKetThuc=@NgayKetThuc where MaNamHoc=@MaNamHoc";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@TenNamHoc", namHoc.TenNamHoc);
-                    cmd.Parameters.AddWithValue("@NgayBatDau", namHoc.NgayBD);
-                    cmd.Parameters.AddWithValue("@NgayKetThuc", namHoc.NgayKT);
-                    cmd.Parameters.AddWithValue("@MaNamHoc", namHoc.MaNamHoc);
-                    int result=cmd.ExecuteNonQuery();
-                    return result > 0;
-                }
+            string query = "UPDATE NamHoc SET TenNamHoc=@TenNamHoc, NgayBatDau=@NgayBatDau, NgayKetThuc=@NgayKetThuc WHERE MaNamHoc=@MaNamHoc";
 
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@TenNamHoc", namHoc.TenNamHoc);
+                        cmd.Parameters.AddWithValue("@NgayBatDau", namHoc.NgayBD);
+                        cmd.Parameters.AddWithValue("@NgayKetThuc", namHoc.NgayKT);
+                        cmd.Parameters.AddWithValue("@MaNamHoc", namHoc.MaNamHoc);
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi updateNamHoc: {ex.Message}");
+                throw;
             }
         }
-        public bool XoaNamHoc(int maNamHoc)
+
+        public bool XoaNamHoc(string maNamHoc)
         {
             string query = "DELETE FROM NamHoc WHERE MaNamHoc = @MaNamHoc";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
-                    int result = cmd.ExecuteNonQuery();
-                    return result > 0;
+                    conn.Open();
+                    
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
+                        
+                        int result = cmd.ExecuteNonQuery();
+                        
+                        // Trả về true nếu có ít nhất 1 row bị xóa
+                        return result > 0;
+                    }
                 }
+            }
+            catch (MySqlException ex)
+            {
+                // Xử lý lỗi MySQL cụ thể
+                Console.WriteLine($"MySQL Error [{ex.Number}]: {ex.Message}");
+                throw new Exception($"Lỗi database: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi XoaNamHoc: {ex.Message}");
+                throw;
             }
         }
     }

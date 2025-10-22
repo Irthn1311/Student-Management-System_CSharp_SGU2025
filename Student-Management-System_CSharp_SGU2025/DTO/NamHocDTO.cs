@@ -19,21 +19,15 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.ngayKT = ngayKT;
         }
 
-        // Destructor
-        ~NamHocDTO()
-        {
-            Console.WriteLine("Hủy đối tượng NamHocDTO");
-        }
-
         public string MaNamHoc
         {
             get { return maNamHoc; }
             set
             {
-                if (value == "")
+                if (!string.IsNullOrWhiteSpace(value))
                     maNamHoc = value;
                 else
-                    throw new ArgumentException("Mã năm học phải là chuỗi");
+                    throw new ArgumentException("Mã năm học không được để trống");  
             }
         }
 
@@ -52,25 +46,13 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         public DateTime NgayBD
         {
             get { return ngayBD; }
-            set
-            {
-                if (value < ngayKT || ngayKT == default)
-                    ngayBD = value;
-                else
-                    throw new ArgumentException("Ngày bắt đầu phải trước ngày kết thúc");
-            }
+            set { ngayBD = value; }
         }
 
         public DateTime NgayKT
         {
             get { return ngayKT; }
-            set
-            {
-                if (value > ngayBD || ngayBD == default)
-                    ngayKT = value;
-                else
-                    throw new ArgumentException("Ngày kết thúc phải sau ngày bắt đầu");
-            }
+            set { ngayKT = value; }
         }
     }
 }

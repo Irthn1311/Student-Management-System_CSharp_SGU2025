@@ -1,5 +1,8 @@
-﻿using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
+﻿using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -7,9 +10,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class FrmMonHoc : UserControl
     {
+        private MonHocBUS monHocBUS;
         public FrmMonHoc()
         {
             InitializeComponent();
+            monHocBUS = new MonHocBUS();
         }
 
         private void FrmMonHoc_Load(object sender, EventArgs e)
@@ -39,24 +44,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // ===================================
             // 2️⃣ NẠP DỮ LIỆU MẪU
             // ===================================
-            dgvMonHoc.Rows.Clear(); // Xóa dữ liệu cũ trước khi nạp mới
-            dgvMonHoc.Rows.Add("TOAN", "Toán học", "5 tiết", "Môn chính");
-            dgvMonHoc.Rows.Add("VAN", "Ngữ văn", "5 tiết", "Môn chính");
-            dgvMonHoc.Rows.Add("LY", "Vật lý", "3 tiết", "Tự nhiên");
-            dgvMonHoc.Rows.Add("HOA", "Hóa học", "3 tiết", "Tự nhiên");
-            dgvMonHoc.Rows.Add("SINH", "Sinh học", "3 tiết", "Tự nhiên");
-            dgvMonHoc.Rows.Add("SU", "Lịch sử", "2 tiết", "Xã hội");
-            dgvMonHoc.Rows.Add("DIA", "Địa lý", "2 tiết", "Xã hội");
-            dgvMonHoc.Rows.Add("GDCD", "Giáo dục công dân", "1 tiết", "Xã hội");
-            dgvMonHoc.Rows.Add("TIN", "Tin học", "2 tiết", "Kỹ năng khác");
-            dgvMonHoc.Rows.Add("TD", "Thể dục", "2 tiết", "Kỹ năng khác");
-            dgvMonHoc.Rows.Add("QPAN", "Giáo dục Quốc phòng", "2 tiết", "Kỹ năng khác");
-            dgvMonHoc.Rows.Add("NHAC", "Âm nhạc", "1 tiết", "Nghệ thuật");
-            dgvMonHoc.Rows.Add("MT", "Mỹ thuật", "1 tiết", "Nghệ thuật");
+
 
             // ===================================
             // 3️⃣ GẮN SỰ KIỆN
             // ===================================
+            LoadDuLieuMonHoc();
             dgvMonHoc.CellPainting += dgvMonHoc_CellPainting;
             dgvMonHoc.CellClick += dgvMonHoc_CellClick;
 
@@ -79,11 +72,54 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             statcardMonHoc3.SoLuongForeColor = Color.FromArgb(234, 88, 12);
 
             // Card 4
-            statcardMonHoc4.SetData("3", "Kỹ năng khác", "GDCD,TD,Qp");
+            statcardMonHoc4.SetData("3", "Kỹ năng khác", "GDCD,TD,QP");
             statcardMonHoc4.PanelBackgroundColor = Color.FromArgb(243, 243, 255);
             statcardMonHoc4.SoLuongForeColor = Color.FromArgb(147, 51, 234);
         }
+        private void LoadDuLieuMonHoc()
+        {
+            try
+            {
+                dgvMonHoc.Rows.Clear(); // Xóa dữ liệu cũ trước khi nạp mới
 
+                List<MonHocDTO> dsMonHoc = monHocBUS.DocDSMN();
+
+                foreach (MonHocDTO mh in dsMonHoc)
+                {
+                    
+                    
+                    dgvMonHoc.Rows.Add(mh.maMon.ToString(), mh.tenMon, $"{mh.soTiet} tiết", mh.ghiChu);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi load dữ liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private bool XoaMonHocVaReload(int maMon)
+        {
+            try
+            {
+                // Xóa từ cơ sở dữ liệu
+                if (monHocBUS.DeleteMonHoc(maMon))
+                {
+                    // Load lại toàn bộ dữ liệu lên bảng
+                    LoadDuLieuMonHoc();
+                    // Cập nhật stat cards
+                    
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi xóa: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
         private void dgvMonHoc_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             // Kiểm tra vẽ ô trong cột thao tác
@@ -111,6 +147,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
+        // Cập nhật phương thức dgvMonHoc_CellClick trong FrmMonHoc.cs
+
         private void dgvMonHoc_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             // Bỏ qua click tiêu đề
@@ -129,30 +167,56 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             int xEdit = startX;
             int xDelete = startX + iconSize + spacing;
 
-            string maMon = dgvMonHoc.Rows[e.RowIndex].Cells["MaMon"].Value.ToString();
+            // Lấy thông tin môn học
+            int maMon = Convert.ToInt32(dgvMonHoc.Rows[e.RowIndex].Cells["MaMon"].Value);
+            string tenMon = dgvMonHoc.Rows[e.RowIndex].Cells["TenMon"].Value.ToString();
 
             // Xử lý click từng icon
             if (clickPoint.X >= xEdit && clickPoint.X <= xEdit + iconSize)
             {
-                MessageBox.Show($"📝 Chỉnh sửa môn: {maMon}", "Sửa môn học");
+                // XỬ LÝ SỬA - làm sau
+                MessageBox.Show($"📝 Chỉnh sửa môn: {tenMon} (Mã: {maMon})", "Sửa môn học",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 // TODO: Mở form chỉnh sửa
             }
             else if (clickPoint.X >= xDelete && clickPoint.X <= xDelete + iconSize)
             {
+                // XỬ LÝ XÓA
                 DialogResult dr = MessageBox.Show(
-                    $"Bạn có chắc muốn xóa môn {maMon}?",
-                    "Xác nhận xóa",
+                    $"Bạn có chắc chắn muốn xóa môn học:\n\n" +
+                    $"Mã môn: {maMon}\n" +
+                    $"Tên môn: {tenMon}\n\n" +
+                    $"⚠️ Hành động này không thể hoàn tác!",
+                    "Xác nhận xóa môn học",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
                 );
 
                 if (dr == DialogResult.Yes)
                 {
-                    dgvMonHoc.Rows.RemoveAt(e.RowIndex);
+                    if (XoaMonHocVaReload(maMon))
+                    {
+                        MessageBox.Show(
+                            $"✓ Đã xóa môn học '{tenMon}' thành công!",
+                            "Thành công",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            $"✗ Không thể xóa môn học '{tenMon}'!\n\nVui lòng thử lại.",
+                            "Lỗi",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error
+                        );
+                    }
                 }
             }
         }
 
+        
         private void guna2HtmlLabel2_Click(object sender, EventArgs e)
         {
             // Tùy chọn xử lý nếu cần
@@ -169,6 +233,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         private void panelMonHoc_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void dgvMonHoc_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }

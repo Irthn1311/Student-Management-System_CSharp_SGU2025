@@ -18,7 +18,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
     {
         public bool ThemMonHoc(MonHocDTO monhoc)
         {
-            string query = "insert into MonHoc(TenMonHoc,SoTiet) values(@TenMonHoc,@SoTiet)";
+            string query = "insert into MonHoc(TenMonHoc,SoTiet,GhiChu) values(@TenMonHoc,@SoTiet,@GhiChu)";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -26,6 +26,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 {
                     cmd.Parameters.AddWithValue("@TenMonHoc", monhoc.tenMon);
                     cmd.Parameters.AddWithValue("@SoTiet", monhoc.soTiet);
+                    cmd.Parameters.AddWithValue("@GhiChu", monhoc.ghiChu);
                     int result = cmd.ExecuteNonQuery();
                     return result > 0;
                 }
@@ -34,7 +35,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         //tat ca
         public List<MonHocDTO> DocDSMN(){
             List<MonHocDTO> ds = new List<MonHocDTO>();
-            string query="select MaMonHoc, TenMonHoc, SoTiet from MonHoc";
+            string query="select MaMonHoc, TenMonHoc, SoTiet,GhiChu from MonHoc";
             //Tạo đối tượng kết nối tới cơ sở dữ liệu MySQL bằng hàm GetConnection() (do bạn tự định nghĩa trong lớp ConnectionDatabase).            
             using (MySqlConnection conn=ConnectionDatabase.GetConnection()) 
             {
@@ -50,6 +51,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             mh.maMon = reader.GetInt32("MaMonHoc");
                             mh.tenMon = reader.GetString("TenMonHoc");
                             mh.soTiet = reader.GetInt32("SoTiet");
+                            mh.ghiChu = reader.GetString("GhiChu");
                             ds.Add(mh); // thêm trong vòng lặp
                         }
 
@@ -61,7 +63,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
       public MonHocDTO LayDSMonHocTheoId(int maMonHoc)
         {
             MonHocDTO monHoc = null;
-            string query = "select MaMonHoc,TenMonHoc,SoTiet from MonHoc where MaMonHoc=@MaMonHoc";
+            string query = "select MaMonHoc,TenMonHoc,SoTiet,GhiChu from MonHoc where MaMonHoc=@MaMonHoc";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -77,7 +79,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             {
                                 maMon = reader.GetInt32("MaMonHoc"),
                                 tenMon = reader.GetString("TenMonHoc"),
-                                soTiet = reader.GetInt32("SoTiet")
+                                soTiet = reader.GetInt32("SoTiet"),
+                                ghiChu = reader.GetString("GhiChu")
                             };
                         }
                     }
@@ -89,7 +92,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public MonHocDTO LayDSMonHocTheoTen(string tenMonHoc)
         {
             MonHocDTO monHoc = null;
-            string query = "select MaMonHoc,SoTiet from MonHoc where TenMonHoc=@TenMonHoc";
+            string query = "select MaMonHoc,SoTiet,GhiChu from MonHoc where TenMonHoc=@TenMonHoc";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -105,7 +108,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             {
                                 maMon = reader.GetInt32("MaMonHoc"),
                                 tenMon = reader.GetString("TenMonHoc"),
-                                soTiet = reader.GetInt32("SoTiet")
+                                soTiet = reader.GetInt32("SoTiet"),
+                                ghiChu = reader.GetString("GhiChu")
                             };
                         }
                     }
@@ -116,7 +120,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
         public bool UpdateMonHoc(MonHocDTO monhoc) //cap nhat theo ma
         {
-            string query = "update MonHoc set TenMonHoc=@TenMonHoc,SoTiet=@SoTiet where MaMonHoc=@MaMonHoc";
+            string query = "update MonHoc set TenMonHoc=@TenMonHoc,SoTiet=@SoTiet, GhiChu=@GhiChu where MaMonHoc=@MaMonHoc";
             using(MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -125,6 +129,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     cmd.Parameters.AddWithValue("@TenMonHoc", monhoc.tenMon);
                     cmd.Parameters.AddWithValue("@SoTiet", monhoc.soTiet);
                     cmd.Parameters.AddWithValue("@MaMonHoc", monhoc.maMon);
+                    cmd.Parameters.AddWithValue("@GhiChu", monhoc.ghiChu);
                     int result = cmd.ExecuteNonQuery();
                     return result > 0;
                 }

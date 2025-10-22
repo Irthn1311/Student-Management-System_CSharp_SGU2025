@@ -121,15 +121,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BUS\LopDocBUS.cs" />
+    <Compile Include="BUS\HocKyBUS.cs" />
+    <Compile Include="BUS\LopHocBUS.cs" />
     <Compile Include="BUS\MonHocBUS.cs" />
     <Compile Include="BUS\NamHocBUS.cs" />
     <Compile Include="BUS\PhanCongGiangDayBUS.cs" />
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
+    <Compile Include="DAO\HocKyDAO.cs" />
     <Compile Include="DAO\LopHocDAO.cs" />
     <Compile Include="DAO\MonHocDAO.cs" />
     <Compile Include="DAO\NamHocDAO.cs" />
     <Compile Include="DAO\PhanCongGiangDayDAO.cs" />
+    <Compile Include="DTO\HocKyDTO.cs" />
     <Compile Include="DTO\KhoiLop.cs" />
     <Compile Include="DTO\LopDTO.cs" />
     <Compile Include="DTO\MonHocDTO.cs" />
@@ -242,6 +245,12 @@
     </Compile>
     <Compile Include="GUI\TaiKhoan\FrmTaiKhoan.Designer.cs">
       <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\frmThemNamHoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\frmThemNamHoc.Designer.cs">
+      <DependentUpon>frmThemNamHoc.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.cs">
       <SubType>Form</SubType>

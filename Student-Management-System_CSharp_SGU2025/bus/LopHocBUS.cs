@@ -8,11 +8,11 @@ using System.Text;
 using Student_Management_System_CSharp_SGU2025.DAO;
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
-    internal class LopBUS
+    internal class LopHocBUS
     {
         private LopHocDAO lopDAO;
 
-        public LopBUS()
+        public LopHocBUS()
         {
             lopDAO = new LopHocDAO();
         }

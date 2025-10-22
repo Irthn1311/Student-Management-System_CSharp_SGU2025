@@ -3,17 +3,21 @@ using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-
+using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.DTO;
+using System.Collections.Generic;
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class LopKhoi :UserControl
     {
+        private LopHocBUS lopHocBUS = new LopHocBUS();
         public LopKhoi()
         {
             InitializeComponent();
-
+            lopHocBUS = new LopHocBUS();
             // Gắn sự kiện
             this.Load += LopKhoi_Load;
+            SetupDataGridView();
         }
 
         private void LopKhoi_Load(object sender, EventArgs e)
@@ -37,8 +41,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
 
             // --- Cấu hình & nạp dữ liệu ---
-            SetupDataGridView();
+           
             LoadData();
+          
 
             // --- Gắn sự kiện ---
             dgvLop.CellPainting += dgvLop_CellPainting;
@@ -56,7 +61,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns.Add("MaLop", "Mã lớp");
             dgvLop.Columns.Add("TenLop", "Tên lớp");
             dgvLop.Columns.Add("Khoi", "Khối");
-            dgvLop.Columns.Add("SiSo", "Sĩ số");
+
             dgvLop.Columns.Add("GVCN", "Giáo viên CN");
             dgvLop.Columns.Add("ThaoTac", "Thao tác");
             // Đặt lại chế độ co giãn cột
@@ -70,7 +75,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns["MaLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvLop.Columns["TenLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvLop.Columns["Khoi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvLop.Columns["SiSo"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
             dgvLop.Columns["GVCN"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             // Style cho tiêu đề
@@ -98,12 +103,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // =======================
         private void LoadData()
         {
-            dgvLop.Rows.Add("10A1", "Lớp 10A1", "Khối 10", 42, "Nguyễn Thị Hoa");
-            dgvLop.Rows.Add("10A2", "Lớp 10A2", "Khối 10", 40, "Trần Văn Nam");
-            dgvLop.Rows.Add("11A1", "Lớp 11A1", "Khối 11", 38, "Phạm Văn Đức");
-            dgvLop.Rows.Add("11A2", "Lớp 11A2", "Khối 11", 39, "Hoàng Thị Lan");
-            dgvLop.Rows.Add("12A1", "Lớp 12A1", "Khối 12", 35, "Đỗ Thị Thu");
-            dgvLop.Rows.Add("12A2", "Lớp 12A2", "Khối 12", 36, "Bùi Văn Toàn");
+            //dgvLop.Rows.Add("10A1", "Lớp 10A1", "Khối 10", 42, "Nguyễn Thị Hoa");
+            //dgvLop.Rows.Add("10A2", "Lớp 10A2", "Khối 10", 40, "Trần Văn Nam");
+            //dgvLop.Rows.Add("11A1", "Lớp 11A1", "Khối 11", 38, "Phạm Văn Đức");
+            //dgvLop.Rows.Add("11A2", "Lớp 11A2", "Khối 11", 39, "Hoàng Thị Lan");
+            //dgvLop.Rows.Add("12A1", "Lớp 12A1", "Khối 12", 35, "Đỗ Thị Thu");
+            //dgvLop.Rows.Add("12A2", "Lớp 12A2", "Khối 12", 36, "Bùi Văn Toàn");
+            try
+            {
+                dgvLop.Rows.Clear();
+                List<LopDTO> dsLopHoc = lopHocBUS.DocDSLop();
+                foreach(LopDTO lop in dsLopHoc)
+                {
+                    dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", lop.maGVCN);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi nạp dữ liệu lớp học: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // =======================
@@ -186,9 +204,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void guna2Button1_Click(object sender, EventArgs e)
         {
-            ThemLopHoc frm = new ThemLopHoc();
-            frm.StartPosition = FormStartPosition.CenterParent; // 🔹 hiện giữa form cha
-            frm.ShowDialog();
+            ThemLopHoc formThem = new ThemLopHoc();
+
+            DialogResult result = formThem.ShowDialog(); // 👈 Rất quan trọng
+
+            if (result == DialogResult.OK)
+            {
+                LoadData(); // 🔁 Gọi lại hàm nạp danh sách lớp
+            }
+
         }
 
         private void guna2ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
