@@ -11,32 +11,40 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
     internal class GiaoVienDAO
     {
         // === 1. Thêm Giáo Viên (CRUD) ===
-        public bool ThemGiaoVien(GiaoVien gv)
+        public bool ThemGiaoVien(GiaoVienDTO gv)
         {
             string query = @"INSERT INTO GiaoVien (MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai) 
                              VALUES (@MaGV, @HoTen, @NgaySinh, @GioiTinh, @DiaChi, @SDT, @Email, @TrangThai)";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@MaGV", gv.MaGiaoVien);
-                    cmd.Parameters.AddWithValue("@HoTen", gv.HoTen);
-                    cmd.Parameters.AddWithValue("@NgaySinh", gv.NgaySinh);
-                    cmd.Parameters.AddWithValue("@GioiTinh", gv.GioiTinh);
-                    cmd.Parameters.AddWithValue("@DiaChi", gv.DiaChi);
-                    cmd.Parameters.AddWithValue("@SDT", gv.SoDienThoai);
-                    cmd.Parameters.AddWithValue("@Email", gv.Email);
-                    cmd.Parameters.AddWithValue("@TrangThai", gv.TrangThai);
-                    return cmd.ExecuteNonQuery() > 0;
-                }
+              using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+              {
+                  conn.Open();
+                  using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                  {
+                      cmd.Parameters.AddWithValue("@MaGV", gv.MaGiaoVien);
+                      cmd.Parameters.AddWithValue("@HoTen", gv.HoTen);
+                      cmd.Parameters.AddWithValue("@NgaySinh", gv.NgaySinh);
+                      cmd.Parameters.AddWithValue("@GioiTinh", gv.GioiTinh);
+                      cmd.Parameters.AddWithValue("@DiaChi", gv.DiaChi);
+                      cmd.Parameters.AddWithValue("@SDT", gv.SoDienThoai);
+                      cmd.Parameters.AddWithValue("@Email", gv.Email);
+                      cmd.Parameters.AddWithValue("@TrangThai", gv.TrangThai);
+                      return cmd.ExecuteNonQuery() > 0;
+                  }
+            }catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi ThemGiaoVien: {ex.Message}");
+                throw;
             }
+             
         }
 
         // === 2. Đọc Danh Sách Giáo Viên ĐẦY ĐỦ (Hiển thị + JOIN Chuyên môn) ===
-        public List<GiaoVien> DocDSGiaoVienDayDu()
+        public List<GiaoVienDTO> DocDSGiaoVienDayDu()
         {
-            List<GiaoVien> ds = new List<GiaoVien>();
+            List<GiaoVienDTO> ds = new List<GiaoVienDTO>();
             // Sử dụng GROUP_CONCAT để JOIN và gom nhóm tên các môn chuyên môn
             string query = @"
                 SELECT 
@@ -78,7 +86,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
 
         // === 3. Cập nhật Giáo Viên (CRUD) ===
-        public bool CapNhatGiaoVien(GiaoVien gv)
+        public bool CapNhatGiaoVien(GiaoVienDTO gv)
         {
             string query = @"UPDATE GiaoVien SET HoTen=@HoTen, NgaySinh=@NgaySinh, GioiTinh=@GioiTinh, 
                              DiaChi=@DiaChi, SoDienThoai=@SDT, Email=@Email, TrangThai=@TrangThai 
@@ -117,7 +125,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
 
         // === 5. Lấy Giáo Viên theo Mã (Phục vụ cho kiểm tra/cập nhật) ===
-        public GiaoVien LayGiaoVienTheoMa(string maGiaoVien)
+        public GiaoVienDTO LayGiaoVienTheoMa(string maGiaoVien)
         {
             string query = "SELECT * FROM GiaoVien WHERE MaGiaoVien = @MaGV";
             // Logic tương tự LayLopTheoId/LayLopTheoTen, chỉ cần đọc 1 bản ghi
@@ -153,6 +161,41 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     cmd.Parameters.AddWithValue("@MaGV", maGiaoVien);
                     return cmd.ExecuteNonQuery() > 0;
                 }
+            }
+          
+          
+         
+         public bool KiemTraEmailTonTai(string email, string maGiaoVienHienTai = null)
+        {
+            string query = "SELECT COUNT(*) FROM GiaoVien WHERE Email = @Email";
+            
+            if (!string.IsNullOrEmpty(maGiaoVienHienTai))
+            {
+                query += " AND MaGiaoVien != @MaGiaoVien";
+            }
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Email", email);
+                        if (!string.IsNullOrEmpty(maGiaoVienHienTai))
+                        {
+                            cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVienHienTai);
+                        }
+                        
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        return count > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi KiemTraEmailTonTai: {ex.Message}");
+                throw;
             }
         }
     }

@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Text;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
-    internal class GiaoVien
+    internal class GiaoVienDTO
     {
-        // Fields (Thuộc tính cơ bản)
         private string maGiaoVien;
         private string hoTen;
         private DateTime ngaySinh;
@@ -21,10 +20,10 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         // **********************************************
 
         // Constructors (Hàm khởi tạo)
-        public GiaoVien() { }
+        public GiaoVienDTO() { }
 
         // Hàm khởi tạo cũ
-        public GiaoVien(string maGiaoVien, string hoTen, DateTime ngaySinh, string gioiTinh, string diaChi, string soDienThoai, string email, string trangThai)
+        public GiaoVienDTO(string maGiaoVien, string hoTen, DateTime ngaySinh, string gioiTinh, string diaChi, string soDienThoai, string email, string trangThai)
         {
             this.MaGiaoVien = maGiaoVien;
             this.HoTen = hoTen;
@@ -53,7 +52,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
 
 
         // Destructor (Hàm hủy)
-        ~GiaoVien()
+        ~GiaoVienDTO()
         {
             // Console.WriteLine("Huy doi tuong GiaoVien");
         }
