@@ -136,13 +136,13 @@ CREATE TABLE HocSinhPhuHuynh (
 );
 
 CREATE TABLE PhanLop (
-    MaHocSinh VARCHAR(20),
+    MaHocSinh INT,
     MaLop INT,
     MaHocKy INT,
-    PRIMARY KEY (MaHocSinh, MaLop, MaHocKy),
+    PRIMARY KEY (MaHocSinh, MaLop, MaHocKy, MaNamHoc),
     FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh),
     FOREIGN KEY (MaLop) REFERENCES LopHoc(MaLop),
-    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy)
+    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy),
 );
 
 CREATE TABLE PhanCongGiangDay (
@@ -219,6 +219,17 @@ CREATE TABLE KhenThuongKyLuat (
     FOREIGN KEY (NguoiLapID) REFERENCES NguoiDung(TenDangNhap)
 );
 
+CREATE TABLE ThongBao (
+    Ma_Thong_Bao INT PRIMARY KEY AUTO_INCREMENT,
+    TieuDe VARCHAR(255) NOT NULL,
+    NoiDung TEXT NULL, -- Nội dung có thể để trống
+    NgayTao DATETIME DEFAULT CURRENT_TIMESTAMP, -- Tự động lấy ngày giờ hiện tại
+    LoaiThongBao VARCHAR(50) NOT NULL, -- Ví dụ: Chung, LichThi, SuKien, KhenThuong, HocPhi...
+    DoiTuongNhan VARCHAR(255) NOT NULL, -- Ví dụ: ALL, 10A1, 10A2, GiaoVien, HocSinh...
+    NgayHetHan DATETIME NULL, -- Có thể để trống nếu không có ngày hết hạn
+    Ma_Nguoi_Tao INT, -- Người tạo thông báo
+    FOREIGN KEY (Ma_Nguoi_Tao) REFERENCES NguoiDung(Ma_Nguoi_Dung)
+);
 -- =====================================================================
 -- Kết thúc script
 -- =====================================================================
