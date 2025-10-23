@@ -122,14 +122,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BUS\GiaoVienBUS.cs" />
+    <Compile Include="BUS\HanhKiemBUS.cs" />
     <Compile Include="BUS\HocKyBUS.cs" />
     <Compile Include="BUS\LopHocBUS.cs" />
     <Compile Include="BUS\MonHocBUS.cs" />
     <Compile Include="BUS\NamHocBUS.cs" />
     <Compile Include="BUS\PhanCongGiangDayBUS.cs" />
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
-    <Compile Include="ConnectDatabase\GiaoVienBUS.cs" />
-    <Compile Include="ConnectDatabase\HanhKiemBUS.cs" />
     <Compile Include="DAO\GiaoVienDAO.cs" />
     <Compile Include="DAO\HanhKiemDAO.cs" />
     <Compile Include="DAO\LopHocDAO.cs" />

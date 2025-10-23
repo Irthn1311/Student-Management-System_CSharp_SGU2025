@@ -1,171 +1,231 @@
 ﻿using MySql.Data.MySqlClient;
 using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
-using Student_Management_System_CSharp_SGU2025.DTO; // Giả định có GiaoVien DTO
+using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Text;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
     internal class GiaoVienDAO
     {
-        // === 1. Thêm Giáo Viên (CRUD) ===
-        public bool ThemGiaoVien(GiaoVienDTO gv)
+        // ✅ LẤY TÊN GIÁO VIÊN THEO MÃ (Requirement chính của bạn)
+        public string LayTenGiaoVienTheoMa(string maGiaoVien)
         {
-            string query = @"INSERT INTO GiaoVien (MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai) 
-                             VALUES (@MaGV, @HoTen, @NgaySinh, @GioiTinh, @DiaChi, @SDT, @Email, @TrangThai)";
-            
+            string tenGiaoVien = null;
+            string query = "SELECT HoTen FROM GiaoVien WHERE MaGiaoVien = @MaGiaoVien";
+
             try
             {
-              using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-              {
-                  conn.Open();
-                  using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                  {
-                      cmd.Parameters.AddWithValue("@MaGV", gv.MaGiaoVien);
-                      cmd.Parameters.AddWithValue("@HoTen", gv.HoTen);
-                      cmd.Parameters.AddWithValue("@NgaySinh", gv.NgaySinh);
-                      cmd.Parameters.AddWithValue("@GioiTinh", gv.GioiTinh);
-                      cmd.Parameters.AddWithValue("@DiaChi", gv.DiaChi);
-                      cmd.Parameters.AddWithValue("@SDT", gv.SoDienThoai);
-                      cmd.Parameters.AddWithValue("@Email", gv.Email);
-                      cmd.Parameters.AddWithValue("@TrangThai", gv.TrangThai);
-                      return cmd.ExecuteNonQuery() > 0;
-                  }
-            }catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi ThemGiaoVien: {ex.Message}");
-                throw;
-            }
-             
-        }
-
-        // === 2. Đọc Danh Sách Giáo Viên ĐẦY ĐỦ (Hiển thị + JOIN Chuyên môn) ===
-        public List<GiaoVienDTO> DocDSGiaoVienDayDu()
-        {
-            List<GiaoVienDTO> ds = new List<GiaoVienDTO>();
-            // Sử dụng GROUP_CONCAT để JOIN và gom nhóm tên các môn chuyên môn
-            string query = @"
-                SELECT 
-                    GV.*, 
-                    GROUP_CONCAT(MH.TenMonHoc ORDER BY GCM.LaChuyenMonChinh DESC SEPARATOR ', ') AS DanhSachChuyenMon
-                FROM GiaoVien GV
-                LEFT JOIN GiaoVienChuyenMon GCM ON GV.MaGiaoVien = GCM.MaGiaoVien
-                LEFT JOIN MonHoc MH ON GCM.MaMonHoc = MH.MaMonHoc
-                GROUP BY GV.MaGiaoVien
-                ORDER BY GV.MaGiaoVien";
-
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
-                        while (reader.Read())
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                        object result = cmd.ExecuteScalar();
+                        
+                        if (result != null)
                         {
-                            GiaoVien gv = new GiaoVien();
-                            gv.MaGiaoVien = reader.GetString("MaGiaoVien");
-                            gv.HoTen = reader.GetString("HoTen");
-                            gv.NgaySinh = reader.IsDBNull(reader.GetOrdinal("NgaySinh")) ? DateTime.MinValue : reader.GetDateTime("NgaySinh");
-                            gv.GioiTinh = reader.IsDBNull(reader.GetOrdinal("GioiTinh")) ? "" : reader.GetString("GioiTinh");
-                            gv.DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? "" : reader.GetString("DiaChi");
-                            gv.SoDienThoai = reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? "" : reader.GetString("SoDienThoai");
-                            gv.Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? "" : reader.GetString("Email");
-                            gv.TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) ? "" : reader.GetString("TrangThai");
-
-                            //// Lấy thông tin JOIN (Danh sách chuyên môn)
-                            //gv.MaGiaoVien = reader.IsDBNull(reader.GetOrdinal("DanhSachChuyenMon")) ? "" : reader.GetString("DanhSachChuyenMon");
-                            ds.Add(gv);
+                            tenGiaoVien = result.ToString();
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayTenGiaoVienTheoMa: {ex.Message}");
+                throw;
+            }
+
+            return tenGiaoVien;
+        }
+
+        // Thêm giáo viên
+        public bool ThemGiaoVien(GiaoVienDTO giaoVien)
+        {
+            string query = "INSERT INTO GiaoVien(MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai) " +
+                          "VALUES(@MaGiaoVien, @HoTen, @NgaySinh, @GioiTinh, @DiaChi, @SoDienThoai, @Email, @TrangThai)";
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", giaoVien.MaGiaoVien);
+                        cmd.Parameters.AddWithValue("@HoTen", giaoVien.HoTen);
+                        cmd.Parameters.AddWithValue("@NgaySinh", giaoVien.NgaySinh);
+                        cmd.Parameters.AddWithValue("@GioiTinh", giaoVien.GioiTinh);
+                        cmd.Parameters.AddWithValue("@DiaChi", giaoVien.DiaChi ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@SoDienThoai", giaoVien.SoDienThoai ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Email", giaoVien.Email ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@TrangThai", giaoVien.TrangThai ?? "Đang giảng dạy");
+                        
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi ThemGiaoVien: {ex.Message}");
+                throw;
+            }
+        }
+
+        // Đọc danh sách giáo viên
+        public List<GiaoVienDTO> DocDSGiaoVien()
+        {
+            List<GiaoVienDTO> ds = new List<GiaoVienDTO>();
+            string query = "SELECT MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai FROM GiaoVien ORDER BY HoTen";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                GiaoVienDTO gv = new GiaoVienDTO
+                                {
+                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
+                                    HoTen = reader.GetString("HoTen"),
+                                    NgaySinh = reader.IsDBNull(reader.GetOrdinal("NgaySinh")) ? DateTime.MinValue : reader.GetDateTime("NgaySinh"),
+                                    GioiTinh = reader.IsDBNull(reader.GetOrdinal("GioiTinh")) ? "" : reader.GetString("GioiTinh"),
+                                    DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? "" : reader.GetString("DiaChi"),
+                                    SoDienThoai = reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? "" : reader.GetString("SoDienThoai"),
+                                    Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? "" : reader.GetString("Email"),
+                                    TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) ? "Đang giảng dạy" : reader.GetString("TrangThai")
+                                };
+                                ds.Add(gv);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi DocDSGiaoVien: {ex.Message}");
+                throw;
+            }
+
             return ds;
         }
 
-        // === 3. Cập nhật Giáo Viên (CRUD) ===
-        public bool CapNhatGiaoVien(GiaoVienDTO gv)
-        {
-            string query = @"UPDATE GiaoVien SET HoTen=@HoTen, NgaySinh=@NgaySinh, GioiTinh=@GioiTinh, 
-                             DiaChi=@DiaChi, SoDienThoai=@SDT, Email=@Email, TrangThai=@TrangThai 
-                             WHERE MaGiaoVien=@MaGV";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@MaGV", gv.MaGiaoVien);
-                    cmd.Parameters.AddWithValue("@HoTen", gv.HoTen);
-                    cmd.Parameters.AddWithValue("@NgaySinh", gv.NgaySinh);
-                    cmd.Parameters.AddWithValue("@GioiTinh", gv.GioiTinh);
-                    cmd.Parameters.AddWithValue("@DiaChi", gv.DiaChi);
-                    cmd.Parameters.AddWithValue("@SDT", gv.SoDienThoai);
-                    cmd.Parameters.AddWithValue("@Email", gv.Email);
-                    cmd.Parameters.AddWithValue("@TrangThai", gv.TrangThai);
-                    return cmd.ExecuteNonQuery() > 0;
-                }
-            }
-        }
-
-        // === 4. Xóa Giáo Viên (CRUD) ===
-        public bool XoaGiaoVien(string maGiaoVien)
-        {
-            string query = "DELETE FROM GiaoVien WHERE MaGiaoVien = @MaGV";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@MaGV", maGiaoVien);
-                    return cmd.ExecuteNonQuery() > 0;
-                }
-            }
-        }
-
-        // === 5. Lấy Giáo Viên theo Mã (Phục vụ cho kiểm tra/cập nhật) ===
+        // Lấy giáo viên theo mã
         public GiaoVienDTO LayGiaoVienTheoMa(string maGiaoVien)
         {
-            string query = "SELECT * FROM GiaoVien WHERE MaGiaoVien = @MaGV";
-            // Logic tương tự LayLopTheoId/LayLopTheoTen, chỉ cần đọc 1 bản ghi
-            return null; // Giả lập trả về null nếu không tìm thấy
+            GiaoVienDTO giaoVien = null;
+            string query = "SELECT MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai FROM GiaoVien WHERE MaGiaoVien = @MaGiaoVien";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                giaoVien = new GiaoVienDTO
+                                {
+                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
+                                    HoTen = reader.GetString("HoTen"),
+                                    NgaySinh = reader.IsDBNull(reader.GetOrdinal("NgaySinh")) ? DateTime.MinValue : reader.GetDateTime("NgaySinh"),
+                                    GioiTinh = reader.IsDBNull(reader.GetOrdinal("GioiTinh")) ? "" : reader.GetString("GioiTinh"),
+                                    DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? "" : reader.GetString("DiaChi"),
+                                    SoDienThoai = reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? "" : reader.GetString("SoDienThoai"),
+                                    Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? "" : reader.GetString("Email"),
+                                    TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) ? "Đang giảng dạy" : reader.GetString("TrangThai")
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayGiaoVienTheoMa: {ex.Message}");
+                throw;
+            }
+
+            return giaoVien;
         }
 
-        // === 6. Xử lý Chuyên Môn: Thêm ===
-        public bool ThemChuyenMon(string maGiaoVien, int maMonHoc, bool laChuyenMonChinh)
+        // Cập nhật giáo viên
+        public bool CapNhatGiaoVien(GiaoVienDTO giaoVien)
         {
-            string query = "INSERT INTO GiaoVienChuyenMon (MaGiaoVien, MaMonHoc, LaChuyenMonChinh) VALUES (@MaGV, @MaMH, @LaChinh)";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            string query = "UPDATE GiaoVien SET HoTen=@HoTen, NgaySinh=@NgaySinh, GioiTinh=@GioiTinh, " +
+                          "DiaChi=@DiaChi, SoDienThoai=@SoDienThoai, Email=@Email, TrangThai=@TrangThai " +
+                          "WHERE MaGiaoVien=@MaGiaoVien";
+
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    cmd.Parameters.AddWithValue("@MaGV", maGiaoVien);
-                    cmd.Parameters.AddWithValue("@MaMH", maMonHoc);
-                    cmd.Parameters.AddWithValue("@LaChinh", laChuyenMonChinh);
-                    return cmd.ExecuteNonQuery() > 0;
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@HoTen", giaoVien.HoTen);
+                        cmd.Parameters.AddWithValue("@NgaySinh", giaoVien.NgaySinh);
+                        cmd.Parameters.AddWithValue("@GioiTinh", giaoVien.GioiTinh);
+                        cmd.Parameters.AddWithValue("@DiaChi", giaoVien.DiaChi ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@SoDienThoai", giaoVien.SoDienThoai ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Email", giaoVien.Email ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@TrangThai", giaoVien.TrangThai);
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", giaoVien.MaGiaoVien);
+                        
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi CapNhatGiaoVien: {ex.Message}");
+                throw;
             }
         }
 
-        // === 7. Xử lý Chuyên Môn: Xóa tất cả chuyên môn theo GV (Phục vụ cho Cập nhật) ===
-        public bool XoaTatCaChuyenMonTheoGV(string maGiaoVien)
+        // Xóa giáo viên
+        public bool XoaGiaoVien(string maGiaoVien)
         {
-            string query = "DELETE FROM GiaoVienChuyenMon WHERE MaGiaoVien = @MaGV";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            string query = "DELETE FROM GiaoVien WHERE MaGiaoVien = @MaGiaoVien";
+
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    cmd.Parameters.AddWithValue("@MaGV", maGiaoVien);
-                    return cmd.ExecuteNonQuery() > 0;
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
                 }
             }
-          
-          
-         
-         public bool KiemTraEmailTonTai(string email, string maGiaoVienHienTai = null)
+            catch (MySqlException ex)
+            {
+                Console.WriteLine($"MySQL Error [{ex.Number}]: {ex.Message}");
+                throw new Exception($"Lỗi database: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi XoaGiaoVien: {ex.Message}");
+                throw;
+            }
+        }
+
+        // Kiểm tra email đã tồn tại chưa
+        public bool KiemTraEmailTonTai(string email, string maGiaoVienHienTai = null)
         {
             string query = "SELECT COUNT(*) FROM GiaoVien WHERE Email = @Email";
             
