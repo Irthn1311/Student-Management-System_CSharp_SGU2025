@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
@@ -13,30 +14,63 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         private string email;
         private string trangThai;
 
+        // **********************************************
+        // ⬅️ FIELD MỚI: Chứa chuỗi tên các môn chuyên môn đã JOIN
+        private string danhSachChuyenMon;
+        // **********************************************
+
+        // Constructors (Hàm khởi tạo)
         public GiaoVienDTO() { }
 
-        public GiaoVienDTO(string maGiaoVien, string hoTen, DateTime ngaySinh, string gioiTinh, 
-                          string diaChi, string soDienThoai, string email, string trangThai)
+        // Hàm khởi tạo cũ
+        public GiaoVienDTO(string maGiaoVien, string hoTen, DateTime ngaySinh, string gioiTinh, string diaChi, string soDienThoai, string email, string trangThai)
         {
-            this.maGiaoVien = maGiaoVien;
-            this.hoTen = hoTen;
-            this.ngaySinh = ngaySinh;
-            this.gioiTinh = gioiTinh;
-            this.diaChi = diaChi;
-            this.soDienThoai = soDienThoai;
-            this.email = email;
-            this.trangThai = trangThai;
+            this.MaGiaoVien = maGiaoVien;
+            this.HoTen = hoTen;
+            this.NgaySinh = ngaySinh;
+            this.GioiTinh = gioiTinh;
+            this.DiaChi = diaChi;
+            this.SoDienThoai = soDienThoai;
+            this.Email = email;
+            this.TrangThai = trangThai;
+            // Thuộc tính mới không cần thiết trong constructor cơ bản
         }
 
+        // Hàm khởi tạo đầy đủ hơn (có cả DanhSachChuyenMon)
+        public GiaoVien(string maGiaoVien, string hoTen, DateTime ngaySinh, string gioiTinh, string diaChi, string soDienThoai, string email, string trangThai, string danhSachChuyenMon)
+        {
+            this.MaGiaoVien = maGiaoVien;
+            this.HoTen = hoTen;
+            this.NgaySinh = ngaySinh;
+            this.GioiTinh = gioiTinh;
+            this.DiaChi = diaChi;
+            this.SoDienThoai = soDienThoai;
+            this.Email = email;
+            this.TrangThai = trangThai;
+            this.DanhSachChuyenMon = danhSachChuyenMon;
+        }
+
+
+        // Destructor (Hàm hủy)
+        ~GiaoVienDTO()
+        {
+            // Console.WriteLine("Huy doi tuong GiaoVien");
+        }
+
+        // Properties (Thuộc tính)
         public string MaGiaoVien
         {
             get { return maGiaoVien; }
             set
             {
-                if (!string.IsNullOrWhiteSpace(value))
+                if (!string.IsNullOrEmpty(value))
+                {
                     maGiaoVien = value;
+                }
                 else
-                    throw new ArgumentException("Mã giáo viên không được để trống");
+                {
+                    Console.WriteLine("Ma giao vien khong duoc de trong.");
+                }
             }
         }
 
@@ -45,10 +79,14 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return hoTen; }
             set
             {
-                if (!string.IsNullOrWhiteSpace(value))
+                if (!string.IsNullOrEmpty(value))
+                {
                     hoTen = value;
+                }
                 else
-                    throw new ArgumentException("Họ tên không được để trống");
+                {
+                    Console.WriteLine("Ho ten giao vien khong duoc de trong.");
+                }
             }
         }
 
@@ -87,5 +125,14 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return trangThai; }
             set { trangThai = value; }
         }
+
+        // **********************************************
+        // ⬅️ PROPERTY MỚI: Thuộc tính này sẽ được gán chuỗi chuyên môn từ DAO
+        public string DanhSachChuyenMon
+        {
+            get { return danhSachChuyenMon; }
+            set { danhSachChuyenMon = value; }
+        }
+        // **********************************************
     }
 }
