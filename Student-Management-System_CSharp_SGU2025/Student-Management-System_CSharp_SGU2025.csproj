@@ -128,19 +128,24 @@
     <Compile Include="BUS\NamHocBUS.cs" />
     <Compile Include="BUS\PhanCongGiangDayBUS.cs" />
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
+    <Compile Include="ConnectDatabase\GiaoVienBUS.cs" />
+    <Compile Include="ConnectDatabase\HanhKiemBUS.cs" />
     <Compile Include="DAO\GiaoVienDAO.cs" />
-    <Compile Include="DAO\HocKyDAO.cs" />
+    <Compile Include="DAO\HanhKiemDAO.cs" />
     <Compile Include="DAO\LopHocDAO.cs" />
     <Compile Include="DAO\MonHocDAO.cs" />
     <Compile Include="DAO\NamHocDAO.cs" />
-    <Compile Include="DAO\PhanCongGiangDayDAO.cs" />
     <Compile Include="DTO\GiaoVienDTO.cs" />
+    <Compile Include="DTO\HanhKiemDTO.cs" />
+    <Compile Include="DAO\HocKyDAO.cs" />
+    <Compile Include="DAO\PhanCongGiangDayDAO.cs" />
     <Compile Include="DTO\HocKyDTO.cs" />
     <Compile Include="DTO\KhoiLop.cs" />
     <Compile Include="DTO\LopDTO.cs" />
     <Compile Include="DTO\MonHocDTO.cs" />
     <Compile Include="DTO\NamHocDTO.cs" />
     <Compile Include="DTO\PhanCongGiangDayDTO.cs" />
+    <Compile Include="DTO\ThoiKhoaBieuDTO.cs" />
     <Compile Include="GUI\CaiDat\CaiDat.cs">
       <SubType>UserControl</SubType>
     </Compile>
