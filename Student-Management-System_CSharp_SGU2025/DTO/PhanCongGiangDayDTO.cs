@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
@@ -13,132 +9,102 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         private string maGiaoVien;
         private int maMonHoc;
         private int maHocKy;
-        private DateTime tuNgay;
-        private DateTime denNgay;
-       
+        private DateTime ngayBatDau;
+        private DateTime ngayKetThuc;
+
+        // Constructor mặc định
         public PhanCongGiangDayDTO() { }
-        public PhanCongGiangDayDTO(int maPhanCong, int maLop, string maGiaoVien, int maMonHoc, int maHocKy, DateTime tuNgay, DateTime denNgay)
+
+        // Constructor đầy đủ tham số
+        public PhanCongGiangDayDTO(int maPhanCong, int maLop, string maGiaoVien, int maMonHoc, 
+                                   int maHocKy, DateTime ngayBatDau, DateTime ngayKetThuc)
         {
             this.maPhanCong = maPhanCong;
             this.maLop = maLop;
             this.maGiaoVien = maGiaoVien;
             this.maMonHoc = maMonHoc;
             this.maHocKy = maHocKy;
-            this.tuNgay = tuNgay;
-            this.denNgay = denNgay;
-            
+            this.ngayBatDau = ngayBatDau;
+            this.ngayKetThuc = ngayKetThuc;
         }
-        ~PhanCongGiangDayDTO()
-        {
-            Console.WriteLine("Huy doi tuong PhanCongGiangDay");
-        }
+
+        // Properties với validation
         public int MaPhanCong
         {
             get { return maPhanCong; }
             set
             {
-                if (maPhanCong > 0)
-                {
+                if (value > 0)
                     maPhanCong = value;
-                }
                 else
-                {
-                    Console.WriteLine("Ma phan cong phai lon hon 0");
-                }
+                    throw new ArgumentException("Mã phân công phải lớn hơn 0");
             }
         }
+
         public int MaLop
         {
             get { return maLop; }
             set
             {
-                if (maLop > 0)
-                {
+                if (value > 0)
                     maLop = value;
-                }
                 else
-                {
-                    Console.WriteLine("Ma lop phai lon hon 0");
-                }
+                    throw new ArgumentException("Mã lớp phải lớn hơn 0");
             }
         }
+
         public string MaGiaoVien
         {
             get { return maGiaoVien; }
             set
             {
-                if (maGiaoVien == "")
-                {
+                if (!string.IsNullOrWhiteSpace(value))
                     maGiaoVien = value;
-                }
                 else
-                {
-                    Console.WriteLine("Ma giao vien phai lon hon 0");
-                }
+                    throw new ArgumentException("Mã giáo viên không được để trống");
             }
         }
+
         public int MaMonHoc
         {
             get { return maMonHoc; }
             set
             {
-                if (maMonHoc > 0)
-                {
+                if (value > 0)
                     maMonHoc = value;
-                }
                 else
-                {
-                    Console.WriteLine("Ma mon hoc phai lon hon 0");
-                }
+                    throw new ArgumentException("Mã môn học phải lớn hơn 0");
             }
         }
+
         public int MaHocKy
         {
             get { return maHocKy; }
             set
             {
-                if (maHocKy > 0)
-                {
+                if (value > 0)
                     maHocKy = value;
-                }
                 else
-                {
-                    Console.WriteLine("Ma hoc ky phai lon hon 0");
-                }
+                    throw new ArgumentException("Mã học kỳ phải lớn hơn 0");
             }
         }
-        public DateTime TuNgay
-        {
-            get { return tuNgay; }
-            set
-            {
-                if (tuNgay < denNgay)
-                {
-                    tuNgay = value;
-                }
-                else
-                {
-                    Console.WriteLine("Tu ngay phai truoc den ngay");
-                }
-            }
-        }
-        public DateTime DenNgay
-        {
-            get { return denNgay; }
-            set
-            {
-                if (denNgay > tuNgay)
-                {
-                    denNgay = value;
-                }
-                else
-                {
-                    Console.WriteLine("Den ngay phai sau tu ngay");
 
-                }
+        public DateTime NgayBatDau
+        {
+            get { return ngayBatDau; }
+            set { ngayBatDau = value; }
+        }
+
+        public DateTime NgayKetThuc
+        {
+            get { return ngayKetThuc; }
+            set
+            {
+                if (value >= ngayBatDau)
+                    ngayKetThuc = value;
+                else
+                    throw new ArgumentException("Ngày kết thúc phải sau ngày bắt đầu");
             }
         }
-       
     }
-    
 }

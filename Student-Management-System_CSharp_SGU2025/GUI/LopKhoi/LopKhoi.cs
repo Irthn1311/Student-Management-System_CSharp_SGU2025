@@ -6,15 +6,23 @@ using System.Windows.Forms;
 using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System.Collections.Generic;
+using System.Linq;
+
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
-    public partial class LopKhoi :UserControl
+    public partial class LopKhoi : UserControl
     {
-        private LopHocBUS lopHocBUS = new LopHocBUS();
+        private LopHocBUS lopHocBUS;
+        private GiaoVienBUS giaoVienBUS;
+        private List<LopDTO> danhSachLopGoc;
+
         public LopKhoi()
         {
             InitializeComponent();
             lopHocBUS = new LopHocBUS();
+            giaoVienBUS = new GiaoVienBUS();
+            danhSachLopGoc = new List<LopDTO>();
+
             // Gắn sự kiện
             this.Load += LopKhoi_Load;
             SetupDataGridView();
@@ -22,12 +30,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void LopKhoi_Load(object sender, EventArgs e)
         {
-            if (dgvLop == null) return; // tránh lỗi khi chưa có DataGridView trong Designer
+            if (dgvLop == null) return;
 
-            // --- Thông tin thống kê 3 khối ---
-            statCardKhoi1.SetData("Khối 10", "5 lớp", "200 học sinh");
-            statCardKhoi2.SetData("Khối 11", "4 lớp", "180 học sinh");
-            statCardKhoi3.SetData("Khối 12", "3 lớp", "150 học sinh");
+            // --- Cập nhật thống kê ---
+            CapNhatThongKeKhoi();
 
             // SỬ DỤNG PROPERTY MỚI ĐỂ THAY ĐỔI MÀU
             statCardKhoi1.PanelColor = Color.FromArgb(59, 130, 246);
@@ -39,20 +45,58 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             statCardKhoi3.PanelColor = Color.FromArgb(249, 115, 22);
             statCardKhoi3.TextColor = Color.White;
 
+            // ✅ GẮN SỰ KIỆN CLICK CHO CÁC STAT CARD
+            statCardKhoi1.Click += StatCardKhoi1_Click;
+            statCardKhoi2.Click += StatCardKhoi2_Click;
+            statCardKhoi3.Click += StatCardKhoi3_Click;
+
+            // ✅ Nếu statCard có panel con, cần gắn sự kiện cho tất cả controls
+            GanSuKienClickChoTatCaControl(statCardKhoi1, StatCardKhoi1_Click);
+            GanSuKienClickChoTatCaControl(statCardKhoi2, StatCardKhoi2_Click);
+            GanSuKienClickChoTatCaControl(statCardKhoi3, StatCardKhoi3_Click);
 
             // --- Cấu hình & nạp dữ liệu ---
-           
             LoadData();
-          
 
             // --- Gắn sự kiện ---
             dgvLop.CellPainting += dgvLop_CellPainting;
             dgvLop.CellClick += dgvLop_CellClick;
         }
 
-        // =======================
-        // 1️⃣ CẤU HÌNH DATAGRIDVIEW
-        // =======================
+        // ✅ HÀM HỖ TRỢ: Gắn sự kiện click cho tất cả controls con
+        private void GanSuKienClickChoTatCaControl(Control parent, EventHandler clickHandler)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                ctrl.Click += clickHandler;
+                if (ctrl.HasChildren)
+                {
+                    GanSuKienClickChoTatCaControl(ctrl, clickHandler);
+                }
+            }
+        }
+
+        // ✅ SỰ KIỆN CLICK CHO KHỐI 10
+        private void StatCardKhoi1_Click(object sender, EventArgs e)
+        {
+            LocTheoKhoi(10);
+            guna2ComboBox1.SelectedIndex = 1; // Set ComboBox về "Khối 10"
+        }
+
+        // ✅ SỰ KIỆN CLICK CHO KHỐI 11
+        private void StatCardKhoi2_Click(object sender, EventArgs e)
+        {
+            LocTheoKhoi(11);
+            guna2ComboBox1.SelectedIndex = 2; // Set ComboBox về "Khối 11"
+        }
+
+        // ✅ SỰ KIỆN CLICK CHO KHỐI 12
+        private void StatCardKhoi3_Click(object sender, EventArgs e)
+        {
+            LocTheoKhoi(12);
+            guna2ComboBox1.SelectedIndex = 3; // Set ComboBox về "Khối 12"
+        }
+
         private void SetupDataGridView()
         {
             dgvLop.Columns.Clear();
@@ -61,33 +105,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns.Add("MaLop", "Mã lớp");
             dgvLop.Columns.Add("TenLop", "Tên lớp");
             dgvLop.Columns.Add("Khoi", "Khối");
-
             dgvLop.Columns.Add("GVCN", "Giáo viên CN");
             dgvLop.Columns.Add("ThaoTac", "Thao tác");
-            // Đặt lại chế độ co giãn cột
+
             dgvLop.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-            dgvLop.Columns["ThaoTac"].Width = 60; // hoặc 70 nếu icon lớn hơn
+            dgvLop.Columns["ThaoTac"].Width = 60;
             dgvLop.Columns["ThaoTac"].Resizable = DataGridViewTriState.False;
 
             dgvLop.ColumnHeadersHeight = 50;
 
-            // Các cột còn lại có thể set Fill nếu muốn
             dgvLop.Columns["MaLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvLop.Columns["TenLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvLop.Columns["Khoi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
             dgvLop.Columns["GVCN"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-            // Style cho tiêu đề
             dgvLop.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
             dgvLop.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 102, 204);
             dgvLop.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvLop.EnableHeadersVisualStyles = false;
-
             dgvLop.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 102, 204);
 
-
-            // Style cho dữ liệu
             dgvLop.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
             dgvLop.DefaultCellStyle.SelectionBackColor = Color.FromArgb(230, 240, 255);
             dgvLop.DefaultCellStyle.SelectionForeColor = Color.Black;
@@ -98,25 +135,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.ReadOnly = true;
         }
 
-        // =======================
-        // 2️⃣ NẠP DỮ LIỆU MẪU
-        // =======================
+        // ✅ LOAD DỮ LIỆU: maLop được tự động sinh từ DB (auto-increment/trigger)
         private void LoadData()
         {
-            //dgvLop.Rows.Add("10A1", "Lớp 10A1", "Khối 10", 42, "Nguyễn Thị Hoa");
-            //dgvLop.Rows.Add("10A2", "Lớp 10A2", "Khối 10", 40, "Trần Văn Nam");
-            //dgvLop.Rows.Add("11A1", "Lớp 11A1", "Khối 11", 38, "Phạm Văn Đức");
-            //dgvLop.Rows.Add("11A2", "Lớp 11A2", "Khối 11", 39, "Hoàng Thị Lan");
-            //dgvLop.Rows.Add("12A1", "Lớp 12A1", "Khối 12", 35, "Đỗ Thị Thu");
-            //dgvLop.Rows.Add("12A2", "Lớp 12A2", "Khối 12", 36, "Bùi Văn Toàn");
             try
             {
-                dgvLop.Rows.Clear();
-                List<LopDTO> dsLopHoc = lopHocBUS.DocDSLop();
-                foreach(LopDTO lop in dsLopHoc)
-                {
-                    dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", lop.maGVCN);
-                }
+                danhSachLopGoc = lopHocBUS.DocDSLop(); // Lấy maLop tự động từ DB
+                HienThiDanhSachLop(danhSachLopGoc);
+                CapNhatThongKeKhoi();
             }
             catch (Exception ex)
             {
@@ -124,9 +150,81 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
-        // =======================
-        // 3️⃣ VẼ ICON TRONG CỘT THAO TÁC
-        // =======================
+        // ✅ HIỂN THỊ: Hiển thị maLop tự động từ DB
+        private void HienThiDanhSachLop(List<LopDTO> danhSach)
+        {
+            dgvLop.Rows.Clear();
+
+            foreach (LopDTO lop in danhSach)
+            {
+                string tenGVCN = "Chưa phân công";
+
+                if (!string.IsNullOrEmpty(lop.maGVCN))
+                {
+                    try
+                    {
+                        string ten = giaoVienBUS.LayTenGiaoVienTheoMa(lop.maGVCN);
+                        if (!string.IsNullOrEmpty(ten))
+                        {
+                            tenGVCN = ten;
+                        }
+                        else
+                        {
+                            tenGVCN = $"Không tìm thấy ({lop.maGVCN})";
+                        }
+                    }
+                    catch
+                    {
+                        tenGVCN = $"Lỗi ({lop.maGVCN})";
+                    }
+                }
+
+                dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", tenGVCN);
+            }
+        }
+
+        private void LocTheoKhoi(int? maKhoi)
+        {
+            try
+            {
+                if (maKhoi == null)
+                {
+                    HienThiDanhSachLop(danhSachLopGoc);
+                }
+                else
+                {
+                    List<LopDTO> danhSachLoc = danhSachLopGoc
+                        .Where(lop => lop.maKhoi == maKhoi.Value)
+                        .ToList();
+
+                    HienThiDanhSachLop(danhSachLoc);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi lọc dữ liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ✅ CẬP NHẬT THỐNG KÊ KHỐI
+        private void CapNhatThongKeKhoi()
+        {
+            try
+            {
+                int soLopKhoi10 = danhSachLopGoc.Count(l => l.maKhoi == 10);
+                int soLopKhoi11 = danhSachLopGoc.Count(l => l.maKhoi == 11);
+                int soLopKhoi12 = danhSachLopGoc.Count(l => l.maKhoi == 12);
+
+                statCardKhoi1.SetData("Khối 10", $"{soLopKhoi10} lớp", "");
+                statCardKhoi2.SetData("Khối 11", $"{soLopKhoi11} lớp", "");
+                statCardKhoi3.SetData("Khối 12", $"{soLopKhoi12} lớp", "");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi cập nhật thống kê: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void dgvLop_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex != dgvLop.Columns["ThaoTac"].Index)
@@ -134,34 +232,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             e.Paint(e.CellBounds, DataGridViewPaintParts.All);
 
-            // Lấy icon từ Resources
-            Image editIcon = Properties.Resources.edit_icon;   // ✏️
-            Image deleteIcon = Properties.Resources.delete_icon; // 🗑️
+            Image editIcon = Properties.Resources.edit_icon;
+            Image deleteIcon = Properties.Resources.delete_icon;
 
-            int iconSize = 20; // Kích thước icon nhỏ hơn
-            int spacing = 10;  // Khoảng cách giữa 2 icon
+            int iconSize = 20;
+            int spacing = 10;
             int totalWidth = iconSize * 2 + spacing;
 
-            // Tính toán vị trí để căn giữa cell
             int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
             int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
 
-            // Vẽ icon chỉnh sửa & xóa
             e.Graphics.DrawImage(editIcon, new Rectangle(startX, y, iconSize, iconSize));
             e.Graphics.DrawImage(deleteIcon, new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize));
 
             e.Handled = true;
         }
 
-        // =======================
-        // 4️⃣ XỬ LÝ CLICK ICON
-        // =======================
+        // ✅ XỬ LÝ CLICK ICON - SỬA VÀ XÓA (maLop không thay đổi khi sửa, lấy từ DB)
         private void dgvLop_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex != dgvLop.Columns["ThaoTac"].Index)
                 return;
 
-            // Lấy vị trí click trong cell
             Point clickPoint = dgvLop.PointToClient(Cursor.Position);
             Rectangle cellRect = dgvLop.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
 
@@ -170,20 +262,27 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             int totalWidth = iconSize * 2 + spacing;
             int startX = cellRect.Left + (cellRect.Width - totalWidth) / 2;
 
-            string maLop = dgvLop.Rows[e.RowIndex].Cells["MaLop"].Value.ToString();
+            int maLop = Convert.ToInt32(dgvLop.Rows[e.RowIndex].Cells["MaLop"].Value);
+            string tenLop = dgvLop.Rows[e.RowIndex].Cells["TenLop"].Value.ToString();
 
-            // Xác định click vào icon nào
+            // ✅ CLICK ICON SỬA (truyền maLop để load, nhưng không cho sửa maLop trong form)
             if (clickPoint.X >= startX && clickPoint.X <= startX + iconSize)
             {
-                SuaLopHoc frm = new SuaLopHoc();
-                frm.StartPosition = FormStartPosition.CenterParent; // 🔹 hiện giữa form cha
-                frm.ShowDialog();
-                // TODO: mở form chỉnh sửa
+                SuaLopHoc frm = new SuaLopHoc(maLop); // Truyền mã lớp (tự động từ DB)
+                frm.StartPosition = FormStartPosition.CenterParent;
+
+                DialogResult result = frm.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    LoadData(); // ✅ Reload dữ liệu và cập nhật thống kê (maLop giữ nguyên)
+                }
             }
+            // ✅ CLICK ICON XÓA
             else if (clickPoint.X >= startX + iconSize + spacing && clickPoint.X <= startX + iconSize * 2 + spacing)
             {
                 DialogResult dr = MessageBox.Show(
-                    $"Bạn có chắc muốn xóa lớp {maLop}?",
+                    $"Bạn có chắc muốn xóa lớp '{tenLop}'?\n\nLưu ý: Thao tác này không thể hoàn tác!",
                     "Xác nhận xóa",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
@@ -191,33 +290,82 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (dr == DialogResult.Yes)
                 {
-                    dgvLop.Rows.RemoveAt(e.RowIndex);
+                    try
+                    {
+                        bool kq = lopHocBUS.XoaLop(maLop);
+
+                        if (kq)
+                        {
+                            MessageBox.Show("Xóa lớp học thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LoadData(); // ✅ Reload dữ liệu và cập nhật thống kê
+                        }
+                        else
+                        {
+                            MessageBox.Show("Xóa lớp học thất bại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Lỗi khi xóa lớp học: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
-
 
         private void statCardKhoi10_Load(object sender, EventArgs e)
         {
 
         }
 
+        // ✅ THÊM MỚI: Không cần nhập maLop (DB tự sinh), reload để hiển thị maLop mới
         private void guna2Button1_Click(object sender, EventArgs e)
         {
-            ThemLopHoc formThem = new ThemLopHoc();
+            ThemLopHoc formThem = new ThemLopHoc(); // Form chỉ nhập tenLop, maKhoi, maGVCN (maLop tự động)
 
-            DialogResult result = formThem.ShowDialog(); // 👈 Rất quan trọng
+            DialogResult result = formThem.ShowDialog();
 
             if (result == DialogResult.OK)
             {
-                LoadData(); // 🔁 Gọi lại hàm nạp danh sách lớp
-            }
+                LoadData(); // ✅ Reload và cập nhật thống kê, hiển thị maLop mới từ DB
 
+                // Debug: Kiểm tra maLop mới nhất (có thể xóa sau khi test)
+                var lopMoiNhat = danhSachLopGoc.OrderByDescending(l => l.maLop).FirstOrDefault();
+                if (lopMoiNhat != null)
+                {
+                    // Console.WriteLine($"Mã lớp mới tự động: {lopMoiNhat.maLop}"); // Hoặc log vào file/debug
+                }
+            }
         }
 
         private void guna2ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            string selectedText = guna2ComboBox1.SelectedItem?.ToString();
 
+            if (string.IsNullOrEmpty(selectedText))
+                return;
+
+            switch (selectedText)
+            {
+                case "Tất cả khối":
+                    LocTheoKhoi(null);
+                    break;
+
+                case "Khối 10":
+                    LocTheoKhoi(10);
+                    break;
+
+                case "Khối 11":
+                    LocTheoKhoi(11);
+                    break;
+
+                case "Khối 12":
+                    LocTheoKhoi(12);
+                    break;
+
+                default:
+                    LocTheoKhoi(null);
+                    break;
+            }
         }
 
         private void guna2Panel1_Paint(object sender, PaintEventArgs e)

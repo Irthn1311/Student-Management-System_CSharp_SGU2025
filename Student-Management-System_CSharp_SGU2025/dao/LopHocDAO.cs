@@ -8,18 +8,34 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 {
     internal class LopHocDAO
     {
-        //  Thêm lớp học
-        public bool ThemLop(LopDTO lop)
+        // ✅ THÊM METHOD MỚI: Lấy mã lớp tiếp theo từ danh sách hiện có
+        public int LayMaLopTiepTheo()
         {
-            string query = "INSERT INTO LopHoc (TenLop, MaKhoi, MaGiaoVienChuNhiem) VALUES (@TenLop,@MaKhoi, @GVCN)";
+            string query = "SELECT IFNULL(MAX(MaLop), 0) + 1 FROM LopHoc";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
+                    object result = cmd.ExecuteScalar();
+                    return Convert.ToInt32(result);
+                }
+            }
+        }
+
+        //  Thêm lớp học - ✅ BỔ SUNG maLop thủ công
+        public bool ThemLop(LopDTO lop)
+        {
+            // ✅ THÊM MaLop vào câu INSERT
+            string query = "INSERT INTO LopHoc (MaLop, TenLop, MaKhoi, MaGiaoVienChuNhiem) VALUES (@MaLop, @TenLop, @MaKhoi, @GVCN)";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaLop", lop.maLop); // ✅ THÊM DÒNG NÀY
                     cmd.Parameters.AddWithValue("@TenLop", lop.tenLop);
-                    cmd.Parameters.AddWithValue("@MaKhoi",lop.maKhoi); 
-                    
+                    cmd.Parameters.AddWithValue("@MaKhoi", lop.maKhoi);
                     cmd.Parameters.AddWithValue("@GVCN", lop.maGVCN);
                     int result = cmd.ExecuteNonQuery();
                     return result > 0;
@@ -45,7 +61,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             lop.maLop = reader.GetInt32("MaLop");
                             lop.tenLop = reader.GetString("TenLop");
                             lop.maKhoi = reader.GetInt32("MaKhoi");
-                            
+
                             lop.maGVCN = reader.GetString("MaGiaoVienChuNhiem");
                             ds.Add(lop);
                         }
@@ -74,7 +90,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             lop.maLop = reader.GetInt32("MaLop");
                             lop.tenLop = reader.GetString("TenLop");
                             lop.maKhoi = reader.GetInt32("MaKhoi");
-                            
+
                             lop.maGVCN = reader.GetString("MaGiaoVienChuNhiem");
                         }
                     }
@@ -82,7 +98,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
             return lop;
         }
-        
+
         //  Lấy lớp theo ID
         public LopDTO LayLopTheoTen(string tenLop)
         {
@@ -93,7 +109,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@TenLop",tenLop);
+                    cmd.Parameters.AddWithValue("@TenLop", tenLop);
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
@@ -102,7 +118,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             lop.maLop = reader.GetInt32("MaLop");
                             lop.tenLop = reader.GetString("TenLop");
                             lop.maKhoi = reader.GetInt32("MaKhoi");
-                            
+
                             lop.maGVCN = reader.GetString("MaGiaoVienChuNhiem");
                         }
                     }
@@ -119,10 +135,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    
+
                     cmd.Parameters.AddWithValue("@Ten_Lop", lop.tenLop);
                     cmd.Parameters.AddWithValue("@Ma_khoi", lop.maKhoi);
-                   
+
                     cmd.Parameters.AddWithValue("@GVCN", lop.maGVCN);
                     cmd.Parameters.AddWithValue("@Ma_Lop", lop.maLop);
                     int result = cmd.ExecuteNonQuery();
@@ -145,6 +161,29 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     return result > 0;
                 }
             }
+        }
+
+
+        // ✅ THÊM METHOD: Lấy danh sách mã GVCN đang được phân công
+        public List<string> LayDanhSachMaGVCNDangPhanCong()
+        {
+            List<string> dsMaGVCN = new List<string>();
+            string query = "SELECT DISTINCT MaGiaoVienChuNhiem FROM LopHoc WHERE MaGiaoVienChuNhiem IS NOT NULL AND MaGiaoVienChuNhiem != ''";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            dsMaGVCN.Add(reader.GetString("MaGiaoVienChuNhiem"));
+                        }
+                    }
+                }
+            }
+            return dsMaGVCN;
         }
     }
 }

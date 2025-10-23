@@ -15,12 +15,57 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     public partial class ThemLopHoc : Form
     {
         private LopHocBUS lopHocBUS;
+        private GiaoVienBUS giaoVienBUS;
+
         public ThemLopHoc()
         {
             InitializeComponent();
             lopHocBUS = new LopHocBUS();
+            giaoVienBUS = new GiaoVienBUS();
+            this.Load += ThemLopHoc_Load;
+        }
 
+        private void ThemLopHoc_Load(object sender, EventArgs e)
+        {
+            // ✅ HIỂN THỊ MÃ LỚP TIẾP THEO
+            int maLopMoi = lopHocBUS.LayMaLopTiepTheo();
+            txtMaLop.Text = maLopMoi.ToString();
+            txtMaLop.Enabled = false; // Không cho sửa
+            txtMaLop.ForeColor = Color.Black;
 
+            LoadDanhSachGiaoVien();
+        }
+
+        private void LoadDanhSachGiaoVien()
+        {
+            try
+            {
+                List<GiaoVienDTO> dsgv = giaoVienBUS.DocDSGiaoVien();
+
+                // ✅ Lấy danh sách GVCN đã phân công
+                List<string> dsGVCNDaPhanCong = lopHocBUS.LayDanhSachMaGVCNDangPhanCong();
+
+                var dshienthi = new List<object>();
+                dshienthi.Add(new { MaGiaoVien = "", HoTen = "-- Chọn giáo viên --" });
+
+                // ✅ CHỈ THÊM GIÁO VIÊN CHƯA LÀM GVCN
+                foreach (var gv in dsgv)
+                {
+                    if (!dsGVCNDaPhanCong.Contains(gv.MaGiaoVien))
+                    {
+                        dshienthi.Add(new { MaGiaoVien = gv.MaGiaoVien, HoTen = gv.HoTen });
+                    }
+                }
+
+                cbGVCN.DataSource = dshienthi;
+                cbGVCN.DisplayMember = "HoTen";
+                cbGVCN.ValueMember = "MaGiaoVien";
+                cbGVCN.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải danh sách giáo viên: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void guna2HtmlLabel1_Click(object sender, EventArgs e)
@@ -80,25 +125,27 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                if (cbKhoi.SelectedItem == null)
+                if (cbKhoi.SelectedItem == null || cbKhoi.SelectedIndex == 0)
                 {
                     MessageBox.Show("Vui lòng chọn khối!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbKhoi.Focus();
                     return;
                 }
 
-                if (cbGVCN.SelectedItem == null)
+                // Kiểm tra giáo viên chủ nhiệm
+                if (cbGVCN.SelectedValue == null || string.IsNullOrEmpty(cbGVCN.SelectedValue.ToString()))
                 {
                     MessageBox.Show("Vui lòng chọn giáo viên chủ nhiệm!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbGVCN.Focus();
                     return;
                 }
 
-                // Tạo đối tượng LopDTO
+                // ✅ Tạo đối tượng LopDTO - GÁN maLop từ TextBox
                 LopDTO lopMoi = new LopDTO();
+                lopMoi.maLop = Convert.ToInt32(txtMaLop.Text); // ✅ GÁN MÃ LỚP THỦ CÔNG
                 lopMoi.tenLop = txtTenLop.Text.Trim();
-                lopMoi.maKhoi = Convert.ToInt32(cbKhoi.SelectedValue); // Hoặc cbKhoi.SelectedItem tùy cách bind
-                lopMoi.maGVCN = cbGVCN.SelectedValue.ToString(); // Hoặc cbGVCN.SelectedItem.ToString()
+                lopMoi.maKhoi = Convert.ToInt32(cbKhoi.SelectedItem.ToString());
+                lopMoi.maGVCN = cbGVCN.SelectedValue.ToString();
 
                 // Thêm lớp học
                 bool kq = lopHocBUS.ThemLop(lopMoi);

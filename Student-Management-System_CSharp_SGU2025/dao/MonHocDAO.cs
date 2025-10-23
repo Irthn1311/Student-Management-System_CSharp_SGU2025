@@ -33,7 +33,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
         //tat ca
-        public List<MonHocDTO> DocDSMN(){
+        public List<MonHocDTO> DocDSMH(){
             List<MonHocDTO> ds = new List<MonHocDTO>();
             string query="select MaMonHoc, TenMonHoc, SoTiet,GhiChu from MonHoc";
             //Tạo đối tượng kết nối tới cơ sở dữ liệu MySQL bằng hàm GetConnection() (do bạn tự định nghĩa trong lớp ConnectionDatabase).            

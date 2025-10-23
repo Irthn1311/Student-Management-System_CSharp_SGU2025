@@ -121,6 +121,11 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
             return lopDAO.CapNhatLop(lop);
         }
+        // ✅ THÊM METHOD MỚI vào class LopHocBUS
+        public int LayMaLopTiepTheo()
+        {
+            return lopDAO.LayMaLopTiepTheo();
+        }
 
         // Xóa lớp học với validation
         public bool XoaLop(int maLop)
@@ -155,5 +160,15 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         //     // Gọi DAO PhânCông để kiểm tra
         //     // return false nếu không trùng
         // }
+
+
+
+
+
+        // ✅ THÊM METHOD: Lấy danh sách mã GVCN đang được phân công
+        public List<string> LayDanhSachMaGVCNDangPhanCong()
+        {
+            return lopDAO.LayDanhSachMaGVCNDangPhanCong();
+        }
     }
 }

@@ -7,21 +7,20 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         private int maHocKy;
         private string tenHocKy;
         private string maNamHoc;
-        private string tenNamHoc;
-        private string trangThai;
         private DateTime ngayBD;
         private DateTime ngayKT;
+        private string trangThai;
 
         public HocKyDTO() { }
 
-        public HocKyDTO(int maHocKy, string tenHocKy, string maNamHoc, string tenNamHoc, DateTime ngayBD, DateTime ngayKT)
+        public HocKyDTO(int maHocKy, string tenHocKy, string maNamHoc, DateTime ngayBD, DateTime ngayKT, string trangThai)
         {
             this.maHocKy = maHocKy;
             this.tenHocKy = tenHocKy;
             this.maNamHoc = maNamHoc;
-            this.tenNamHoc = tenNamHoc;
             this.ngayBD = ngayBD;
             this.ngayKT = ngayKT;
+            this.trangThai = trangThai;
         }
 
         public int MaHocKy
@@ -54,12 +53,6 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             }
         }
 
-        public string TenNamHoc
-        {
-            get { return tenNamHoc; }
-            set { tenNamHoc = value; }
-        }
-
         public DateTime NgayBD
         {
             get { return ngayBD; }
@@ -70,6 +63,12 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         {
             get { return ngayKT; }
             set { ngayKT = value; }
+        }
+
+        public string TrangThai
+        {
+            get { return trangThai; }
+            set { trangThai = value; }
         }
     }
 }

@@ -33,10 +33,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelMonHoc = new Guna.UI2.WinForms.Guna2Panel();
-            this.statcardMonHoc4 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
-            this.statcardMonHoc3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
-            this.statcardMonHoc2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
-            this.statcardMonHoc1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
             this.btnThemMonHoc = new Guna.UI2.WinForms.Guna2Button();
             this.dgvMonHoc = new Guna.UI2.WinForms.Guna2DataGridView();
             this.MaMon = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -44,6 +40,10 @@
             this.SoTiet = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GhiChu = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TuyChinh = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.statcardMonHoc4 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
+            this.statcardMonHoc3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
+            this.statcardMonHoc2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
+            this.statcardMonHoc1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.statcardMonHoc();
             this.panelMonHoc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMonHoc)).BeginInit();
             this.SuspendLayout();
@@ -64,46 +64,6 @@
             this.panelMonHoc.TabIndex = 0;
             this.panelMonHoc.Paint += new System.Windows.Forms.PaintEventHandler(this.panelMonHoc_Paint);
             // 
-            // statcardMonHoc4
-            // 
-            this.statcardMonHoc4.BackColor = System.Drawing.Color.Transparent;
-            this.statcardMonHoc4.Location = new System.Drawing.Point(890, 81);
-            this.statcardMonHoc4.Name = "statcardMonHoc4";
-            this.statcardMonHoc4.PanelBackgroundColor = System.Drawing.Color.Transparent;
-            this.statcardMonHoc4.Size = new System.Drawing.Size(262, 165);
-            this.statcardMonHoc4.SoLuongForeColor = System.Drawing.SystemColors.ControlText;
-            this.statcardMonHoc4.TabIndex = 3;
-            // 
-            // statcardMonHoc3
-            // 
-            this.statcardMonHoc3.BackColor = System.Drawing.Color.Transparent;
-            this.statcardMonHoc3.Location = new System.Drawing.Point(599, 81);
-            this.statcardMonHoc3.Name = "statcardMonHoc3";
-            this.statcardMonHoc3.PanelBackgroundColor = System.Drawing.Color.Transparent;
-            this.statcardMonHoc3.Size = new System.Drawing.Size(262, 165);
-            this.statcardMonHoc3.SoLuongForeColor = System.Drawing.SystemColors.ControlText;
-            this.statcardMonHoc3.TabIndex = 3;
-            // 
-            // statcardMonHoc2
-            // 
-            this.statcardMonHoc2.BackColor = System.Drawing.Color.Transparent;
-            this.statcardMonHoc2.Location = new System.Drawing.Point(310, 81);
-            this.statcardMonHoc2.Name = "statcardMonHoc2";
-            this.statcardMonHoc2.PanelBackgroundColor = System.Drawing.Color.Transparent;
-            this.statcardMonHoc2.Size = new System.Drawing.Size(262, 165);
-            this.statcardMonHoc2.SoLuongForeColor = System.Drawing.SystemColors.ControlText;
-            this.statcardMonHoc2.TabIndex = 3;
-            // 
-            // statcardMonHoc1
-            // 
-            this.statcardMonHoc1.BackColor = System.Drawing.Color.Transparent;
-            this.statcardMonHoc1.Location = new System.Drawing.Point(20, 81);
-            this.statcardMonHoc1.Name = "statcardMonHoc1";
-            this.statcardMonHoc1.PanelBackgroundColor = System.Drawing.Color.Transparent;
-            this.statcardMonHoc1.Size = new System.Drawing.Size(262, 165);
-            this.statcardMonHoc1.SoLuongForeColor = System.Drawing.SystemColors.ControlText;
-            this.statcardMonHoc1.TabIndex = 3;
-            // 
             // btnThemMonHoc
             // 
             this.btnThemMonHoc.BorderRadius = 10;
@@ -117,6 +77,7 @@
             this.btnThemMonHoc.Size = new System.Drawing.Size(156, 40);
             this.btnThemMonHoc.TabIndex = 2;
             this.btnThemMonHoc.Text = "Thêm môn học";
+            this.btnThemMonHoc.Click += new System.EventHandler(this.btnThemMonHoc_Click);
             // 
             // dgvMonHoc
             // 
@@ -216,6 +177,46 @@
             this.TuyChinh.MinimumWidth = 6;
             this.TuyChinh.Name = "TuyChinh";
             this.TuyChinh.ReadOnly = true;
+            // 
+            // statcardMonHoc4
+            // 
+            this.statcardMonHoc4.BackColor = System.Drawing.Color.Transparent;
+            this.statcardMonHoc4.Location = new System.Drawing.Point(890, 81);
+            this.statcardMonHoc4.Name = "statcardMonHoc4";
+            this.statcardMonHoc4.PanelBackgroundColor = System.Drawing.Color.Transparent;
+            this.statcardMonHoc4.Size = new System.Drawing.Size(262, 165);
+            this.statcardMonHoc4.SoLuongForeColor = System.Drawing.SystemColors.ControlText;
+            this.statcardMonHoc4.TabIndex = 3;
+            // 
+            // statcardMonHoc3
+            // 
+            this.statcardMonHoc3.BackColor = System.Drawing.Color.Transparent;
+            this.statcardMonHoc3.Location = new System.Drawing.Point(599, 81);
+            this.statcardMonHoc3.Name = "statcardMonHoc3";
+            this.statcardMonHoc3.PanelBackgroundColor = System.Drawing.Color.Transparent;
+            this.statcardMonHoc3.Size = new System.Drawing.Size(262, 165);
+            this.statcardMonHoc3.SoLuongForeColor = System.Drawing.SystemColors.ControlText;
+            this.statcardMonHoc3.TabIndex = 3;
+            // 
+            // statcardMonHoc2
+            // 
+            this.statcardMonHoc2.BackColor = System.Drawing.Color.Transparent;
+            this.statcardMonHoc2.Location = new System.Drawing.Point(310, 81);
+            this.statcardMonHoc2.Name = "statcardMonHoc2";
+            this.statcardMonHoc2.PanelBackgroundColor = System.Drawing.Color.Transparent;
+            this.statcardMonHoc2.Size = new System.Drawing.Size(262, 165);
+            this.statcardMonHoc2.SoLuongForeColor = System.Drawing.SystemColors.ControlText;
+            this.statcardMonHoc2.TabIndex = 3;
+            // 
+            // statcardMonHoc1
+            // 
+            this.statcardMonHoc1.BackColor = System.Drawing.Color.Transparent;
+            this.statcardMonHoc1.Location = new System.Drawing.Point(20, 81);
+            this.statcardMonHoc1.Name = "statcardMonHoc1";
+            this.statcardMonHoc1.PanelBackgroundColor = System.Drawing.Color.Transparent;
+            this.statcardMonHoc1.Size = new System.Drawing.Size(262, 165);
+            this.statcardMonHoc1.SoLuongForeColor = System.Drawing.SystemColors.ControlText;
+            this.statcardMonHoc1.TabIndex = 3;
             // 
             // FrmMonHoc
             // 

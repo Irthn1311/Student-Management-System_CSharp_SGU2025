@@ -1,116 +1,204 @@
-﻿using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
+﻿using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
-using Student_Management_System_CSharp_SGU2025.DAO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
     internal class PhanCongGiangDayBUS
     {
         private PhanCongGiangDayDAO phanCongDAO;
-        private LopHocDAO lopDAO;
-        private MonHocDAO monHocDAO;
-        // Giả sử có HocKyDAO và GiaoVienDAO nếu cần validate existence
 
         public PhanCongGiangDayBUS()
         {
             phanCongDAO = new PhanCongGiangDayDAO();
-            lopDAO = new LopHocDAO();
-            monHocDAO = new MonHocDAO();
         }
 
-        // Thêm phân công giảng dạy với validation
-        public bool ThemPhanCongGiangDay(PhanCongGiangDayDTO pcgd)
+        // Thêm phân công giảng dạy
+        public bool ThemPhanCong(PhanCongGiangDayDTO phanCong)
         {
-            // Validation dữ liệu cơ bản
-            if (pcgd.MaLop <= 0)
+            try
             {
-                throw new ArgumentException("Mã lớp phải lớn hơn 0.");
-            }
+                // Validate dữ liệu
+                if (phanCong.MaLop <= 0)
+                    throw new ArgumentException("Mã lớp không hợp lệ");
 
-            if (string.IsNullOrWhiteSpace(pcgd.MaGiaoVien))
+                if (string.IsNullOrWhiteSpace(phanCong.MaGiaoVien))
+                    throw new ArgumentException("Mã giáo viên không được để trống");
+
+                if (phanCong.MaMonHoc <= 0)
+                    throw new ArgumentException("Mã môn học không hợp lệ");
+
+                if (phanCong.MaHocKy <= 0)
+                    throw new ArgumentException("Mã học kỳ không hợp lệ");
+
+                if (phanCong.NgayKetThuc <= phanCong.NgayBatDau)
+                    throw new ArgumentException("Ngày kết thúc phải sau ngày bắt đầu");
+
+                // Kiểm tra trùng lặp
+                if (phanCongDAO.KiemTraTrungLap(phanCong.MaLop, phanCong.MaGiaoVien,
+                                                phanCong.MaMonHoc, phanCong.MaHocKy))
+                {
+                    throw new Exception("Phân công này đã tồn tại trong hệ thống!");
+                }
+
+                return phanCongDAO.ThemPhanCong(phanCong);
+            }
+            catch (Exception ex)
             {
-                throw new ArgumentException("Mã giáo viên không được để trống.");
+                throw new Exception($"Lỗi khi thêm phân công: {ex.Message}", ex);
             }
-
-            if (pcgd.MaMonHoc <= 0)
-            {
-                throw new ArgumentException("Mã môn học phải lớn hơn 0.");
-            }
-
-            if (pcgd.MaHocKy <= 0)
-            {
-                throw new ArgumentException("Mã học kỳ phải lớn hơn 0.");
-            }
-
-            if (pcgd.TuNgay >= pcgd.DenNgay)
-            {
-                throw new ArgumentException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc.");
-            }
-
-            // Kiểm tra sự tồn tại của lớp, môn học (giả sử có DAO cho HocKy và GiaoVien)
-            if (lopDAO.LayLopTheoId(pcgd.MaLop) == null)
-            {
-                throw new ArgumentException("Không tìm thấy lớp với mã này.");
-            }
-
-            if (monHocDAO.LayDSMonHocTheoId(pcgd.MaMonHoc) == null)
-            {
-                throw new ArgumentException("Không tìm thấy môn học với mã này.");
-            }
-
-            // Kiểm tra không phân công trùng môn cho cùng GV cùng lớp (trong cùng học kỳ)
-            if (KiemTraPhanCongTrung(pcgd.MaLop, pcgd.MaGiaoVien, pcgd.MaMonHoc, pcgd.MaHocKy))
-            {
-                throw new ArgumentException("Không thể phân công trùng môn học cho cùng giáo viên trong cùng lớp và học kỳ.");
-            }
-
-            return phanCongDAO.ThemPhanCongGiangDay(pcgd);
         }
 
-        // Đọc danh sách phân công giảng dạy
+        // Đọc danh sách phân công
         public List<PhanCongGiangDayDTO> DocDSPhanCong()
         {
-            return phanCongDAO.DocDSPhanCong();
-        }
-
-        // Lấy phân công theo ID
-        public PhanCongGiangDayDTO LayPhanCongTheoId(int maPhanCong)
-        {
-            if (maPhanCong <= 0)
+            try
             {
-                throw new ArgumentException("Mã phân công phải lớn hơn 0.");
+                return phanCongDAO.DocDSPhanCong();
             }
-
-            return phanCongDAO.LayPhanCongTheoId(maPhanCong);
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi đọc danh sách phân công: {ex.Message}", ex);
+            }
         }
 
-        // Xóa phân công với validation
+        // Lấy phân công theo mã
+        public PhanCongGiangDayDTO LayPhanCongTheoMa(int maPhanCong)
+        {
+            try
+            {
+                if (maPhanCong <= 0)
+                    throw new ArgumentException("Mã phân công không hợp lệ");
+
+                return phanCongDAO.LayPhanCongTheoMa(maPhanCong);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lấy phân công: {ex.Message}", ex);
+            }
+        }
+
+        // Lấy danh sách phân công theo lớp
+        public List<PhanCongGiangDayDTO> LayPhanCongTheoLop(int maLop)
+        {
+            try
+            {
+                if (maLop <= 0)
+                    throw new ArgumentException("Mã lớp không hợp lệ");
+
+                return phanCongDAO.LayPhanCongTheoLop(maLop);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lấy phân công theo lớp: {ex.Message}", ex);
+            }
+        }
+
+        // Lấy danh sách phân công theo giáo viên
+        public List<PhanCongGiangDayDTO> LayPhanCongTheoGiaoVien(string maGiaoVien)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(maGiaoVien))
+                    throw new ArgumentException("Mã giáo viên không hợp lệ");
+
+                return phanCongDAO.LayPhanCongTheoGiaoVien(maGiaoVien);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lấy phân công theo giáo viên: {ex.Message}", ex);
+            }
+        }
+
+        // Lấy danh sách phân công theo học kỳ
+        public List<PhanCongGiangDayDTO> LayPhanCongTheoHocKy(int maHocKy)
+        {
+            try
+            {
+                if (maHocKy <= 0)
+                    throw new ArgumentException("Mã học kỳ không hợp lệ");
+
+                return phanCongDAO.LayPhanCongTheoHocKy(maHocKy);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lấy phân công theo học kỳ: {ex.Message}", ex);
+            }
+        }
+
+        // Cập nhật phân công
+        public bool CapNhatPhanCong(PhanCongGiangDayDTO phanCong)
+        {
+            try
+            {
+                // Validate dữ liệu
+                if (phanCong.MaPhanCong <= 0)
+                    throw new ArgumentException("Mã phân công không hợp lệ");
+
+                if (phanCong.MaLop <= 0)
+                    throw new ArgumentException("Mã lớp không hợp lệ");
+
+                if (string.IsNullOrWhiteSpace(phanCong.MaGiaoVien))
+                    throw new ArgumentException("Mã giáo viên không được để trống");
+
+                if (phanCong.MaMonHoc <= 0)
+                    throw new ArgumentException("Mã môn học không hợp lệ");
+
+                if (phanCong.MaHocKy <= 0)
+                    throw new ArgumentException("Mã học kỳ không hợp lệ");
+
+                if (phanCong.NgayKetThuc <= phanCong.NgayBatDau)
+                    throw new ArgumentException("Ngày kết thúc phải sau ngày bắt đầu");
+
+                // Kiểm tra trùng lặp (trừ bản ghi hiện tại)
+                if (phanCongDAO.KiemTraTrungLap(phanCong.MaLop, phanCong.MaGiaoVien,
+                                                phanCong.MaMonHoc, phanCong.MaHocKy,
+                                                phanCong.MaPhanCong))
+                {
+                    throw new Exception("Phân công này đã tồn tại trong hệ thống!");
+                }
+
+                return phanCongDAO.CapNhatPhanCong(phanCong);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi cập nhật phân công: {ex.Message}", ex);
+            }
+        }
+
+        // Xóa phân công
         public bool XoaPhanCong(int maPhanCong)
         {
-            if (maPhanCong <= 0)
+            try
             {
-                throw new ArgumentException("Mã phân công phải lớn hơn 0.");
-            }
+                if (maPhanCong <= 0)
+                    throw new ArgumentException("Mã phân công không hợp lệ");
 
-            PhanCongGiangDayDTO pc = phanCongDAO.LayPhanCongTheoId(maPhanCong);
-            if (pc == null)
+                // Kiểm tra xem phân công có tồn tại không
+                var phanCong = phanCongDAO.LayPhanCongTheoMa(maPhanCong);
+                if (phanCong == null)
+                    throw new Exception("Phân công không tồn tại trong hệ thống");
+
+                return phanCongDAO.XoaPhanCong(maPhanCong);
+            }
+            catch (Exception ex)
             {
-                throw new ArgumentException("Không tìm thấy phân công với mã này.");
+                throw new Exception($"Lỗi khi xóa phân công: {ex.Message}", ex);
             }
-
-            // Có thể thêm kiểm tra xem phân công có đang được sử dụng không trước khi xóa
-
-            return phanCongDAO.XoaPhanCong(maPhanCong);
         }
 
-        // Phương thức hỗ trợ: Kiểm tra phân công trùng
-        private bool KiemTraPhanCongTrung(int maLop, string maGiaoVien, int maMonHoc, int maHocKy)
+        // Kiểm tra phân công đã tồn tại
+        public bool KiemTraPhanCongTonTai(int maLop, string maGiaoVien, int maMonHoc, int maHocKy)
         {
-            List<PhanCongGiangDayDTO> ds = phanCongDAO.DocDSPhanCong();
-            return ds.Any(pc => pc.MaLop == maLop && pc.MaGiaoVien == maGiaoVien && pc.MaMonHoc == maMonHoc && pc.MaHocKy == maHocKy);
+            try
+            {
+                return phanCongDAO.KiemTraTrungLap(maLop, maGiaoVien, maMonHoc, maHocKy);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi kiểm tra phân công: {ex.Message}", ex);
+            }
         }
     }
 }

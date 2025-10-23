@@ -1,133 +1,373 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
     internal class PhanCongGiangDayDAO
     {
-        /* 
-    MaPhanCong INT PRIMARY KEY AUTO_INCREMENT,
-    MaLop INT,
-    MaGiaoVien VARCHAR(15),
-    MaMonHoc INT,
-    MaHocKy INT,
-    NgayBatDau DATE,
-    NgayKetThuc DATE,
-    UNIQUE (MaLop, MaGiaoVien, MaMonHoc, MaHocKy),
-    FOREIGN KEY (MaLop) REFERENCES LopHoc(MaLop),
-    FOREIGN KEY (MaGiaoVien) REFERENCES GiaoVien(MaGiaoVien),
-    FOREIGN KEY (MaMonHoc) REFERENCES MonHoc(MaMonHoc),
-    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy)
-*/
-        public bool ThemPhanCongGiangDay(PhanCongGiangDayDTO pcgd)
+        // Thêm phân công giảng dạy
+        public bool ThemPhanCong(PhanCongGiangDayDTO phanCong)
         {
-            string query = @"INSERT INTO PhanCongGiangDay 
-                            (MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc) 
-                             VALUES (@MaLop, @MaGiaoVien, @MaMonHoc, @MaHocKy, @NgayBatDau, @NgayKetThuc)";
-
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            string query = @"INSERT INTO PhanCongGiangDay(MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc) 
+                            VALUES(@MaLop, @MaGiaoVien, @MaMonHoc, @MaHocKy, @NgayBatDau, @NgayKetThuc)";
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    cmd.Parameters.AddWithValue("@MaLop", pcgd.MaLop);
-                    cmd.Parameters.AddWithValue("@MaGiaoVien", pcgd.MaGiaoVien);
-                    cmd.Parameters.AddWithValue("@MaMonHoc", pcgd.MaMonHoc);
-                    cmd.Parameters.AddWithValue("@MaHocKy", pcgd.MaHocKy);
-                    cmd.Parameters.AddWithValue("@NgayBatDau", pcgd.TuNgay);
-                    cmd.Parameters.AddWithValue("@NgayKetThuc", pcgd.DenNgay);
-
-                    int result = cmd.ExecuteNonQuery();
-                    return result > 0;
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaLop", phanCong.MaLop);
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", phanCong.MaGiaoVien);
+                        cmd.Parameters.AddWithValue("@MaMonHoc", phanCong.MaMonHoc);
+                        cmd.Parameters.AddWithValue("@MaHocKy", phanCong.MaHocKy);
+                        cmd.Parameters.AddWithValue("@NgayBatDau", phanCong.NgayBatDau);
+                        cmd.Parameters.AddWithValue("@NgayKetThuc", phanCong.NgayKetThuc);
+                        
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi ThemPhanCong: {ex.Message}");
+                throw;
             }
         }
 
-        // Đọc danh sách phân công giảng dạy
+        // Đọc danh sách tất cả phân công
         public List<PhanCongGiangDayDTO> DocDSPhanCong()
         {
             List<PhanCongGiangDayDTO> ds = new List<PhanCongGiangDayDTO>();
-            string query = "SELECT * FROM PhanCongGiangDay";
+            string query = @"SELECT MaPhanCong, MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc 
+                            FROM PhanCongGiangDay 
+                            ORDER BY MaHocKy DESC, MaLop ASC";
 
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
-                        while (reader.Read())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            PhanCongGiangDayDTO pc = new PhanCongGiangDayDTO
+                            while (reader.Read())
                             {
-                                MaPhanCong = reader.GetInt32("MaPhanCong"),
-                                MaLop = reader.GetInt32("MaLop"),
-                                MaGiaoVien = reader.GetString("MaGiaoVien"),
-                                MaMonHoc = reader.GetInt32("MaMonHoc"),
-                                MaHocKy = reader.GetInt32("MaHocKy"),
-                                TuNgay = reader.GetDateTime("NgayBatDau"),
-                                DenNgay = reader.GetDateTime("NgayKetThuc")
-                            };
-                            ds.Add(pc);
+                                PhanCongGiangDayDTO pc = new PhanCongGiangDayDTO
+                                {
+                                    MaPhanCong = reader.GetInt32("MaPhanCong"),
+                                    MaLop = reader.GetInt32("MaLop"),
+                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
+                                    MaMonHoc = reader.GetInt32("MaMonHoc"),
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    NgayBatDau = reader.GetDateTime("NgayBatDau"),
+                                    NgayKetThuc = reader.GetDateTime("NgayKetThuc")
+                                };
+                                ds.Add(pc);
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi DocDSPhanCong: {ex.Message}");
+                throw;
+            }
+
             return ds;
-
         }
-        public PhanCongGiangDayDTO LayPhanCongTheoId(int maPhanCong)
-        {
-            PhanCongGiangDayDTO pc = null;
-            string query = "SELECT * FROM PhanCongGiangDay WHERE MaPhanCong = @MaPhanCong";
 
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+        // Lấy phân công theo mã
+        public PhanCongGiangDayDTO LayPhanCongTheoMa(int maPhanCong)
+        {
+            PhanCongGiangDayDTO phanCong = null;
+            string query = @"SELECT MaPhanCong, MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc 
+                            FROM PhanCongGiangDay 
+                            WHERE MaPhanCong = @MaPhanCong";
+
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    cmd.Parameters.AddWithValue("@MaPhanCong", maPhanCong);
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
-                        if (reader.Read())
+                        cmd.Parameters.AddWithValue("@MaPhanCong", maPhanCong);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            pc = new PhanCongGiangDayDTO
+                            if (reader.Read())
                             {
-                                MaPhanCong = reader.GetInt32("MaPhanCong"),
-                                MaLop = reader.GetInt32("MaLop"),
-                                MaGiaoVien = reader.GetString("MaGiaoVien"),
-                                MaMonHoc = reader.GetInt32("MaMonHoc"),
-                                MaHocKy = reader.GetInt32("MaHocKy"),
-                                TuNgay = reader.GetDateTime("NgayBatDau"),
-                                DenNgay = reader.GetDateTime("NgayKetThuc")
-                            };
+                                phanCong = new PhanCongGiangDayDTO
+                                {
+                                    MaPhanCong = reader.GetInt32("MaPhanCong"),
+                                    MaLop = reader.GetInt32("MaLop"),
+                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
+                                    MaMonHoc = reader.GetInt32("MaMonHoc"),
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    NgayBatDau = reader.GetDateTime("NgayBatDau"),
+                                    NgayKetThuc = reader.GetDateTime("NgayKetThuc")
+                                };
+                            }
                         }
                     }
                 }
             }
-            return pc;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayPhanCongTheoMa: {ex.Message}");
+                throw;
+            }
+
+            return phanCong;
         }
+
+        // Lấy danh sách phân công theo lớp
+        public List<PhanCongGiangDayDTO> LayPhanCongTheoLop(int maLop)
+        {
+            List<PhanCongGiangDayDTO> ds = new List<PhanCongGiangDayDTO>();
+            string query = @"SELECT MaPhanCong, MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc 
+                            FROM PhanCongGiangDay 
+                            WHERE MaLop = @MaLop";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaLop", maLop);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                PhanCongGiangDayDTO pc = new PhanCongGiangDayDTO
+                                {
+                                    MaPhanCong = reader.GetInt32("MaPhanCong"),
+                                    MaLop = reader.GetInt32("MaLop"),
+                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
+                                    MaMonHoc = reader.GetInt32("MaMonHoc"),
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    NgayBatDau = reader.GetDateTime("NgayBatDau"),
+                                    NgayKetThuc = reader.GetDateTime("NgayKetThuc")
+                                };
+                                ds.Add(pc);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayPhanCongTheoLop: {ex.Message}");
+                throw;
+            }
+
+            return ds;
+        }
+
+        // Lấy danh sách phân công theo giáo viên
+        public List<PhanCongGiangDayDTO> LayPhanCongTheoGiaoVien(string maGiaoVien)
+        {
+            List<PhanCongGiangDayDTO> ds = new List<PhanCongGiangDayDTO>();
+            string query = @"SELECT MaPhanCong, MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc 
+                            FROM PhanCongGiangDay 
+                            WHERE MaGiaoVien = @MaGiaoVien";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                PhanCongGiangDayDTO pc = new PhanCongGiangDayDTO
+                                {
+                                    MaPhanCong = reader.GetInt32("MaPhanCong"),
+                                    MaLop = reader.GetInt32("MaLop"),
+                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
+                                    MaMonHoc = reader.GetInt32("MaMonHoc"),
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    NgayBatDau = reader.GetDateTime("NgayBatDau"),
+                                    NgayKetThuc = reader.GetDateTime("NgayKetThuc")
+                                };
+                                ds.Add(pc);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayPhanCongTheoGiaoVien: {ex.Message}");
+                throw;
+            }
+
+            return ds;
+        }
+
+        // Lấy danh sách phân công theo học kỳ
+        public List<PhanCongGiangDayDTO> LayPhanCongTheoHocKy(int maHocKy)
+        {
+            List<PhanCongGiangDayDTO> ds = new List<PhanCongGiangDayDTO>();
+            string query = @"SELECT MaPhanCong, MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc 
+                            FROM PhanCongGiangDay 
+                            WHERE MaHocKy = @MaHocKy";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                PhanCongGiangDayDTO pc = new PhanCongGiangDayDTO
+                                {
+                                    MaPhanCong = reader.GetInt32("MaPhanCong"),
+                                    MaLop = reader.GetInt32("MaLop"),
+                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
+                                    MaMonHoc = reader.GetInt32("MaMonHoc"),
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    NgayBatDau = reader.GetDateTime("NgayBatDau"),
+                                    NgayKetThuc = reader.GetDateTime("NgayKetThuc")
+                                };
+                                ds.Add(pc);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayPhanCongTheoHocKy: {ex.Message}");
+                throw;
+            }
+
+            return ds;
+        }
+
+        // Cập nhật phân công
+        public bool CapNhatPhanCong(PhanCongGiangDayDTO phanCong)
+        {
+            string query = @"UPDATE PhanCongGiangDay 
+                            SET MaLop = @MaLop, 
+                                MaGiaoVien = @MaGiaoVien, 
+                                MaMonHoc = @MaMonHoc, 
+                                MaHocKy = @MaHocKy, 
+                                NgayBatDau = @NgayBatDau, 
+                                NgayKetThuc = @NgayKetThuc 
+                            WHERE MaPhanCong = @MaPhanCong";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaLop", phanCong.MaLop);
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", phanCong.MaGiaoVien);
+                        cmd.Parameters.AddWithValue("@MaMonHoc", phanCong.MaMonHoc);
+                        cmd.Parameters.AddWithValue("@MaHocKy", phanCong.MaHocKy);
+                        cmd.Parameters.AddWithValue("@NgayBatDau", phanCong.NgayBatDau);
+                        cmd.Parameters.AddWithValue("@NgayKetThuc", phanCong.NgayKetThuc);
+                        cmd.Parameters.AddWithValue("@MaPhanCong", phanCong.MaPhanCong);
+
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi CapNhatPhanCong: {ex.Message}");
+                throw;
+            }
+        }
+
+        // Xóa phân công
         public bool XoaPhanCong(int maPhanCong)
         {
             string query = "DELETE FROM PhanCongGiangDay WHERE MaPhanCong = @MaPhanCong";
 
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
-                    cmd.Parameters.AddWithValue("@MaPhanCong", maPhanCong);
-                    int result = cmd.ExecuteNonQuery();
-                    return result > 0;
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaPhanCong", maPhanCong);
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi XoaPhanCong: {ex.Message}");
+                throw;
             }
         }
 
+        // Kiểm tra trùng lặp (UNIQUE constraint)
+        public bool KiemTraTrungLap(int maLop, string maGiaoVien, int maMonHoc, int maHocKy, int? maPhanCongHienTai = null)
+        {
+            string query = @"SELECT COUNT(*) FROM PhanCongGiangDay 
+                            WHERE MaLop = @MaLop 
+                            AND MaGiaoVien = @MaGiaoVien 
+                            AND MaMonHoc = @MaMonHoc 
+                            AND MaHocKy = @MaHocKy";
+
+            // Nếu đang cập nhật, bỏ qua bản ghi hiện tại
+            if (maPhanCongHienTai.HasValue)
+            {
+                query += " AND MaPhanCong != @MaPhanCongHienTai";
+            }
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaLop", maLop);
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                        cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
+                        cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+                        
+                        if (maPhanCongHienTai.HasValue)
+                        {
+                            cmd.Parameters.AddWithValue("@MaPhanCongHienTai", maPhanCongHienTai.Value);
+                        }
+
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        return count > 0; // Trả về true nếu đã tồn tại
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi KiemTraTrungLap: {ex.Message}");
+                throw;
+            }
+        }
     }
 }
