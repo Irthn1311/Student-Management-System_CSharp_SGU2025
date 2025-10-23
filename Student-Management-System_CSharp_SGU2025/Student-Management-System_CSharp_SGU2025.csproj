@@ -544,6 +544,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="ConnectDatabase\QuanLyHocSinh.sql" />
     <Content Include="GUI\Images\3que.png" />
     <Content Include="GUI\Images\add.png" />
     <Content Include="GUI\Images\arrow.png" />

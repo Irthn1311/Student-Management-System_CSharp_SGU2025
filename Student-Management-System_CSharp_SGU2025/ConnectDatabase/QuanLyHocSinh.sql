@@ -68,9 +68,10 @@ CREATE TABLE KhoiLop (
 );
 
 CREATE TABLE MonHoc (
-    MaMonHoc INT PRIMARY KEY AUTO_INCREMENT,
+    MaMonHoc INT PRIMARY KEY,
     TenMonHoc NVARCHAR(100) NOT NULL,
-    SoTiet INT
+    SoTiet INT,
+    GhiChu varchar(50)
 );
 
 CREATE TABLE GiaoVien (
@@ -136,13 +137,22 @@ CREATE TABLE HocSinhPhuHuynh (
 );
 
 CREATE TABLE PhanLop (
-    MaHocSinh INT,
+    MaHocSinh VARCHAR(20),
     MaLop INT,
     MaHocKy INT,
-    PRIMARY KEY (MaHocSinh, MaLop, MaHocKy, MaNamHoc),
+    PRIMARY KEY (MaHocSinh, MaLop, MaHocKy),
     FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh),
     FOREIGN KEY (MaLop) REFERENCES LopHoc(MaLop),
-    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy),
+    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy)
+);
+
+CREATE TABLE GiaoVien_MonHoc (
+    MaGiaoVien VARCHAR(15),
+    MaMonHoc INT,
+    LaMonChinh BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (MaGiaoVien, MaMonHoc),
+    FOREIGN KEY (MaGiaoVien) REFERENCES GiaoVien(MaGiaoVien),
+    FOREIGN KEY (MaMonHoc) REFERENCES MonHoc(MaMonHoc)
 );
 
 CREATE TABLE PhanCongGiangDay (
@@ -220,15 +230,15 @@ CREATE TABLE KhenThuongKyLuat (
 );
 
 CREATE TABLE ThongBao (
-    Ma_Thong_Bao INT PRIMARY KEY AUTO_INCREMENT,
+    MaThongBao INT PRIMARY KEY AUTO_INCREMENT,
     TieuDe VARCHAR(255) NOT NULL,
     NoiDung TEXT NULL, -- Nội dung có thể để trống
     NgayTao DATETIME DEFAULT CURRENT_TIMESTAMP, -- Tự động lấy ngày giờ hiện tại
     LoaiThongBao VARCHAR(50) NOT NULL, -- Ví dụ: Chung, LichThi, SuKien, KhenThuong, HocPhi...
     DoiTuongNhan VARCHAR(255) NOT NULL, -- Ví dụ: ALL, 10A1, 10A2, GiaoVien, HocSinh...
     NgayHetHan DATETIME NULL, -- Có thể để trống nếu không có ngày hết hạn
-    Ma_Nguoi_Tao INT, -- Người tạo thông báo
-    FOREIGN KEY (Ma_Nguoi_Tao) REFERENCES NguoiDung(Ma_Nguoi_Dung)
+    MaNguoiTao VARCHAR(20), -- Người tạo thông báo
+    FOREIGN KEY (MaNguoiTao) REFERENCES NguoiDung(TenDangNhap)
 );
 -- =====================================================================
 -- Kết thúc script
@@ -472,20 +482,20 @@ INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy) VALUES
 ('HS0020', 1, 1);
 
 -- Môn học và phân công chuyên môn (ví dụ)
-INSERT INTO MonHoc (TenMonHoc, SoTiet) VALUES
-('Ngữ văn', 57),
-('Toán', 60),
-('Tiếng Anh', 41),
-('Lịch sử', 36),
-('Giáo dục thể chất', 35),
-('Giáo dục Quốc phòng và An ninh', 26),
-('Địa lý', 50),
-('Vật lý', 35),
-('Hóa học', 41),
-('Sinh học', 23),
-('Công nghệ', 41),
-('Tin học', 53),
-('Giáo Dục Công Dân', 70);
+INSERT INTO MonHoc (MaMonHoc ,TenMonHoc, SoTiet, GhiChu) VALUES
+(1, 'Ngữ văn', 50, 'Môn chính'),
+(2, 'Toán', 60, 'Môn chính'),
+(3, 'Tiếng Anh', 41, 'Môn chính'),
+(4, 'Lịch sử', 36, 'Khoa học xã hội'),
+(5, 'Giáo dục thể chất', 35, 'Kỹ năng khác'),
+(6, 'Giáo dục Quốc phòng và An ninh', 26, 'Kỹ năng khác'),
+(7, 'Địa lý', 50, 'Khoa học xã hội'),
+(8, 'Vật lý', 35, 'Khoa học tự nhiên'),
+(9, 'Hóa học', 41, 'Khoa học tự nhiên'),
+(10, 'Sinh học', 23, 'Khoa học tự nhiên'),
+(11, 'Công nghệ', 41, 'Khoa học xã hội'),
+(12, 'Tin học', 53, 'Kỹ năng khác'),
+(13, 'Giáo Dục Công Dân', 70, 'Khoa học xã hội');
 INSERT INTO GiaoVienChuyenMon (MaGiaoVien, MaMonHoc, LaChuyenMonChinh) VALUES
 ('GV001', 2, 0),
 ('GV002', 8, 0),
