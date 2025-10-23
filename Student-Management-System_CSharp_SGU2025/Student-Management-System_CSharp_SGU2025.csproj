@@ -121,15 +121,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BUS\GiaoVienBUS.cs" />
+    <Compile Include="BUS\HocKyBUS.cs" />
+    <Compile Include="BUS\LopHocBUS.cs" />
+    <Compile Include="BUS\MonHocBUS.cs" />
+    <Compile Include="BUS\NamHocBUS.cs" />
+    <Compile Include="BUS\PhanCongGiangDayBUS.cs" />
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
+    <Compile Include="DAO\GiaoVienDAO.cs" />
+    <Compile Include="DAO\HocKyDAO.cs" />
     <Compile Include="DAO\LopHocDAO.cs" />
     <Compile Include="DAO\MonHocDAO.cs" />
     <Compile Include="DAO\NamHocDAO.cs" />
+    <Compile Include="DAO\PhanCongGiangDayDAO.cs" />
+    <Compile Include="DTO\GiaoVienDTO.cs" />
+    <Compile Include="DTO\HocKyDTO.cs" />
     <Compile Include="DTO\KhoiLop.cs" />
     <Compile Include="DTO\LopDTO.cs" />
     <Compile Include="DTO\MonHocDTO.cs" />
     <Compile Include="DTO\NamHocDTO.cs" />
-    <Compile Include="DTO\PhanCongGiangDay.cs" />
+    <Compile Include="DTO\PhanCongGiangDayDTO.cs" />
     <Compile Include="GUI\CaiDat\CaiDat.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -237,6 +248,36 @@
     </Compile>
     <Compile Include="GUI\TaiKhoan\FrmTaiKhoan.Designer.cs">
       <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmSuaMonHoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmSuaMonHoc.Designer.cs">
+      <DependentUpon>FrmSuaMonHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\frmThemHocKy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\frmThemHocKy.Designer.cs">
+      <DependentUpon>frmThemHocKy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmThemMonHoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmThemMonHoc.Designer.cs">
+      <DependentUpon>FrmThemMonHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\frmThemNamHoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\frmThemNamHoc.Designer.cs">
+      <DependentUpon>frmThemNamHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmThemPhanCongGiangDay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmThemPhanCongGiangDay.Designer.cs">
+      <DependentUpon>FrmThemPhanCongGiangDay.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.cs">
       <SubType>Form</SubType>
@@ -447,6 +488,12 @@
     <EmbeddedResource Include="GUI\TaiKhoan\FrmTaiKhoan.resx">
       <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\frmThemHocKy.resx">
+      <DependentUpon>frmThemHocKy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\FrmThemMonHoc.resx">
+      <DependentUpon>FrmThemMonHoc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.resx">
       <DependentUpon>SuaLopHoc.cs</DependentUpon>
     </EmbeddedResource>
@@ -495,9 +542,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BUS\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="GUI\Images\3que.png" />
     <Content Include="GUI\Images\add.png" />

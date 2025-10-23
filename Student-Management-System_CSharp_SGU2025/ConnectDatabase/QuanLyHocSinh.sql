@@ -1,177 +1,222 @@
+
 DROP DATABASE IF EXISTS QuanLyHocSinh;
-
 CREATE DATABASE QuanLyHocSinh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 USE QuanLyHocSinh;
 
-CREATE TABLE NguoiDung (
-    Ma_Nguoi_Dung INT PRIMARY KEY AUTO_INCREMENT,
-    Ho_Ten VARCHAR(100) NOT NULL,
-    Email VARCHAR(100) UNIQUE,
-    So_Dien_Thoai VARCHAR(15),
-    Ten_Dang_Nhap VARCHAR(50) NOT NULL UNIQUE,
-    Mat_Khau VARCHAR(255) NOT NULL, -- Nên lưu mật khẩu đã được mã hóa
-    Vai_Tro VARCHAR(50) NOT NULL, -- Ví dụ: 'Admin', 'Giáo Viên', 'Phụ Huynh'
-    Trang_Thai VARCHAR(50) DEFAULT 'Hoạt động'
+-- =====================================================================
+-- PHẦN 1: CÁC BẢNG HỆ THỐNG VÀ PHÂN QUYỀN (RBAC)
+-- =====================================================================
+
+CREATE TABLE VaiTro (
+    MaVaiTro VARCHAR(10) PRIMARY KEY,
+    TenVaiTro NVARCHAR(50) NOT NULL UNIQUE,
+    MoTa TEXT
 );
 
+CREATE TABLE ChucNang (
+    MaChucNang VARCHAR(50) PRIMARY KEY,
+    TenChucNang NVARCHAR(100) NOT NULL,
+    MoTa TEXT
+);
+
+CREATE TABLE VaiTroChucNang (
+    MaVaiTro VARCHAR(10),
+    MaChucNang VARCHAR(50),
+    PRIMARY KEY (MaVaiTro, MaChucNang),
+    FOREIGN KEY (MaVaiTro) REFERENCES VaiTro(MaVaiTro),
+    FOREIGN KEY (MaChucNang) REFERENCES ChucNang(MaChucNang)
+);
+
+CREATE TABLE NguoiDung (
+    TenDangNhap VARCHAR(20) PRIMARY KEY,
+    MatKhau VARCHAR(255) NOT NULL,
+    TrangThai VARCHAR(50) DEFAULT 'Hoạt động'
+);
+
+CREATE TABLE NguoiDungVaiTro (
+    TenDangNhap VARCHAR(20),
+    MaVaiTro VARCHAR(10),
+    PRIMARY KEY (TenDangNhap, MaVaiTro),
+    FOREIGN KEY (TenDangNhap) REFERENCES NguoiDung(TenDangNhap),
+    FOREIGN KEY (MaVaiTro) REFERENCES VaiTro(MaVaiTro)
+);
+
+-- =====================================================================
+-- PHẦN 2: CÁC BẢNG DANH MỤC VÀ THÔNG TIN CỐT LÕI
+-- =====================================================================
+
 CREATE TABLE NamHoc (
-    Ma_Nam_Hoc INT PRIMARY KEY AUTO_INCREMENT,
-    Ten_Nam_Hoc VARCHAR(50) NOT NULL, -- Ví dụ: '2024-2025'
-    Ngay_Bat_Dau DATE,
-    Ngay_Ket_Thuc DATE
+    MaNamHoc VARCHAR(10) PRIMARY KEY,
+    TenNamHoc VARCHAR(50) NOT NULL,
+    NgayBatDau DATE,
+    NgayKetThuc DATE
 );
 
 CREATE TABLE HocKy (
-    Ma_Hoc_Ky INT PRIMARY KEY AUTO_INCREMENT,
-    Ten_Hoc_Ky VARCHAR(50) NOT NULL, -- Ví dụ: 'Học Kỳ 1', 'Học Kỳ 2'
-    Ma_Nam_Hoc INT,
-    FOREIGN KEY (Ma_Nam_Hoc) REFERENCES NamHoc(Ma_Nam_Hoc)
+    MaHocKy INT PRIMARY KEY,
+    TenHocKy NVARCHAR(50) NOT NULL,
+    MaNamHoc VARCHAR(10),
+    TrangThai VARCHAR(50) DEFAULT 'Chưa bắt đầu',
+    NgayBD DATE,
+    NgayKT DATE,
+    FOREIGN KEY (MaNamHoc) REFERENCES NamHoc(MaNamHoc)
 );
 
 CREATE TABLE KhoiLop (
-    Ma_Khoi INT PRIMARY KEY AUTO_INCREMENT,
-    Ten_Khoi VARCHAR(50) NOT NULL -- Ví dụ: 'Khối 10'
-);
-
-CREATE TABLE GiaoVien (
-    Ma_Giao_Vien INT PRIMARY KEY AUTO_INCREMENT,
-    Ho_Ten VARCHAR(100) NOT NULL,
-    Ngay_Sinh DATE,
-    Gioi_Tinh VARCHAR(10),
-    Dia_Chi VARCHAR(255),
-    So_Dien_Thoai VARCHAR(15),
-    Email VARCHAR(100) UNIQUE
-);
-
-CREATE TABLE LopHoc (
-    Ma_Lop INT PRIMARY KEY AUTO_INCREMENT,
-    Ten_Lop VARCHAR(50) NOT NULL,
-    Ma_Khoi INT,
-    Ma_Giao_Vien_Chu_Nhiem INT,
-    FOREIGN KEY (Ma_Khoi) REFERENCES KhoiLop(Ma_Khoi),
-    FOREIGN KEY (Ma_Giao_Vien_Chu_Nhiem) REFERENCES GiaoVien(Ma_Giao_Vien)
-);
-
-CREATE TABLE HocSinh (
-    Ma_Hoc_Sinh INT PRIMARY KEY AUTO_INCREMENT,
-    Ho_Ten VARCHAR(100) NOT NULL,
-    Ngay_Sinh DATE,
-    Gioi_Tinh VARCHAR(10),
-    SDT_HS VARCHAR(15),
-    Email VARCHAR(100) UNIQUE,
-    Trang_Thai VARCHAR(50) DEFAULT 'Đang học'
-);
-
-CREATE TABLE PhuHuynh (
-    Ma_Phu_Huynh INT PRIMARY KEY AUTO_INCREMENT,
-    Ho_Ten VARCHAR(100) NOT NULL,
-    So_Dien_Thoai VARCHAR(15),
-    Email VARCHAR(100) UNIQUE,
-    Dia_Chi VARCHAR(255)
+    MaKhoi INT PRIMARY KEY,
+    TenKhoi NVARCHAR(50) NOT NULL
 );
 
 CREATE TABLE MonHoc (
-    Ma_Mon_Hoc INT PRIMARY KEY AUTO_INCREMENT,
-    Ten_Mon_Hoc VARCHAR(100) NOT NULL,
-    So_Tiet INT
+    MaMonHoc INT PRIMARY KEY AUTO_INCREMENT,
+    TenMonHoc NVARCHAR(100) NOT NULL,
+    SoTiet INT
 );
 
-CREATE TABLE HocSinh_PhuHuynh (
-    Ma_Hoc_Sinh INT,
-    Ma_Phu_Huynh INT,
-    Moi_Quan_He VARCHAR(50), -- Ví dụ: 'Bố', 'Mẹ', 'Người giám hộ'
-    PRIMARY KEY (Ma_Hoc_Sinh, Ma_Phu_Huynh),
-    FOREIGN KEY (Ma_Hoc_Sinh) REFERENCES HocSinh(Ma_Hoc_Sinh),
-    FOREIGN KEY (Ma_Phu_Huynh) REFERENCES PhuHuynh(Ma_Phu_Huynh)
+CREATE TABLE GiaoVien (
+    MaGiaoVien VARCHAR(15) PRIMARY KEY,
+    HoTen NVARCHAR(100) NOT NULL,
+    NgaySinh DATE,
+    GioiTinh NVARCHAR(10),
+    DiaChi NVARCHAR(255),
+    SoDienThoai VARCHAR(15),
+    Email VARCHAR(100) UNIQUE,
+    TrangThai VARCHAR(50) DEFAULT 'Đang giảng dạy'
+);
+
+-- Bảng mới: GiaoVien_ChuyenMon để quản lý các môn học giáo viên có thể dạy
+CREATE TABLE GiaoVienChuyenMon (
+    MaGiaoVien VARCHAR(15),
+    MaMonHoc INT,
+    LaChuyenMonChinh BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (MaGiaoVien, MaMonHoc),
+    FOREIGN KEY (MaGiaoVien) REFERENCES GiaoVien(MaGiaoVien),
+    FOREIGN KEY (MaMonHoc) REFERENCES MonHoc(MaMonHoc)
+);
+
+
+CREATE TABLE HocSinh (
+    MaHocSinh VARCHAR(20) PRIMARY KEY,
+    HoTen NVARCHAR(100) NOT NULL,
+    NgaySinh DATE,
+    GioiTinh NVARCHAR(10),
+    SDTHS VARCHAR(15),
+    Email VARCHAR(100) UNIQUE,
+    TrangThai VARCHAR(50) DEFAULT 'Đang học'
+);
+
+CREATE TABLE PhuHuynh (
+    MaPhuHuynh INT PRIMARY KEY AUTO_INCREMENT,
+    HoTen NVARCHAR(100) NOT NULL,
+    SoDienThoai VARCHAR(15),
+    Email VARCHAR(100) UNIQUE,
+    DiaChi NVARCHAR(255)
+);
+
+CREATE TABLE LopHoc (
+    MaLop INT PRIMARY KEY AUTO_INCREMENT,
+    TenLop VARCHAR(50) NOT NULL,
+    MaKhoi INT,
+    MaGiaoVienChuNhiem VARCHAR(15),
+    FOREIGN KEY (MaKhoi) REFERENCES KhoiLop(MaKhoi),
+    FOREIGN KEY (MaGiaoVienChuNhiem) REFERENCES GiaoVien(MaGiaoVien)
+);
+
+-- =====================================================================
+-- PHẦN 3: CÁC BẢNG NGHIỆP VỤ VÀ GIAO DỊCH
+-- =====================================================================
+
+CREATE TABLE HocSinhPhuHuynh (
+    MaHocSinh VARCHAR(20),
+    MaPhuHuynh INT,
+    MoiQuanHe NVARCHAR(50),
+    PRIMARY KEY (MaHocSinh, MaPhuHuynh),
+    FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh),
+    FOREIGN KEY (MaPhuHuynh) REFERENCES PhuHuynh(MaPhuHuynh)
 );
 
 CREATE TABLE PhanLop (
-    Ma_Hoc_Sinh INT,
-    Ma_Lop INT,
-    Ma_Hoc_Ky INT,
-    PRIMARY KEY (Ma_Hoc_Sinh, Ma_Lop, Ma_Hoc_Ky, Ma_Nam_Hoc),
-    FOREIGN KEY (Ma_Hoc_Sinh) REFERENCES HocSinh(Ma_Hoc_Sinh),
-    FOREIGN KEY (Ma_Lop) REFERENCES LopHoc(Ma_Lop),
-    FOREIGN KEY (Ma_Hoc_Ky) REFERENCES HocKy(Ma_Hoc_Ky),
+    MaHocSinh INT,
+    MaLop INT,
+    MaHocKy INT,
+    PRIMARY KEY (MaHocSinh, MaLop, MaHocKy, MaNamHoc),
+    FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh),
+    FOREIGN KEY (MaLop) REFERENCES LopHoc(MaLop),
+    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy),
 );
 
-
 CREATE TABLE PhanCongGiangDay (
-    Ma_Phan_Cong INT PRIMARY KEY AUTO_INCREMENT,
-    Ma_Lop INT,
-    Ma_Giao_Vien INT,
-    Ma_Mon_Hoc INT,
-    Ma_Hoc_Ky INT,
-    Tu_Ngay DATE,
-    Den_Ngay DATE,
-    Ghi_Chu TEXT,
-    UNIQUE (Ma_Lop, Ma_Giao_Vien, Ma_Mon_Hoc, Ma_Hoc_Ky), -- Đảm bảo không có phân công trùng lặp
-    FOREIGN KEY (Ma_Lop) REFERENCES LopHoc(Ma_Lop),
-    FOREIGN KEY (Ma_Giao_Vien) REFERENCES GiaoVien(Ma_Giao_Vien),
-    FOREIGN KEY (Ma_Mon_Hoc) REFERENCES MonHoc(Ma_Mon_Hoc),
-    FOREIGN KEY (Ma_Hoc_Ky) REFERENCES HocKy(Ma_Hoc_Ky)
+    MaPhanCong INT PRIMARY KEY AUTO_INCREMENT,
+    MaLop INT,
+    MaGiaoVien VARCHAR(15),
+    MaMonHoc INT,
+    MaHocKy INT,
+    NgayBatDau DATE,
+    NgayKetThuc DATE,
+    UNIQUE (MaLop, MaGiaoVien, MaMonHoc, MaHocKy),
+    FOREIGN KEY (MaLop) REFERENCES LopHoc(MaLop),
+    FOREIGN KEY (MaGiaoVien) REFERENCES GiaoVien(MaGiaoVien),
+    FOREIGN KEY (MaMonHoc) REFERENCES MonHoc(MaMonHoc),
+    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy)
 );
 
 CREATE TABLE ThoiKhoaBieu (
-    Ma_Thoi_Khoa_Bieu INT PRIMARY KEY AUTO_INCREMENT,
-    Ma_Phan_Cong INT,
-    Thu_Trong_Tuan VARCHAR(20), -- Ví dụ: 'Thứ Hai', 'Thứ Ba'
-    Tiet_Bat_Dau INT,
-    So_Tiet INT,
-    Phong_Hoc VARCHAR(50),
-    FOREIGN KEY (Ma_Phan_Cong) REFERENCES PhanCongGiangDay(Ma_Phan_Cong)
+    MaThoiKhoaBieu INT PRIMARY KEY AUTO_INCREMENT,
+    MaPhanCong INT,
+    ThuTrongTuan NVARCHAR(20),
+    TietBatDau INT,
+    SoTiet INT,
+    PhongHoc VARCHAR(50),
+    FOREIGN KEY (MaPhanCong) REFERENCES PhanCongGiangDay(MaPhanCong)
 );
 
-
 CREATE TABLE DiemSo (
-    Ma_Hoc_Sinh INT,
-    Ma_Mon_Hoc INT,
-    Ma_Hoc_Ky INT,
-    Diem_Mieng FLOAT,
-    Diem_15_Phut FLOAT,
-    Diem_Giua_Ky FLOAT,
-    Diem_Cuoi_Ky FLOAT,
-    Diem_Trung_Binh FLOAT,
-    PRIMARY KEY (Ma_Hoc_Sinh, Ma_Mon_Hoc, Ma_Hoc_Ky),
-    FOREIGN KEY (Ma_Hoc_Sinh) REFERENCES HocSinh(Ma_Hoc_Sinh),
-    FOREIGN KEY (Ma_Mon_Hoc) REFERENCES MonHoc(Ma_Mon_Hoc),
-    FOREIGN KEY (Ma_Hoc_Ky) REFERENCES HocKy(Ma_Hoc_Ky)
+    MaHocSinh VARCHAR(20),
+    MaMonHoc INT,
+    MaHocKy INT,
+    DiemMieng FLOAT,
+    Diem15Phut FLOAT,
+    DiemGiuaKy FLOAT,
+    DiemCuoiKy FLOAT,
+    DiemTrungBinh FLOAT,
+    PRIMARY KEY (MaHocSinh, MaMonHoc, MaHocKy),
+    FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh),
+    FOREIGN KEY (MaMonHoc) REFERENCES MonHoc(MaMonHoc),
+    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy)
 );
 
 CREATE TABLE HanhKiem (
-    Ma_Hanh_Kiem INT PRIMARY KEY AUTO_INCREMENT,
-    Ma_Hoc_Sinh INT,
-    Ma_Hoc_Ky INT,
-    Xep_Loai VARCHAR(50), -- Ví dụ: 'Tốt', 'Khá', 'Trung bình'
-    Nhan_Xet TEXT,
-    UNIQUE (Ma_Hoc_Sinh, Ma_Hoc_Ky),
-    FOREIGN KEY (Ma_Hoc_Sinh) REFERENCES HocSinh(Ma_Hoc_Sinh),
-    FOREIGN KEY (Ma_Hoc_Ky) REFERENCES HocKy(Ma_Hoc_Ky)
+    MaHocSinh VARCHAR(20),
+    MaHocKy INT,
+    XepLoai NVARCHAR(50),
+    NhanXet TEXT,
+    PRIMARY KEY (MaHocSinh, MaHocKy),
+    FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh),
+    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy)
 );
 
 CREATE TABLE XepLoai (
-    Ma_Hoc_Sinh INT,
-    Ma_Hoc_Ky INT,
-    Hoc_Luc VARCHAR(50), -- Ví dụ: 'Giỏi', 'Khá', 'Trung bình'
-    Ghi_Chu TEXT,
-    PRIMARY KEY (Ma_Hoc_Sinh, Ma_Hoc_Ky),
-    FOREIGN KEY (Ma_Hoc_Sinh) REFERENCES HocSinh(Ma_Hoc_Sinh),
-    FOREIGN KEY (Ma_Hoc_Ky) REFERENCES HocKy(Ma_Hoc_Ky)
+    MaHocSinh VARCHAR(20),
+    MaHocKy INT,
+    HocLuc NVARCHAR(50),
+    GhiChu TEXT,
+    PRIMARY KEY (MaHocSinh, MaHocKy),
+    FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh),
+    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy)
 );
 
-CREATE TABLE KhenThuong_KyLuat (
-    Ma_KTKL INT PRIMARY KEY AUTO_INCREMENT,
-    Ma_Hoc_Sinh INT,
-    Loai VARCHAR(20) NOT NULL, -- 'Khen Thưởng' hoặc 'Kỷ Luật'
-    Noi_Dung TEXT NOT NULL,
-    Cap_Khen_Thuong VARCHAR(100), -- Áp dụng cho khen thưởng
-    Muc_Xu_Ly VARCHAR(100), -- Áp dụng cho kỷ luật
-    Ngay_Ap_Dung DATE,
-    Ma_Nguoi_Lap INT, -- Tham chiếu đến giáo viên hoặc người quản lý trong bảng NguoiDung
-    Trang_Thai_Duyet VARCHAR(50) DEFAULT 'Chờ duyệt',
-    FOREIGN KEY (Ma_Hoc_Sinh) REFERENCES HocSinh(Ma_Hoc_Sinh),
-    FOREIGN KEY (Ma_Nguoi_Lap) REFERENCES NguoiDung(Ma_Nguoi_Dung)
+CREATE TABLE KhenThuongKyLuat (
+    MaKTKL INT PRIMARY KEY AUTO_INCREMENT,
+    MaHocSinh VARCHAR(20),
+    Loai NVARCHAR(20) NOT NULL,
+    NoiDung TEXT NOT NULL,
+    CapKhenThuong NVARCHAR(100),
+    MucXuLy NVARCHAR(100),
+    NgayApDung DATE,
+    NguoiLapID VARCHAR(20),
+    TrangThaiDuyet VARCHAR(50) DEFAULT 'Chờ duyệt',
+    FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh),
+    FOREIGN KEY (NguoiLapID) REFERENCES NguoiDung(TenDangNhap)
 );
 
 CREATE TABLE ThongBao (
@@ -185,3 +230,289 @@ CREATE TABLE ThongBao (
     Ma_Nguoi_Tao INT, -- Người tạo thông báo
     FOREIGN KEY (Ma_Nguoi_Tao) REFERENCES NguoiDung(Ma_Nguoi_Dung)
 );
+-- =====================================================================
+-- Kết thúc script
+-- =====================================================================
+
+
+-- INSERT khối và lớp
+INSERT INTO KhoiLop (MaKhoi, TenKhoi) VALUES (10, 'Khối 10'), (11, 'Khối 11'), (12, 'Khối 12');
+
+-- INSERT giáo viên (60)
+INSERT INTO GiaoVien (MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai) VALUES
+('GV001', 'Đỗ Văn An', '1993-04-05', 'Nam', 'HCMC', '0392458591', 'dỗ.văn.an.gv001@hotmail.com', 'Đang giảng dạy'),
+('GV002', 'Bùi Quốc Bảo', '1991-04-08', 'Nam', 'HCMC', '0394335942', 'bùi.quốc.bảo.gv002@gmail.com', 'Đang giảng dạy'),
+('GV003', 'Trịnh Thảo Vy', '1993-08-19', 'Nữ', 'HCMC', '0903678638', 'trịnh.thảo.vy.gv003@student.edu.vn', 'Đang giảng dạy'),
+('GV004', 'Trịnh Quốc Nam', '1992-04-25', 'Nữ', 'HCMC', '0932556017', 'trịnh.quốc.nam.gv004@hotmail.com', 'Đang giảng dạy'),
+('GV005', 'Vũ Văn Nhật', '1999-05-26', 'Nam', 'HCMC', '0369996414', 'vũ.văn.nhật.gv005@hotmail.com', 'Đang giảng dạy'),
+('GV006', 'Trần Chí Phúc', '1998-05-27', 'Nữ', 'HCMC', '0962166941', 'trần.chí.phúc.gv006@gmail.com', 'Đang giảng dạy'),
+('GV007', 'Nguyễn Thảo Long', '1991-04-28', 'Nam', 'HCMC', '0345663623', 'nguyễn.thảo.long.gv007@hotmail.com', 'Đang giảng dạy'),
+('GV008', 'Võ Thảo Nhật', '1995-06-07', 'Nữ', 'HCMC', '0923871230', 'võ.thảo.nhật.gv008@yahoo.com', 'Đang giảng dạy'),
+('GV009', 'Đặng Hồng Long', '1997-07-09', 'Nam', 'HCMC', '0321938483', 'dặng.hồng.long.gv009@yahoo.com', 'Đang giảng dạy'),
+('GV010', 'Phạm Hoàng Bảo', '1996-05-03', 'Nam', 'HCMC', '0324567281', 'phạm.hoàng.bảo.gv010@hotmail.com', 'Đang giảng dạy'),
+('GV011', 'Đỗ Tuấn Phúc', '1992-05-05', 'Nam', 'HCMC', '0395408072', 'dỗ.tuấn.phúc.gv011@student.edu.vn', 'Đang giảng dạy'),
+('GV012', 'Trịnh Trung Quỳnh', '1995-04-05', 'Nữ', 'HCMC', '0921790481', 'trịnh.trung.quỳnh.gv012@student.edu.vn', 'Đang giảng dạy'),
+('GV013', 'Võ Thảo Nhật', '1995-06-07', 'Nữ', 'HCMC', '0923871230', 'võ.thảo.nhật.gv013@yahoo.com', 'Đang giảng dạy'),
+('GV014', 'Đặng Hồng Long', '1997-07-09', 'Nam', 'HCMC', '0321938483', 'dặng.hồng.long.gv014@yahoo.com', 'Đang giảng dạy'),
+('GV015', 'Phạm Hoàng Bảo', '1996-05-03', 'Nam', 'HCMC', '0324567281', 'phạm.hoàng.bảo.gv015@hotmail.com', 'Đang giảng dạy');
+
+
+INSERT INTO LopHoc (TenLop, MaKhoi, MaGiaoVienChuNhiem) VALUES
+('10A1', 10, 'GV001'),
+('10A2', 10, 'GV002'),
+('10A3', 10, 'GV003'),
+('10A4', 10, 'GV004'),
+('10A5', 10, 'GV005'),
+('11A1', 11, 'GV006'),
+('11A2', 11, 'GV007'),
+('11A3', 11, 'GV008'),
+('11A4', 11, 'GV009'),
+('11A5', 11, 'GV010'),
+('12A1', 12, 'GV011'),
+('12A2', 12, 'GV012'),
+('12A3', 12, 'GV013'),
+('12A4', 12, 'GV014'),
+('12A5', 12, 'GV015');
+
+
+-- INSERT học sinh (500)
+INSERT INTO HocSinh (MaHocSinh, HoTen, NgaySinh, GioiTinh, SDTHS, Email, TrangThai) VALUES
+('HS0001', 'Trương Hồng Thu', '2009-01-18', 'Nam', '0938658158', 'trương.hồng.thu.hs0001@yahoo.com', 'Đang học'),
+('HS0002', 'Vũ Hoàng Thi', '2009-03-24', 'Nữ', '0365348512', 'vũ.hoàng.thi.hs0002@yahoo.com', 'Đang học'),
+('HS0003', 'Trần Hồng Mai', '2010-05-11', 'Nữ', '0392351868', 'trần.hồng.mai.hs0003@yahoo.com', 'Đang học'),
+('HS0004', 'Phan Anh Tâm', '2009-01-07', 'Nữ', '0341327691', 'phan.anh.tâm.hs0004@student.edu.vn', 'Đang học'),
+('HS0005', 'Trương Trung Long', '2009-04-09', 'Nữ', '0371486955', 'trương.trung.long.hs0005@student.edu.vn', 'Đang học'),
+('HS0006', 'Đặng Thị Phúc', '2010-02-21', 'Nữ', '0948746014', 'dặng.thị.phúc.hs0006@yahoo.com', 'Đang học'),
+('HS0007', 'Trương Chí Phúc', '2009-07-09', 'Nam', '0371325197', 'trương.chí.phúc.hs0007@gmail.com', 'Đang học'),
+('HS0008', 'Hồ Thị Trung', '2010-04-05', 'Nữ', '0934656838', 'hồ.thị.trung.hs0008@student.edu.vn', 'Đang học'),
+('HS0009', 'Huỳnh Văn Trâm', '2010-05-19', 'Nữ', '0344327421', 'huỳnh.văn.trâm.hs0009@gmail.com', 'Đang học'),
+('HS0010', 'Trương Văn Trâm', '2010-06-18', 'Nữ', '0332156902', 'trương.văn.trâm.hs0010@hotmail.com', 'Đang học'),
+('HS0011', 'Trịnh Hữu Quỳnh', '2010-12-17', 'Nữ', '0399111742', 'trịnh.hữu.quỳnh.hs0011@student.edu.vn', 'Đang học'),
+('HS0012', 'Ngô Tuấn Long', '2009-10-20', 'Nữ', '0321481506', 'ngô.tuấn.long.hs0012@student.edu.vn', 'Đang học'),
+('HS0013', 'Huỳnh Chí Trung', '2009-09-01', 'Nam', '0925049282', 'huỳnh.chí.trung.hs0013@student.edu.vn', 'Đang học'),
+('HS0014', 'Trần Minh Long', '2009-12-08', 'Nữ', '0338939993', 'trần.minh.long.hs0014@hotmail.com', 'Đang học'),
+('HS0015', 'Huỳnh Ngọc Dũng', '2010-06-04', 'Nam', '0964630331', 'huỳnh.ngọc.dũng.hs0015@student.edu.vn', 'Đang học'),
+('HS0016', 'Phạm Thanh Khanh', '2009-01-23', 'Nam', '0981763626', 'phạm.thanh.khanh.hs0016@gmail.com', 'Đang học'),
+('HS0017', 'Huỳnh Tuấn Thảo', '2009-06-06', 'Nam', '0989014965', 'huỳnh.tuấn.thảo.hs0017@gmail.com', 'Đang học'),
+('HS0018', 'Trương Trung Mai', '2010-04-04', 'Nữ', '0979767312', 'trương.trung.mai.hs0018@student.edu.vn', 'Đang học'),
+('HS0019', 'Nguyễn Trung Yến', '2010-04-21', 'Nam', '0982362099', 'nguyễn.trung.yến.hs0019@yahoo.com', 'Đang học'),
+('HS0020', 'Trịnh Trung Thảo', '2009-01-08', 'Nữ', '0998617381', 'trịnh.trung.thảo.hs0020@gmail.com', 'Đang học');
+
+-- INSERT phụ huynh và liên kết HS-Phụ huynh (1 parent per student)
+INSERT INTO PhuHuynh (MaPhuHuynh, HoTen, SoDienThoai, Email, DiaChi) VALUES
+(1, 'Trương Tuấn Vinh', '0386323376', 'trương.tuấn.vinh.ph0001@student.edu.vn', '157 Đường Phan Đình Phùng'),
+(2, 'Hồ Thảo Linh', '0389130188', 'hồ.thảo.linh.ph0002@yahoo.com', '71 Đường Nguyễn Thị Minh Khai'),
+(3, 'Lê Ngọc Phúc', '0944589533', 'lê.ngọc.phúc.ph0003@gmail.com', '107 Đường Nguyễn Thị Minh Khai'),
+(4, 'Võ Thị Nhật', '0997542890', 'võ.thị.nhật.ph0004@student.edu.vn', '138 Đường Phan Đình Phùng'),
+(5, 'Phan Thảo Vinh', '0343768991', 'phan.thảo.vinh.ph0005@student.edu.vn', '33 Đường Phan Đình Phùng'),
+(6, 'Nguyễn Minh Phúc', '0324551070', 'nguyễn.minh.phúc.ph0006@student.edu.vn', '84 Đường Trần Hưng Đạo'),
+(7, 'Phan Ngọc Tuấn', '0921675419', 'phan.ngọc.tuấn.ph0007@gmail.com', '64 Đường Hoàng Văn Thụ'),
+(8, 'Trịnh Minh Hà', '0333815034', 'trịnh.minh.hà.ph0008@gmail.com', '200 Đường Hoàng Văn Thụ'),
+(9, 'Bùi Hồng Tuấn', '0972709620', 'bùi.hồng.tuấn.ph0009@hotmail.com', '176 Đường Phan Đình Phùng'),
+(10, 'Nguyễn Hoàng Quỳnh', '0372770648', 'nguyễn.hoàng.quỳnh.ph0010@student.edu.vn', '93 Đường Nguyễn Thị Minh Khai'),
+(11, 'Vũ Hoàng Yến', '0986407373', 'vũ.hoàng.yến.ph0011@yahoo.com', '23 Đường Trần Hưng Đạo'),
+(12, 'Hồ Thanh Khanh', '0374558780', 'hồ.thanh.khanh.ph0012@hotmail.com', '67 Đường Trần Hưng Đạo'),
+(13, 'Võ Anh Hà', '0978987516', 'võ.anh.hà.ph0013@student.edu.vn', '115 Đường Lê Lợi'),
+(14, 'Vũ Hồng Thi', '0326902401', 'vũ.hồng.thi.ph0014@student.edu.vn', '70 Đường Trần Hưng Đạo'),
+(15, 'Huỳnh Hồng Trâm', '0385747930', 'huỳnh.hồng.trâm.ph0015@gmail.com', '50 Đường Trần Hưng Đạo'),
+(16, 'Đặng Minh Vy', '0949235577', 'dặng.minh.vy.ph0016@gmail.com', '4 Đường Phan Đình Phùng'),
+(17, 'Hồ Văn Phúc', '0372242892', 'hồ.văn.phúc.ph0017@gmail.com', '39 Đường Hoàng Văn Thụ'),
+(18, 'Võ Chí Tâm', '0998194570', 'võ.chí.tâm.ph0018@hotmail.com', '146 Đường Phan Đình Phùng'),
+(19, 'Phạm Hữu Thi', '0923626181', 'phạm.hữu.thi.ph0019@gmail.com', '105 Đường Nguyễn Thị Minh Khai'),
+(20, 'Đỗ Ngọc Linh', '0968132648', 'dỗ.ngọc.linh.ph0020@gmail.com', '140 Đường Hoàng Văn Thụ');
+INSERT INTO HocSinhPhuHuynh (MaHocSinh, MaPhuHuynh, MoiQuanHe) VALUES
+('HS0001', 1, 'Cha/Mẹ'),
+('HS0002', 2, 'Cha/Mẹ'),
+('HS0003', 3, 'Cha/Mẹ'),
+('HS0004', 4, 'Cha/Mẹ'),
+('HS0005', 5, 'Cha/Mẹ'),
+('HS0006', 6, 'Cha/Mẹ'),
+('HS0007', 7, 'Cha/Mẹ'),
+('HS0008', 8, 'Cha/Mẹ'),
+('HS0009', 9, 'Cha/Mẹ'),
+('HS0010', 10, 'Cha/Mẹ'),
+('HS0011', 11, 'Cha/Mẹ'),
+('HS0012', 12, 'Cha/Mẹ'),
+('HS0013', 13, 'Cha/Mẹ'),
+('HS0014', 14, 'Cha/Mẹ'),
+('HS0015', 15, 'Cha/Mẹ'),
+('HS0016', 16, 'Cha/Mẹ'),
+('HS0017', 17, 'Cha/Mẹ'),
+('HS0018', 18, 'Cha/Mẹ'),
+('HS0019', 19, 'Cha/Mẹ'),
+('HS0020', 20, 'Cha/Mẹ');
+
+
+INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES
+('student', 'Học sinh', 'Học sinh'),
+('parent', 'Phụ huynh', 'Phụ huynh'),
+('teacher', 'Giáo viên', 'Giáo viên'),
+('admin', 'Quản trị viên', 'Quản trị viên');
+
+INSERT INTO ChucNang (MaChucNang, TenChucNang, MoTa) VALUES
+('qlhs', 'Quản lý học sinh', 'Quản lý học sinh'),
+('qlphuhuynh', 'Quản lý phụ huynh', 'Quản lý phụ huynh'),
+('qlgiaovien', 'Quản lý giáo viên', 'Quản lý giáo viên');
+
+INSERT INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
+('student', 'qlhs'),
+('parent', 'qlphuhuynh'),
+('teacher', 'qlgiaovien'),
+('admin', 'qlhs'),
+('admin', 'qlphuhuynh'),
+('admin', 'qlgiaovien');
+
+-- INSERT users: students use their student account (and parents will login using student's account).
+INSERT INTO NguoiDung (TenDangNhap, MatKhau, TrangThai) VALUES
+('HS0001', '12345678', 'Hoạt động'),
+('HS0002', '12345678', 'Hoạt động'),
+('HS0003', '12345678', 'Hoạt động'),
+('HS0004', '12345678', 'Hoạt động'),
+('HS0005', '12345678', 'Hoạt động'),
+('HS0006', '12345678', 'Hoạt động'),
+('HS0007', '12345678', 'Hoạt động'),
+('HS0008', '12345678', 'Hoạt động'),
+('HS0009', '12345678', 'Hoạt động'),
+('HS0010', '12345678', 'Hoạt động'),
+('HS0011', '12345678', 'Hoạt động'),
+('HS0012', '12345678', 'Hoạt động'),
+('HS0013', '12345678', 'Hoạt động'),
+('HS0014', '12345678', 'Hoạt động'),
+('HS0015', '12345678', 'Hoạt động'),
+('HS0016', '12345678', 'Hoạt động'),
+('HS0017', '12345678', 'Hoạt động'),
+('HS0018', '12345678', 'Hoạt động'),
+('HS0019', '12345678', 'Hoạt động'),
+('HS0020', '12345678', 'Hoạt động'),
+('GV0001', '12345678',  'Hoạt động'),
+('GV0002', '12345678',  'Hoạt động'),
+('GV0003', '12345678',  'Hoạt động'),
+('GV0004', '12345678',  'Hoạt động'),
+('GV0005', '12345678',  'Hoạt động'),
+('GV0006', '12345678',  'Hoạt động'),
+('GV0007', '12345678',  'Hoạt động'),
+('GV0008', '12345678',  'Hoạt động'),
+('GV0009', '12345678',  'Hoạt động'),
+('GV0010', '12345678',  'Hoạt động'),
+('GV0011', '12345678',  'Hoạt động'),
+('GV0012', '12345678',  'Hoạt động'),
+('GV0013', '12345678',  'Hoạt động'),
+('GV0014', '12345678',  'Hoạt động'),
+('GV0015', '12345678',  'Hoạt động'),
+('admin', '12345678', 'Hoạt động');
+
+INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro) VALUES
+('HS0001', 'student'),
+('HS0002', 'student'),
+('HS0003', 'student'),
+('HS0004', 'student'),
+('HS0005', 'student'),
+('HS0006', 'student'),
+('HS0007', 'student'),
+('HS0008', 'student'),
+('HS0009', 'student'),
+('HS0010', 'student'),
+('HS0011', 'student'),
+('HS0012', 'student'),
+('HS0013', 'student'),
+('HS0014', 'student'),
+('HS0015', 'student'),
+('HS0016', 'student'),
+('HS0017', 'student'),
+('HS0018', 'student'),
+('HS0019', 'student'),
+('HS0020', 'student'),
+('GV0001', 'teacher'),
+('GV0002', 'teacher'),
+('GV0003', 'teacher'),
+('GV0004', 'teacher'),
+('GV0005', 'teacher'),
+('GV0006', 'teacher'),
+('GV0007', 'teacher'),
+('GV0008', 'teacher'),
+('GV0009', 'teacher'),
+('GV0010', 'teacher'),
+('GV0011', 'teacher'),
+('GV0012', 'teacher'),
+('GV0013', 'teacher'),
+('GV0014', 'teacher'),
+('GV0015', 'teacher'),
+('admin', 'admin');
+
+-- Thêm năm học và học kỳ
+INSERT INTO NamHoc (MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc) VALUES
+('2024-2025', 'Năm học 2024-2025', '2024-09-01', '2025-05-31'),
+('2025-2026', 'Năm học 2025-2065', '2025-09-01', '2026-05-31');
+
+INSERT INTO HocKy (MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT) VALUES
+(1, 'Học kỳ 1', '2024-2025', 'Đang diễn ra', '2024-01-01', '2024-12-31'),
+(2, 'Học kỳ I', '2025-2026', 'Chưa bắt đầu', '2025-09-01', '2025-12-31'),
+(3, 'Học kỳ II', '2025-2026', 'Chưa bắt đầu', '2025-12-12', '2026-05-15');
+
+INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy) VALUES
+('HS0001', 1, 1),
+('HS0002', 1, 1),
+('HS0003', 1, 1),
+('HS0004', 1, 1),
+('HS0005', 11, 1),
+('HS0006', 1, 1),
+('HS0007', 1, 1),
+('HS0008', 1, 1),
+('HS0009', 1, 1),
+('HS0010', 1, 1),
+('HS0011', 6, 1),
+('HS0012', 1, 1),
+('HS0013', 1, 1),
+('HS0014', 1, 1),
+('HS0015', 1, 1),
+('HS0016', 1, 1),
+('HS0017', 1, 1),
+('HS0018', 1, 1),
+('HS0019', 1, 1),
+('HS0020', 1, 1);
+
+-- Môn học và phân công chuyên môn (ví dụ)
+INSERT INTO MonHoc (TenMonHoc, SoTiet) VALUES
+('Ngữ văn', 57),
+('Toán', 60),
+('Tiếng Anh', 41),
+('Lịch sử', 36),
+('Giáo dục thể chất', 35),
+('Giáo dục Quốc phòng và An ninh', 26),
+('Địa lý', 50),
+('Vật lý', 35),
+('Hóa học', 41),
+('Sinh học', 23),
+('Công nghệ', 41),
+('Tin học', 53),
+('Giáo Dục Công Dân', 70);
+INSERT INTO GiaoVienChuyenMon (MaGiaoVien, MaMonHoc, LaChuyenMonChinh) VALUES
+('GV001', 2, 0),
+('GV002', 8, 0),
+('GV002', 11, 0),
+('GV002', 10, 0),
+('GV003', 1, 1),
+('GV004', 6, 0),
+('GV004', 13, 0),
+('GV005', 13, 0),
+('GV006', 5, 0),
+('GV007', 7, 0),
+('GV007', 2, 1),
+('GV007', 9, 1),
+('GV008', 7, 0),
+('GV008', 2, 0),
+('GV009', 4, 0),
+('GV009', 13, 0),
+('GV010', 8, 0),
+('GV011', 6, 0),
+('GV012', 9, 0),
+('GV013', 12, 0),
+('GV014', 1, 0),
+('GV015', 10, 0);
+
+
+-- Indexes
+ALTER TABLE HocSinh ADD INDEX idx_email (Email);
+ALTER TABLE GiaoVien ADD INDEX idx_email_gv (Email);
+
+-- SUMMARY: 500 students, 60 teachers, 15 classes created.

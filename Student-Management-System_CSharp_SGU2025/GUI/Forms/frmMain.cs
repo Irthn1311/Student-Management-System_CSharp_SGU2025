@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Student_Management_System_CSharp_SGU2025.GUI.Dashboard;
 
 // Đảm bảo bạn đã thêm các using cho các UserControl của mình, ví dụ:
 // using Student_Management_System_CSharp_SGU2025.GUI.userControl; 
@@ -18,7 +19,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     {
         // Current active user control
         private UserControl currentUserControl = null;
-        
+        private System.ComponentModel.IContainer components = null;
+
+
         public MainForm()
         {
             InitializeComponent();
@@ -32,7 +35,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // Gán sự kiện cho các nút ở sidebar
             ucSidebar1.BangTinButton.Click += (s, e) => ShowDashboard();
             ucSidebar1.XepLoaiButton.Click += (s, e) => ShowXepLoai();
-            ucSidebar1.GiaoVienButton.Click += (s, e)=> ShowGiaoVien();
+            ucSidebar1.GiaoVienButton.Click += (s, e) => ShowGiaoVien();
             ucSidebar1.BaoCaoButton.Click += (s, e) => ShowBaoCao();
             ucSidebar1.HanhKiemButton.Click += (s, e) => ShowHanhKiem();
             ucSidebar1.HocSinhButton.Click += (s, e) => ShowHocSinh();
