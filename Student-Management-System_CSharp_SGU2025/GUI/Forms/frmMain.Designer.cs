@@ -35,29 +35,44 @@
             this.ucSidebar1.Dock = System.Windows.Forms.DockStyle.Left;
             this.ucSidebar1.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ucSidebar1.Location = new System.Drawing.Point(0, 0);
-            this.ucSidebar1.Margin = new System.Windows.Forms.Padding(2);
+            this.ucSidebar1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ucSidebar1.Name = "ucSidebar1";
-            this.ucSidebar1.Size = new System.Drawing.Size(256, 861);
+            this.ucSidebar1.Size = new System.Drawing.Size(341, 1060);
             this.ucSidebar1.TabIndex = 3;
             this.ucSidebar1.Load += new System.EventHandler(this.ucSidebar1_Load);
             // 
             // ucHeader1
             // 
-            this.ucHeader1.Location = new System.Drawing.Point(256, 0);
+            this.ucHeader1.Location = new System.Drawing.Point(341, 0);
+            this.ucHeader1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ucHeader1.Name = "ucHeader1";
             this.ucHeader1.Size = new System.Drawing.Size(1184, 87);
             this.ucHeader1.TabIndex = 2;
             // 
+//             this.ucHeader1.Size = new System.Drawing.Size(1579, 118);
+//             this.ucHeader1.TabIndex = 2;
+          // cho nay bi loi
+            // 
+            // panelContent
+            // 
+            this.panelContent.BackColor = System.Drawing.SystemColors.Control;
+            this.panelContent.Location = new System.Drawing.Point(341, 114);
+            this.panelContent.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelContent.Name = "panelContent";
+            this.panelContent.Size = new System.Drawing.Size(1557, 945);
+            this.panelContent.TabIndex = 4;
+            this.panelContent.Paint += new System.Windows.Forms.PaintEventHandler(this.panelContent_Paint);
+            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1424, 861);
+            this.ClientSize = new System.Drawing.Size(1899, 1060);
             this.Controls.Add(this.panelContent);
             this.Controls.Add(this.ucSidebar1);
             this.Controls.Add(this.ucHeader1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmMain";

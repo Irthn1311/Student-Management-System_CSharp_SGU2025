@@ -34,6 +34,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         public Guna.UI2.WinForms.Guna2Button DanhGiaButton => btnKhenThuong;
         public Guna.UI2.WinForms.Guna2Button ThongBaoButton => btnThongBao; 
 
+    
+        public Guna.UI2.WinForms.Guna2Button NamHocButton => btnNamHoc;
         private void pnlHeader_Paint(object sender, PaintEventArgs e)
         {
 
@@ -70,6 +72,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         private void btnThongBao_Click(object sender, EventArgs e)
+        {
+        
+        }
+        private void btnNamHoc_Click(object sender, EventArgs e)
         {
 
         }

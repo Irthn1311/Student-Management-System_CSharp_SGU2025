@@ -146,7 +146,6 @@
     <Compile Include="BUS\HocSinhBLL.cs" />
     <Compile Include="BUS\HocSinhPhuHuynhBLL.cs" />
     <Compile Include="BUS\PhuHuynhBLL.cs" />
-    <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
     <Compile Include="DAO\HocSinhDAO.cs" />
     <Compile Include="DAO\HocSinhPhuHuynhDAO.cs" />
     <Compile Include="DAO\LopHocDAO.cs" />
@@ -154,12 +153,29 @@
     <Compile Include="DAO\NamHocDAO.cs" />
     <Compile Include="DAO\PhuHuynhDAO.cs" />
     <Compile Include="DTO\HocSinhDTO.cs" />
+    <Compile Include="BUS\GiaoVienBUS.cs" />
+    <Compile Include="BUS\HanhKiemBUS.cs" />
+    <Compile Include="BUS\HocKyBUS.cs" />
+    <Compile Include="BUS\LopHocBUS.cs" />
+    <Compile Include="BUS\MonHocBUS.cs" />
+    <Compile Include="BUS\NamHocBUS.cs" />
+    <Compile Include="BUS\PhanCongGiangDayBUS.cs" />
+    <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
+    <Compile Include="DAO\GiaoVienDAO.cs" />
+    <Compile Include="DAO\HanhKiemDAO.cs" />
+    <Compile Include="DTO\GiaoVienDTO.cs" />
+    <Compile Include="DTO\HanhKiemDTO.cs" />
+    <Compile Include="DAO\HocKyDAO.cs" />
+    <Compile Include="DAO\PhanCongGiangDayDAO.cs" />
+    <Compile Include="DTO\HocKyDTO.cs" />
     <Compile Include="DTO\KhoiLop.cs" />
     <Compile Include="DTO\LopDTO.cs" />
     <Compile Include="DTO\MonHocDTO.cs" />
     <Compile Include="DTO\NamHocDTO.cs" />
     <Compile Include="DTO\PhanCongGiangDay.cs" />
     <Compile Include="DTO\PhuHuynhDTO.cs" />
+    <Compile Include="DTO\PhanCongGiangDayDTO.cs" />
+    <Compile Include="DTO\ThoiKhoaBieuDTO.cs" />
     <Compile Include="GUI\CaiDat\CaiDat.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -219,6 +235,12 @@
     </Compile>
     <Compile Include="GUI\GiaoVien\GiaoVien.Designer.cs">
       <DependentUpon>GiaoVien.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NamHoc\ucNamHoc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\NamHoc\ucNamHoc.Designer.cs">
+      <DependentUpon>ucNamHoc.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
       <SubType>UserControl</SubType>
@@ -285,6 +307,35 @@
     </Compile>
     <Compile Include="GUI\ThemPhuHuynh.Designer.cs">
       <DependentUpon>ThemPhuHuynh.cs</DependentUpon>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmSuaMonHoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmSuaMonHoc.Designer.cs">
+      <DependentUpon>FrmSuaMonHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\frmThemHocKy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\frmThemHocKy.Designer.cs">
+      <DependentUpon>frmThemHocKy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmThemMonHoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmThemMonHoc.Designer.cs">
+      <DependentUpon>FrmThemMonHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\frmThemNamHoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\frmThemNamHoc.Designer.cs">
+      <DependentUpon>frmThemNamHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmThemPhanCongGiangDay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemSua%28Phuc%29\FrmThemPhanCongGiangDay.Designer.cs">
+      <DependentUpon>FrmThemPhanCongGiangDay.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.cs">
       <SubType>Form</SubType>
@@ -474,6 +525,9 @@
     <EmbeddedResource Include="GUI\HocSinh\HocSinh.resx">
       <DependentUpon>HocSinh.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\NamHoc\ucNamHoc.resx">
+      <DependentUpon>ucNamHoc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\RecentActivityItem.resx">
       <DependentUpon>RecentActivityItem.cs</DependentUpon>
     </EmbeddedResource>
@@ -503,6 +557,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThemPhuHuynh.resx">
       <DependentUpon>ThemPhuHuynh.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\frmThemHocKy.resx">
+      <DependentUpon>frmThemHocKy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\FrmThemMonHoc.resx">
+      <DependentUpon>FrmThemMonHoc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\SuaLopHoc.resx">
       <DependentUpon>SuaLopHoc.cs</DependentUpon>
@@ -557,6 +616,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="ConnectDatabase\QuanLyHocSinh.sql" />
     <Content Include="GUI\Images\3que.png" />
     <Content Include="GUI\Images\add.png" />
     <Content Include="GUI\Images\arrow.png" />

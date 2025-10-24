@@ -1,201 +1,236 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
-using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
-using System.Drawing.Imaging;
+using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
 {
     public partial class PhanCongGiangDay : UserControl
     {
+        private PhanCongGiangDayBUS phanCongBUS;
+        private GiaoVienBUS giaoVienBUS;
+        private MonHocBUS monHocBUS;
+        private LopHocBUS lopHocBUS;
+        private HocKyBUS hocKyBUS;
+
         public PhanCongGiangDay()
         {
             InitializeComponent();
+            phanCongBUS = new PhanCongGiangDayBUS();
+            giaoVienBUS = new GiaoVienBUS();
+            monHocBUS = new MonHocBUS();
+            lopHocBUS = new LopHocBUS();
+            hocKyBUS = new HocKyBUS();
         }
 
         private void PhanCongGiangDay_Load(object sender, EventArgs e)
         {
-            // 1️⃣ Gọi hàm load thẻ thống kê
-            LoadStatCards();
-
-            // 2️⃣ Gọi hàm load dữ liệu bảng
-            LoadData();
-
+            try
+            {
+                LoadStatCards();
+                LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        
+
         private void LoadStatCards()
         {
-            /*
-            panelShow.Controls.Clear(); // Xóa hết để load lại
-
-            // Tạo danh sách card (ví dụ 4 cái)
-            StatCard card1 = new StatCard();
-            card1.Title = "Tổng giáo viên";
-            card1.Value = "32";
-            card1.BackColor = Color.DodgerBlue;
-
-            StatCard card2 = new StatCard();
-            card2.Title = "Tổng môn học";
-            card2.Value = "18";
-            card2.BackColor = Color.MediumSeaGreen;
-
-            StatCard card3 = new StatCard();
-            card3.Title = "Tổng lớp học";
-            card3.Value = "12";
-            card3.BackColor = Color.Orange;
-
-            StatCard card4 = new StatCard();
-            card4.Title = "Phân công hiện tại";
-            card4.Value = "45";
-            card4.BackColor = Color.MediumOrchid;
-
-            // Danh sách cards
-            StatCard[] cards = { card1, card2, card3, card4 };
-
-            // Căn đều 4 card trên panelShow
-            int spacing = 20;
-            int cardWidth = (panelShow.Width - spacing * (cards.Length + 1)) / cards.Length;
-            int cardHeight = panelShow.Height - 20;
-
-            for (int i = 0; i < cards.Length; i++)
+            try
             {
-                cards[i].Size = new Size(cardWidth, cardHeight);
-                cards[i].Location = new Point(spacing + i * (cardWidth + spacing), 10);
-                panelShow.Controls.Add(cards[i]);
+                // Lấy dữ liệu thống kê
+                List<PhanCongGiangDayDTO> dsPhanCong = phanCongBUS.DocDSPhanCong();
+                int tongPhanCong = dsPhanCong?.Count ?? 0;
+
+                // Đếm giáo viên được phân công
+                int tongGiaoVien = dsPhanCong?.Select(pc => pc.MaGiaoVien).Distinct().Count() ?? 0;
+
+                // Đếm môn học được phân công
+                int tongMonHoc = dsPhanCong?.Select(pc => pc.MaMonHoc).Distinct().Count() ?? 0;
+
+                // Đếm lớp học có phân công
+                int tongLopHoc = dsPhanCong?.Select(pc => pc.MaLop).Distinct().Count() ?? 0;
+
+                // Cập nhật các card
+                statCardPhanCongGiangDay1.Title = "Tổng phân công";
+                statCardPhanCongGiangDay1.Value = tongPhanCong.ToString();
+                statCardPhanCongGiangDay1.TitleColor = Color.FromArgb(30, 136, 229);
+
+                statCardPhanCongGiangDay2.Title = "Giáo viên";
+                statCardPhanCongGiangDay2.Value = tongGiaoVien.ToString();
+                statCardPhanCongGiangDay2.TitleColor = Color.FromArgb(30, 136, 229);
+
+                statCardPhanCongGiangDay3.Title = "Môn học";
+                statCardPhanCongGiangDay3.Value = tongMonHoc.ToString();
+                statCardPhanCongGiangDay3.TitleColor = Color.FromArgb(20, 163, 74);
+
+                statCardPhanCongGiangDay4.Title = "Lớp học";
+                statCardPhanCongGiangDay4.Value = tongLopHoc.ToString();
+                statCardPhanCongGiangDay4.TitleColor = Color.FromArgb(234, 88, 12);
             }
-            */
-
-
-            // Ví dụ dữ liệu mẫu
-            statCardPhanCongGiangDay1.Title = "Tổng phân công";
-            statCardPhanCongGiangDay1.Value = "36";
-
-            statCardPhanCongGiangDay2.Title = "Giáo viên";
-            statCardPhanCongGiangDay2.Value = "36";
-            statCardPhanCongGiangDay2.TitleColor = Color.FromArgb(30, 136, 229);
-
-            statCardPhanCongGiangDay3.Title = "Môn học";
-            statCardPhanCongGiangDay3.Value = "20";
-            statCardPhanCongGiangDay3.TitleColor = Color.FromArgb(20, 163, 74);
-
-            statCardPhanCongGiangDay4.Title = "Lớp học";
-            statCardPhanCongGiangDay4.Value = "235";
-            statCardPhanCongGiangDay4.TitleColor = Color.FromArgb(234, 88, 12);
-
-
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải thống kê: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        
 
         private void LoadData()
         {
-            // ===================================
-            // 1️⃣ CẤU HÌNH DATAGRIDVIEW
-            // ===================================
+            try
+            {
+                // Cấu hình DataGridView
+                dgvPhanCong.Columns.Clear();
+                dgvPhanCong.Rows.Clear();
+                dgvPhanCong.AutoGenerateColumns = false;
+                dgvPhanCong.AllowUserToAddRows = false;
+                dgvPhanCong.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                dgvPhanCong.ReadOnly = true;
 
-            // --- Cài đặt cơ bản ---
-            dgvPhanCong.Columns.Clear();
-            dgvPhanCong.Rows.Clear();
-            dgvPhanCong.AutoGenerateColumns = false;
-            dgvPhanCong.AllowUserToAddRows = false;
-            dgvPhanCong.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPhanCong.ReadOnly = true;
+                // Thiết lập giao diện
+                dgvPhanCong.BackgroundColor = Color.White;
+                dgvPhanCong.BorderStyle = BorderStyle.None;
+                dgvPhanCong.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+                dgvPhanCong.RowHeadersVisible = false;
 
-            // --- Thiết lập giao diện ---
-            dgvPhanCong.BackgroundColor = Color.White;
-            dgvPhanCong.BorderStyle = BorderStyle.None;
-            dgvPhanCong.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dgvPhanCong.RowHeadersVisible = false;
+                // Style cho tiêu đề cột
+                dgvPhanCong.EnableHeadersVisualStyles = false;
+                dgvPhanCong.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+                dgvPhanCong.ColumnHeadersHeight = 50;
+                dgvPhanCong.ColumnHeadersDefaultCellStyle.BackColor = Color.White;
+                dgvPhanCong.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(100, 116, 139);
+                dgvPhanCong.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+                dgvPhanCong.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.White;
+                dgvPhanCong.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            // --- Style cho tiêu đề cột ---
-            dgvPhanCong.EnableHeadersVisualStyles = false;
-            dgvPhanCong.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dgvPhanCong.ColumnHeadersHeight = 50; // Tăng chiều cao tiêu đề
-            dgvPhanCong.ColumnHeadersDefaultCellStyle.BackColor = Color.White; // Nền trắng cho tiêu đề
-            dgvPhanCong.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(100, 116, 139); // Màu chữ xám cho tiêu đề
-            dgvPhanCong.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            dgvPhanCong.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.White; // Ngăn đổi màu khi click
-            dgvPhanCong.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Căn giữa tiêu đề
+                // Style cho các dòng dữ liệu
+                dgvPhanCong.RowTemplate.Height = 45;
+                dgvPhanCong.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
+                dgvPhanCong.DefaultCellStyle.ForeColor = Color.FromArgb(30, 41, 59);
+                dgvPhanCong.DefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
+                dgvPhanCong.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
+                dgvPhanCong.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dgvPhanCong.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
 
-            // --- Style cho các dòng dữ liệu ---
-            dgvPhanCong.RowTemplate.Height = 45; // Tăng chiều cao dòng
-            dgvPhanCong.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
-            dgvPhanCong.DefaultCellStyle.ForeColor = Color.FromArgb(30, 41, 59); // Màu chữ chính
-            dgvPhanCong.DefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252); // Màu nền khi chọn dòng
-            dgvPhanCong.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59); // Màu chữ khi chọn dòng
-            dgvPhanCong.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Căn giữa nội dung
-            dgvPhanCong.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252); // Màu xen kẽ cho dễ nhìn
+                // Tạo cột
+                dgvPhanCong.Columns.Add("MaPhanCong", "Mã");
+                dgvPhanCong.Columns["MaPhanCong"].Visible = false; // Ẩn cột mã
 
-            // ===================================
-            // 2️⃣ TẠO CỘT VÀ THIẾT LẬP ĐỘ RỘNG
-            // ===================================
-            dgvPhanCong.Columns.Add("GiaoVien", "Giáo viên");
-            dgvPhanCong.Columns.Add("MonHoc", "Môn học");
-            dgvPhanCong.Columns.Add("Lop", "Lớp");
-            dgvPhanCong.Columns.Add("HocKy", "Học kỳ");
-            dgvPhanCong.Columns.Add("SoTiet", "Số tiết");
-            dgvPhanCong.Columns.Add("ThaoTac", "Thao tác");
+                dgvPhanCong.Columns.Add("GiaoVien", "Giáo viên");
+                dgvPhanCong.Columns.Add("MonHoc", "Môn học");
+                dgvPhanCong.Columns.Add("Lop", "Lớp");
+                dgvPhanCong.Columns.Add("HocKy", "Học kỳ");
+                dgvPhanCong.Columns.Add("ThoiGian", "Thời gian");
+                dgvPhanCong.Columns.Add("ThaoTac", "Thao tác");
 
-            // Thiết lập chế độ co giãn
-            dgvPhanCong.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvPhanCong.Columns["ThaoTac"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvPhanCong.Columns["ThaoTac"].Width = 80;
+                // Thiết lập chế độ co giãn
+                dgvPhanCong.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                dgvPhanCong.Columns["ThaoTac"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                dgvPhanCong.Columns["ThaoTac"].Width = 100;
 
-            // ===================================
-            // 3️⃣ NẠP DỮ LIỆU MẪU
-            // ===================================
-            dgvPhanCong.Rows.Add("Nguyễn Thị Hoa", "Toán học", "10A1", "HK I", "5 tiết/tuần");
-            dgvPhanCong.Rows.Add("Trần Văn Nam", "Ngữ văn", "10A1", "HK I", "5 tiết/tuần");
-            dgvPhanCong.Rows.Add("Lê Thị Mai", "Tiếng Anh", "10A2", "HK I", "4 tiết/tuần");
-            dgvPhanCong.Rows.Add("Phạm Văn Đức", "Vật lý", "11A1", "HK I", "3 tiết/tuần");
-            dgvPhanCong.Rows.Add("Hoàng Thị Lan", "Hóa học", "11A2", "HK I", "3 tiết/tuần");
-            dgvPhanCong.Rows.Add("Vũ Văn Hùng", "Sinh học", "11A3", "HK I", "3 tiết/tuần");
-            dgvPhanCong.Rows.Add("Đỗ Thị Thu", "Lịch sử", "12A1", "HK I", "2 tiết/tuần");
-            dgvPhanCong.Rows.Add("Bùi Văn Toàn", "Địa lý", "12A2", "HK I", "2 tiết/tuần");
+                // Lấy dữ liệu từ database
+                List<PhanCongGiangDayDTO> dsPhanCong = phanCongBUS.DocDSPhanCong();
 
-            // ===================================
-            // 4️⃣ GẮN SỰ KIỆN
-            // ===================================
-            dgvPhanCong.CellPainting += dgvPhanCong_CellPainting;
-            dgvPhanCong.CellClick += dgvPhanCong_CellClick;
+                if (dsPhanCong != null && dsPhanCong.Count > 0)
+                {
+                    foreach (PhanCongGiangDayDTO pc in dsPhanCong)
+                    {
+                        // Lấy thông tin giáo viên
+                        GiaoVienDTO gv = giaoVienBUS.LayGiaoVienTheoMa(pc.MaGiaoVien);
+                        string tenGV = gv != null ? gv.HoTen : pc.MaGiaoVien;
+
+                        // Lấy thông tin môn học
+                        MonHocDTO mh = monHocBUS.LayDSMonHocTheoId(pc.MaMonHoc);
+                        string tenMH = mh != null ? mh.tenMon : $"MH-{pc.MaMonHoc}";
+
+                        // Lấy thông tin lớp
+                        LopDTO lop = lopHocBUS.LayLopTheoId(pc.MaLop);
+                        string tenLop = lop != null ? lop.tenLop : $"Lớp-{pc.MaLop}";
+
+                        // Lấy thông tin học kỳ
+                        HocKyDTO hk = hocKyBUS.LayHocKyTheoMa(pc.MaHocKy);
+                        string tenHK = hk != null ? hk.TenHocKy : $"HK-{pc.MaHocKy}";
+
+                        // Định dạng thời gian
+                        string thoiGian = $"{pc.NgayBatDau:dd/MM/yyyy} - {pc.NgayKetThuc:dd/MM/yyyy}";
+
+                        dgvPhanCong.Rows.Add(
+                            pc.MaPhanCong,
+                            tenGV,
+                            tenMH,
+                            tenLop,
+                            tenHK,
+                            thoiGian,
+                            ""
+                        );
+                    }
+                }
+
+                // Gắn sự kiện
+                dgvPhanCong.CellPainting += dgvPhanCong_CellPainting;
+                dgvPhanCong.CellClick += dgvPhanCong_CellClick;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu bảng: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void dgvPhanCong_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            // --- Tô màu cho cột "Lớp" ---
-            if (dgvPhanCong.Columns[e.ColumnIndex].Name == "Lop")
+            // Tô màu cho cột "Lớp"
+            if (dgvPhanCong.Columns[e.ColumnIndex].Name == "Lop" && e.RowIndex >= 0)
             {
                 string lopText = e.Value?.ToString();
                 if (!string.IsNullOrEmpty(lopText))
                 {
-                    if (lopText.StartsWith("10"))
+                    if (lopText.Contains("10"))
                     {
-                        e.CellStyle.ForeColor = Color.FromArgb(59, 130, 246);   // Màu xanh dương
+                        e.CellStyle.ForeColor = Color.FromArgb(59, 130, 246);
                     }
-                    else if (lopText.StartsWith("11"))
+                    else if (lopText.Contains("11"))
                     {
-                        e.CellStyle.ForeColor = Color.FromArgb(34, 197, 94);    // Màu xanh lá
+                        e.CellStyle.ForeColor = Color.FromArgb(34, 197, 94);
                     }
-                    else if (lopText.StartsWith("12"))
+                    else if (lopText.Contains("12"))
                     {
-                        e.CellStyle.ForeColor = Color.FromArgb(249, 115, 22);   // Màu cam
+                        e.CellStyle.ForeColor = Color.FromArgb(249, 115, 22);
                     }
                 }
             }
 
-            // Kiểm tra nếu đang vẽ ô trong cột "TuyChinh"
+            // Vẽ icon trong cột "ThaoTac"
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvPhanCong.Columns["ThaoTac"].Index)
             {
                 e.Paint(e.CellBounds, DataGridViewPaintParts.All);
 
-                // Icon từ Resources
-                Image deleteIcon = Properties.Resources.delete_icon; // 🗑️
+                try
+                {
+                    Image editIcon = Properties.Resources.icon_eye;
+                    Image deleteIcon = Properties.Resources.delete_icon;
 
-                int iconSize = 20;
-                int x = e.CellBounds.Left + (e.CellBounds.Width - iconSize) / 2;
-                int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
+                    int iconSize = 20;
+                    int iconEyeSize = 26;
+                    int padding = 6;
 
-                e.Graphics.DrawImage(deleteIcon, new Rectangle(x, y, iconSize, iconSize));
+                    int xEdit = e.CellBounds.Left + padding;
+                    int xDelete = xEdit + iconEyeSize + (4 * padding);
+                    int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
+                    int yEye = e.CellBounds.Top + (e.CellBounds.Height - iconEyeSize) / 2;
+
+                    e.Graphics.DrawImage(editIcon, new Rectangle(xEdit, yEye, iconEyeSize, iconEyeSize));
+                    e.Graphics.DrawImage(deleteIcon, new Rectangle(xDelete, y, iconSize, iconSize));
+                }
+                catch { }
 
                 e.Handled = true;
             }
@@ -203,32 +238,180 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
 
         private void dgvPhanCong_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Chỉ xử lý khi click vào cột "ThaoTac" và không phải hàng tiêu đề
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvPhanCong.Columns["ThaoTac"].Index)
             {
-                // SỬA LẠI TÊN CỘT Ở ĐÂY
-                string gv = dgvPhanCong.Rows[e.RowIndex].Cells["GiaoVien"].Value.ToString();
+                var cell = dgvPhanCong.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+                int x = dgvPhanCong.PointToClient(Cursor.Position).X - cell.X;
 
-                if (MessageBox.Show($"Xóa phân công của {gv}?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                int iconEyeSize = 26;
+                int padding = 6;
+
+                int eyeRight = padding + iconEyeSize;
+                int deleteLeft = eyeRight + (4 * padding);
+
+                int maPhanCong = Convert.ToInt32(dgvPhanCong.Rows[e.RowIndex].Cells["MaPhanCong"].Value);
+                string tenGV = dgvPhanCong.Rows[e.RowIndex].Cells["GiaoVien"].Value.ToString();
+
+                if (x < eyeRight)
                 {
-                    dgvPhanCong.Rows.RemoveAt(e.RowIndex);
+                    // XEM CHI TIẾT
+                    XemChiTietPhanCong(maPhanCong);
+                }
+                else if (x > deleteLeft)
+                {
+                    // XÓA PHÂN CÔNG
+                    XoaPhanCong(maPhanCong, tenGV, e.RowIndex);
                 }
             }
         }
 
-        private void dgvPhanCong_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void XemChiTietPhanCong(int maPhanCong)
         {
+            try
+            {
+                PhanCongGiangDayDTO pc = phanCongBUS.LayPhanCongTheoMa(maPhanCong);
 
+                if (pc != null)
+                {
+                    // Lấy thông tin chi tiết
+                    GiaoVienDTO gv = giaoVienBUS.LayGiaoVienTheoMa(pc.MaGiaoVien);
+                    MonHocDTO mh = monHocBUS.LayDSMonHocTheoId(pc.MaMonHoc);
+                    LopDTO lop = lopHocBUS.LayLopTheoId(pc.MaLop);
+                    HocKyDTO hk = hocKyBUS.LayHocKyTheoMa(pc.MaHocKy);
+
+                    string thongTin = $"📚 THÔNG TIN PHÂN CÔNG GIẢNG DẠY\n\n" +
+                                    $"🔑 Mã phân công: {pc.MaPhanCong}\n" +
+                                    $"👨‍🏫 Giáo viên: {(gv != null ? gv.HoTen : pc.MaGiaoVien)}\n" +
+                                    $"📖 Môn học: {(mh != null ? mh.tenMon : $"MH-{pc.MaMonHoc}")}\n" +
+                                    $"🏫 Lớp: {(lop != null ? lop.tenLop : $"Lớp-{pc.MaLop}")}\n" +
+                                    $"📅 Học kỳ: {(hk != null ? hk.TenHocKy : $"HK-{pc.MaHocKy}")}\n" +
+                                    $"📅 Ngày bắt đầu: {pc.NgayBatDau:dd/MM/yyyy}\n" +
+                                    $"📅 Ngày kết thúc: {pc.NgayKetThuc:dd/MM/yyyy}";
+
+                    MessageBox.Show(thongTin, "Chi tiết phân công",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Không tìm thấy thông tin phân công!", "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi xem chi tiết:\n{ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void panelShow_Paint(object sender, PaintEventArgs e)
+        private void XoaPhanCong(int maPhanCong, string tenGV, int rowIndex)
         {
+            try
+            {
+                string thongTinXoa = $"Bạn có chắc chắn muốn xóa phân công này?\n\n" +
+                                    $"👨‍🏫 Giáo viên: {tenGV}\n" +
+                                    $"🔑 Mã: {maPhanCong}\n\n" +
+                                    $"⚠️ CẢNH BÁO:\n" +
+                                    $"• Thao tác này sẽ xóa vĩnh viễn phân công\n" +
+                                    $"• KHÔNG THỂ HOÀN TÁC sau khi xóa!\n\n" +
+                                    $"Bạn có muốn tiếp tục?";
 
+                DialogResult result = MessageBox.Show(
+                    thongTinXoa,
+                    "⚠️ Xác nhận xóa phân công",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2
+                );
+
+                if (result == DialogResult.Yes)
+                {
+                    bool xoaThanhCong = phanCongBUS.XoaPhanCong(maPhanCong);
+
+                    if (xoaThanhCong)
+                    {
+                        dgvPhanCong.Rows.RemoveAt(rowIndex);
+                        LoadStatCards(); // Cập nhật thống kê
+
+                        MessageBox.Show(
+                            $"✓ Đã xóa phân công của '{tenGV}' thành công!",
+                            "Xóa thành công",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            $"✗ Không thể xóa phân công!\n\nVui lòng kiểm tra lại!",
+                            "Lỗi xóa",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error
+                        );
+
+                        LoadData();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"❌ Lỗi khi xóa phân công!\n\n{ex.Message}",
+                    "Lỗi hệ thống",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+
+                try { LoadData(); } catch { }
+            }
         }
 
-        private void panelPhanCongGiangDay_Paint(object sender, PaintEventArgs e)
-        {
+        //private void btnThemPhanCong_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        using (FrmThemPhanCongGiangDay frm = new FrmThemPhanCongGiangDay())
+        //        {
+        //            if (frm.ShowDialog() == DialogResult.OK)
+        //            {
+        //                LoadData();
+        //                LoadStatCards();
+        //                MessageBox.Show("Thêm phân công thành công!", "Thành công",
+        //                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi",
+        //            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
 
+        private void dgvPhanCong_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
+        private void panelShow_Paint(object sender, PaintEventArgs e) { }
+        private void panelPhanCongGiangDay_Paint(object sender, PaintEventArgs e) { }
+
+        private void btnPhanCongMoi_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (FrmThemPhanCongGiangDay frm = new FrmThemPhanCongGiangDay())
+                {
+                    if (frm.ShowDialog() == DialogResult.OK)
+                    {
+                        LoadData();
+                        LoadStatCards();
+                        MessageBox.Show("Thêm phân công thành công!", "Thành công",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

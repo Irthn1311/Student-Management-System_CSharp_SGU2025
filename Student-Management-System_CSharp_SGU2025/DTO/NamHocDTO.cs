@@ -4,14 +4,14 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
 {
     internal class NamHocDTO
     {
-        private int maNamHoc;
+        private string maNamHoc;
         private string tenNamHoc;
         private DateTime ngayBD;
         private DateTime ngayKT;
 
         public NamHocDTO() { }
 
-        public NamHocDTO(int maNamHoc, string tenNamHoc, DateTime ngayBD, DateTime ngayKT)
+        public NamHocDTO(string maNamHoc, string tenNamHoc, DateTime ngayBD, DateTime ngayKT)
         {
             this.maNamHoc = maNamHoc;
             this.tenNamHoc = tenNamHoc;
@@ -19,21 +19,15 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.ngayKT = ngayKT;
         }
 
-        // Destructor
-        ~NamHocDTO()
-        {
-            Console.WriteLine("Hủy đối tượng NamHocDTO");
-        }
-
-        public int MaNamHoc
+        public string MaNamHoc
         {
             get { return maNamHoc; }
             set
             {
-                if (value > 0)
+                if (!string.IsNullOrWhiteSpace(value))
                     maNamHoc = value;
                 else
-                    throw new ArgumentException("Mã năm học phải lớn hơn 0");
+                    throw new ArgumentException("Mã năm học không được để trống");  
             }
         }
 
@@ -52,25 +46,13 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         public DateTime NgayBD
         {
             get { return ngayBD; }
-            set
-            {
-                if (value < ngayKT || ngayKT == default)
-                    ngayBD = value;
-                else
-                    throw new ArgumentException("Ngày bắt đầu phải trước ngày kết thúc");
-            }
+            set { ngayBD = value; }
         }
 
         public DateTime NgayKT
         {
             get { return ngayKT; }
-            set
-            {
-                if (value > ngayBD || ngayBD == default)
-                    ngayKT = value;
-                else
-                    throw new ArgumentException("Ngày kết thúc phải sau ngày bắt đầu");
-            }
+            set { ngayKT = value; }
         }
     }
 }
