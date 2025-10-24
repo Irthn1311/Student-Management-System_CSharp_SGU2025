@@ -172,7 +172,6 @@
     <Compile Include="DTO\LopDTO.cs" />
     <Compile Include="DTO\MonHocDTO.cs" />
     <Compile Include="DTO\NamHocDTO.cs" />
-    <Compile Include="DTO\PhanCongGiangDay.cs" />
     <Compile Include="DTO\PhuHuynhDTO.cs" />
     <Compile Include="DTO\PhanCongGiangDayDTO.cs" />
     <Compile Include="DTO\ThoiKhoaBieuDTO.cs" />
@@ -307,6 +306,7 @@
     </Compile>
     <Compile Include="GUI\ThemPhuHuynh.Designer.cs">
       <DependentUpon>ThemPhuHuynh.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\ThemSua%28Phuc%29\FrmSuaMonHoc.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -557,6 +557,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThemPhuHuynh.resx">
       <DependentUpon>ThemPhuHuynh.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\frmThemHocKy.resx">
       <DependentUpon>frmThemHocKy.cs</DependentUpon>
     </EmbeddedResource>
