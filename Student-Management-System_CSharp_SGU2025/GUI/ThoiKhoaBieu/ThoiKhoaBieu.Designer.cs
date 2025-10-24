@@ -41,8 +41,12 @@
             this.guna2HtmlLabel12 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2HtmlLabel8 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.btnXuatExcel = new Guna.UI2.WinForms.Guna2Button();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.guna2Panel2 = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblTenThoiKhoaBieu = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.tableThoiKhoaBieu = new System.Windows.Forms.TableLayoutPanel();
+            this.guna2HtmlLabel6 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2HtmlLabel21 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2HtmlLabel19 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2HtmlLabel5 = new Guna.UI2.WinForms.Guna2HtmlLabel();
@@ -61,10 +65,9 @@
             this.guna2HtmlLabel30 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.cbLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.guna2HtmlLabel6 = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.lblTenThoiKhoaBieu = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.btnXuatExcel = new Guna.UI2.WinForms.Guna2Button();
+            this.btnSapXepTuDong = new Guna.UI2.WinForms.Guna2Button();
+            this.btnLuuDiem = new Guna.UI2.WinForms.Guna2Button();
+            this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Panel1.SuspendLayout();
             this.guna2Panel2.SuspendLayout();
             this.tableThoiKhoaBieu.SuspendLayout();
@@ -196,16 +199,45 @@
             // guna2Panel1
             // 
             this.guna2Panel1.AutoScroll = true;
-            this.guna2Panel1.Controls.Add(this.btnXuatExcel);
+            this.guna2Panel1.Controls.Add(this.btnXoa);
             this.guna2Panel1.Controls.Add(this.panel1);
+            this.guna2Panel1.Controls.Add(this.btnLuuDiem);
             this.guna2Panel1.Controls.Add(this.guna2Panel2);
+            this.guna2Panel1.Controls.Add(this.btnSapXepTuDong);
             this.guna2Panel1.Controls.Add(this.cbLop);
             this.guna2Panel1.Controls.Add(this.cbHocKyNamHoc);
+            this.guna2Panel1.Controls.Add(this.btnXuatExcel);
             this.guna2Panel1.Location = new System.Drawing.Point(0, 0);
             this.guna2Panel1.Name = "guna2Panel1";
-            this.guna2Panel1.Size = new System.Drawing.Size(1151, 1092);
+            this.guna2Panel1.Size = new System.Drawing.Size(1159, 1037);
             this.guna2Panel1.TabIndex = 0;
             this.guna2Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.guna2Panel1_Paint);
+            // 
+            // btnXuatExcel
+            // 
+            this.btnXuatExcel.BackColor = System.Drawing.Color.Transparent;
+            this.btnXuatExcel.BorderRadius = 5;
+            this.btnXuatExcel.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnXuatExcel.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnXuatExcel.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnXuatExcel.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnXuatExcel.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
+            this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnXuatExcel.ForeColor = System.Drawing.Color.White;
+            this.btnXuatExcel.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.download;
+            this.btnXuatExcel.Location = new System.Drawing.Point(978, 29);
+            this.btnXuatExcel.Margin = new System.Windows.Forms.Padding(2);
+            this.btnXuatExcel.Name = "btnXuatExcel";
+            this.btnXuatExcel.Size = new System.Drawing.Size(162, 36);
+            this.btnXuatExcel.TabIndex = 22;
+            this.btnXuatExcel.Text = "Xuất Excel";
+            // 
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(149, 1060);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(200, 15);
+            this.panel1.TabIndex = 20;
             // 
             // guna2Panel2
             // 
@@ -219,6 +251,16 @@
             this.guna2Panel2.Name = "guna2Panel2";
             this.guna2Panel2.Size = new System.Drawing.Size(1122, 970);
             this.guna2Panel2.TabIndex = 19;
+            // 
+            // lblTenThoiKhoaBieu
+            // 
+            this.lblTenThoiKhoaBieu.BackColor = System.Drawing.Color.Transparent;
+            this.lblTenThoiKhoaBieu.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTenThoiKhoaBieu.Location = new System.Drawing.Point(31, 14);
+            this.lblTenThoiKhoaBieu.Name = "lblTenThoiKhoaBieu";
+            this.lblTenThoiKhoaBieu.Size = new System.Drawing.Size(213, 32);
+            this.lblTenThoiKhoaBieu.TabIndex = 2;
+            this.lblTenThoiKhoaBieu.Text = "Thời khóa biểu lớp ... ";
             // 
             // tableThoiKhoaBieu
             // 
@@ -265,6 +307,19 @@
             this.tableThoiKhoaBieu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.617804F));
             this.tableThoiKhoaBieu.Size = new System.Drawing.Size(1061, 894);
             this.tableThoiKhoaBieu.TabIndex = 1;
+            // 
+            // guna2HtmlLabel6
+            // 
+            this.guna2HtmlLabel6.AutoSize = false;
+            this.guna2HtmlLabel6.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.guna2HtmlLabel6.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.guna2HtmlLabel6.Location = new System.Drawing.Point(735, 3);
+            this.guna2HtmlLabel6.Name = "guna2HtmlLabel6";
+            this.guna2HtmlLabel6.Size = new System.Drawing.Size(157, 28);
+            this.guna2HtmlLabel6.TabIndex = 18;
+            this.guna2HtmlLabel6.Text = "Thứ 6";
+            this.guna2HtmlLabel6.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // guna2HtmlLabel21
             // 
@@ -485,15 +540,17 @@
             this.cbLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbLop.ItemHeight = 30;
             this.cbLop.Items.AddRange(new object[] {
+            "Chọn lớp",
             "Lớp 10A1",
             "Lớp 10A2",
             "Lớp 10A3"});
-            this.cbLop.Location = new System.Drawing.Point(241, 29);
+            this.cbLop.Location = new System.Drawing.Point(627, 29);
             this.cbLop.Margin = new System.Windows.Forms.Padding(2);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(120, 36);
             this.cbLop.StartIndex = 0;
             this.cbLop.TabIndex = 18;
+            this.cbLop.SelectedIndexChanged += new System.EventHandler(this.cbLop_SelectedIndexChanged);
             // 
             // cbHocKyNamHoc
             // 
@@ -506,65 +563,76 @@
             this.cbHocKyNamHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbHocKyNamHoc.ItemHeight = 30;
             this.cbHocKyNamHoc.Items.AddRange(new object[] {
+            "Chọn học kỳ",
             "Học Kỳ I - 2023 - 2024",
             "Học Kỳ II - 2023 - 2024",
             "Học Kỳ I - 2024 - 2025",
             "Học Kỳ II - 2024 - 2025"});
-            this.cbHocKyNamHoc.Location = new System.Drawing.Point(18, 29);
+            this.cbHocKyNamHoc.Location = new System.Drawing.Point(763, 29);
             this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
             this.cbHocKyNamHoc.Size = new System.Drawing.Size(198, 36);
             this.cbHocKyNamHoc.StartIndex = 0;
             this.cbHocKyNamHoc.TabIndex = 17;
             // 
-            // panel1
+            // btnSapXepTuDong
             // 
-            this.panel1.Location = new System.Drawing.Point(149, 1060);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 15);
-            this.panel1.TabIndex = 20;
+            this.btnSapXepTuDong.BackColor = System.Drawing.Color.Transparent;
+            this.btnSapXepTuDong.BorderRadius = 5;
+            this.btnSapXepTuDong.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnSapXepTuDong.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnSapXepTuDong.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnSapXepTuDong.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnSapXepTuDong.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnSapXepTuDong.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnSapXepTuDong.ForeColor = System.Drawing.Color.White;
+            this.btnSapXepTuDong.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus8;
+            this.btnSapXepTuDong.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnSapXepTuDong.Location = new System.Drawing.Point(18, 29);
+            this.btnSapXepTuDong.Margin = new System.Windows.Forms.Padding(2);
+            this.btnSapXepTuDong.Name = "btnSapXepTuDong";
+            this.btnSapXepTuDong.Size = new System.Drawing.Size(163, 35);
+            this.btnSapXepTuDong.TabIndex = 27;
+            this.btnSapXepTuDong.Text = "Sắp xếp tự động";
             // 
-            // guna2HtmlLabel6
+            // btnLuuDiem
             // 
-            this.guna2HtmlLabel6.AutoSize = false;
-            this.guna2HtmlLabel6.BackColor = System.Drawing.Color.Transparent;
-            this.guna2HtmlLabel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.guna2HtmlLabel6.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.guna2HtmlLabel6.Location = new System.Drawing.Point(735, 3);
-            this.guna2HtmlLabel6.Name = "guna2HtmlLabel6";
-            this.guna2HtmlLabel6.Size = new System.Drawing.Size(157, 28);
-            this.guna2HtmlLabel6.TabIndex = 18;
-            this.guna2HtmlLabel6.Text = "Thứ 6";
-            this.guna2HtmlLabel6.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnLuuDiem.BackColor = System.Drawing.Color.Transparent;
+            this.btnLuuDiem.BorderRadius = 5;
+            this.btnLuuDiem.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnLuuDiem.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnLuuDiem.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnLuuDiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnLuuDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.btnLuuDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnLuuDiem.ForeColor = System.Drawing.Color.White;
+            this.btnLuuDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.diskette;
+            this.btnLuuDiem.Location = new System.Drawing.Point(195, 30);
+            this.btnLuuDiem.Margin = new System.Windows.Forms.Padding(2);
+            this.btnLuuDiem.Name = "btnLuuDiem";
+            this.btnLuuDiem.Size = new System.Drawing.Size(149, 35);
+            this.btnLuuDiem.TabIndex = 28;
+            this.btnLuuDiem.Text = "Lưu thời khóa biểu ";
             // 
-            // lblTenThoiKhoaBieu
+            // btnXoa
             // 
-            this.lblTenThoiKhoaBieu.BackColor = System.Drawing.Color.Transparent;
-            this.lblTenThoiKhoaBieu.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTenThoiKhoaBieu.Location = new System.Drawing.Point(31, 14);
-            this.lblTenThoiKhoaBieu.Name = "lblTenThoiKhoaBieu";
-            this.lblTenThoiKhoaBieu.Size = new System.Drawing.Size(246, 32);
-            this.lblTenThoiKhoaBieu.TabIndex = 2;
-            this.lblTenThoiKhoaBieu.Text = "Thời khóa biểu lớp 10A1";
-            // 
-            // btnXuatExcel
-            // 
-            this.btnXuatExcel.BackColor = System.Drawing.Color.Transparent;
-            this.btnXuatExcel.BorderRadius = 5;
-            this.btnXuatExcel.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnXuatExcel.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnXuatExcel.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnXuatExcel.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnXuatExcel.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
-            this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnXuatExcel.ForeColor = System.Drawing.Color.White;
-            this.btnXuatExcel.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.download;
-            this.btnXuatExcel.Location = new System.Drawing.Point(972, 29);
-            this.btnXuatExcel.Margin = new System.Windows.Forms.Padding(2);
-            this.btnXuatExcel.Name = "btnXuatExcel";
-            this.btnXuatExcel.Size = new System.Drawing.Size(168, 36);
-            this.btnXuatExcel.TabIndex = 22;
-            this.btnXuatExcel.Text = "Xuất Excel";
+            this.btnXoa.BorderColor = System.Drawing.Color.Red;
+            this.btnXoa.BorderRadius = 7;
+            this.btnXoa.BorderThickness = 2;
+            this.btnXoa.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnXoa.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnXoa.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnXoa.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnXoa.FillColor = System.Drawing.Color.White;
+            this.btnXoa.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnXoa.ForeColor = System.Drawing.Color.Red;
+            this.btnXoa.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnXoa.Location = new System.Drawing.Point(367, 30);
+            this.btnXoa.Margin = new System.Windows.Forms.Padding(2);
+            this.btnXoa.Name = "btnXoa";
+            this.btnXoa.Size = new System.Drawing.Size(69, 35);
+            this.btnXoa.TabIndex = 47;
+            this.btnXoa.Text = "Xóa";
             // 
             // ThoiKhoaBieu
             // 
@@ -572,8 +640,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.Controls.Add(this.guna2Panel1);
+            this.MaximumSize = new System.Drawing.Size(1168, 768);
+            this.MinimumSize = new System.Drawing.Size(1168, 768);
             this.Name = "ThoiKhoaBieu";
-            this.Size = new System.Drawing.Size(1151, 768);
+            this.Size = new System.Drawing.Size(1151, 751);
             this.Load += new System.EventHandler(this.ThoiKhoaBieu_Load_1);
             this.guna2Panel1.ResumeLayout(false);
             this.guna2Panel2.ResumeLayout(false);
@@ -622,5 +692,8 @@
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel6;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblTenThoiKhoaBieu;
         private Guna.UI2.WinForms.Guna2Button btnXuatExcel;
+        private Guna.UI2.WinForms.Guna2Button btnSapXepTuDong;
+        private Guna.UI2.WinForms.Guna2Button btnLuuDiem;
+        private Guna.UI2.WinForms.Guna2Button btnXoa;
     }
 }

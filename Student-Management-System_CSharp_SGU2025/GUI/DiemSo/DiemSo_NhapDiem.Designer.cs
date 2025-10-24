@@ -28,12 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cbMonHoc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
@@ -57,12 +57,12 @@
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnKhoaDiem = new Guna.UI2.WinForms.Guna2Button();
-            this.headerQuanLiNhapDiem = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
-            this.statCardDiemTrungBinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardDiemCaoNhat = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardDiemThapNhat = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardDaNhap = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.statCardDaNhap = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardDiemThapNhat = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardDiemCaoNhat = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardDiemTrungBinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.headerQuanLiNhapDiem = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
             ((System.ComponentModel.ISupportInitialize)(this.tableNhapDiem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tableXemBangDiem)).BeginInit();
             this.guna2Panel1.SuspendLayout();
@@ -140,16 +140,16 @@
             // 
             this.tableNhapDiem.AllowUserToAddRows = false;
             this.tableNhapDiem.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle13.BackColor = System.Drawing.Color.White;
-            this.tableNhapDiem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle13;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tableNhapDiem.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            this.tableNhapDiem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tableNhapDiem.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.tableNhapDiem.ColumnHeadersHeight = 19;
             this.tableNhapDiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tableNhapDiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -159,14 +159,14 @@
             this.Column3,
             this.Column7,
             this.Column8});
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle15.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tableNhapDiem.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tableNhapDiem.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableNhapDiem.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tableNhapDiem.Location = new System.Drawing.Point(16, 224);
             this.tableNhapDiem.Margin = new System.Windows.Forms.Padding(2);
@@ -315,16 +315,16 @@
             // 
             this.tableXemBangDiem.AllowUserToAddRows = false;
             this.tableXemBangDiem.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle16.BackColor = System.Drawing.Color.White;
-            this.tableXemBangDiem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle16;
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle17.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle17.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tableXemBangDiem.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
+            this.tableXemBangDiem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tableXemBangDiem.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.tableXemBangDiem.ColumnHeadersHeight = 19;
             this.tableXemBangDiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tableXemBangDiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -335,14 +335,14 @@
             this.dataGridViewTextBoxColumn5,
             this.dataGridViewTextBoxColumn6,
             this.Column4});
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle18.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tableXemBangDiem.DefaultCellStyle = dataGridViewCellStyle18;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tableXemBangDiem.DefaultCellStyle = dataGridViewCellStyle6;
             this.tableXemBangDiem.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tableXemBangDiem.Location = new System.Drawing.Point(16, 224);
             this.tableXemBangDiem.Margin = new System.Windows.Forms.Padding(2);
@@ -437,53 +437,6 @@
             this.btnKhoaDiem.Text = "Khóa điểm";
             this.btnKhoaDiem.Click += new System.EventHandler(this.btnKhoaDiem_Click);
             // 
-            // headerQuanLiNhapDiem
-            // 
-            this.headerQuanLiNhapDiem.BackColor = System.Drawing.Color.White;
-            this.headerQuanLiNhapDiem.Location = new System.Drawing.Point(0, 0);
-            this.headerQuanLiNhapDiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.headerQuanLiNhapDiem.Name = "headerQuanLiNhapDiem";
-            this.headerQuanLiNhapDiem.Size = new System.Drawing.Size(888, 0);
-            this.headerQuanLiNhapDiem.TabIndex = 0;
-            this.headerQuanLiNhapDiem.Visible = false;
-            this.headerQuanLiNhapDiem.Load += new System.EventHandler(this.headerQuanLiNhapDiem_Load);
-            // 
-            // statCardDiemTrungBinh
-            // 
-            this.statCardDiemTrungBinh.BackColor = System.Drawing.Color.Transparent;
-            this.statCardDiemTrungBinh.Location = new System.Drawing.Point(16, 67);
-            this.statCardDiemTrungBinh.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardDiemTrungBinh.Name = "statCardDiemTrungBinh";
-            this.statCardDiemTrungBinh.Size = new System.Drawing.Size(262, 136);
-            this.statCardDiemTrungBinh.TabIndex = 27;
-            // 
-            // statCardDiemCaoNhat
-            // 
-            this.statCardDiemCaoNhat.BackColor = System.Drawing.Color.Transparent;
-            this.statCardDiemCaoNhat.Location = new System.Drawing.Point(305, 67);
-            this.statCardDiemCaoNhat.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardDiemCaoNhat.Name = "statCardDiemCaoNhat";
-            this.statCardDiemCaoNhat.Size = new System.Drawing.Size(262, 136);
-            this.statCardDiemCaoNhat.TabIndex = 27;
-            // 
-            // statCardDiemThapNhat
-            // 
-            this.statCardDiemThapNhat.BackColor = System.Drawing.Color.Transparent;
-            this.statCardDiemThapNhat.Location = new System.Drawing.Point(593, 67);
-            this.statCardDiemThapNhat.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardDiemThapNhat.Name = "statCardDiemThapNhat";
-            this.statCardDiemThapNhat.Size = new System.Drawing.Size(262, 136);
-            this.statCardDiemThapNhat.TabIndex = 27;
-            // 
-            // statCardDaNhap
-            // 
-            this.statCardDaNhap.BackColor = System.Drawing.Color.Transparent;
-            this.statCardDaNhap.Location = new System.Drawing.Point(882, 67);
-            this.statCardDaNhap.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardDaNhap.Name = "statCardDaNhap";
-            this.statCardDaNhap.Size = new System.Drawing.Size(262, 136);
-            this.statCardDaNhap.TabIndex = 27;
-            // 
             // guna2Panel1
             // 
             this.guna2Panel1.BackColor = System.Drawing.Color.Transparent;
@@ -495,6 +448,53 @@
             this.guna2Panel1.Name = "guna2Panel1";
             this.guna2Panel1.Size = new System.Drawing.Size(293, 48);
             this.guna2Panel1.TabIndex = 28;
+            // 
+            // statCardDaNhap
+            // 
+            this.statCardDaNhap.BackColor = System.Drawing.Color.Transparent;
+            this.statCardDaNhap.Location = new System.Drawing.Point(882, 67);
+            this.statCardDaNhap.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardDaNhap.Name = "statCardDaNhap";
+            this.statCardDaNhap.Size = new System.Drawing.Size(262, 136);
+            this.statCardDaNhap.TabIndex = 27;
+            // 
+            // statCardDiemThapNhat
+            // 
+            this.statCardDiemThapNhat.BackColor = System.Drawing.Color.Transparent;
+            this.statCardDiemThapNhat.Location = new System.Drawing.Point(593, 67);
+            this.statCardDiemThapNhat.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardDiemThapNhat.Name = "statCardDiemThapNhat";
+            this.statCardDiemThapNhat.Size = new System.Drawing.Size(262, 136);
+            this.statCardDiemThapNhat.TabIndex = 27;
+            // 
+            // statCardDiemCaoNhat
+            // 
+            this.statCardDiemCaoNhat.BackColor = System.Drawing.Color.Transparent;
+            this.statCardDiemCaoNhat.Location = new System.Drawing.Point(305, 67);
+            this.statCardDiemCaoNhat.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardDiemCaoNhat.Name = "statCardDiemCaoNhat";
+            this.statCardDiemCaoNhat.Size = new System.Drawing.Size(262, 136);
+            this.statCardDiemCaoNhat.TabIndex = 27;
+            // 
+            // statCardDiemTrungBinh
+            // 
+            this.statCardDiemTrungBinh.BackColor = System.Drawing.Color.Transparent;
+            this.statCardDiemTrungBinh.Location = new System.Drawing.Point(16, 67);
+            this.statCardDiemTrungBinh.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardDiemTrungBinh.Name = "statCardDiemTrungBinh";
+            this.statCardDiemTrungBinh.Size = new System.Drawing.Size(262, 136);
+            this.statCardDiemTrungBinh.TabIndex = 27;
+            // 
+            // headerQuanLiNhapDiem
+            // 
+            this.headerQuanLiNhapDiem.BackColor = System.Drawing.Color.White;
+            this.headerQuanLiNhapDiem.Location = new System.Drawing.Point(0, 0);
+            this.headerQuanLiNhapDiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.headerQuanLiNhapDiem.Name = "headerQuanLiNhapDiem";
+            this.headerQuanLiNhapDiem.Size = new System.Drawing.Size(888, 0);
+            this.headerQuanLiNhapDiem.TabIndex = 0;
+            this.headerQuanLiNhapDiem.Visible = false;
+            this.headerQuanLiNhapDiem.Load += new System.EventHandler(this.headerQuanLiNhapDiem_Load);
             // 
             // DiemSo_NhapDiem
             // 
