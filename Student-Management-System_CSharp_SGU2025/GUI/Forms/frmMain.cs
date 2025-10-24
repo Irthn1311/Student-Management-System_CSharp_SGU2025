@@ -31,8 +31,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucSidebar1.LopHocButton.Click += (s, e) => ShowLopKhoi();
             ucSidebar1.MonHocButton.Click += (s, e) => ShowFrmMonHoc();
             ucSidebar1.PhanCongButton.Click += (s, e) => ShowPhanCongGiangDay();
-            
-            // Kết nối các form mới
+            ucSidebar1.ThongBaoButton.Click += (s, e) => ShowThongBao();
             ucSidebar1.TaiKhoanButton.Click += (s, e) => ShowTaiKhoan();
             ucSidebar1.CaiDatButton.Click += (s, e) => ShowCaiDat();
             ucSidebar1.DanhGiaButton.Click += (s, e) => ShowDanhGia();
@@ -156,7 +155,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu.ThoiKhoaBieu>();
         }
 
+        private void ShowThongBao()
+        {
+            ucHeader1.UpdateHeader("Thông báo", "Trang chủ / Thông báo");
+            LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.ThongBao.ThongBao>();
+        }
+
         private void ucSidebar1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panelContent_Paint(object sender, PaintEventArgs e)
         {
 
         }

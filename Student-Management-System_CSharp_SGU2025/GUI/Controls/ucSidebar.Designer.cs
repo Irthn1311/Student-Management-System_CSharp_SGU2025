@@ -30,9 +30,10 @@
         {
             this.pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
             this.lblAppDescription = new System.Windows.Forms.Label();
-            this.picLogo = new Guna.UI2.WinForms.Guna2PictureBox();
             this.lblAppName = new System.Windows.Forms.Label();
             this.flpnlNav = new System.Windows.Forms.FlowLayoutPanel();
+            this.pnlLogout = new Guna.UI2.WinForms.Guna2Panel();
+            this.btnLogout = new Guna.UI2.WinForms.Guna2Button();
             this.btnBangTin = new Guna.UI2.WinForms.Guna2Button();
             this.btnLopHoc = new Guna.UI2.WinForms.Guna2Button();
             this.btnMonHoc = new Guna.UI2.WinForms.Guna2Button();
@@ -48,12 +49,12 @@
             this.btnBaoCao = new Guna.UI2.WinForms.Guna2Button();
             this.btnTaiKhoan = new Guna.UI2.WinForms.Guna2Button();
             this.btnCaiDat = new Guna.UI2.WinForms.Guna2Button();
-            this.pnlLogout = new Guna.UI2.WinForms.Guna2Panel();
-            this.btnLogout = new Guna.UI2.WinForms.Guna2Button();
+            this.btnThongBao = new Guna.UI2.WinForms.Guna2Button();
+            this.picLogo = new Guna.UI2.WinForms.Guna2PictureBox();
             this.pnlHeader.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.flpnlNav.SuspendLayout();
             this.pnlLogout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlHeader
@@ -70,7 +71,7 @@
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Padding = new System.Windows.Forms.Padding(24);
-            this.pnlHeader.Size = new System.Drawing.Size(256, 93);
+            this.pnlHeader.Size = new System.Drawing.Size(256, 81);
             this.pnlHeader.TabIndex = 0;
             this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint);
             // 
@@ -79,32 +80,18 @@
             this.lblAppDescription.AutoSize = true;
             this.lblAppDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAppDescription.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblAppDescription.Location = new System.Drawing.Point(75, 51);
+            this.lblAppDescription.Location = new System.Drawing.Point(75, 47);
             this.lblAppDescription.Name = "lblAppDescription";
             this.lblAppDescription.Size = new System.Drawing.Size(118, 18);
             this.lblAppDescription.TabIndex = 3;
             this.lblAppDescription.Text = "Quản lý học sinh";
             this.lblAppDescription.Click += new System.EventHandler(this.label1_Click);
             // 
-            // picLogo
-            // 
-            this.picLogo.BackColor = System.Drawing.Color.Transparent;
-            this.picLogo.BorderRadius = 8;
-            this.picLogo.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
-            this.picLogo.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.school;
-            this.picLogo.ImageRotate = 0F;
-            this.picLogo.Location = new System.Drawing.Point(16, 21);
-            this.picLogo.Name = "picLogo";
-            this.picLogo.Size = new System.Drawing.Size(55, 46);
-            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picLogo.TabIndex = 1;
-            this.picLogo.TabStop = false;
-            // 
             // lblAppName
             // 
             this.lblAppName.AutoSize = true;
             this.lblAppName.Font = new System.Drawing.Font("Microsoft Sans Serif", 17F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAppName.Location = new System.Drawing.Point(73, 20);
+            this.lblAppName.Location = new System.Drawing.Point(73, 16);
             this.lblAppName.Name = "lblAppName";
             this.lblAppName.Size = new System.Drawing.Size(158, 29);
             this.lblAppName.TabIndex = 2;
@@ -129,16 +116,52 @@
             this.flpnlNav.Controls.Add(this.btnBaoCao);
             this.flpnlNav.Controls.Add(this.btnTaiKhoan);
             this.flpnlNav.Controls.Add(this.btnCaiDat);
+            this.flpnlNav.Controls.Add(this.btnThongBao);
             this.flpnlNav.Cursor = System.Windows.Forms.Cursors.Hand;
             this.flpnlNav.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpnlNav.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpnlNav.Location = new System.Drawing.Point(0, 93);
+            this.flpnlNav.Location = new System.Drawing.Point(0, 81);
             this.flpnlNav.Name = "flpnlNav";
             this.flpnlNav.Padding = new System.Windows.Forms.Padding(12, 16, 12, 16);
-            this.flpnlNav.Size = new System.Drawing.Size(256, 807);
+            this.flpnlNav.Size = new System.Drawing.Size(256, 819);
             this.flpnlNav.TabIndex = 1;
             this.flpnlNav.WrapContents = false;
             this.flpnlNav.Paint += new System.Windows.Forms.PaintEventHandler(this.flpnlNav_Paint);
+            // 
+            // pnlLogout
+            // 
+            this.pnlLogout.BackColor = System.Drawing.Color.White;
+            this.pnlLogout.Controls.Add(this.btnLogout);
+            this.pnlLogout.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pnlLogout.CustomBorderColor = System.Drawing.Color.DimGray;
+            this.pnlLogout.CustomBorderThickness = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.pnlLogout.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlLogout.Location = new System.Drawing.Point(0, 835);
+            this.pnlLogout.Name = "pnlLogout";
+            this.pnlLogout.Padding = new System.Windows.Forms.Padding(12);
+            this.pnlLogout.Size = new System.Drawing.Size(256, 65);
+            this.pnlLogout.TabIndex = 2;
+            // 
+            // btnLogout
+            // 
+            this.btnLogout.CustomBorderColor = System.Drawing.Color.DimGray;
+            this.btnLogout.CustomBorderThickness = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            this.btnLogout.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnLogout.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnLogout.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnLogout.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnLogout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnLogout.FillColor = System.Drawing.Color.Transparent;
+            this.btnLogout.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLogout.ForeColor = System.Drawing.Color.Red;
+            this.btnLogout.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.logout;
+            this.btnLogout.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnLogout.Location = new System.Drawing.Point(12, 12);
+            this.btnLogout.Name = "btnLogout";
+            this.btnLogout.Size = new System.Drawing.Size(232, 41);
+            this.btnLogout.TabIndex = 1;
+            this.btnLogout.Text = "Đăng xuất";
+            this.btnLogout.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             // 
             // btnBangTin
             // 
@@ -153,7 +176,7 @@
             this.btnBangTin.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btnBangTin.FillColor = System.Drawing.Color.Transparent;
             this.btnBangTin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBangTin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.btnBangTin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
             this.btnBangTin.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
             this.btnBangTin.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.home;
             this.btnBangTin.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -533,40 +556,46 @@
             this.btnCaiDat.TextOffset = new System.Drawing.Point(20, 0);
             this.btnCaiDat.Click += new System.EventHandler(this.guna2Button13_Click);
             // 
-            // pnlLogout
+            // btnThongBao
             // 
-            this.pnlLogout.BackColor = System.Drawing.Color.White;
-            this.pnlLogout.Controls.Add(this.btnLogout);
-            this.pnlLogout.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pnlLogout.CustomBorderColor = System.Drawing.Color.DimGray;
-            this.pnlLogout.CustomBorderThickness = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.pnlLogout.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlLogout.Location = new System.Drawing.Point(0, 835);
-            this.pnlLogout.Name = "pnlLogout";
-            this.pnlLogout.Padding = new System.Windows.Forms.Padding(12);
-            this.pnlLogout.Size = new System.Drawing.Size(256, 65);
-            this.pnlLogout.TabIndex = 2;
+            this.btnThongBao.BorderRadius = 8;
+            this.btnThongBao.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
+            this.btnThongBao.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(242)))), ((int)(((byte)(253)))));
+            this.btnThongBao.CheckedState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.btnThongBao.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnThongBao.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnThongBao.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnThongBao.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnThongBao.FillColor = System.Drawing.Color.Transparent;
+            this.btnThongBao.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThongBao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.btnThongBao.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
+            this.btnThongBao.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.notificationbell;
+            this.btnThongBao.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnThongBao.ImageOffset = new System.Drawing.Point(12, 0);
+            this.btnThongBao.Location = new System.Drawing.Point(12, 676);
+            this.btnThongBao.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.btnThongBao.Name = "btnThongBao";
+            this.btnThongBao.Size = new System.Drawing.Size(231, 40);
+            this.btnThongBao.TabIndex = 15;
+            this.btnThongBao.Text = "Thông báo";
+            this.btnThongBao.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnThongBao.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnThongBao.Click += new System.EventHandler(this.btnThongBao_Click);
             // 
-            // btnLogout
+            // picLogo
             // 
-            this.btnLogout.CustomBorderColor = System.Drawing.Color.DimGray;
-            this.btnLogout.CustomBorderThickness = new System.Windows.Forms.Padding(0, 1, 0, 0);
-            this.btnLogout.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnLogout.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnLogout.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnLogout.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnLogout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnLogout.FillColor = System.Drawing.Color.Transparent;
-            this.btnLogout.Font = new System.Drawing.Font("Segoe UI", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogout.ForeColor = System.Drawing.Color.Red;
-            this.btnLogout.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.logout;
-            this.btnLogout.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnLogout.Location = new System.Drawing.Point(12, 12);
-            this.btnLogout.Name = "btnLogout";
-            this.btnLogout.Size = new System.Drawing.Size(232, 41);
-            this.btnLogout.TabIndex = 1;
-            this.btnLogout.Text = "Đăng xuất";
-            this.btnLogout.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.picLogo.BackColor = System.Drawing.Color.Transparent;
+            this.picLogo.BorderRadius = 8;
+            this.picLogo.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.picLogo.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.school;
+            this.picLogo.ImageRotate = 0F;
+            this.picLogo.Location = new System.Drawing.Point(16, 17);
+            this.picLogo.Name = "picLogo";
+            this.picLogo.Size = new System.Drawing.Size(55, 46);
+            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picLogo.TabIndex = 1;
+            this.picLogo.TabStop = false;
             // 
             // ucSidebar
             // 
@@ -580,9 +609,9 @@
             this.Size = new System.Drawing.Size(256, 900);
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.flpnlNav.ResumeLayout(false);
             this.pnlLogout.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -611,5 +640,6 @@
         private Guna.UI2.WinForms.Guna2Button btnCaiDat;
         private Guna.UI2.WinForms.Guna2Panel pnlLogout;
         private Guna.UI2.WinForms.Guna2Button btnLogout;
+        private Guna.UI2.WinForms.Guna2Button btnThongBao;
     }
 }

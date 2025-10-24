@@ -160,29 +160,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbKyLuat.Rows.Clear();
             tbKyLuat.Columns.Clear();
 
-            // 🔹 Thêm cột
+            // 🔹 Thêm cột (Chỉ giữ lại cột text "thaoTacKL")
             tbKyLuat.Columns.Add("hocSinh", "Học sinh");
             tbKyLuat.Columns.Add("viPham", "Vi phạm");
             tbKyLuat.Columns.Add("xuLy", "Xử lý");
             tbKyLuat.Columns.Add("nguoiDuyet", "Người duyệt");
             tbKyLuat.Columns.Add("ngayKL", "Ngày");
-            tbKyLuat.Columns.Add("thaoTacKL", "Thao tác");
+            tbKyLuat.Columns.Add("thaoTacKL", "Thao tác"); // <-- Cột này sẽ chứa 2 icon
 
-            DataGridViewImageColumn btnEditKL = new DataGridViewImageColumn();
-            btnEditKL.Name = "suaKL";
-            btnEditKL.HeaderText = "Sửa";
-            btnEditKL.Image = Properties.Resources.repair;
-            btnEditKL.ImageLayout = DataGridViewImageCellLayout.Zoom;
-            tbKyLuat.Columns.Add(btnEditKL);
-
-            DataGridViewImageColumn btnDeleteKL = new DataGridViewImageColumn();
-            btnDeleteKL.Name = "xoaKL";
-            btnDeleteKL.HeaderText = "Xóa";
-            btnDeleteKL.Image = Properties.Resources.bin;
-            btnDeleteKL.ImageLayout = DataGridViewImageCellLayout.Zoom;
-            tbKyLuat.Columns.Add(btnDeleteKL);
-
-            // 🎨 Thiết lập style tổng thể
+            // 🎨 Thiết lập style tổng thể (GIỮ NGUYÊN NHƯ CODE CŨ CỦA BẠN)
             tbKyLuat.ThemeStyle.BackColor = Color.White;
             tbKyLuat.BackgroundColor = Color.White;
             tbKyLuat.BorderStyle = BorderStyle.None;
@@ -192,14 +178,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbKyLuat.GridColor = Color.FromArgb(230, 230, 230);
             tbKyLuat.EnableHeadersVisualStyles = false;
 
-            // 🔹 Header
+            // 🔹 Header (GIỮ NGUYÊN NHƯ CODE CŨ CỦA BẠN)
             tbKyLuat.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(249, 250, 252);
             tbKyLuat.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
             tbKyLuat.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             tbKyLuat.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKyLuat.ColumnHeadersHeight = 40;
 
-            // 🔹 Dòng dữ liệu
+            // 🔹 Dòng dữ liệu (GIỮ NGUYÊN NHƯ CODE CŨ CỦA BẠN)
             tbKyLuat.DefaultCellStyle.BackColor = Color.White;
             tbKyLuat.DefaultCellStyle.ForeColor = Color.Black;
             tbKyLuat.DefaultCellStyle.Font = new Font("Segoe UI", 10);
@@ -207,53 +193,128 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbKyLuat.DefaultCellStyle.SelectionForeColor = Color.Black;
             tbKyLuat.RowTemplate.Height = 40; // Chiều cao mỗi dòng dữ liệu
 
-            // 🔹 Padding nhẹ giữa các ô
+            // 🔹 Padding và AutoSize
             tbKyLuat.DefaultCellStyle.Padding = new Padding(8, 5, 8, 5);
             tbKyLuat.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 5, 8, 5);
             tbKyLuat.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            // --- THAY ĐỔI CHO CỘT THAO TÁC ---
+            tbKyLuat.Columns["thaoTacKL"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // Không tự giãn
+            tbKyLuat.Columns["thaoTacKL"].Width = 100; // Đặt độ rộng cố định (tăng/giảm nếu cần)
+            tbKyLuat.Columns["thaoTacKL"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; // Căn giữa nội dung ô
 
-            // 🔹 Căn chỉnh riêng cho từng cột
+            // 🔹 Căn chỉnh riêng cho từng cột (GIỮ NGUYÊN NHƯ CODE CŨ CỦA BẠN)
             tbKyLuat.Columns["hocSinh"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKyLuat.Columns["viPham"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKyLuat.Columns["xuLy"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKyLuat.Columns["nguoiDuyet"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKyLuat.Columns["ngayKL"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            //tbKyLuat.Columns["thaoTacKL"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            btnEditKL.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            btnDeleteKL.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            // --- KHÔNG CẦN CĂN CHỈNH CHO CÁC CỘT ICON CŨ ---
+
+            // 🔹 Thêm dữ liệu mẫu (Thêm "" cho cột thaoTacKL)
+            tbKyLuat.Rows.Add("Nguyễn Văn B", "Đi học muộn 3 lần", "Nhắc nhở", "Cô Lan", "18/10/2024", "");
+            tbKyLuat.Rows.Add("Trần Thị C", "Không làm bài tập", "Cảnh cáo", "Thầy Hùng", "16/10/2024", "");
+            tbKyLuat.Rows.Add("Lê Văn D", "Gây gổ với bạn", "Khiển trách", "Hiệu trưởng", "14/10/2024", "");
 
 
-            // 🔹 Thêm dữ liệu mẫu
-            tbKyLuat.Rows.Add("Nguyễn Văn B", "Đi học muộn 3 lần", "Nhắc nhở", "Cô Lan", "18/10/2024");
-            tbKyLuat.Rows.Add("Trần Thị C", "Không làm bài tập", "Cảnh cáo", "Thầy Hùng", "16/10/2024");
-            tbKyLuat.Rows.Add("Lê Văn D", "Gây gổ với bạn", "Khiển trách", "Hiệu trưởng", "14/10/2024");
-
-
-            // 🔹 Bo góc nhẹ cho bảng
+            // 🔹 Bo góc và style khác (GIỮ NGUYÊN NHƯ CODE CŨ CỦA BẠN)
             tbKyLuat.ThemeStyle.RowsStyle.BackColor = Color.White;
             tbKyLuat.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
             tbKyLuat.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(240, 240, 240);
             tbKyLuat.ThemeStyle.RowsStyle.SelectionForeColor = Color.Black;
-
-            // 🔹 Tắt hiệu ứng highlight header khi chọn dòng
             tbKyLuat.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             tbKyLuat.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(249, 250, 252);
             tbKyLuat.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
 
-            // 🔹 Đảm bảo màu header không đổi khi click
+            // 🔹 Đảm bảo màu header không đổi khi click (GIỮ NGUYÊN)
             foreach (DataGridViewColumn col in tbKyLuat.Columns)
             {
                 col.HeaderCell.Style.SelectionBackColor = Color.FromArgb(249, 250, 252);
                 col.HeaderCell.Style.SelectionForeColor = Color.Black;
             }
-           tbKyLuat.ReadOnly = true;
-           tbKyLuat.AllowUserToAddRows = false;
-           tbKyLuat.AllowUserToDeleteRows = false;
-           tbKyLuat.AllowUserToResizeColumns = false;
-           tbKyLuat.AllowUserToResizeRows = false;
-           tbKyLuat.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-           tbKyLuat.MultiSelect = false;
+            tbKyLuat.ReadOnly = true;
+            tbKyLuat.AllowUserToAddRows = false;
+            tbKyLuat.AllowUserToDeleteRows = false;
+            tbKyLuat.AllowUserToResizeColumns = false;
+            tbKyLuat.AllowUserToResizeRows = false;
+            tbKyLuat.MultiSelect = false;
 
+            // 🌟 GẮN SỰ KIỆN VẼ VÀ CLICK CHO BẢNG KỶ LUẬT 🌟
+            tbKyLuat.CellPainting += TbKyLuat_CellPainting;
+            tbKyLuat.CellClick += TbKyLuat_CellClick;
+        }
+
+        private void TbKyLuat_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            // Chỉ vẽ khi là hàng dữ liệu và là cột "thaoTacKL"
+            if (e.RowIndex >= 0 && e.ColumnIndex == tbKyLuat.Columns["thaoTacKL"].Index)
+            {
+                e.PaintBackground(e.ClipBounds, true); // Vẽ nền ô trước
+
+                // Lấy icon từ Resources (Đảm bảo tên file đúng)
+                Image editIcon = Properties.Resources.repair;
+                Image deleteIcon = Properties.Resources.bin;
+
+                int iconSize = 18;   // Kích thước icon
+                int spacing = 15;    // <<-- Khoảng cách giữa 2 icon
+                int totalWidth = iconSize * 2 + spacing;
+
+                // Tính toán vị trí X bắt đầu để căn giữa cả 2 icon
+                int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
+                // Tính vị trí Y để căn giữa theo chiều dọc
+                int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
+
+                // Vị trí cụ thể cho từng icon
+                Rectangle editRect = new Rectangle(startX, y, iconSize, iconSize);
+                Rectangle deleteRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
+
+                // Vẽ icon lên ô
+                e.Graphics.DrawImage(editIcon, editRect);
+                e.Graphics.DrawImage(deleteIcon, deleteRect);
+
+                e.Handled = true; // Báo rằng đã tự vẽ xong, DGV không cần vẽ text "" nữa
+            }
+        }
+
+        private void TbKyLuat_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Chỉ xử lý khi click vào hàng dữ liệu và cột "thaoTacKL"
+            if (e.RowIndex >= 0 && e.ColumnIndex == tbKyLuat.Columns["thaoTacKL"].Index)
+            {
+                // Lấy thông tin ô và vị trí click tương đối trong ô
+                Rectangle cellBounds = tbKyLuat.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+                Point clickPosInCell = tbKyLuat.PointToClient(Cursor.Position);
+                int xClick = clickPosInCell.X - cellBounds.Left; // Tọa độ X bên trong ô
+
+                // Tính toán lại vị trí icon như trong CellPainting
+                int iconSize = 18;
+                int spacing = 15; // Phải giống hệt trong CellPainting
+                int totalWidth = iconSize * 2 + spacing;
+                int startXInCell = (cellBounds.Width - totalWidth) / 2; // Tọa độ X bắt đầu bên trong ô
+
+                // Xác định vùng của từng icon (tọa độ X bên trong ô)
+                int editIconEndX = startXInCell + iconSize;
+                int deleteIconStartX = startXInCell + iconSize + spacing;
+                int deleteIconEndX = deleteIconStartX + iconSize;
+
+                // Lấy tên học sinh để hiển thị thông báo
+                string tenHS = tbKyLuat.Rows[e.RowIndex].Cells["hocSinh"].Value?.ToString() ?? "Học sinh này";
+
+                // Kiểm tra xem click vào vùng icon nào
+                if (xClick >= startXInCell && xClick < editIconEndX)
+                {
+                    MessageBox.Show($"Bạn đã click Sửa cho: {tenHS}");
+                    // TODO: Thêm code mở form sửa kỷ luật ở đây
+                }
+                else if (xClick >= deleteIconStartX && xClick < deleteIconEndX)
+                {
+                    if (MessageBox.Show($"Bạn có chắc muốn xóa kỷ luật của {tenHS}?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        tbKyLuat.Rows.RemoveAt(e.RowIndex);
+                        MessageBox.Show("Đã xóa kỷ luật.");
+                        // TODO: Thêm code xóa trong cơ sở dữ liệu ở đây
+                    }
+                }
+            }
         }
 
         private void TbKhenThuong_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
