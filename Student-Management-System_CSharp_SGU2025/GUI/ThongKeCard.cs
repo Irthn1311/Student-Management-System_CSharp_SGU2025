@@ -67,6 +67,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             set => lblNote.ForeColor = value;
         }
 
+        public Color FillColor         {
+            get => pnlThongKe.FillColor;
+            set => pnlThongKe.FillColor = value;
+        }
+
         private void pnlTitle_Paint(object sender, PaintEventArgs e)
         {
         }
