@@ -23,7 +23,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             SELECT 
                 hs.MaHocSinh,
                 hs.HoTen,
-                ds.DiemThuongXuyen,
+                ds.DiemMieng,
                 ds.DiemGiuaKy,
                 ds.DiemCuoiKy,
                 ds.DiemTrungBinh
@@ -47,8 +47,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             {
                                 MaHocSinh = reader["MaHocSinh"].ToString(),
                                 HoTen = reader["HoTen"].ToString(),
-                                DiemTX = reader["DiemThuongXuyen"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemThuongXuyen"]) : (float?)null,
+                                DiemTX = reader["DiemMieng"] != DBNull.Value ?
+                                    Convert.ToSingle(reader["DiemMieng"]) : (float?)null,
                                 DiemGK = reader["DiemGiuaKy"] != DBNull.Value ?
                                     Convert.ToSingle(reader["DiemGiuaKy"]) : (float?)null,
                                 DiemCK = reader["DiemCuoiKy"] != DBNull.Value ?
@@ -86,7 +86,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             SELECT 
                 hs.MaHocSinh,
                 hs.HoTen,
-                ds.DiemThuongXuyen,
+                ds.DiemMieng,
                 ds.DiemGiuaKy,
                 ds.DiemCuoiKy,
                 ds.DiemTrungBinh
@@ -112,8 +112,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             {
                                 MaHocSinh = reader["MaHocSinh"].ToString(),
                                 HoTen = reader["HoTen"].ToString(),
-                                DiemTX = reader["DiemThuongXuyen"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemThuongXuyen"]) : (float?)null,
+                                DiemTX = reader["DiemMieng"] != DBNull.Value ?
+                                    Convert.ToSingle(reader["DiemMieng"]) : (float?)null,
                                 DiemGK = reader["DiemGiuaKy"] != DBNull.Value ?
                                     Convert.ToSingle(reader["DiemGiuaKy"]) : (float?)null,
                                 DiemCK = reader["DiemCuoiKy"] != DBNull.Value ?
@@ -570,9 +570,9 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <summary>
         /// Lấy danh sách lớp có điểm số trong học kỳ
         /// </summary>
-        public List<LopHocDTO> GetDanhSachLopCoDiem(int maHocKy)
+        public List<LopDTO> GetDanhSachLopCoDiem(int maHocKy)
         {
-            List<LopHocDTO> list = new List<LopHocDTO>();
+            List<LopDTO> list = new List<LopDTO>();
             MySqlConnection conn = null;
             try
             {
@@ -595,12 +595,12 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     {
                         while (reader.Read())
                         {
-                            LopHocDTO lop = new LopHocDTO
+                            LopDTO lop = new LopDTO
                             {
                                 MaLop = Convert.ToInt32(reader["MaLop"]),
                                 TenLop = reader["TenLop"].ToString(),
                                 MaKhoi = Convert.ToInt32(reader["MaKhoi"]),
-                                MaGiaoVienChuNhiem = reader["MaGiaoVienChuNhiem"]?.ToString()
+                                MaGVCN = reader["MaGiaoVienChuNhiem"]?.ToString()
                             };
                             list.Add(lop);
                         }

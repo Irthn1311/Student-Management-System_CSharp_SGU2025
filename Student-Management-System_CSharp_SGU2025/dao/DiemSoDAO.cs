@@ -19,7 +19,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             {
                 conn = ConnectionDatabase.GetConnection();
                 conn.Open();
-                string query = "SELECT MaHocSinh, MaMonHoc, MaHocKy, DiemThuongXuyen, " +
+                string query = "SELECT MaHocSinh, MaMonHoc, MaHocKy, DiemMieng, " +
                               "DiemGiuaKy, DiemCuoiKy, DiemTrungBinh " +
                               "FROM DiemSo WHERE MaHocSinh = @MaHocSinh AND MaMonHoc = @MaMonHoc AND MaHocKy = @MaHocKy";
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
@@ -36,7 +36,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                 MaHocSinh = reader["MaHocSinh"].ToString(),
                                 MaMonHoc = Convert.ToInt32(reader["MaMonHoc"]),
                                 MaHocKy = Convert.ToInt32(reader["MaHocKy"]),
-                                DiemThuongXuyen = reader["DiemThuongXuyen"] != DBNull.Value ? Convert.ToSingle(reader["DiemThuongXuyen"]) : (float?)null,
+                                DiemThuongXuyen = reader["DiemMieng"] != DBNull.Value ? Convert.ToSingle(reader["DiemMieng"]) : (float?)null,
                                 DiemGiuaKy = reader["DiemGiuaKy"] != DBNull.Value ? Convert.ToSingle(reader["DiemGiuaKy"]) : (float?)null,
                                 DiemCuoiKy = reader["DiemCuoiKy"] != DBNull.Value ? Convert.ToSingle(reader["DiemCuoiKy"]) : (float?)null,
                                 DiemTrungBinh = reader["DiemTrungBinh"] != DBNull.Value ? Convert.ToSingle(reader["DiemTrungBinh"]) : (float?)null
@@ -68,12 +68,12 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn.Open();
 
                 string query = @"
-                    INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, DiemThuongXuyen, 
-                                       DiemGiuaKy, DiemCuoiKy, DiemTrungBinh)
-                    VALUES (@MaHocSinh, @MaMonHoc, @MaHocKy, @DiemThuongXuyen, 
-                            @DiemGiuaKy, @DiemCuoiKy, @DiemTrungBinh)
+INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, DiemMieng, 
+                    DiemGiuaKy, DiemCuoiKy, DiemTrungBinh) 
+                    VALUES (@MaHocSinh, @MaMonHoc, @MaHocKy, @DiemMieng, 
+                    @DiemGiuaKy, @DiemCuoiKy, @DiemTrungBinh)
                     ON DUPLICATE KEY UPDATE
-                        DiemThuongXuyen = @DiemThuongXuyen,
+                        DiemMieng = @DiemMieng,
                         DiemGiuaKy = @DiemGiuaKy,
                         DiemCuoiKy = @DiemCuoiKy,
                         DiemTrungBinh = @DiemTrungBinh";
@@ -83,7 +83,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     cmd.Parameters.AddWithValue("@MaHocSinh", diem.MaHocSinh);
                     cmd.Parameters.AddWithValue("@MaMonHoc", diem.MaMonHoc);
                     cmd.Parameters.AddWithValue("@MaHocKy", diem.MaHocKy);
-                    cmd.Parameters.AddWithValue("@DiemThuongXuyen", diem.DiemThuongXuyen.HasValue ? (object)diem.DiemThuongXuyen.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@DiemMieng", diem.DiemThuongXuyen.HasValue ? (object)diem.DiemThuongXuyen.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@DiemGiuaKy", diem.DiemGiuaKy.HasValue ? (object)diem.DiemGiuaKy.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@DiemCuoiKy", diem.DiemCuoiKy.HasValue ? (object)diem.DiemCuoiKy.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@DiemTrungBinh", diem.DiemTrungBinh.HasValue ? (object)diem.DiemTrungBinh.Value : DBNull.Value);
@@ -151,9 +151,9 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn.Open();
 
                 string query = @"
-            INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, DiemThuongXuyen, 
-                               DiemGiuaKy, DiemCuoiKy, DiemTrungBinh)
-            VALUES (@MaHocSinh, @MaMonHoc, @MaHocKy, @DiemThuongXuyen, 
+INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, DiemMieng, 
+                    DiemGiuaKy, DiemCuoiKy, DiemTrungBinh) 
+                    VALUES (@MaHocSinh, @MaMonHoc, @MaHocKy, @DiemMieng, 
                     @DiemGiuaKy, @DiemCuoiKy, @DiemTrungBinh)";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
@@ -196,7 +196,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn.Open();
 
                 string query = @"
-            SELECT DiemThuongXuyen, DiemGiuaKy, DiemCuoiKy
+            SELECT DiemMieng, DiemGiuaKy, DiemCuoiKy
             FROM DiemSo 
             WHERE MaHocSinh = @MaHocSinh 
                 AND MaMonHoc = @MaMonHoc 
@@ -212,7 +212,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     {
                         if (reader.Read())
                         {
-                            bool coDiemTX = reader["DiemThuongXuyen"] != DBNull.Value;
+                            bool coDiemTX = reader["DiemMieng"] != DBNull.Value;
                             bool coDiemGK = reader["DiemGiuaKy"] != DBNull.Value;
                             bool coDiemCK = reader["DiemCuoiKy"] != DBNull.Value;
 
@@ -247,7 +247,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
                 // Kiểm tra xem đã có record chưa
                 string checkQuery = @"
-            SELECT DiemThuongXuyen, DiemGiuaKy, DiemCuoiKy
+            SELECT DiemMieng, DiemGiuaKy, DiemCuoiKy
             FROM DiemSo 
             WHERE MaHocSinh = @MaHocSinh 
                 AND MaMonHoc = @MaMonHoc 
@@ -269,8 +269,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         if (reader.Read())
                         {
                             recordExists = true;
-                            existingDiemTX = reader["DiemThuongXuyen"] != DBNull.Value ?
-                                Convert.ToSingle(reader["DiemThuongXuyen"]) : (float?)null;
+                            existingDiemTX = reader["DiemMieng"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemMieng"]) : (float?)null;
                             existingDiemGK = reader["DiemGiuaKy"] != DBNull.Value ?
                                 Convert.ToSingle(reader["DiemGiuaKy"]) : (float?)null;
                             existingDiemCK = reader["DiemCuoiKy"] != DBNull.Value ?
@@ -315,7 +315,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     // UPDATE chỉ các cột chưa có giá trị
                     string updateQuery = @"
                 UPDATE DiemSo 
-                SET DiemThuongXuyen = COALESCE(DiemThuongXuyen, @DiemThuongXuyen),
+                SET DiemMieng = COALESCE(DiemMieng, @DiemMieng),
                     DiemGiuaKy = COALESCE(DiemGiuaKy, @DiemGiuaKy),
                     DiemCuoiKy = COALESCE(DiemCuoiKy, @DiemCuoiKy),
                     DiemTrungBinh = @DiemTrungBinh
@@ -328,7 +328,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmd.Parameters.AddWithValue("@MaHocSinh", diem.MaHocSinh);
                         cmd.Parameters.AddWithValue("@MaMonHoc", diem.MaMonHoc);
                         cmd.Parameters.AddWithValue("@MaHocKy", diem.MaHocKy);
-                        cmd.Parameters.AddWithValue("@DiemThuongXuyen",
+                        cmd.Parameters.AddWithValue("@DiemMieng",
                             diem.DiemThuongXuyen.HasValue ? (object)diem.DiemThuongXuyen.Value : DBNull.Value);
                         cmd.Parameters.AddWithValue("@DiemGiuaKy",
                             diem.DiemGiuaKy.HasValue ? (object)diem.DiemGiuaKy.Value : DBNull.Value);
@@ -345,17 +345,17 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 {
                     // INSERT mới
                     string insertQuery = @"
-                INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, DiemThuongXuyen, 
-                                   DiemGiuaKy, DiemCuoiKy, DiemTrungBinh)
-                VALUES (@MaHocSinh, @MaMonHoc, @MaHocKy, @DiemThuongXuyen, 
-                        @DiemGiuaKy, @DiemCuoiKy, @DiemTrungBinh)";
+INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, DiemMieng, 
+                    DiemGiuaKy, DiemCuoiKy, DiemTrungBinh) 
+                    VALUES (@MaHocSinh, @MaMonHoc, @MaHocKy, @DiemMieng, 
+                    @DiemGiuaKy, @DiemCuoiKy, @DiemTrungBinh)";
 
                     using (MySqlCommand cmd = new MySqlCommand(insertQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@MaHocSinh", diem.MaHocSinh);
                         cmd.Parameters.AddWithValue("@MaMonHoc", diem.MaMonHoc);
                         cmd.Parameters.AddWithValue("@MaHocKy", diem.MaHocKy);
-                        cmd.Parameters.AddWithValue("@DiemThuongXuyen",
+                        cmd.Parameters.AddWithValue("@DiemMieng",
                             diem.DiemThuongXuyen.HasValue ? (object)diem.DiemThuongXuyen.Value : DBNull.Value);
                         cmd.Parameters.AddWithValue("@DiemGiuaKy",
                             diem.DiemGiuaKy.HasValue ? (object)diem.DiemGiuaKy.Value : DBNull.Value);

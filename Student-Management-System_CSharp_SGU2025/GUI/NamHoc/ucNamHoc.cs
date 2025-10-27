@@ -56,7 +56,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                 // ✅ LẤY HỌC KỲ HIỆN TẠI TỪ DATABASE
                 List<HocKyDTO> danhSachHocKy = hocKyBUS.DocDSHocKy();
                 HocKyDTO hocKyHienTai = danhSachHocKy?.FirstOrDefault(hk =>
-                    TinhTrangThai(hk.NgayBD, hk.NgayKT) == "Đang diễn ra");
+                    hk.NgayBD.HasValue && hk.NgayKT.HasValue && 
+                    TinhTrangThai(hk.NgayBD.Value, hk.NgayKT.Value) == "Đang diễn ra");
 
                 // CARD 1 - Năm học hiện tại
                 if (namHocHienTai != null)
@@ -102,7 +103,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
 
                 if (lblTen2 != null) lblTen2.Font = new Font("Segoe UI", 12, FontStyle.Bold);
                 if (lblSo2 != null) lblSo2.Font = new Font("Segoe UI", 20, FontStyle.Bold); if (lblDesc2 != null)
-                if (lblDesc2 != null) lblDesc2.Font = new Font("Segoe UI", 10, FontStyle.Regular);
+                    if (lblDesc2 != null) lblDesc2.Font = new Font("Segoe UI", 10, FontStyle.Regular);
 
                 var panelMain2 = statCardNH2.Controls["panelMain"] as Guna2Panel;
                 if (panelMain2 != null) panelMain2.BorderRadius = 15;
@@ -138,21 +139,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                 int tongHocKy = danhSachHocKy != null ? danhSachHocKy.Count : 0;
 
                 HocKyDTO hocKyHienTai = danhSachHocKy?.FirstOrDefault(hk =>
-                    TinhTrangThai(hk.NgayBD, hk.NgayKT) == "Đang diễn ra");
+                    hk.NgayBD.HasValue && hk.NgayKT.HasValue && 
+                    TinhTrangThai(hk.NgayBD.Value, hk.NgayKT.Value) == "Đang diễn ra");
 
                 // CARD 1 - Học kỳ hiện tại
                 if (hocKyHienTai != null)
                 {
                     NamHocDTO namHoc = namHocBUS.LayNamHocTheoMa(hocKyHienTai.MaNamHoc);
                     string tenNamHoc = namHoc != null ? namHoc.TenNamHoc : hocKyHienTai.MaNamHoc;
-                    
+
                     statCardHK1.SetData("Học kỳ hiện tại", hocKyHienTai.TenHocKy, tenNamHoc);
                 }
                 else
                 {
                     statCardHK1.SetData("Học kỳ hiện tại", "Chưa có", "Không có học kỳ đang diễn ra");
                 }
-                
+
                 statCardHK1.PanelColor = ColorTranslator.FromHtml("#357ef1");
                 statCardHK1.TextColor = Color.White;
 
@@ -168,12 +170,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                 if (panelMain4 != null) panelMain4.BorderRadius = 15;
 
                 // CARD 2 - Thời gian
-                if (hocKyHienTai != null)
+                if (hocKyHienTai != null && hocKyHienTai.NgayBD.HasValue && hocKyHienTai.NgayKT.HasValue)
                 {
-                    TimeSpan duration = hocKyHienTai.NgayKT - hocKyHienTai.NgayBD;
+                    TimeSpan duration = hocKyHienTai.NgayKT.Value - hocKyHienTai.NgayBD.Value;
                     int soThang = (int)(duration.TotalDays / 30);
-                    string thoiGian = $"{hocKyHienTai.NgayBD:dd/MM} - {hocKyHienTai.NgayKT:dd/MM/yyyy}";
-                    
+                    string thoiGian = $"{hocKyHienTai.NgayBD.Value:dd/MM} - {hocKyHienTai.NgayKT.Value:dd/MM/yyyy}";
+
                     statCardHK2.SetData("Thời gian", $"{soThang} tháng", thoiGian);
                 }
                 else
@@ -384,14 +386,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                         NamHocDTO namHoc = namHocBUS.LayNamHocTheoMa(hocKyDTO.MaNamHoc);
                         string tenNamHoc = namHoc != null ? namHoc.TenNamHoc : hocKyDTO.MaNamHoc;
 
-                        string trangThai = TinhTrangThai(hocKyDTO.NgayBD, hocKyDTO.NgayKT);
+                        string trangThai = "";
+                        if (hocKyDTO.NgayBD.HasValue && hocKyDTO.NgayKT.HasValue)
+                        {
+                            trangThai = TinhTrangThai(hocKyDTO.NgayBD.Value, hocKyDTO.NgayKT.Value);
+                        }
+                        else
+                        {
+                            trangThai = "Chưa xác định";
+                        }
 
                         tbHocKy.Rows.Add(
                             hocKyDTO.MaHocKy,
                             tenNamHoc,
                             hocKyDTO.TenHocKy,
-                            hocKyDTO.NgayBD.ToString("dd/MM/yyyy"),
-                            hocKyDTO.NgayKT.ToString("dd/MM/yyyy"),
+                            hocKyDTO.NgayBD?.ToString("dd/MM/yyyy") ?? "N/A",
+                            hocKyDTO.NgayKT?.ToString("dd/MM/yyyy") ?? "N/A",
                             trangThai,
                             ""
                         );
@@ -529,7 +539,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
             try
             {
                 NamHocDTO namHoc = namHocBUS.LayNamHocTheoMa(maNamHoc);
-                
+
                 if (namHoc != null)
                 {
                     string thongTin = $"📚 THÔNG TIN NĂM HỌC\n\n" +
@@ -539,7 +549,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                                     $"📅 Ngày kết thúc: {namHoc.NgayKT:dd/MM/yyyy}\n" +
                                     $"🔄 Trạng thái: {TinhTrangThai(namHoc.NgayBD, namHoc.NgayKT)}";
 
-                    MessageBox.Show(thongTin, "Chi tiết năm học", 
+                    MessageBox.Show(thongTin, "Chi tiết năm học",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -729,18 +739,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
             try
             {
                 HocKyDTO hocKy = hocKyBUS.LayHocKyTheoMa(maHocKy);
-                
+
                 if (hocKy != null)
                 {
                     string thongTin = $"📚 THÔNG TIN HỌC KỲ\n\n" +
                                     $"🔑 Mã học kỳ: {hocKy.MaHocKy}\n" +
                                     $"📝 Tên học kỳ: {hocKy.TenHocKy}\n" +
                                     $"📅 Năm học: {tenNamHoc}\n" +
-                                    $"📅 Ngày bắt đầu: {hocKy.NgayBD:dd/MM/yyyy}\n" +
-                                    $"📅 Ngày kết thúc: {hocKy.NgayKT:dd/MM/yyyy}\n" +
-                                    $"🔄 Trạng thái: {TinhTrangThai(hocKy.NgayBD, hocKy.NgayKT)}";
+                                    $"📅 Ngày bắt đầu: {hocKy.NgayBD?.ToString("dd/MM/yyyy") ?? "N/A"}\n" +
+                                    $"📅 Ngày kết thúc: {hocKy.NgayKT?.ToString("dd/MM/yyyy") ?? "N/A"}\n" +
+                                    $"🔄 Trạng thái: {(hocKy.NgayBD.HasValue && hocKy.NgayKT.HasValue ? TinhTrangThai(hocKy.NgayBD.Value, hocKy.NgayKT.Value) : "Chưa xác định")}";
 
-                    MessageBox.Show(thongTin, "Chi tiết học kỳ", 
+                    MessageBox.Show(thongTin, "Chi tiết học kỳ",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -901,7 +911,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
             }
         }
 
-       
+
         private void btnAddHocKy_Click(object sender, EventArgs e)
         {
             try

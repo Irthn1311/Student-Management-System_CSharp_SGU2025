@@ -9,14 +9,14 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
     {
         private PhanLopDAO phanLopDAO;
         private HocSinhDAO hocSinhDAO;
-        private LopHocDAO lopHocDAO;
+        private LopDAO lopHocDAO;
         private HocKyDAO hocKyDAO;
 
         public PhanLopBLL()
         {
             phanLopDAO = new PhanLopDAO();
             hocSinhDAO = new HocSinhDAO();
-            lopHocDAO = new LopHocDAO();
+            lopHocDAO = new LopDAO();
             hocKyDAO = new HocKyDAO();
         }
 

@@ -15,7 +15,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             monHocDAO = new MonHocDAO();
         }
-       
+
         // Thêm môn học với validation
         public bool ThemMonHoc(MonHocDTO monHoc)
         {
@@ -56,6 +56,11 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             return monHocDAO.LayDSMonHocTheoId(maMonHoc);
         }
 
+
+        public int ThemMonHocVaLayId(MonHocDTO mh)
+        {
+            return monHocDAO.ThemMonHocVaLayId(mh);
+        }
         // Lấy môn học theo tên
         public MonHocDTO LayDSMonHocTheoTen(string tenMonHoc)
         {

@@ -48,14 +48,22 @@
             this.btnNhapDiem = new Guna.UI2.WinForms.Guna2Button();
             this.btnXemBangDiem = new Guna.UI2.WinForms.Guna2Button();
             this.tableXemBangDiem = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.maHS1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hoTen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dToan = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dVan = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dAnh = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dVatLi = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dHoa = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dTB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnKhoaDiem = new Guna.UI2.WinForms.Guna2Button();
+            this.txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
+            this.btnReload = new Guna.UI2.WinForms.Guna2Button();
+            this.cbHocKyBD = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.btnXemChiTiet = new Guna.UI2.WinForms.Guna2Button();
+            this.cbLopBD = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.btnSuaDiem = new Guna.UI2.WinForms.Guna2Button();
+            this.btnThemDiem = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             this.statCardDaNhap = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardDiemThapNhat = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
@@ -155,12 +163,12 @@
             this.tableNhapDiem.ColumnHeadersHeight = 19;
             this.tableNhapDiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tableNhapDiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.MãHS,
-            this.Column1,
-            this.Column2,
-            this.Column3,
-            this.Column7,
-            this.Column8});
+            this.maHS,
+            this.hoVaTen,
+            this.diemTX,
+            this.diemGK,
+            this.diemCK,
+            this.diemTB});
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -310,13 +318,14 @@
             this.tableXemBangDiem.ColumnHeadersHeight = 19;
             this.tableXemBangDiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tableXemBangDiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5,
-            this.dataGridViewTextBoxColumn6,
-            this.Column4});
+            this.maHS1,
+            this.hoTen,
+            this.dToan,
+            this.dVan,
+            this.dAnh,
+            this.dVatLi,
+            this.dHoa,
+            this.dTB});
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -360,6 +369,7 @@
             // maHS1
             // 
             this.maHS1.HeaderText = "Mã HS";
+            this.maHS1.MinimumWidth = 6;
             this.maHS1.Name = "maHS1";
             // 
             // hoTen
@@ -399,6 +409,163 @@
             this.dHoa.Name = "dHoa";
             // 
             // dTB
+            // 
+            this.dTB.HeaderText = "Điểm TB";
+            this.dTB.MinimumWidth = 6;
+            this.dTB.Name = "dTB";
+            // 
+            // btnKhoaDiem
+            // 
+            this.btnKhoaDiem.BackColor = System.Drawing.Color.Transparent;
+            this.btnKhoaDiem.BorderRadius = 5;
+            this.btnKhoaDiem.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnKhoaDiem.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnKhoaDiem.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnKhoaDiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnKhoaDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.btnKhoaDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnKhoaDiem.ForeColor = System.Drawing.Color.White;
+            this.btnKhoaDiem.Location = new System.Drawing.Point(16, 704);
+            this.btnKhoaDiem.Margin = new System.Windows.Forms.Padding(2);
+            this.btnKhoaDiem.Name = "btnKhoaDiem";
+            this.btnKhoaDiem.Size = new System.Drawing.Size(138, 43);
+            this.btnKhoaDiem.TabIndex = 22;
+            this.btnKhoaDiem.Text = "Khóa điểm";
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.BackColor = System.Drawing.Color.Transparent;
+            this.txtSearch.BorderRadius = 5;
+            this.txtSearch.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtSearch.DefaultText = "";
+            this.txtSearch.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtSearch.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtSearch.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtSearch.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtSearch.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtSearch.ForeColor = System.Drawing.Color.Black;
+            this.txtSearch.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtSearch.Location = new System.Drawing.Point(16, 704);
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(2);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.PasswordChar = '\0';
+            this.txtSearch.PlaceholderText = "Tìm kiếm học sinh...";
+            this.txtSearch.SelectedText = "";
+            this.txtSearch.Size = new System.Drawing.Size(200, 36);
+            this.txtSearch.TabIndex = 26;
+            // 
+            // btnReload
+            // 
+            this.btnReload.BackColor = System.Drawing.Color.Transparent;
+            this.btnReload.BorderRadius = 5;
+            this.btnReload.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnReload.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnReload.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnReload.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnReload.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.btnReload.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnReload.ForeColor = System.Drawing.Color.White;
+            this.btnReload.Location = new System.Drawing.Point(220, 704);
+            this.btnReload.Margin = new System.Windows.Forms.Padding(2);
+            this.btnReload.Name = "btnReload";
+            this.btnReload.Size = new System.Drawing.Size(100, 36);
+            this.btnReload.TabIndex = 27;
+            this.btnReload.Text = "Reload";
+            this.btnReload.Click += new System.EventHandler(this.btnReload_Click);
+            // 
+            // cbHocKyBD
+            // 
+            this.cbHocKyBD.BackColor = System.Drawing.Color.Transparent;
+            this.cbHocKyBD.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbHocKyBD.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbHocKyBD.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbHocKyBD.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbHocKyBD.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbHocKyBD.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbHocKyBD.ItemHeight = 30;
+            this.cbHocKyBD.Location = new System.Drawing.Point(503, 704);
+            this.cbHocKyBD.Margin = new System.Windows.Forms.Padding(2);
+            this.cbHocKyBD.Name = "cbHocKyBD";
+            this.cbHocKyBD.Size = new System.Drawing.Size(184, 36);
+            this.cbHocKyBD.StartIndex = 0;
+            this.cbHocKyBD.TabIndex = 28;
+            this.cbHocKyBD.SelectedIndexChanged += new System.EventHandler(this.cbHocKyBD_SelectedIndexChanged);
+            // 
+            // btnXemChiTiet
+            // 
+            this.btnXemChiTiet.BackColor = System.Drawing.Color.Transparent;
+            this.btnXemChiTiet.BorderRadius = 5;
+            this.btnXemChiTiet.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnXemChiTiet.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnXemChiTiet.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnXemChiTiet.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnXemChiTiet.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.btnXemChiTiet.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnXemChiTiet.ForeColor = System.Drawing.Color.White;
+            this.btnXemChiTiet.Location = new System.Drawing.Point(882, 704);
+            this.btnXemChiTiet.Margin = new System.Windows.Forms.Padding(2);
+            this.btnXemChiTiet.Name = "btnXemChiTiet";
+            this.btnXemChiTiet.Size = new System.Drawing.Size(120, 43);
+            this.btnXemChiTiet.TabIndex = 29;
+            this.btnXemChiTiet.Text = "Xem chi tiết";
+            this.btnXemChiTiet.Click += new System.EventHandler(this.btnXemChiTiet_Click);
+            // 
+            // cbLopBD
+            // 
+            this.cbLopBD.BackColor = System.Drawing.Color.Transparent;
+            this.cbLopBD.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbLopBD.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbLopBD.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbLopBD.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbLopBD.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLopBD.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbLopBD.ItemHeight = 30;
+            this.cbLopBD.Location = new System.Drawing.Point(735, 704);
+            this.cbLopBD.Margin = new System.Windows.Forms.Padding(2);
+            this.cbLopBD.Name = "cbLopBD";
+            this.cbLopBD.Size = new System.Drawing.Size(120, 36);
+            this.cbLopBD.StartIndex = 0;
+            this.cbLopBD.TabIndex = 30;
+            this.cbLopBD.SelectedIndexChanged += new System.EventHandler(this.cbLopBD_SelectedIndexChanged);
+            // 
+            // btnSuaDiem
+            // 
+            this.btnSuaDiem.BackColor = System.Drawing.Color.Transparent;
+            this.btnSuaDiem.BorderRadius = 5;
+            this.btnSuaDiem.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnSuaDiem.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnSuaDiem.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnSuaDiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnSuaDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(179)))), ((int)(((byte)(8)))));
+            this.btnSuaDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnSuaDiem.ForeColor = System.Drawing.Color.White;
+            this.btnSuaDiem.Location = new System.Drawing.Point(200, 704);
+            this.btnSuaDiem.Margin = new System.Windows.Forms.Padding(2);
+            this.btnSuaDiem.Name = "btnSuaDiem";
+            this.btnSuaDiem.Size = new System.Drawing.Size(120, 43);
+            this.btnSuaDiem.TabIndex = 31;
+            this.btnSuaDiem.Text = "Sửa điểm";
+            this.btnSuaDiem.Click += new System.EventHandler(this.btnSuaDiem_Click);
+            // 
+            // btnThemDiem
+            // 
+            this.btnThemDiem.BackColor = System.Drawing.Color.Transparent;
+            this.btnThemDiem.BorderRadius = 5;
+            this.btnThemDiem.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemDiem.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemDiem.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnThemDiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnThemDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
+            this.btnThemDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnThemDiem.ForeColor = System.Drawing.Color.White;
+            this.btnThemDiem.Location = new System.Drawing.Point(70, 704);
+            this.btnThemDiem.Margin = new System.Windows.Forms.Padding(2);
+            this.btnThemDiem.Name = "btnThemDiem";
+            this.btnThemDiem.Size = new System.Drawing.Size(120, 43);
+            this.btnThemDiem.TabIndex = 32;
+            this.btnThemDiem.Text = "Thêm điểm";
+            this.btnThemDiem.Click += new System.EventHandler(this.btnThemDiem_Click);
             // 
             // guna2Panel1
             // 
@@ -532,5 +699,6 @@
         private Guna.UI2.WinForms.Guna2ComboBox cbHocKyBD;
         private Guna.UI2.WinForms.Guna2Button btnReload;
         private Guna.UI2.WinForms.Guna2TextBox txtSearch;
+        private Guna.UI2.WinForms.Guna2Button btnKhoaDiem;
     }
 }

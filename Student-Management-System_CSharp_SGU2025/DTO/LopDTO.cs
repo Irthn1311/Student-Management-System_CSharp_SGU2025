@@ -6,19 +6,21 @@ using System.Threading.Tasks;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
-    internal class LopDTO
+    public class LopDTO
     {
         public int maLop;
         public string tenLop;
 
         public int maKhoi;
+        public int siSo;
         public string maGVCN;
         public LopDTO() { }
-        public LopDTO(int maLop, string tenLop, int maKhoi, string maGVCN)
+        public LopDTO(int maLop, string tenLop, int maKhoi, int siSo, string maGVCN)
         {
             this.maLop = maLop;
             this.tenLop = tenLop;
             this.maKhoi = maKhoi;
+            this.siSo = siSo;
             this.maGVCN = maGVCN;
 
         }
@@ -31,7 +33,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return maLop; }
             set
             {
-                if (maLop > 0)
+                if (value > 0)
                 {
                     maLop = value;
                 }
@@ -46,7 +48,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return tenLop; }
             set
             {
-                if (tenLop == "")
+                if (!string.IsNullOrEmpty(value))
                 {
                     tenLop = value;
                 }
@@ -61,7 +63,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return maKhoi; }
             set
             {
-                if (maKhoi > 0)
+                if (value > 0)
                 {
                     maKhoi = value;
                 }
@@ -71,12 +73,27 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
                 }
             }
         }
+        public int SiSo
+        {
+            get { return siSo; }
+            set
+            {
+                if (value >= 0)
+                {
+                    siSo = value;
+                }
+                else
+                {
+                    Console.WriteLine("Si so khong duoc nho hon 0");
+                }
+            }
+        }
         public string MaGVCN
         {
             get { return maGVCN; }
             set
             {
-                if (maGVCN == "")
+                if (!string.IsNullOrEmpty(value))
                 {
                     maGVCN = value;
                 }

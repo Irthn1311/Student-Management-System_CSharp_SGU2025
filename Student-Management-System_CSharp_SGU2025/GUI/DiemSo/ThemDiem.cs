@@ -215,7 +215,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
         {
             try
             {
-                List<LopHocDTO> danhSachLop = themDiemBUS.GetDanhSachLop();
+                List<LopDTO> danhSachLop = themDiemBUS.GetDanhSachLop();
 
                 var listForBinding = new List<object>();
                 listForBinding.Add(new { TenLop = "-- Chọn lớp học --", MaLop = -1 });
@@ -241,7 +241,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
         {
             try
             {
-                List<HocSinhDTO> danhSachHS = themDiemBUS.GetHocSinhTheoLop(maLop);
+                // Get the selected hoc ky or use a default value
+                int maHocKy = 1; // Default value, you might want to get this from UI
+                if (cbHocKy.SelectedValue != null && int.TryParse(cbHocKy.SelectedValue.ToString(), out int selectedHocKy))
+                {
+                    maHocKy = selectedHocKy;
+                }
+                
+                List<HocSinhDTO> danhSachHS = themDiemBUS.GetHocSinhTheoLop(maLop, maHocKy);
 
                 cbHocSinh.DataSource = null;
                 cbHocSinh.Items.Clear();

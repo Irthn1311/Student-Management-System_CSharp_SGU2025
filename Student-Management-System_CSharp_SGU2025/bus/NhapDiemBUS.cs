@@ -26,7 +26,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         /// <summary>
         /// Lấy danh sách lớp học
         /// </summary>
-        public List<LopHocDTO> GetDanhSachLop()
+        public List<LopDTO> GetDanhSachLop()
         {
             try
             {
@@ -45,7 +45,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             try
             {
-                return monHocDAO.GetAllMonHoc();
+                return monHocDAO.DocDSMH();
             }
             catch (Exception ex)
             {
@@ -60,7 +60,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             try
             {
-                return hocKyDAO.GetAllHocKy();
+                return hocKyDAO.DocDSHocKy();
             }
             catch (Exception ex)
             {
@@ -257,7 +257,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         /// <summary>
         /// Lấy danh sách lớp có điểm số
         /// </summary>
-        public List<LopHocDTO> GetDanhSachLopCoDiem(int maHocKy)
+        public List<LopDTO> GetDanhSachLopCoDiem(int maHocKy)
         {
             try
             {

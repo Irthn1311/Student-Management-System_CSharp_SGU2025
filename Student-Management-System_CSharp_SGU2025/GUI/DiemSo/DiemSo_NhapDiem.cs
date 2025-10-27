@@ -501,7 +501,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                List<LopHocDTO> danhSachLop = nhapDiemBUS.GetDanhSachLop();
+                List<LopDTO> danhSachLop = nhapDiemBUS.GetDanhSachLop();
 
                 cbLop.DataSource = null;
                 cbLop.Items.Clear();
@@ -554,7 +554,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     cbMonHoc.Items.Add(new ComboBoxItem
                     {
                         Text = mon.tenMon,
-                        Value = int.Parse(mon.maMon)
+                        Value =mon.maMon
                     });
                 }
 
@@ -697,7 +697,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                List<LopHocDTO> danhSachLop = nhapDiemBUS.GetDanhSachLopCoDiem(selectedMaHocKyBD.Value);
+                List<LopDTO> danhSachLop = nhapDiemBUS.GetDanhSachLopCoDiem(selectedMaHocKyBD.Value);
 
                 cbLopBD.DataSource = null;
                 cbLopBD.Items.Clear();
