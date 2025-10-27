@@ -97,7 +97,7 @@ CREATE TABLE GiaoVienChuyenMon (
 
 
 CREATE TABLE HocSinh (
-    MaHocSinh VARCHAR(20) PRIMARY KEY,
+    MaHocSinh INT PRIMARY KEY AUTO_INCREMENT,
     HoTen NVARCHAR(100) NOT NULL,
     NgaySinh DATE,
     GioiTinh NVARCHAR(10),
@@ -128,7 +128,7 @@ CREATE TABLE LopHoc (
 -- =====================================================================
 
 CREATE TABLE HocSinhPhuHuynh (
-    MaHocSinh VARCHAR(20),
+    MaHocSinh INT,
     MaPhuHuynh INT,
     MoiQuanHe NVARCHAR(50),
     PRIMARY KEY (MaHocSinh, MaPhuHuynh),
@@ -137,7 +137,7 @@ CREATE TABLE HocSinhPhuHuynh (
 );
 
 CREATE TABLE PhanLop (
-    MaHocSinh VARCHAR(20),
+    MaHocSinh INT,
     MaLop INT,
     MaHocKy INT,
     PRIMARY KEY (MaHocSinh, MaLop, MaHocKy),
@@ -181,7 +181,7 @@ CREATE TABLE ThoiKhoaBieu (
 );
 
 CREATE TABLE DiemSo (
-    MaHocSinh VARCHAR(20),
+    MaHocSinh INT,
     MaMonHoc INT,
     MaHocKy INT,
     DiemMieng FLOAT,
@@ -196,7 +196,7 @@ CREATE TABLE DiemSo (
 );
 
 CREATE TABLE HanhKiem (
-    MaHocSinh VARCHAR(20),
+    MaHocSinh INT,
     MaHocKy INT,
     XepLoai NVARCHAR(50),
     NhanXet TEXT,
@@ -206,7 +206,7 @@ CREATE TABLE HanhKiem (
 );
 
 CREATE TABLE XepLoai (
-    MaHocSinh VARCHAR(20),
+    MaHocSinh INT,
     MaHocKy INT,
     HocLuc NVARCHAR(50),
     GhiChu TEXT,
@@ -217,7 +217,7 @@ CREATE TABLE XepLoai (
 
 CREATE TABLE KhenThuongKyLuat (
     MaKTKL INT PRIMARY KEY AUTO_INCREMENT,
-    MaHocSinh VARCHAR(20),
+    MaHocSinh INT,
     Loai NVARCHAR(20) NOT NULL,
     NoiDung TEXT NOT NULL,
     CapKhenThuong NVARCHAR(100),
@@ -286,27 +286,27 @@ INSERT INTO LopHoc (TenLop, MaKhoi, MaGiaoVienChuNhiem) VALUES
 
 
 -- INSERT học sinh (500)
-INSERT INTO HocSinh (MaHocSinh, HoTen, NgaySinh, GioiTinh, SDTHS, Email, TrangThai) VALUES
-('HS0001', 'Trương Hồng Thu', '2009-01-18', 'Nam', '0938658158', 'trương.hồng.thu.hs0001@yahoo.com', 'Đang học'),
-('HS0002', 'Vũ Hoàng Thi', '2009-03-24', 'Nữ', '0365348512', 'vũ.hoàng.thi.hs0002@yahoo.com', 'Đang học'),
-('HS0003', 'Trần Hồng Mai', '2010-05-11', 'Nữ', '0392351868', 'trần.hồng.mai.hs0003@yahoo.com', 'Đang học'),
-('HS0004', 'Phan Anh Tâm', '2009-01-07', 'Nữ', '0341327691', 'phan.anh.tâm.hs0004@student.edu.vn', 'Đang học'),
-('HS0005', 'Trương Trung Long', '2009-04-09', 'Nữ', '0371486955', 'trương.trung.long.hs0005@student.edu.vn', 'Đang học'),
-('HS0006', 'Đặng Thị Phúc', '2010-02-21', 'Nữ', '0948746014', 'dặng.thị.phúc.hs0006@yahoo.com', 'Đang học'),
-('HS0007', 'Trương Chí Phúc', '2009-07-09', 'Nam', '0371325197', 'trương.chí.phúc.hs0007@gmail.com', 'Đang học'),
-('HS0008', 'Hồ Thị Trung', '2010-04-05', 'Nữ', '0934656838', 'hồ.thị.trung.hs0008@student.edu.vn', 'Đang học'),
-('HS0009', 'Huỳnh Văn Trâm', '2010-05-19', 'Nữ', '0344327421', 'huỳnh.văn.trâm.hs0009@gmail.com', 'Đang học'),
-('HS0010', 'Trương Văn Trâm', '2010-06-18', 'Nữ', '0332156902', 'trương.văn.trâm.hs0010@hotmail.com', 'Đang học'),
-('HS0011', 'Trịnh Hữu Quỳnh', '2010-12-17', 'Nữ', '0399111742', 'trịnh.hữu.quỳnh.hs0011@student.edu.vn', 'Đang học'),
-('HS0012', 'Ngô Tuấn Long', '2009-10-20', 'Nữ', '0321481506', 'ngô.tuấn.long.hs0012@student.edu.vn', 'Đang học'),
-('HS0013', 'Huỳnh Chí Trung', '2009-09-01', 'Nam', '0925049282', 'huỳnh.chí.trung.hs0013@student.edu.vn', 'Đang học'),
-('HS0014', 'Trần Minh Long', '2009-12-08', 'Nữ', '0338939993', 'trần.minh.long.hs0014@hotmail.com', 'Đang học'),
-('HS0015', 'Huỳnh Ngọc Dũng', '2010-06-04', 'Nam', '0964630331', 'huỳnh.ngọc.dũng.hs0015@student.edu.vn', 'Đang học'),
-('HS0016', 'Phạm Thanh Khanh', '2009-01-23', 'Nam', '0981763626', 'phạm.thanh.khanh.hs0016@gmail.com', 'Đang học'),
-('HS0017', 'Huỳnh Tuấn Thảo', '2009-06-06', 'Nam', '0989014965', 'huỳnh.tuấn.thảo.hs0017@gmail.com', 'Đang học'),
-('HS0018', 'Trương Trung Mai', '2010-04-04', 'Nữ', '0979767312', 'trương.trung.mai.hs0018@student.edu.vn', 'Đang học'),
-('HS0019', 'Nguyễn Trung Yến', '2010-04-21', 'Nam', '0982362099', 'nguyễn.trung.yến.hs0019@yahoo.com', 'Đang học'),
-('HS0020', 'Trịnh Trung Thảo', '2009-01-08', 'Nữ', '0998617381', 'trịnh.trung.thảo.hs0020@gmail.com', 'Đang học');
+INSERT INTO HocSinh (HoTen, NgaySinh, GioiTinh, SDTHS, Email, TrangThai) VALUES
+('Trương Hồng Thu', '2009-01-18', 'Nam', '0938658158', 'trương.hồng.thu.hs0001@yahoo.com', 'Đang học'),
+('Vũ Hoàng Thi', '2009-03-24', 'Nữ', '0365348512', 'vũ.hoàng.thi.hs0002@yahoo.com', 'Đang học'),
+('Trần Hồng Mai', '2010-05-11', 'Nữ', '0392351868', 'trần.hồng.mai.hs0003@yahoo.com', 'Đang học'),
+('Phan Anh Tâm', '2009-01-07', 'Nữ', '0341327691', 'phan.anh.tâm.hs0004@student.edu.vn', 'Đang học'),
+('Trương Trung Long', '2009-04-09', 'Nữ', '0371486955', 'trương.trung.long.hs0005@student.edu.vn', 'Đang học'),
+('Đặng Thị Phúc', '2010-02-21', 'Nữ', '0948746014', 'dặng.thị.phúc.hs0006@yahoo.com', 'Đang học'),
+('Trương Chí Phúc', '2009-07-09', 'Nam', '0371325197', 'trương.chí.phúc.hs0007@gmail.com', 'Đang học'),
+('Hồ Thị Trung', '2010-04-05', 'Nữ', '0934656838', 'hồ.thị.trung.hs0008@student.edu.vn', 'Đang học'),
+('Huỳnh Văn Trâm', '2010-05-19', 'Nữ', '0344327421', 'huỳnh.văn.trâm.hs0009@gmail.com', 'Đang học'),
+('Trương Văn Trâm', '2010-06-18', 'Nữ', '0332156902', 'trương.văn.trâm.hs0010@hotmail.com', 'Đang học'),
+('Trịnh Hữu Quỳnh', '2010-12-17', 'Nữ', '0399111742', 'trịnh.hữu.quỳnh.hs0011@student.edu.vn', 'Đang học'),
+('Ngô Tuấn Long', '2009-10-20', 'Nữ', '0321481506', 'ngô.tuấn.long.hs0012@student.edu.vn', 'Đang học'),
+('Huỳnh Chí Trung', '2009-09-01', 'Nam', '0925049282', 'huỳnh.chí.trung.hs0013@student.edu.vn', 'Đang học'),
+('Trần Minh Long', '2009-12-08', 'Nữ', '0338939993', 'trần.minh.long.hs0014@hotmail.com', 'Đang học'),
+('Huỳnh Ngọc Dũng', '2010-06-04', 'Nam', '0964630331', 'huỳnh.ngọc.dũng.hs0015@student.edu.vn', 'Đang học'),
+('Phạm Thanh Khanh', '2009-01-23', 'Nam', '0981763626', 'phạm.thanh.khanh.hs0016@gmail.com', 'Đang học'),
+('Huỳnh Tuấn Thảo', '2009-06-06', 'Nam', '0989014965', 'huỳnh.tuấn.thảo.hs0017@gmail.com', 'Đang học'),
+('Trương Trung Mai', '2010-04-04', 'Nữ', '0979767312', 'trương.trung.mai.hs0018@student.edu.vn', 'Đang học'),
+('Nguyễn Trung Yến', '2010-04-21', 'Nam', '0982362099', 'nguyễn.trung.yến.hs0019@yahoo.com', 'Đang học'),
+('Trịnh Trung Thảo', '2009-01-08', 'Nữ', '0998617381', 'trịnh.trung.thảo.hs0020@gmail.com', 'Đang học');
 
 -- INSERT phụ huynh và liên kết HS-Phụ huynh (1 parent per student)
 INSERT INTO PhuHuynh (MaPhuHuynh, HoTen, SoDienThoai, Email, DiaChi) VALUES
@@ -331,26 +331,26 @@ INSERT INTO PhuHuynh (MaPhuHuynh, HoTen, SoDienThoai, Email, DiaChi) VALUES
 (19, 'Phạm Hữu Thi', '0923626181', 'phạm.hữu.thi.ph0019@gmail.com', '105 Đường Nguyễn Thị Minh Khai'),
 (20, 'Đỗ Ngọc Linh', '0968132648', 'dỗ.ngọc.linh.ph0020@gmail.com', '140 Đường Hoàng Văn Thụ');
 INSERT INTO HocSinhPhuHuynh (MaHocSinh, MaPhuHuynh, MoiQuanHe) VALUES
-('HS0001', 1, 'Cha/Mẹ'),
-('HS0002', 2, 'Cha/Mẹ'),
-('HS0003', 3, 'Cha/Mẹ'),
-('HS0004', 4, 'Cha/Mẹ'),
-('HS0005', 5, 'Cha/Mẹ'),
-('HS0006', 6, 'Cha/Mẹ'),
-('HS0007', 7, 'Cha/Mẹ'),
-('HS0008', 8, 'Cha/Mẹ'),
-('HS0009', 9, 'Cha/Mẹ'),
-('HS0010', 10, 'Cha/Mẹ'),
-('HS0011', 11, 'Cha/Mẹ'),
-('HS0012', 12, 'Cha/Mẹ'),
-('HS0013', 13, 'Cha/Mẹ'),
-('HS0014', 14, 'Cha/Mẹ'),
-('HS0015', 15, 'Cha/Mẹ'),
-('HS0016', 16, 'Cha/Mẹ'),
-('HS0017', 17, 'Cha/Mẹ'),
-('HS0018', 18, 'Cha/Mẹ'),
-('HS0019', 19, 'Cha/Mẹ'),
-('HS0020', 20, 'Cha/Mẹ');
+(1, 1, 'Cha/Mẹ'),
+(2, 2, 'Cha/Mẹ'),
+(3, 3, 'Cha/Mẹ'),
+(4, 4, 'Cha/Mẹ'),
+(5, 5, 'Cha/Mẹ'),
+(6, 6, 'Cha/Mẹ'),
+(7, 7, 'Cha/Mẹ'),
+(8, 8, 'Cha/Mẹ'),
+(9, 9, 'Cha/Mẹ'),
+(10, 10, 'Cha/Mẹ'),
+(11, 11, 'Cha/Mẹ'),
+(12, 12, 'Cha/Mẹ'),
+(13, 13, 'Cha/Mẹ'),
+(14, 14, 'Cha/Mẹ'),
+(15, 15, 'Cha/Mẹ'),
+(16, 16, 'Cha/Mẹ'),
+(17, 17, 'Cha/Mẹ'),
+(18, 18, 'Cha/Mẹ'),
+(19, 19, 'Cha/Mẹ'),
+(20, 20, 'Cha/Mẹ');
 
 
 INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES
@@ -374,26 +374,26 @@ INSERT INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
 
 -- INSERT users: students use their student account (and parents will login using student's account).
 INSERT INTO NguoiDung (TenDangNhap, MatKhau, TrangThai) VALUES
-('HS0001', '12345678', 'Hoạt động'),
-('HS0002', '12345678', 'Hoạt động'),
-('HS0003', '12345678', 'Hoạt động'),
-('HS0004', '12345678', 'Hoạt động'),
-('HS0005', '12345678', 'Hoạt động'),
-('HS0006', '12345678', 'Hoạt động'),
-('HS0007', '12345678', 'Hoạt động'),
-('HS0008', '12345678', 'Hoạt động'),
-('HS0009', '12345678', 'Hoạt động'),
-('HS0010', '12345678', 'Hoạt động'),
-('HS0011', '12345678', 'Hoạt động'),
-('HS0012', '12345678', 'Hoạt động'),
-('HS0013', '12345678', 'Hoạt động'),
-('HS0014', '12345678', 'Hoạt động'),
-('HS0015', '12345678', 'Hoạt động'),
-('HS0016', '12345678', 'Hoạt động'),
-('HS0017', '12345678', 'Hoạt động'),
-('HS0018', '12345678', 'Hoạt động'),
-('HS0019', '12345678', 'Hoạt động'),
-('HS0020', '12345678', 'Hoạt động'),
+('HS1', '12345678', 'Hoạt động'),
+('HS2', '12345678', 'Hoạt động'),
+('HS3', '12345678', 'Hoạt động'),
+('HS4', '12345678', 'Hoạt động'),
+('HS5', '12345678', 'Hoạt động'),
+('HS6', '12345678', 'Hoạt động'),
+('HS7', '12345678', 'Hoạt động'),
+('HS8', '12345678', 'Hoạt động'),
+('HS9', '12345678', 'Hoạt động'),
+('HS10', '12345678', 'Hoạt động'),
+('HS11', '12345678', 'Hoạt động'),
+('HS12', '12345678', 'Hoạt động'),
+('HS13', '12345678', 'Hoạt động'),
+('HS14', '12345678', 'Hoạt động'),
+('HS15', '12345678', 'Hoạt động'),
+('HS16', '12345678', 'Hoạt động'),
+('HS17', '12345678', 'Hoạt động'),
+('HS18', '12345678', 'Hoạt động'),
+('HS19', '12345678', 'Hoạt động'),
+('HS20', '12345678', 'Hoạt động'),
 ('GV0001', '12345678',  'Hoạt động'),
 ('GV0002', '12345678',  'Hoạt động'),
 ('GV0003', '12345678',  'Hoạt động'),
@@ -412,26 +412,26 @@ INSERT INTO NguoiDung (TenDangNhap, MatKhau, TrangThai) VALUES
 ('admin', '12345678', 'Hoạt động');
 
 INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro) VALUES
-('HS0001', 'student'),
-('HS0002', 'student'),
-('HS0003', 'student'),
-('HS0004', 'student'),
-('HS0005', 'student'),
-('HS0006', 'student'),
-('HS0007', 'student'),
-('HS0008', 'student'),
-('HS0009', 'student'),
-('HS0010', 'student'),
-('HS0011', 'student'),
-('HS0012', 'student'),
-('HS0013', 'student'),
-('HS0014', 'student'),
-('HS0015', 'student'),
-('HS0016', 'student'),
-('HS0017', 'student'),
-('HS0018', 'student'),
-('HS0019', 'student'),
-('HS0020', 'student'),
+('HS1', 'student'),
+('HS2', 'student'),
+('HS3', 'student'),
+('HS4', 'student'),
+('HS5', 'student'),
+('HS6', 'student'),
+('HS7', 'student'),
+('HS8', 'student'),
+('HS9', 'student'),
+('HS10', 'student'),
+('HS11', 'student'),
+('HS12', 'student'),
+('HS13', 'student'),
+('HS14', 'student'),
+('HS15', 'student'),
+('HS16', 'student'),
+('HS17', 'student'),
+('HS18', 'student'),
+('HS19', 'student'),
+('HS20', 'student'),
 ('GV0001', 'teacher'),
 ('GV0002', 'teacher'),
 ('GV0003', 'teacher'),
@@ -460,26 +460,26 @@ INSERT INTO HocKy (MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT) VALUE
 (3, 'Học kỳ II', '2025-2026', 'Chưa bắt đầu', '2025-12-12', '2026-05-15');
 
 INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy) VALUES
-('HS0001', 1, 1),
-('HS0002', 1, 1),
-('HS0003', 1, 1),
-('HS0004', 1, 1),
-('HS0005', 11, 1),
-('HS0006', 1, 1),
-('HS0007', 1, 1),
-('HS0008', 1, 1),
-('HS0009', 1, 1),
-('HS0010', 1, 1),
-('HS0011', 6, 1),
-('HS0012', 1, 1),
-('HS0013', 1, 1),
-('HS0014', 1, 1),
-('HS0015', 1, 1),
-('HS0016', 1, 1),
-('HS0017', 1, 1),
-('HS0018', 1, 1),
-('HS0019', 1, 1),
-('HS0020', 1, 1);
+(1, 1, 1),
+(2, 1, 1),
+(3, 1, 1),
+(4, 1, 1),
+(5, 11, 1),
+(6, 1, 1),
+(7, 1, 1),
+(8, 1, 1),
+(9, 1, 1),
+(10, 1, 1),
+(11, 6, 1),
+(12, 1, 1),
+(13, 1, 1),
+(14, 1, 1),
+(15, 1, 1),
+(16, 1, 1),
+(17, 1, 1),
+(18, 1, 1),
+(19, 1, 1),
+(20, 1, 1);
 
 -- Môn học và phân công chuyên môn (ví dụ)
 INSERT INTO MonHoc (MaMonHoc ,TenMonHoc, SoTiet, GhiChu) VALUES

@@ -161,14 +161,38 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         //     // return false nếu không trùng
         // }
 
-
-
-
-
-        // ✅ THÊM METHOD: Lấy danh sách mã GVCN đang được phân công
         public List<string> LayDanhSachMaGVCNDangPhanCong()
         {
             return lopDAO.LayDanhSachMaGVCNDangPhanCong();
+        }
+
+        /// <summary>
+        /// Lấy tổng số lượng lớp học.
+        /// </summary>
+        /// <returns>Tổng số lớp.</returns>
+        public int GetTotalLopHoc()
+        {
+            try
+            {
+                // Gọi hàm DocDSLop() đã có sẵn trong BUS
+                List<LopDTO> dsLop = this.DocDSLop();
+
+                // Trả về số lượng phần tử trong danh sách
+                if (dsLop != null)
+                {
+                    return dsLop.Count;
+                }
+                else
+                {
+                    return 0; // Trả về 0 nếu danh sách là null
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ghi lại lỗi (nếu có hệ thống logging)
+                Console.WriteLine("Lỗi khi lấy tổng số lớp học: " + ex.Message);
+                return 0; // Trả về 0 nếu có lỗi
+            }
         }
     }
 }

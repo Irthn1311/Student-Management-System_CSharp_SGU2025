@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Student_Management_System_CSharp_SGU2025.GUI.Dashboard;
+using Student_Management_System_CSharp_SGU2025.GUI.HocSinh;
 
 // Đảm bảo bạn đã thêm các using cho các UserControl của mình, ví dụ:
 // using Student_Management_System_CSharp_SGU2025.GUI.userControl; 
@@ -219,7 +220,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             DisposeCurrentUserControl();
 
             // Create and show HocSinh
-            var hocSinh = new HocSinh();
+            var hocSinh = new GUI.HocSinh.HocSinh();
             hocSinh.BackColor = Color.FromArgb(243, 244, 246);
             hocSinh.Location = new Point(256, 80);
             hocSinh.Margin = new Padding(2);
@@ -232,7 +233,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Hồ sơ Học sinh", "Trang chủ / Hồ sơ học sinh");
-            LoadControlToPanel<HocSinh>();
+            LoadControlToPanel<GUI.HocSinh.HocSinh>();
         }
 
         private void ShowDiemSo()

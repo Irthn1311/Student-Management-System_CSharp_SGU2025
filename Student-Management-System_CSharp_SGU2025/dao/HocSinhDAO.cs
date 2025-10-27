@@ -16,7 +16,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu tồn tại, False nếu không.</returns>
         public bool KiemTraTonTai(int maHocSinh)
         {
-            string sql = "SELECT COUNT(*) FROM HocSinh WHERE Ma_Hoc_Sinh = @maHS";
+            string sql = "SELECT COUNT(*) FROM HocSinh WHERE MaHocSinh = @maHS";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -51,10 +51,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             // Không kiểm tra nếu SĐT rỗng
             if (string.IsNullOrWhiteSpace(sdt)) return false;
 
-            string sql = "SELECT COUNT(*) FROM HocSinh WHERE SDT_HS = @sdt";
+            string sql = "SELECT COUNT(*) FROM HocSinh WHERE SDTHS = @sdt";
             if (maHocSinhToExclude > 0)
             {
-                sql += " AND Ma_Hoc_Sinh != @maHS"; // Loại trừ chính học sinh này
+                sql += " AND MaHocSinh != @maHS"; // Loại trừ chính học sinh này
             }
 
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
@@ -95,7 +95,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             string sql = "SELECT COUNT(*) FROM HocSinh WHERE Email = @email";
             if (maHocSinhToExclude > 0)
             {
-                sql += " AND Ma_Hoc_Sinh != @maHS"; // Loại trừ chính học sinh này
+                sql += " AND MaHocSinh != @maHS"; // Loại trừ chính học sinh này
             }
 
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
@@ -146,13 +146,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         {
                             // Tạo DTO từ dữ liệu đọc được
                             HocSinhDTO hs = new HocSinhDTO(
-                                reader.GetInt32("Ma_Hoc_Sinh"),
-                                reader.GetString("Ho_Ten"),
-                                reader.GetDateTime("Ngay_Sinh"),
-                                reader.GetString("Gioi_Tinh"),
-                                reader.IsDBNull(reader.GetOrdinal("SDT_HS")) ? null : reader.GetString("SDT_HS"), // Xử lý NULL
+                                reader.GetInt32("MaHocSinh"),
+                                reader.GetString("HoTen"),
+                                reader.GetDateTime("NgaySinh"),
+                                reader.GetString("GioiTinh"),
+                                reader.IsDBNull(reader.GetOrdinal("SDTHS")) ? null : reader.GetString("SDTHS"), // Xử lý NULL
                                 reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString("Email"),    // Xử lý NULL
-                                reader.GetString("Trang_Thai")
+                                reader.GetString("TrangThai")
                             );
                             dsHocSinh.Add(hs);
                         }
@@ -209,7 +209,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public int DemTongSoLuongHocSinhNam()
         {
             int count = 0;
-            string sql = "SELECT COUNT(*) FROM HocSinh WHERE Gioi_Tinh = 'Nam'";
+            string sql = "SELECT COUNT(*) FROM HocSinh WHERE GioiTinh = 'Nam'";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -240,7 +240,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public int DemTongSoLuongHocSinhNu()
         {
             int count = 0;
-            string sql = "SELECT COUNT(*) FROM HocSinh WHERE Gioi_Tinh = 'Nữ'";
+            string sql = "SELECT COUNT(*) FROM HocSinh WHERE GioiTinh = 'Nữ'";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -272,7 +272,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public int DemTongSoLuongHocSinhDangHoc()
         {
             int count = 0;
-            string sql = "SELECT COUNT(*) FROM HocSinh WHERE Trang_Thai = 'Đang học'";
+            string sql = "SELECT COUNT(*) FROM HocSinh WHERE TrangThai = 'Đang học'";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -302,11 +302,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// Thêm một học sinh mới vào database và trả về ID của học sinh đó.
         /// </summary>
         /// <param name="hs">Đối tượng HocSinhDTO chứa thông tin cần thêm.</param>
-        /// <returns>ID (Ma_Hoc_Sinh) của học sinh vừa thêm, hoặc -1 nếu thất bại.</returns>
+        /// <returns>ID (MaHocSinh) của học sinh vừa thêm, hoặc -1 nếu thất bại.</returns>
         public int ThemHocSinh(HocSinhDTO hs) 
         {
             // Thêm "; SELECT LAST_INSERT_ID()" vào cuối câu lệnh INSERT
-            string sql = "INSERT INTO HocSinh (Ho_Ten, Ngay_Sinh, Gioi_Tinh, SDT_HS, Email, Trang_Thai) VALUES (@hoTen, @ngaySinh, @gioiTinh, @sdtHS, @email, @trangThai); SELECT LAST_INSERT_ID();";
+            string sql = "INSERT INTO HocSinh (HoTen, NgaySinh, GioiTinh, SDTHS, Email, TrangThai) VALUES (@hoTen, @ngaySinh, @gioiTinh, @sdtHS, @email, @trangThai); SELECT LAST_INSERT_ID();";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 MySqlTransaction transaction = null;
@@ -361,7 +361,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu xóa thành công, False nếu thất bại.</returns>
         public bool XoaHocSinh(int maHocSinh)
         {
-            string sql = "DELETE FROM HocSinh WHERE Ma_Hoc_Sinh = @maHS";
+            string sql = "DELETE FROM HocSinh WHERE MaHocSinh = @maHS";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -395,13 +395,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public bool CapNhatHocSinh(HocSinhDTO hs)
         {
             string sql = @"UPDATE HocSinh SET
-                           Ho_Ten = @hoTen,
-                           Ngay_Sinh = @ngaySinh,
-                           Gioi_Tinh = @gioiTinh,
-                           SDT_HS = @sdtHS,
+                           HoTen = @hoTen,
+                           NgaySinh = @ngaySinh,
+                           GioiTinh = @gioiTinh,
+                           SDTHS = @sdtHS,
                            Email = @email,
-                           Trang_Thai = @trangThai
-                         WHERE Ma_Hoc_Sinh = @maHS";
+                           TrangThai = @trangThai
+                         WHERE MaHocSinh = @maHS";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -441,7 +441,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>Đối tượng HocSinhDTO nếu tìm thấy, null nếu không.</returns>
         public HocSinhDTO TimHocSinhTheoMa(int maHocSinh)
         {
-            string sql = "SELECT * FROM HocSinh WHERE Ma_Hoc_Sinh = @maHS";
+            string sql = "SELECT * FROM HocSinh WHERE MaHocSinh = @maHS";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -455,13 +455,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             if (reader.Read())
                             {
                                 HocSinhDTO hs = new HocSinhDTO(
-                                    reader.GetInt32("Ma_Hoc_Sinh"),
-                                    reader.GetString("Ho_Ten"),
-                                    reader.GetDateTime("Ngay_Sinh"),
-                                    reader.GetString("Gioi_Tinh"),
-                                    reader.IsDBNull(reader.GetOrdinal("SDT_HS")) ? null : reader.GetString("SDT_HS"),
+                                    reader.GetInt32("MaHocSinh"),
+                                    reader.GetString("HoTen"),
+                                    reader.GetDateTime("NgaySinh"),
+                                    reader.GetString("GioiTinh"),
+                                    reader.IsDBNull(reader.GetOrdinal("SDTHS")) ? null : reader.GetString("SDTHS"),
                                     reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString("Email"),
-                                    reader.GetString("Trang_Thai")
+                                    reader.GetString("TrangThai")
                                 );
                                 return hs;
                             }
@@ -489,7 +489,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu cập nhật thành công, False nếu thất bại.</returns>
         public bool CapNhatTrangThaiHocSinh(int maHocSinh, string trangThaiMoi)
         {
-            string sql = "UPDATE HocSinh SET Trang_Thai = @trangThai WHERE Ma_Hoc_Sinh = @maHS";
+            string sql = "UPDATE HocSinh SET TrangThai = @trangThai WHERE MaHocSinh = @maHS";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try

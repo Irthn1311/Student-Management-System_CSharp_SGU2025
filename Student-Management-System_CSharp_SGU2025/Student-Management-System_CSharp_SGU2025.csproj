@@ -145,12 +145,14 @@
   <ItemGroup>
     <Compile Include="BUS\HocSinhBLL.cs" />
     <Compile Include="BUS\HocSinhPhuHuynhBLL.cs" />
+    <Compile Include="BUS\PhanLopBLL.cs" />
     <Compile Include="BUS\PhuHuynhBLL.cs" />
     <Compile Include="DAO\HocSinhDAO.cs" />
     <Compile Include="DAO\HocSinhPhuHuynhDAO.cs" />
     <Compile Include="DAO\LopHocDAO.cs" />
     <Compile Include="DAO\MonHocDAO.cs" />
     <Compile Include="DAO\NamHocDAO.cs" />
+    <Compile Include="DAO\PhanLopDAO.cs" />
     <Compile Include="DAO\PhuHuynhDAO.cs" />
     <Compile Include="DTO\HocSinhDTO.cs" />
     <Compile Include="BUS\GiaoVienBUS.cs" />
@@ -234,6 +236,12 @@
     </Compile>
     <Compile Include="GUI\GiaoVien\GiaoVien.Designer.cs">
       <DependentUpon>GiaoVien.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\HocSinh\PhanLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\HocSinh\PhanLop.Designer.cs">
+      <DependentUpon>PhanLop.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\NamHoc\ucNamHoc.cs">
       <SubType>UserControl</SubType>
@@ -525,6 +533,9 @@
     <EmbeddedResource Include="GUI\HocSinh\HocSinh.resx">
       <DependentUpon>HocSinh.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HocSinh\PhanLop.resx">
+      <DependentUpon>PhanLop.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\NamHoc\ucNamHoc.resx">
       <DependentUpon>ucNamHoc.cs</DependentUpon>
     </EmbeddedResource>
@@ -636,6 +647,7 @@
     <Content Include="GUI\Images\exam.png" />
     <Content Include="GUI\Images\filter.png" />
     <Content Include="GUI\Images\home.png" />
+    <None Include="Images\search.png" />
     <None Include="GUI\Images\icons8-student-blue.png" />
     <None Include="GUI\Images\icons8-group-tim.png" />
     <None Include="GUI\Images\icons8-book-xanhla.png" />
