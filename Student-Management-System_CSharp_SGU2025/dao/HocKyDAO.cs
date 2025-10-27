@@ -1,223 +1,63 @@
+﻿using System;
+using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
 using Student_Management_System_CSharp_SGU2025.DTO;
-using System;
-using System.Collections.Generic;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
-    internal class HocKyDAO
+    public class HocKyDAO
     {
-        public bool ThemHocKy(HocKyDTO hocKy)
+        /// <summary>
+        /// Lấy tất cả học kỳ
+        /// </summary>
+        public List<HocKyDTO> GetAllHocKy()
         {
-            string query = "INSERT INTO HocKy(TenHocKy, MaNamHoc, NgayBD, NgayKT, TrangThai) VALUES(@TenHocKy, @MaNamHoc, @NgayBD, @NgayKT, @TrangThai)";
-            try
-            {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@TenHocKy", hocKy.TenHocKy);
-                        cmd.Parameters.AddWithValue("@MaNamHoc", hocKy.MaNamHoc);
-                        cmd.Parameters.AddWithValue("@NgayBD", hocKy.NgayBD);
-                        cmd.Parameters.AddWithValue("@NgayKT", hocKy.NgayKT);
-                        cmd.Parameters.AddWithValue("@TrangThai", hocKy.TrangThai);
-                        int result = cmd.ExecuteNonQuery();
-                        return result > 0;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi ThemHocKy: {ex.Message}");
-                throw;
-            }
-        }
-
-        public List<HocKyDTO> DocDSHocKy()
-        {
-            List<HocKyDTO> ds = new List<HocKyDTO>();
-            string query = @"SELECT hk.MaHocKy, hk.TenHocKy, hk.MaNamHoc, hk.NgayBD, hk.NgayKT, hk.TrangThai 
-                           FROM HocKy hk 
-                           INNER JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc 
-                           ORDER BY nh.NgayBatDau DESC, hk.NgayBD DESC";
+            List<HocKyDTO> list = new List<HocKyDTO>();
+            MySqlConnection conn = null;
 
             try
             {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+                    SELECT MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT
+                    FROM HocKy
+                    ORDER BY MaHocKy DESC";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        while (reader.Read())
                         {
-                            while (reader.Read())
+                            HocKyDTO hk = new HocKyDTO
                             {
-                                HocKyDTO hk = new HocKyDTO
-                                {
-                                    MaHocKy = reader.GetInt32("MaHocKy"),
-                                    TenHocKy = reader.GetString("TenHocKy"),
-                                    MaNamHoc = reader.GetString("MaNamHoc"),
-                                    NgayBD = reader.GetDateTime("NgayBD"),
-                                    NgayKT = reader.GetDateTime("NgayKT"),
-                                    TrangThai = reader.GetString("TrangThai")
-                                };
-                                ds.Add(hk);
-                            }
+                                MaHocKy = Convert.ToInt32(reader["MaHocKy"]),
+                                TenHocKy = reader["TenHocKy"].ToString(),
+                                MaNamHoc = reader["MaNamHoc"].ToString(),
+                                TrangThai = reader["TrangThai"].ToString(),
+                                NgayBD = reader["NgayBD"] != DBNull.Value ?
+                                    Convert.ToDateTime(reader["NgayBD"]) : (DateTime?)null,
+                                NgayKT = reader["NgayKT"] != DBNull.Value ?
+                                    Convert.ToDateTime(reader["NgayKT"]) : (DateTime?)null
+                            };
+                            list.Add(hk);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi DocDSHocKy: {ex.Message}");
-                throw;
+                throw new Exception("Lỗi khi lấy danh sách học kỳ: " + ex.Message);
             }
-
-            return ds;
-        }
-
-        public HocKyDTO LayHocKyTheoMa(int maHocKy)
-        {
-            HocKyDTO hocKy = null;
-            string query = "SELECT MaHocKy, TenHocKy, MaNamHoc, NgayBD, NgayKT, TrangThai FROM HocKy WHERE MaHocKy=@MaHocKy";
-
-            try
+            finally
             {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                hocKy = new HocKyDTO
-                                {
-                                    MaHocKy = reader.GetInt32("MaHocKy"),
-                                    TenHocKy = reader.GetString("TenHocKy"),
-                                    MaNamHoc = reader.GetString("MaNamHoc"),
-                                    NgayBD = reader.GetDateTime("NgayBD"),
-                                    NgayKT = reader.GetDateTime("NgayKT"),
-                                    TrangThai = reader.GetString("TrangThai")
-                                };
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi LayHocKyTheoMa: {ex.Message}");
-                throw;
+                ConnectionDatabase.CloseConnection(conn);
             }
 
-            return hocKy;
-        }
-
-        public bool CapNhatHocKy(HocKyDTO hocKy)
-        {
-            string query = "UPDATE HocKy SET TenHocKy=@TenHocKy, MaNamHoc=@MaNamHoc, NgayBD=@NgayBD, NgayKT=@NgayKT, TrangThai=@TrangThai WHERE MaHocKy=@MaHocKy";
-
-            try
-            {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@TenHocKy", hocKy.TenHocKy);
-                        cmd.Parameters.AddWithValue("@MaNamHoc", hocKy.MaNamHoc);
-                        cmd.Parameters.AddWithValue("@NgayBD", hocKy.NgayBD);
-                        cmd.Parameters.AddWithValue("@NgayKT", hocKy.NgayKT);
-                        cmd.Parameters.AddWithValue("@TrangThai", hocKy.TrangThai);
-                        cmd.Parameters.AddWithValue("@MaHocKy", hocKy.MaHocKy);
-                        int result = cmd.ExecuteNonQuery();
-                        return result > 0;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi CapNhatHocKy: {ex.Message}");
-                throw;
-            }
-        }
-
-        public bool XoaHocKy(int maHocKy)
-        {
-            string query = "DELETE FROM HocKy WHERE MaHocKy = @MaHocKy";
-
-            try
-            {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-                {
-                    conn.Open();
-
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
-
-                        int result = cmd.ExecuteNonQuery();
-
-                        return result > 0;
-                    }
-                }
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine($"MySQL Error [{ex.Number}]: {ex.Message}");
-                throw new Exception($"Lỗi database: {ex.Message}", ex);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi XoaHocKy: {ex.Message}");
-                throw;
-            }
-        }
-
-        public List<HocKyDTO> LayDanhSachHocKyTheoNamHoc(string maNamHoc)
-        {
-            List<HocKyDTO> ds = new List<HocKyDTO>();
-            string query = "SELECT MaHocKy, TenHocKy, MaNamHoc, NgayBD, NgayKT, TrangThai FROM HocKy WHERE MaNamHoc=@MaNamHoc ORDER BY NgayBD";
-
-            try
-            {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                HocKyDTO hk = new HocKyDTO
-                                {
-                                    MaHocKy = reader.GetInt32("MaHocKy"),
-                                    TenHocKy = reader.GetString("TenHocKy"),
-                                    MaNamHoc = reader.GetString("MaNamHoc"),
-                                    NgayBD = reader.GetDateTime("NgayBD"),
-                                    NgayKT = reader.GetDateTime("NgayKT"),
-                                    TrangThai = reader.GetString("TrangThai")
-                                };
-                                ds.Add(hk);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi LayDanhSachHocKyTheoNamHoc: {ex.Message}");
-                throw;
-            }
-
-            return ds;
+            return list;
         }
     }
 }
