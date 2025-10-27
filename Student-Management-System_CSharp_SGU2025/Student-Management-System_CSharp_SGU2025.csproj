@@ -54,6 +54,15 @@
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
       <HintPath>..\packages\BouncyCastle.Cryptography.2.5.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus, Version=7.0.9.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.7.0.9\lib\net462\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.Interfaces, Version=8.1.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.Interfaces.8.1.0\lib\net462\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.System.Drawing, Version=6.1.1.0, Culture=neutral, PublicKeyToken=2308d35469c9bac0, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.System.Drawing.6.1.1\lib\net462\EPPlus.System.Drawing.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Protobuf, Version=3.30.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.30.0\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
@@ -72,13 +81,21 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.3.0.1\lib\netstandard2.0\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=9.4.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.9.4.0\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.ConfigurationManager, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Configuration.ConfigurationManager.8.0.0\lib\net462\System.Configuration.ConfigurationManager.dll</HintPath>
@@ -102,6 +119,11 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Security.Cryptography.Xml, Version=8.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Xml.8.0.2\lib\net462\System.Security.Cryptography.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -121,6 +143,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BUS\HocSinhBLL.cs" />
+    <Compile Include="BUS\HocSinhPhuHuynhBLL.cs" />
+    <Compile Include="BUS\PhanLopBLL.cs" />
+    <Compile Include="BUS\PhuHuynhBLL.cs" />
+    <Compile Include="DAO\HocSinhDAO.cs" />
+    <Compile Include="DAO\HocSinhPhuHuynhDAO.cs" />
+    <Compile Include="DAO\LopHocDAO.cs" />
+    <Compile Include="DAO\MonHocDAO.cs" />
+    <Compile Include="DAO\NamHocDAO.cs" />
+    <Compile Include="DAO\PhanLopDAO.cs" />
+    <Compile Include="DAO\PhuHuynhDAO.cs" />
+    <Compile Include="DTO\HocSinhDTO.cs" />
     <Compile Include="BUS\GiaoVienBUS.cs" />
     <Compile Include="BUS\HanhKiemBUS.cs" />
     <Compile Include="BUS\HocKyBUS.cs" />
@@ -131,9 +165,6 @@
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
     <Compile Include="DAO\GiaoVienDAO.cs" />
     <Compile Include="DAO\HanhKiemDAO.cs" />
-    <Compile Include="DAO\LopHocDAO.cs" />
-    <Compile Include="DAO\MonHocDAO.cs" />
-    <Compile Include="DAO\NamHocDAO.cs" />
     <Compile Include="DTO\GiaoVienDTO.cs" />
     <Compile Include="DTO\HanhKiemDTO.cs" />
     <Compile Include="DAO\HocKyDAO.cs" />
@@ -143,6 +174,7 @@
     <Compile Include="DTO\LopDTO.cs" />
     <Compile Include="DTO\MonHocDTO.cs" />
     <Compile Include="DTO\NamHocDTO.cs" />
+    <Compile Include="DTO\PhuHuynhDTO.cs" />
     <Compile Include="DTO\PhanCongGiangDayDTO.cs" />
     <Compile Include="DTO\ThoiKhoaBieuDTO.cs" />
     <Compile Include="GUI\CaiDat\CaiDat.cs">
@@ -156,6 +188,18 @@
     </Compile>
     <Compile Include="GUI\CardHoatDongNoiBatDashboard.Designer.cs">
       <DependentUpon>CardHoatDongNoiBatDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ChinhSuaHocSinh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ChinhSuaHocSinh.Designer.cs">
+      <DependentUpon>ChinhSuaHocSinh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ChinhSuaPhuHuynh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ChinhSuaPhuHuynh.Designer.cs">
+      <DependentUpon>ChinhSuaPhuHuynh.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\DanhGia\DanhGia.cs">
       <SubType>UserControl</SubType>
@@ -192,6 +236,12 @@
     </Compile>
     <Compile Include="GUI\GiaoVien\GiaoVien.Designer.cs">
       <DependentUpon>GiaoVien.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\HocSinh\PhanLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\HocSinh\PhanLop.Designer.cs">
+      <DependentUpon>PhanLop.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\NamHoc\ucNamHoc.cs">
       <SubType>UserControl</SubType>
@@ -252,6 +302,18 @@
     </Compile>
     <Compile Include="GUI\TaiKhoan\FrmTaiKhoan.Designer.cs">
       <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemHoSoHocSinh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemHoSoHocSinh.Designer.cs">
+      <DependentUpon>ThemHoSoHocSinh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThemPhuHuynh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ThemPhuHuynh.Designer.cs">
+      <DependentUpon>ThemPhuHuynh.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\ThemSua%28Phuc%29\FrmSuaMonHoc.cs">
       <SubType>Form</SubType>
@@ -382,17 +444,17 @@
     <Compile Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.Designer.cs">
       <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\ThemHoSoHocSinh.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\ThemHoSoHocSinh.Designer.cs">
-      <DependentUpon>ThemHoSoHocSinh.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\ThoiKhoaBieu\ThoiKhoaBieu.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\ThoiKhoaBieu\ThoiKhoaBieu.Designer.cs">
       <DependentUpon>ThoiKhoaBieu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ThongBao\ThongBao.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\ThongBao\ThongBao.Designer.cs">
+      <DependentUpon>ThongBao.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\ThongKeCard.cs">
       <SubType>UserControl</SubType>
@@ -423,6 +485,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\CardHoatDongNoiBatDashboard.resx">
       <DependentUpon>CardHoatDongNoiBatDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ChinhSuaHocSinh.resx">
+      <DependentUpon>ChinhSuaHocSinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ChinhSuaPhuHuynh.resx">
+      <DependentUpon>ChinhSuaPhuHuynh.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\DanhGia\DanhGia.resx">
       <DependentUpon>DanhGia.cs</DependentUpon>
@@ -465,6 +533,9 @@
     <EmbeddedResource Include="GUI\HocSinh\HocSinh.resx">
       <DependentUpon>HocSinh.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HocSinh\PhanLop.resx">
+      <DependentUpon>PhanLop.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\NamHoc\ucNamHoc.resx">
       <DependentUpon>ucNamHoc.cs</DependentUpon>
     </EmbeddedResource>
@@ -491,6 +562,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\TaiKhoan\FrmTaiKhoan.resx">
       <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThemHoSoHocSinh.resx">
+      <DependentUpon>ThemHoSoHocSinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThemPhuHuynh.resx">
+      <DependentUpon>ThemPhuHuynh.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThemSua%28Phuc%29\frmThemHocKy.resx">
       <DependentUpon>frmThemHocKy.cs</DependentUpon>
@@ -525,6 +602,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThoiKhoaBieu\ThoiKhoaBieu.resx">
       <DependentUpon>ThoiKhoaBieu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ThongBao\ThongBao.resx">
+      <DependentUpon>ThongBao.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThongKeCard.resx">
       <DependentUpon>ThongKeCard.cs</DependentUpon>
@@ -567,6 +647,7 @@
     <Content Include="GUI\Images\exam.png" />
     <Content Include="GUI\Images\filter.png" />
     <Content Include="GUI\Images\home.png" />
+    <None Include="Images\search.png" />
     <None Include="GUI\Images\icons8-student-blue.png" />
     <None Include="GUI\Images\icons8-group-tim.png" />
     <None Include="GUI\Images\icons8-book-xanhla.png" />

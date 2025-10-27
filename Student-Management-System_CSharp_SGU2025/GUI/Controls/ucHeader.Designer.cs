@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblLogName = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.tenDangNhap = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2PictureBox4 = new Guna.UI2.WinForms.Guna2PictureBox();
             this.btnNotifications = new Guna.UI2.WinForms.Guna2Button();
             this.txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
             this.lblBreadcrumb = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.lblLogName = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.tenDangNhap = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.guna2PictureBox4 = new Guna.UI2.WinForms.Guna2PictureBox();
             this.pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox4)).BeginInit();
             this.SuspendLayout();
@@ -49,13 +49,50 @@
             this.pnlHeader.Controls.Add(this.txtSearch);
             this.pnlHeader.Controls.Add(this.lblBreadcrumb);
             this.pnlHeader.Controls.Add(this.lblTitle);
-            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlHeader.FillColor = System.Drawing.Color.White;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Padding = new System.Windows.Forms.Padding(27, 18, 27, 18);
             this.pnlHeader.Size = new System.Drawing.Size(1184, 81);
             this.pnlHeader.TabIndex = 1;
+            // 
+            // lblLogName
+            // 
+            this.lblLogName.AutoSize = false;
+            this.lblLogName.BackColor = System.Drawing.Color.Transparent;
+            this.lblLogName.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLogName.ForeColor = System.Drawing.Color.DimGray;
+            this.lblLogName.Location = new System.Drawing.Point(1027, 53);
+            this.lblLogName.Margin = new System.Windows.Forms.Padding(2);
+            this.lblLogName.Name = "lblLogName";
+            this.lblLogName.Size = new System.Drawing.Size(67, 16);
+            this.lblLogName.TabIndex = 10;
+            this.lblLogName.Text = "Login name";
+            // 
+            // tenDangNhap
+            // 
+            this.tenDangNhap.AutoSize = false;
+            this.tenDangNhap.BackColor = System.Drawing.Color.Transparent;
+            this.tenDangNhap.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tenDangNhap.Location = new System.Drawing.Point(1027, 26);
+            this.tenDangNhap.Margin = new System.Windows.Forms.Padding(2);
+            this.tenDangNhap.Name = "tenDangNhap";
+            this.tenDangNhap.Size = new System.Drawing.Size(128, 23);
+            this.tenDangNhap.TabIndex = 8;
+            this.tenDangNhap.Text = "Tên đăng nhập";
+            // 
+            // guna2PictureBox4
+            // 
+            this.guna2PictureBox4.BackColor = System.Drawing.Color.Transparent;
+            this.guna2PictureBox4.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.user;
+            this.guna2PictureBox4.ImageRotate = 0F;
+            this.guna2PictureBox4.Location = new System.Drawing.Point(983, 29);
+            this.guna2PictureBox4.Margin = new System.Windows.Forms.Padding(2);
+            this.guna2PictureBox4.Name = "guna2PictureBox4";
+            this.guna2PictureBox4.Size = new System.Drawing.Size(40, 40);
+            this.guna2PictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.guna2PictureBox4.TabIndex = 9;
+            this.guna2PictureBox4.TabStop = false;
             // 
             // btnNotifications
             // 
@@ -122,44 +159,6 @@
             this.lblTitle.Size = new System.Drawing.Size(124, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Bảng tin";
-            // 
-            // lblLogName
-            // 
-            this.lblLogName.AutoSize = false;
-            this.lblLogName.BackColor = System.Drawing.Color.Transparent;
-            this.lblLogName.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLogName.ForeColor = System.Drawing.Color.DimGray;
-            this.lblLogName.Location = new System.Drawing.Point(1027, 53);
-            this.lblLogName.Margin = new System.Windows.Forms.Padding(2);
-            this.lblLogName.Name = "lblLogName";
-            this.lblLogName.Size = new System.Drawing.Size(67, 16);
-            this.lblLogName.TabIndex = 10;
-            this.lblLogName.Text = "Login name";
-            // 
-            // tenDangNhap
-            // 
-            this.tenDangNhap.AutoSize = false;
-            this.tenDangNhap.BackColor = System.Drawing.Color.Transparent;
-            this.tenDangNhap.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tenDangNhap.Location = new System.Drawing.Point(1027, 26);
-            this.tenDangNhap.Margin = new System.Windows.Forms.Padding(2);
-            this.tenDangNhap.Name = "tenDangNhap";
-            this.tenDangNhap.Size = new System.Drawing.Size(128, 23);
-            this.tenDangNhap.TabIndex = 8;
-            this.tenDangNhap.Text = "Tên đăng nhập";
-            // 
-            // guna2PictureBox4
-            // 
-            this.guna2PictureBox4.BackColor = System.Drawing.Color.Transparent;
-            this.guna2PictureBox4.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.user;
-            this.guna2PictureBox4.ImageRotate = 0F;
-            this.guna2PictureBox4.Location = new System.Drawing.Point(983, 29);
-            this.guna2PictureBox4.Margin = new System.Windows.Forms.Padding(2);
-            this.guna2PictureBox4.Name = "guna2PictureBox4";
-            this.guna2PictureBox4.Size = new System.Drawing.Size(40, 40);
-            this.guna2PictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.guna2PictureBox4.TabIndex = 9;
-            this.guna2PictureBox4.TabStop = false;
             // 
             // ucHeader
             // 

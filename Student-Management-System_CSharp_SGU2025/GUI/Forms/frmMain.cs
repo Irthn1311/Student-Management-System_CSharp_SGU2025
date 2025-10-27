@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Student_Management_System_CSharp_SGU2025.GUI.Dashboard;
+using Student_Management_System_CSharp_SGU2025.GUI.HocSinh;
 
 // Đảm bảo bạn đã thêm các using cho các UserControl của mình, ví dụ:
 // using Student_Management_System_CSharp_SGU2025.GUI.userControl; 
@@ -43,6 +44,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucSidebar1.LopHocButton.Click += (s, e) => ShowLopKhoi();
             ucSidebar1.MonHocButton.Click += (s, e) => ShowFrmMonHoc();
             ucSidebar1.PhanCongButton.Click += (s, e) => ShowPhanCongGiangDay();
+            ucSidebar1.ThongBaoButton.Click += (s, e) => ShowThongBao();
             ucSidebar1.NamHocButton.Click += (s, e) => ShowNamHoc();
             // Kết nối các form mới
             ucSidebar1.TaiKhoanButton.Click += (s, e) => ShowTaiKhoan();
@@ -218,7 +220,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             DisposeCurrentUserControl();
 
             // Create and show HocSinh
-            var hocSinh = new HocSinh();
+            var hocSinh = new GUI.HocSinh.HocSinh();
             hocSinh.BackColor = Color.FromArgb(243, 244, 246);
             hocSinh.Location = new Point(256, 80);
             hocSinh.Margin = new Padding(2);
@@ -231,7 +233,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Update header
             ucHeader1.UpdateHeader("Hồ sơ Học sinh", "Trang chủ / Hồ sơ học sinh");
-            LoadControlToPanel<HocSinh>();
+            LoadControlToPanel<GUI.HocSinh.HocSinh>();
         }
 
         private void ShowDiemSo()
@@ -352,6 +354,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucHeader1.UpdateHeader("Thời khóa biểu", "Trang chủ / Thời khóa biểu");
             LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu.ThoiKhoaBieu>();
         }
+
+        private void ShowThongBao()
+        {
+            ucHeader1.UpdateHeader("Thông báo", "Trang chủ / Thông báo");
+            LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.ThongBao.ThongBao>();
+        }
+
         private void ShowNamHoc()
         {
             ucHeader1.UpdateHeader("Năm học", "Trang chủ / Năm học");

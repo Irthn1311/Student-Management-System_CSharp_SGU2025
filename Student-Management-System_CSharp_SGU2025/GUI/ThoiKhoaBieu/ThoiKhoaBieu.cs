@@ -180,6 +180,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                     return (Color.Black, Color.Gainsboro, Color.WhiteSmoke);
             }
         }
+
+        private void cbLop_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }

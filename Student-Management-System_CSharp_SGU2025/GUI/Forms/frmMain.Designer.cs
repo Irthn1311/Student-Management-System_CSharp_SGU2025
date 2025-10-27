@@ -16,10 +16,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.panelContent = new System.Windows.Forms.Panel();
             this.ucSidebar1 = new Student_Management_System_CSharp_SGU2025.GUI.ucSidebar();
             this.ucHeader1 = new Student_Management_System_CSharp_SGU2025.GUI.ucHeader();
-            this.panelContent = new System.Windows.Forms.Panel();
             this.SuspendLayout();
+            // 
+            // panelContent
+            // 
+            this.panelContent.BackColor = System.Drawing.SystemColors.Control;
+            this.panelContent.Location = new System.Drawing.Point(256, 84);
+            this.panelContent.Name = "panelContent";
+            this.panelContent.Size = new System.Drawing.Size(1168, 777);
+            this.panelContent.TabIndex = 4;
+            this.panelContent.Paint += new System.Windows.Forms.PaintEventHandler(this.panelContent_Paint);
             // 
             // ucSidebar1
             // 
@@ -37,8 +46,12 @@
             this.ucHeader1.Location = new System.Drawing.Point(341, 0);
             this.ucHeader1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ucHeader1.Name = "ucHeader1";
+ //           this.ucHeader1.Size = new System.Drawing.Size(1184, 87);
+//            this.ucHeader1.TabIndex = 2;
+            // 
             this.ucHeader1.Size = new System.Drawing.Size(1579, 118);
             this.ucHeader1.TabIndex = 2;
+          // cho nay bi loi
             // 
             // panelContent
             // 
