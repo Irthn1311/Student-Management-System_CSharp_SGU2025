@@ -16,7 +16,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu tồn tại, False nếu không.</returns>
         public bool KiemTraTonTai(int maPhuHuynh)
         {
-            string sql = "SELECT COUNT(*) FROM PhuHuynh WHERE Ma_Phu_Huynh = @maPH";
+            string sql = "SELECT COUNT(*) FROM PhuHuynh WHERE MaPhuHuynh = @maPH";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -50,10 +50,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             if (string.IsNullOrWhiteSpace(sdt)) return false;
 
             // Xây dựng câu SQL động
-            string sql = "SELECT COUNT(*) FROM PhuHuynh WHERE So_Dien_Thoai = @sdt";
+            string sql = "SELECT COUNT(*) FROM PhuHuynh WHERE SoDienThoai = @sdt";
             if (maPhuHuynhToExclude > 0)
             {
-                sql += " AND Ma_Phu_Huynh != @maPH";
+                sql += " AND MaPhuHuynh != @maPH";
             }
 
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
@@ -95,7 +95,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             string sql = "SELECT COUNT(*) FROM PhuHuynh WHERE Email = @email";
             if (maPhuHuynhToExclude > 0)
             {
-                sql += " AND Ma_Phu_Huynh != @maPH";
+                sql += " AND MaPhuHuynh != @maPH";
             }
 
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
@@ -145,11 +145,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         while (reader.Read())
                         {
                             PhuHuynhDTO ph = new PhuHuynhDTO(
-                                reader.GetInt32("Ma_Phu_Huynh"),
-                                reader.GetString("Ho_Ten"),
-                                reader.IsDBNull(reader.GetOrdinal("So_Dien_Thoai")) ? null : reader.GetString("So_Dien_Thoai"),
+                                reader.GetInt32("MaPhuHuynh"),
+                                reader.GetString("HoTen"),
+                                reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? null : reader.GetString("SoDienThoai"),
                                 reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString("Email"),
-                                reader.IsDBNull(reader.GetOrdinal("Dia_Chi")) ? null : reader.GetString("Dia_Chi")
+                                reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? null : reader.GetString("DiaChi")
                             );
                             dsPhuHuynh.Add(ph);
                         }
@@ -175,8 +175,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu thêm thành công, False nếu thất bại.</returns>
         public bool ThemPhuHuynh(PhuHuynhDTO ph)
         {
-            // Ma_Phu_Huynh là AUTO_INCREMENT
-            string sql = "INSERT INTO PhuHuynh (Ho_Ten, So_Dien_Thoai, Email, Dia_Chi) VALUES (@hoTen, @sdt, @email, @diaChi)";
+            // MaPhuHuynh là AUTO_INCREMENT
+            string sql = "INSERT INTO PhuHuynh (HoTen, SoDienThoai, Email, DiaChi) VALUES (@hoTen, @sdt, @email, @diaChi)";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 MySqlTransaction transaction = null;
@@ -226,7 +226,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu xóa thành công, False nếu thất bại.</returns>
         public bool XoaPhuHuynh(int maPhuHuynh)
         {
-            string sql = "DELETE FROM PhuHuynh WHERE Ma_Phu_Huynh = @maPH";
+            string sql = "DELETE FROM PhuHuynh WHERE MaPhuHuynh = @maPH";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -259,11 +259,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public bool CapNhatPhuHuynh(PhuHuynhDTO ph)
         {
             string sql = @"UPDATE PhuHuynh SET
-                           Ho_Ten = @hoTen,
-                           So_Dien_Thoai = @sdt,
+                           HoTen = @hoTen,
+                           SoDienThoai = @sdt,
                            Email = @email,
-                           Dia_Chi = @diaChi
-                         WHERE Ma_Phu_Huynh = @maPH";
+                           DiaChi = @diaChi
+                         WHERE MaPhuHuynh = @maPH";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -300,7 +300,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>Đối tượng PhuHuynhDTO nếu tìm thấy, null nếu không.</returns>
         public PhuHuynhDTO TimPhuHuynhTheoMa(int maPhuHuynh)
         {
-            string sql = "SELECT * FROM PhuHuynh WHERE Ma_Phu_Huynh = @maPH";
+            string sql = "SELECT * FROM PhuHuynh WHERE MaPhuHuynh = @maPH";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -314,11 +314,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             if (reader.Read())
                             {
                                 PhuHuynhDTO ph = new PhuHuynhDTO(
-                                    reader.GetInt32("Ma_Phu_Huynh"),
-                                    reader.GetString("Ho_Ten"),
-                                    reader.IsDBNull(reader.GetOrdinal("So_Dien_Thoai")) ? null : reader.GetString("So_Dien_Thoai"),
+                                    reader.GetInt32("MaPhuHuynh"),
+                                    reader.GetString("HoTen"),
+                                    reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? null : reader.GetString("SoDienThoai"),
                                     reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString("Email"),
-                                    reader.IsDBNull(reader.GetOrdinal("Dia_Chi")) ? null : reader.GetString("Dia_Chi")
+                                    reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? null : reader.GetString("DiaChi")
                                 );
                                 return ph;
                             }

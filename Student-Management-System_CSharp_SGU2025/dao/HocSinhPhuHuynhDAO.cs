@@ -25,7 +25,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 return false; // Hoặc ném Exception tùy logic
             }
 
-            string sql = "INSERT INTO HocSinh_PhuHuynh (Ma_Hoc_Sinh, Ma_Phu_Huynh, Moi_Quan_He) VALUES (@maHS, @maPH, @quanHe)";
+            string sql = "INSERT INTO HocSinhPhuHuynh (MaHocSinh, MaPhuHuynh, MoiQuanHe) VALUES (@maHS, @maPH, @quanHe)";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -62,7 +62,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu xóa thành công, False nếu thất bại.</returns>
         public bool XoaQuanHe(int maHocSinh, int maPhuHuynh)
         {
-            string sql = "DELETE FROM HocSinh_PhuHuynh WHERE Ma_Hoc_Sinh = @maHS AND Ma_Phu_Huynh = @maPH";
+            string sql = "DELETE FROM HocSinhPhuHuynh WHERE MaHocSinh = @maHS AND MaPhuHuynh = @maPH";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -89,7 +89,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
 
         /// <summary>
-        /// Cập nhật thông tin mối quan hệ (chủ yếu là cột Moi_Quan_He).
+        /// Cập nhật thông tin mối quan hệ (chủ yếu là cột MoiQuanHe).
         /// </summary>
         /// <param name="maHocSinh">Mã học sinh.</param>
         /// <param name="maPhuHuynh">Mã phụ huynh.</param>
@@ -97,7 +97,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu cập nhật thành công, False nếu thất bại.</returns>
         public bool CapNhatQuanHe(int maHocSinh, int maPhuHuynh, string moiQuanHeMoi)
         {
-            string sql = "UPDATE HocSinh_PhuHuynh SET Moi_Quan_He = @quanHe WHERE Ma_Hoc_Sinh = @maHS AND Ma_Phu_Huynh = @maPH";
+            string sql = "UPDATE HocSinhPhuHuynh SET MoiQuanHe = @quanHe WHERE MaHocSinh = @maHS AND MaPhuHuynh = @maPH";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -132,11 +132,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public List<(PhuHuynhDTO phuHuynh, string moiQuanHe)> LayPhuHuynhCuaHocSinh(int maHocSinh)
         {
             List<(PhuHuynhDTO, string)> dsPhuHuynh = new List<(PhuHuynhDTO, string)>();
-            // JOIN 3 bảng: HocSinh_PhuHuynh -> PhuHuynh
-            string sql = @"SELECT ph.*, hsph.Moi_Quan_He
+            // JOIN 3 bảng: HocSinhPhuHuynh -> PhuHuynh
+            string sql = @"SELECT ph.*, hsph.MoiQuanHe
                            FROM PhuHuynh ph
-                           JOIN HocSinh_PhuHuynh hsph ON ph.Ma_Phu_Huynh = hsph.Ma_Phu_Huynh
-                           WHERE hsph.Ma_Hoc_Sinh = @maHS";
+                           JOIN HocSinhPhuHuynh hsph ON ph.MaPhuHuynh = hsph.MaPhuHuynh
+                           WHERE hsph.MaHocSinh = @maHS";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -150,13 +150,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             while (reader.Read())
                             {
                                 PhuHuynhDTO ph = new PhuHuynhDTO(
-                                    reader.GetInt32("Ma_Phu_Huynh"),
-                                    reader.GetString("Ho_Ten"),
-                                    reader.IsDBNull(reader.GetOrdinal("So_Dien_Thoai")) ? null : reader.GetString("So_Dien_Thoai"),
+                                    reader.GetInt32("MaPhuHuynh"),
+                                    reader.GetString("HoTen"),
+                                    reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? null : reader.GetString("SoDienThoai"),
                                     reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString("Email"),
-                                    reader.IsDBNull(reader.GetOrdinal("Dia_Chi")) ? null : reader.GetString("Dia_Chi")
+                                    reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? null : reader.GetString("DiaChi")
                                 );
-                                string moiQuanHe = reader.GetString("Moi_Quan_He");
+                                string moiQuanHe = reader.GetString("MoiQuanHe");
                                 dsPhuHuynh.Add((ph, moiQuanHe)); // Thêm Tuple vào danh sách
                             }
                         }
@@ -183,11 +183,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public List<(HocSinhDTO hocSinh, string moiQuanHe)> LayHocSinhCuaPhuHuynh(int maPhuHuynh)
         {
             List<(HocSinhDTO, string)> dsHocSinh = new List<(HocSinhDTO, string)>();
-            // JOIN 3 bảng: HocSinh_PhuHuynh -> HocSinh
-            string sql = @"SELECT hs.*, hsph.Moi_Quan_He
+            // JOIN 3 bảng: HocSinhPhuHuynh -> HocSinh
+            string sql = @"SELECT hs.*, hsph.MoiQuanHe
                            FROM HocSinh hs
-                           JOIN HocSinh_PhuHuynh hsph ON hs.Ma_Hoc_Sinh = hsph.Ma_Hoc_Sinh
-                           WHERE hsph.Ma_Phu_Huynh = @maPH";
+                           JOIN HocSinhPhuHuynh hsph ON hs.MaHocSinh = hsph.MaHocSinh
+                           WHERE hsph.MaPhuHuynh = @maPH";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -201,15 +201,15 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             while (reader.Read())
                             {
                                 HocSinhDTO hs = new HocSinhDTO(
-                                    reader.GetInt32("Ma_Hoc_Sinh"),
-                                    reader.GetString("Ho_Ten"),
-                                    reader.GetDateTime("Ngay_Sinh"),
-                                    reader.GetString("Gioi_Tinh"),
-                                    reader.IsDBNull(reader.GetOrdinal("SDT_HS")) ? null : reader.GetString("SDT_HS"),
+                                    reader.GetInt32("MaHocSinh"),
+                                    reader.GetString("HoTen"),
+                                    reader.GetDateTime("NgaySinh"),
+                                    reader.GetString("GioiTinh"),
+                                    reader.IsDBNull(reader.GetOrdinal("SDTHS")) ? null : reader.GetString("SDTHS"),
                                     reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString("Email"),
-                                    reader.GetString("Trang_Thai")
+                                    reader.GetString("TrangThai")
                                 );
-                                string moiQuanHe = reader.GetString("Moi_Quan_He");
+                                string moiQuanHe = reader.GetString("MoiQuanHe");
                                 dsHocSinh.Add((hs, moiQuanHe)); // Thêm Tuple vào danh sách
                             }
                         }
@@ -236,7 +236,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu đã tồn tại, False nếu chưa.</returns>
         public bool KiemTraQuanHeTonTai(int maHocSinh, int maPhuHuynh)
         {
-            string sql = "SELECT COUNT(*) FROM HocSinh_PhuHuynh WHERE Ma_Hoc_Sinh = @maHS AND Ma_Phu_Huynh = @maPH";
+            string sql = "SELECT COUNT(*) FROM HocSinhPhuHuynh WHERE MaHocSinh = @maHS AND MaPhuHuynh = @maPH";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -265,11 +265,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <summary>
         /// Lấy tất cả các mối quan hệ Học sinh - Phụ huynh trong hệ thống.
         /// </summary>
-        /// <returns>Danh sách các tuple (Ma_Hoc_Sinh, Ma_Phu_Huynh, Moi_Quan_He).</returns>
+        /// <returns>Danh sách các tuple (MaHocSinh, MaPhuHuynh, MoiQuanHe).</returns>
         public List<(int maHocSinh, int maPhuHuynh, string moiQuanHe)> LayTatCaQuanHe()
         {
             List<(int, int, string)> ds = new List<(int, int, string)>();
-            string sql = "SELECT Ma_Hoc_Sinh, Ma_Phu_Huynh, Moi_Quan_He FROM HocSinh_PhuHuynh";
+            string sql = "SELECT MaHocSinh, MaPhuHuynh, MoiQuanHe FROM HocSinhPhuHuynh";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -300,7 +300,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu xóa thành công (hoặc không có gì để xóa), False nếu có lỗi.</returns>
         public bool XoaQuanHeTheoMaHocSinh(int maHocSinh)
         {
-            string sql = "DELETE FROM HocSinh_PhuHuynh WHERE Ma_Hoc_Sinh = @maHS";
+            string sql = "DELETE FROM HocSinhPhuHuynh WHERE MaHocSinh = @maHS";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -332,7 +332,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// <returns>True nếu xóa thành công (hoặc không có gì để xóa), False nếu có lỗi.</returns>
         public bool XoaQuanHeTheoMaPhuHuynh(int maPhuHuynh)
         {
-            string sql = "DELETE FROM HocSinh_PhuHuynh WHERE Ma_Phu_Huynh = @maPH";
+            string sql = "DELETE FROM HocSinhPhuHuynh WHERE MaPhuHuynh = @maPH";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try

@@ -16,7 +16,7 @@ using OfficeOpenXml.Style; // Cần cho định dạng (tô màu, in đậm)
 using Student_Management_System_CSharp_SGU2025.BUS; 
 using Student_Management_System_CSharp_SGU2025.DTO;
 
-namespace Student_Management_System_CSharp_SGU2025.GUI
+namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 {
     public partial class HocSinh : UserControl
     {
@@ -26,10 +26,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private HocSinhBLL hocSinhBLL;
         private PhuHuynhBLL phuHuynhBLL;
         private HocSinhPhuHuynhBLL hocSinhPhuHuynhBLL;
+        private LopHocBUS lopHocBUS;
+        private PhanLopBLL phanLopBLL;
+        private HocKyBUS hocKyBUS;
 
         private List<HocSinhDTO> danhSachHocSinh;
         private List<PhuHuynhDTO> danhSachPhuHuynh;
         private List<(int hocSinh, int phuHuynh, string moiQuanHe)> danhSachMoiQuanHe;
+        
 
         public HocSinh()
         {
@@ -38,6 +42,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             hocSinhBLL = new HocSinhBLL();
             phuHuynhBLL = new PhuHuynhBLL();
             hocSinhPhuHuynhBLL = new HocSinhPhuHuynhBLL();
+            lopHocBUS = new LopHocBUS();
+            phanLopBLL = new PhanLopBLL();
+            hocKyBUS = new HocKyBUS();
 
             danhSachHocSinh = new List<HocSinhDTO>();
             danhSachPhuHuynh = new List<PhuHuynhDTO>();
@@ -66,7 +73,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             SetupTableMoiQuanHe(); 
 
             // --- Nạp dữ liệu mẫu ---
-            LoadSampleDataHocSinh();
+            FilterAndLoadHocSinh(); // Sử dụng hàm lọc thay vì LoadSampleDataHocSinh
             LoadSampleDataPhuHuynh();
             LoadSampleDataMoiQuanHe(); 
 
@@ -89,7 +96,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 tablePhuHuynh.Visible = false;
                 btnThemPhuHuynh.Visible = false;
                 btnPhuHuynh.Text = "Phụ Huynh";
-                headerQuanLiHocSinh.lbHeader.Text = "Hồ sơ Học sinh"; // Cập nhật header
+                headerQuanLiHocSinh.lbHeader.Text = "Hồ sơ Học sinh"; 
                 headerQuanLiHocSinh.lbGhiChu.Text = "Trang chủ / Hồ sơ học sinh";
             }
             else
@@ -99,7 +106,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 tablePhuHuynh.Visible = true;
                 btnThemPhuHuynh.Visible = true;
                 btnPhuHuynh.Text = "Học Sinh";
-                headerQuanLiHocSinh.lbHeader.Text = "Thông tin Phụ huynh"; // Cập nhật header
+                headerQuanLiHocSinh.lbHeader.Text = "Thông tin Phụ huynh"; 
                 headerQuanLiHocSinh.lbGhiChu.Text = "Trang chủ / Phụ huynh";
             }
         }
@@ -130,26 +137,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // --- Cập nhật các thẻ thống kê ---
             statCardTongHocSinh.lbCardTitle.Text = "Tổng học sinh";
             statCardTongHocSinh.lbCardValue.Text = tongHocSinh.ToString("N0"); // Định dạng có dấu phẩy ngăn cách
-            int tongLop = 36; // Lấy từ lopHocBLL.GetTotalLopHoc();
+            int tongLop = lopHocBUS.GetTotalLopHoc();
             if (tongLop > 0)
             {
                 double siSoTB = Math.Round((double)tongHocSinh / tongLop, 1);
-                statCardTongHocSinh.lbCardNote.Text = $"TB: {siSoTB} HS/lớp";
+                statCardTongHocSinh.lbCardNote.Text = $"TB: {siSoTB} HS/lớp khi chia đều - Tổng lớp :{tongLop}";
             }
 
             statCardNam.lbCardTitle.Text = "Nam";
             statCardNam.lbCardValue.Text = tongHocSinhNam.ToString("N0");
-            // 👇 Cập nhật Note với phần trăm đã tính
             statCardNam.lbCardNote.Text = $"{phanTramNam}% tổng số";
 
             statCardNu.lbCardTitle.Text = "Nữ";
             statCardNu.lbCardValue.Text = tongHocSinhNu.ToString("N0");
-            // 👇 Cập nhật Note với phần trăm đã tính
             statCardNu.lbCardNote.Text = $"{phanTramNu}% tổng số";
 
             statCardDangHoc.lbCardTitle.Text = "Đang học";
             statCardDangHoc.lbCardValue.Text = tongHocSinhDangHoc.ToString("N0");
-            // 👇 Cập nhật Note (thêm chữ "nghỉ học")
+            
             statCardDangHoc.lbCardNote.Text = $"{tongHocSinhNghiHoc} nghỉ học";
 
             // --- Gán màu sắc (giữ nguyên) ---
@@ -158,6 +163,39 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             statCardNu.lbCardValue.ForeColor = Color.FromArgb(219, 39, 119);
             statCardDangHoc.lbCardValue.ForeColor = Color.FromArgb(22, 163, 74);
             statCardDangHoc.lbCardNote.ForeColor = Color.FromArgb(220, 38, 38);
+
+            // Load ComboBox Học Kỳ 
+            List<HocKyDTO> danhSachHocKy = hocKyBUS.DocDSHocKy();
+            cbHocKyNamHoc.Items.Clear();
+            cbHocKyNamHoc.Items.Add("Tất cả học kỳ");
+            foreach (var hk in danhSachHocKy)
+            {
+                cbHocKyNamHoc.Items.Add(hk.TenHocKy + "-" +hk.MaNamHoc);
+            }
+            if (cbHocKyNamHoc.Items.Count > 0)
+            {
+                cbHocKyNamHoc.SelectedIndex = 0; // Chọn mục đầu tiên làm mặc định
+            }
+
+            // Gắn sự kiện cho ComboBox Học Kỳ
+            cbHocKyNamHoc.SelectedIndexChanged += cbHocKyNamHoc_SelectedIndexChanged;
+
+            // Load ComboBox Lớp Học
+            List<LopDTO> danhSachLop = lopHocBUS.DocDSLop();
+            cbLop.Items.Clear();
+            cbLop.Items.Add("Tất cả lớp");
+            foreach (var lop in danhSachLop)
+            {
+                cbLop.Items.Add(lop.TenLop);
+            }
+            if (cbLop.Items.Count > 0)
+            {
+                cbLop.SelectedIndex = 0; // Chọn mục đầu tiên làm mặc định
+            }
+
+            // Gắn sự kiện cho ComboBox Lớp
+            cbLop.SelectedIndexChanged += cbLop_SelectedIndexChanged;
+
         }
 
         #region Bảng Học Sinh
@@ -204,12 +242,61 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             tableHocSinh.Rows.Clear();
             danhSachHocSinh = hocSinhBLL.GetAllHocSinh();
-            
-            foreach(HocSinhDTO hs in danhSachHocSinh)
-            {
-                tableHocSinh.Rows.Add(hs.MaHS, hs.HoTen, hs.NgaySinh.ToString("dd/MM/yyyy"), hs.GioiTinh, "10A1", hs.TrangThai, "");
-            }
 
+            try
+            {
+                // 1. Lấy tất cả dữ liệu cần thiết MỘT LẦN
+                List<(int maHocSinh, int maLop, int maHocKy)> allPhanLop = phanLopBLL.GetAllPhanLop();
+                List<LopDTO> allLopHoc = lopHocBUS.DocDSLop();
+
+                // 2. Duyệt qua từng học sinh
+                foreach (HocSinhDTO hs in danhSachHocSinh)
+                {
+                    int maLopMoiNhat = -1;
+                    int hocKyMoiNhat = -1;
+
+                    // 3. Tìm phân lớp MỚI NHẤT (học kỳ cao nhất) cho học sinh này
+                    foreach (var pl in allPhanLop)
+                    {
+                        if (pl.maHocSinh == hs.MaHS) // Nếu là phân lớp của học sinh này
+                        {
+                            if (pl.maHocKy > hocKyMoiNhat) // Và học kỳ này mới hơn học kỳ đã lưu
+                            {
+                                hocKyMoiNhat = pl.maHocKy; // Cập nhật học kỳ mới nhất
+                                maLopMoiNhat = pl.maLop;   // Cập nhật mã lớp tương ứng
+                            }
+                        }
+                    }
+
+                    // 4. Tìm tên lớp dựa vào maLopMoiNhat
+                    string tenLopHienThi = "Chưa PL"; // Mặc định là chưa phân lớp
+                    if (maLopMoiNhat != -1) // Nếu học sinh này đã từng được phân lớp
+                    {
+                        foreach (var lop in allLopHoc)
+                        {
+                            if (lop.MaLop == maLopMoiNhat) // Tìm lớp có mã khớp
+                            {
+                                tenLopHienThi = lop.TenLop; // Lấy tên lớp
+                                break; // Đã tìm thấy, thoát vòng lặp tìm lớp
+                            }
+                        }
+                        // Nếu không tìm thấy tên lớp (dù có mã lớp), tenLopHienThi vẫn là "Chưa PL"
+                        // Hoặc bạn có thể đặt là "Lớp không tồn tại"
+                    }
+
+                    // 5. Thêm dòng vào bảng
+                    tableHocSinh.Rows.Add(hs.MaHS, hs.HoTen, hs.NgaySinh.ToString("dd/MM/yyyy"), hs.GioiTinh, tenLopHienThi, hs.TrangThai, "");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải dữ liệu phân lớp: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Fallback nếu có lỗi
+                foreach (HocSinhDTO hs in danhSachHocSinh)
+                {
+                    tableHocSinh.Rows.Add(hs.MaHS, hs.HoTen, hs.NgaySinh.ToString("dd/MM/yyyy"), hs.GioiTinh, "Lỗi", hs.TrangThai, "");
+                }
+            }
         }
 
         // Vẽ icon cho bảng Học Sinh
@@ -290,11 +377,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tablePhuHuynh.Columns["DiaChi"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
             // --- Tùy chỉnh kích thước ---
-            tablePhuHuynh.Columns["MaPH"].FillWeight = 10; tablePhuHuynh.Columns["MaPH"].MinimumWidth = 60;
-            tablePhuHuynh.Columns["HoTenPH"].FillWeight = 20; tablePhuHuynh.Columns["HoTenPH"].MinimumWidth = 130;
-            tablePhuHuynh.Columns["Sdt"].FillWeight = 12; tablePhuHuynh.Columns["Sdt"].MinimumWidth = 100;
-            tablePhuHuynh.Columns["Email"].FillWeight = 20; tablePhuHuynh.Columns["Email"].MinimumWidth = 150;
-            tablePhuHuynh.Columns["DiaChi"].FillWeight = 25; tablePhuHuynh.Columns["DiaChi"].MinimumWidth = 180;
+            tablePhuHuynh.Columns["MaPH"].FillWeight = 10; tablePhuHuynh.Columns["MaPH"].MinimumWidth = 50;
+            tablePhuHuynh.Columns["HoTenPH"].FillWeight = 20; tablePhuHuynh.Columns["HoTenPH"].MinimumWidth = 90;
+            tablePhuHuynh.Columns["Sdt"].FillWeight = 12; tablePhuHuynh.Columns["Sdt"].MinimumWidth = 80;
+            tablePhuHuynh.Columns["Email"].FillWeight = 20; tablePhuHuynh.Columns["Email"].MinimumWidth = 180;
+            tablePhuHuynh.Columns["DiaChi"].FillWeight = 25; tablePhuHuynh.Columns["DiaChi"].MinimumWidth = 190;
             tablePhuHuynh.Columns["ThaoTacPH"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             tablePhuHuynh.Columns["ThaoTacPH"].Width = 100; // Độ rộng cột thao tác
 
@@ -578,7 +665,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         if (result == DialogResult.OK)
                         {
                             // Nếu form sửa trả về OK (đã lưu thành công) -> Load lại dữ liệu
-                            LoadSampleDataHocSinh();
+                            FilterAndLoadHocSinh();
                             LoadSampleDataMoiQuanHe();
 
                             SetupHeaderAndStats();     
@@ -617,7 +704,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             if (deleteHSSuccess) // Chỉ cần kiểm tra xóa HS thành công
                             {
                                 MessageBox.Show("Đã xóa học sinh và các mối quan hệ liên quan.");
-                                LoadSampleDataHocSinh(); // Nạp lại bảng HS
+                                FilterAndLoadHocSinh(); // Nạp lại bảng HS
                                 LoadSampleDataMoiQuanHe(); // Nạp lại bảng MQH
                                 SetupHeaderAndStats();      // Cập nhật lại các thẻ thống kê
                             }
@@ -753,7 +840,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 
                 try
                 {
-                    LoadSampleDataHocSinh();    // Load lại bảng Học sinh
+                    FilterAndLoadHocSinh();    // Load lại bảng Học sinh
                     LoadSampleDataMoiQuanHe();  // Load lại bảng Mối quan hệ
                                                 
                     SetupHeaderAndStats();      // Cập nhật lại các thẻ thống kê
@@ -939,6 +1026,156 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         MessageBox.Show("Có lỗi khi xuất file Excel: " + ex.Message, "Lỗi",
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
+            }
+        }
+
+        private void cbHocKyNamHoc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Cập nhật lại bảng học sinh khi thay đổi học kỳ
+            FilterAndLoadHocSinh();
+        }
+
+        private void cbLop_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Cập nhật lại bảng học sinh khi thay đổi lớp
+            FilterAndLoadHocSinh();
+        }
+
+        // Hàm lọc và tải học sinh theo lớp và học kỳ được chọn
+        private void FilterAndLoadHocSinh()
+        {
+            try
+            {
+                tableHocSinh.Rows.Clear();
+                
+                // Lấy giá trị được chọn từ ComboBox
+                string selectedLop = cbLop.SelectedItem?.ToString();
+                string selectedHocKy = cbHocKyNamHoc.SelectedItem?.ToString();
+
+                // Lấy tất cả học sinh
+                danhSachHocSinh = hocSinhBLL.GetAllHocSinh();
+
+                // Lấy tất cả phân lớp
+                List<(int maHocSinh, int maLop, int maHocKy)> allPhanLop = phanLopBLL.GetAllPhanLop();
+                List<LopDTO> allLopHoc = lopHocBUS.DocDSLop();
+                List<HocKyDTO> allHocKy = hocKyBUS.DocDSHocKy();
+
+                // Duyệt qua từng học sinh và kiểm tra điều kiện lọc
+                foreach (HocSinhDTO hs in danhSachHocSinh)
+                {
+                    bool shouldShow = true;
+
+                    // Tìm phân lớp mới nhất của học sinh này
+                    int maLopMoiNhat = -1;
+                    int hocKyMoiNhat = -1;
+
+                    foreach (var pl in allPhanLop)
+                    {
+                        if (pl.maHocSinh == hs.MaHS && pl.maHocKy > hocKyMoiNhat)
+                        {
+                            hocKyMoiNhat = pl.maHocKy;
+                            maLopMoiNhat = pl.maLop;
+                        }
+                    }
+
+                    // Kiểm tra điều kiện lớp
+                    if (selectedLop != "Tất cả lớp" && selectedLop != null)
+                    {
+                        string tenLopHienTai = "";
+                        if (maLopMoiNhat != -1)
+                        {
+                            foreach (var lop in allLopHoc)
+                            {
+                                if (lop.MaLop == maLopMoiNhat)
+                                {
+                                    tenLopHienTai = lop.TenLop;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (tenLopHienTai != selectedLop)
+                        {
+                            shouldShow = false;
+                        }
+                    }
+
+                    // Kiểm tra điều kiện học kỳ
+                    if (selectedHocKy != "Tất cả học kỳ" && selectedHocKy != null)
+                    {
+                        string tenHocKyHienTai = "";
+                        if (hocKyMoiNhat != -1)
+                        {
+                            foreach (var hk in allHocKy)
+                            {
+                                if (hk.MaHocKy == hocKyMoiNhat)
+                                {
+                                    tenHocKyHienTai = hk.TenHocKy + "-" + hk.MaNamHoc;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (tenHocKyHienTai != selectedHocKy)
+                        {
+                            shouldShow = false;
+                        }
+                    }
+
+                    // Nếu học sinh thỏa mãn điều kiện lọc, thêm vào bảng
+                    if (shouldShow)
+                    {
+                        string tenLopHienThi = "Chưa PL";
+                        if (maLopMoiNhat != -1)
+                        {
+                            foreach (var lop in allLopHoc)
+                            {
+                                if (lop.MaLop == maLopMoiNhat)
+                                {
+                                    tenLopHienThi = lop.TenLop;
+                                    break;
+                                }
+                            }
+                        }
+
+                        tableHocSinh.Rows.Add(hs.MaHS, hs.HoTen, hs.NgaySinh.ToString("dd/MM/yyyy"), 
+                                             hs.GioiTinh, tenLopHienThi, hs.TrangThai, "");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lọc dữ liệu học sinh: " + ex.Message, "Lỗi", 
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // btnPhanLop
+        private void guna2Button1_Click_1(object sender, EventArgs e)
+        {
+            // 1. Tạo và hiển thị form Thêm
+            GUI.HocSinh.PhanLop frm = new GUI.HocSinh.PhanLop();
+            frm.StartPosition = FormStartPosition.CenterScreen;
+
+            // 2. Hiển thị form dưới dạng Dialog và chờ kết quả
+            DialogResult result = frm.ShowDialog();
+
+            // 3. Kiểm tra kết quả trả về từ form Thêm
+            if (result == DialogResult.OK)
+            {
+
+                try
+                {
+                    FilterAndLoadHocSinh();    // Load lại bảng học sinh
+                    LoadSampleDataMoiQuanHe(); // Load lại bảng mối quan hệ
+                    SetupHeaderAndStats();     // Cập nhật thống kê
+
+                    MessageBox.Show("Dữ liệu đã được cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Đã xảy ra lỗi khi tải lại dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
