@@ -38,14 +38,13 @@
             this.cbLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.tableNhapDiem = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.MãHS = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.maHS = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hoVaTen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.diemTX = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.diemGK = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.diemCK = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.diemTB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnXuatExcel = new Guna.UI2.WinForms.Guna2Button();
-            this.btnLuuDiem = new Guna.UI2.WinForms.Guna2Button();
             this.btnNhapDiem = new Guna.UI2.WinForms.Guna2Button();
             this.btnXemBangDiem = new Guna.UI2.WinForms.Guna2Button();
             this.tableXemBangDiem = new Guna.UI2.WinForms.Guna2DataGridView();
@@ -79,17 +78,19 @@
             this.cbMonHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbMonHoc.ItemHeight = 30;
             this.cbMonHoc.Items.AddRange(new object[] {
+            "Chọn môn",
             "Toán ",
             "Văn ",
             "Anh ",
             "Hóa ",
             "Vật Lí"});
-            this.cbMonHoc.Location = new System.Drawing.Point(1041, 20);
+            this.cbMonHoc.Location = new System.Drawing.Point(882, 20);
             this.cbMonHoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbMonHoc.Name = "cbMonHoc";
-            this.cbMonHoc.Size = new System.Drawing.Size(103, 36);
+            this.cbMonHoc.Size = new System.Drawing.Size(262, 36);
             this.cbMonHoc.StartIndex = 0;
             this.cbMonHoc.TabIndex = 12;
+            this.cbMonHoc.SelectedIndexChanged += new System.EventHandler(this.cbMonHoc_SelectedIndexChanged);
             // 
             // cbLop
             // 
@@ -102,15 +103,16 @@
             this.cbLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbLop.ItemHeight = 30;
             this.cbLop.Items.AddRange(new object[] {
-            "Tất cả lớp",
+            "Chọn lớp",
             "Lớp 6A1",
             "Lớp 7A2"});
-            this.cbLop.Location = new System.Drawing.Point(899, 20);
+            this.cbLop.Location = new System.Drawing.Point(735, 20);
             this.cbLop.Margin = new System.Windows.Forms.Padding(2);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(120, 36);
             this.cbLop.StartIndex = 0;
             this.cbLop.TabIndex = 13;
+            this.cbLop.SelectedIndexChanged += new System.EventHandler(this.cbLop_SelectedIndexChanged);
             // 
             // cbHocKyNamHoc
             // 
@@ -123,15 +125,15 @@
             this.cbHocKyNamHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbHocKyNamHoc.ItemHeight = 30;
             this.cbHocKyNamHoc.Items.AddRange(new object[] {
-            "Tất cả Học kì",
+            "Chọn học kỳ",
             "Học Kỳ I - 2023 - 2024",
             "Học Kỳ II - 2023 - 2024",
             "Học Kỳ I - 2024 - 2025",
             "Học Kỳ II - 2024 - 2025"});
-            this.cbHocKyNamHoc.Location = new System.Drawing.Point(677, 20);
+            this.cbHocKyNamHoc.Location = new System.Drawing.Point(503, 20);
             this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
-            this.cbHocKyNamHoc.Size = new System.Drawing.Size(198, 36);
+            this.cbHocKyNamHoc.Size = new System.Drawing.Size(184, 36);
             this.cbHocKyNamHoc.StartIndex = 0;
             this.cbHocKyNamHoc.TabIndex = 14;
             this.cbHocKyNamHoc.SelectedIndexChanged += new System.EventHandler(this.cbHocKyNamHoc_SelectedIndexChanged);
@@ -199,41 +201,41 @@
             this.tableNhapDiem.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.tableNhapDiem.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tableNhapDiem_CellContentClick);
             // 
-            // MãHS
+            // maHS
             // 
-            this.MãHS.HeaderText = "STT";
-            this.MãHS.MinimumWidth = 6;
-            this.MãHS.Name = "MãHS";
+            this.maHS.HeaderText = "Mã HS";
+            this.maHS.MinimumWidth = 6;
+            this.maHS.Name = "maHS";
             // 
-            // Column1
+            // hoVaTen
             // 
-            this.Column1.HeaderText = "Họ và Tên";
-            this.Column1.MinimumWidth = 6;
-            this.Column1.Name = "Column1";
+            this.hoVaTen.HeaderText = "Họ và Tên";
+            this.hoVaTen.MinimumWidth = 6;
+            this.hoVaTen.Name = "hoVaTen";
             // 
-            // Column2
+            // diemTX
             // 
-            this.Column2.HeaderText = "Điểm TX";
-            this.Column2.MinimumWidth = 6;
-            this.Column2.Name = "Column2";
+            this.diemTX.HeaderText = "Điểm TX";
+            this.diemTX.MinimumWidth = 6;
+            this.diemTX.Name = "diemTX";
             // 
-            // Column3
+            // diemGK
             // 
-            this.Column3.HeaderText = "Giữa Kì";
-            this.Column3.MinimumWidth = 6;
-            this.Column3.Name = "Column3";
+            this.diemGK.HeaderText = "Giữa Kì";
+            this.diemGK.MinimumWidth = 6;
+            this.diemGK.Name = "diemGK";
             // 
-            // Column7
+            // diemCK
             // 
-            this.Column7.HeaderText = "Cuối Kì";
-            this.Column7.MinimumWidth = 6;
-            this.Column7.Name = "Column7";
+            this.diemCK.HeaderText = "Cuối Kì";
+            this.diemCK.MinimumWidth = 6;
+            this.diemCK.Name = "diemCK";
             // 
-            // Column8
+            // diemTB
             // 
-            this.Column8.HeaderText = "Trung Bình";
-            this.Column8.MinimumWidth = 6;
-            this.Column8.Name = "Column8";
+            this.diemTB.HeaderText = "Trung Bình";
+            this.diemTB.MinimumWidth = 6;
+            this.diemTB.Name = "diemTB";
             // 
             // btnXuatExcel
             // 
@@ -247,33 +249,13 @@
             this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnXuatExcel.ForeColor = System.Drawing.Color.White;
             this.btnXuatExcel.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.download;
-            this.btnXuatExcel.Location = new System.Drawing.Point(1016, 707);
+            this.btnXuatExcel.Location = new System.Drawing.Point(1006, 704);
             this.btnXuatExcel.Margin = new System.Windows.Forms.Padding(2);
             this.btnXuatExcel.Name = "btnXuatExcel";
             this.btnXuatExcel.Size = new System.Drawing.Size(138, 43);
             this.btnXuatExcel.TabIndex = 21;
             this.btnXuatExcel.Text = "Xuất Excel";
             this.btnXuatExcel.Click += new System.EventHandler(this.btnXuatExcel_Click);
-            // 
-            // btnLuuDiem
-            // 
-            this.btnLuuDiem.BackColor = System.Drawing.Color.Transparent;
-            this.btnLuuDiem.BorderRadius = 5;
-            this.btnLuuDiem.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnLuuDiem.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnLuuDiem.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnLuuDiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnLuuDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
-            this.btnLuuDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnLuuDiem.ForeColor = System.Drawing.Color.White;
-            this.btnLuuDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.diskette;
-            this.btnLuuDiem.Location = new System.Drawing.Point(1016, 707);
-            this.btnLuuDiem.Margin = new System.Windows.Forms.Padding(2);
-            this.btnLuuDiem.Name = "btnLuuDiem";
-            this.btnLuuDiem.Size = new System.Drawing.Size(138, 43);
-            this.btnLuuDiem.TabIndex = 20;
-            this.btnLuuDiem.Text = "Lưu điểm";
-            this.btnLuuDiem.Click += new System.EventHandler(this.btnLuuDiem_Click);
             // 
             // btnNhapDiem
             // 
@@ -375,67 +357,48 @@
             this.tableXemBangDiem.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.tableXemBangDiem.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tableXemBangDiem_CellContentClick);
             // 
-            // dataGridViewTextBoxColumn1
+            // maHS1
             // 
-            this.dataGridViewTextBoxColumn1.HeaderText = "Học sinh";
-            this.dataGridViewTextBoxColumn1.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.maHS1.HeaderText = "Mã HS";
+            this.maHS1.Name = "maHS1";
             // 
-            // dataGridViewTextBoxColumn2
+            // hoTen
             // 
-            this.dataGridViewTextBoxColumn2.HeaderText = "Toán";
-            this.dataGridViewTextBoxColumn2.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.hoTen.HeaderText = "Học sinh";
+            this.hoTen.MinimumWidth = 6;
+            this.hoTen.Name = "hoTen";
             // 
-            // dataGridViewTextBoxColumn3
+            // dToan
             // 
-            this.dataGridViewTextBoxColumn3.HeaderText = "Văn";
-            this.dataGridViewTextBoxColumn3.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dToan.HeaderText = "Toán";
+            this.dToan.MinimumWidth = 6;
+            this.dToan.Name = "dToan";
             // 
-            // dataGridViewTextBoxColumn4
+            // dVan
             // 
-            this.dataGridViewTextBoxColumn4.HeaderText = "Anh";
-            this.dataGridViewTextBoxColumn4.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dVan.HeaderText = "Văn";
+            this.dVan.MinimumWidth = 6;
+            this.dVan.Name = "dVan";
             // 
-            // dataGridViewTextBoxColumn5
+            // dAnh
             // 
-            this.dataGridViewTextBoxColumn5.HeaderText = "Vật Lí";
-            this.dataGridViewTextBoxColumn5.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            this.dAnh.HeaderText = "Anh";
+            this.dAnh.MinimumWidth = 6;
+            this.dAnh.Name = "dAnh";
             // 
-            // dataGridViewTextBoxColumn6
+            // dVatLi
             // 
-            this.dataGridViewTextBoxColumn6.HeaderText = "Hóa";
-            this.dataGridViewTextBoxColumn6.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
+            this.dVatLi.HeaderText = "Vật Lí";
+            this.dVatLi.MinimumWidth = 6;
+            this.dVatLi.Name = "dVatLi";
             // 
-            // Column4
+            // dHoa
             // 
-            this.Column4.HeaderText = "TB Chung";
-            this.Column4.MinimumWidth = 6;
-            this.Column4.Name = "Column4";
+            this.dHoa.HeaderText = "Hóa";
+            this.dHoa.MinimumWidth = 6;
+            this.dHoa.Name = "dHoa";
             // 
-            // btnKhoaDiem
-            // 
-            this.btnKhoaDiem.BackColor = System.Drawing.Color.Transparent;
-            this.btnKhoaDiem.BorderRadius = 5;
-            this.btnKhoaDiem.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnKhoaDiem.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnKhoaDiem.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnKhoaDiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnKhoaDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnKhoaDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnKhoaDiem.ForeColor = System.Drawing.Color.White;
-            this.btnKhoaDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.padlock;
-            this.btnKhoaDiem.Location = new System.Drawing.Point(860, 707);
-            this.btnKhoaDiem.Margin = new System.Windows.Forms.Padding(2);
-            this.btnKhoaDiem.Name = "btnKhoaDiem";
-            this.btnKhoaDiem.Size = new System.Drawing.Size(138, 43);
-            this.btnKhoaDiem.TabIndex = 26;
-            this.btnKhoaDiem.Text = "Khóa điểm";
-            this.btnKhoaDiem.Click += new System.EventHandler(this.btnKhoaDiem_Click);
+            // dTB
             // 
             // guna2Panel1
             // 
@@ -466,6 +429,7 @@
             this.statCardDiemThapNhat.Name = "statCardDiemThapNhat";
             this.statCardDiemThapNhat.Size = new System.Drawing.Size(262, 136);
             this.statCardDiemThapNhat.TabIndex = 27;
+            this.statCardDiemThapNhat.Load += new System.EventHandler(this.statCardDiemThapNhat_Load);
             // 
             // statCardDiemCaoNhat
             // 
@@ -501,15 +465,20 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.txtSearch);
+            this.Controls.Add(this.btnReload);
+            this.Controls.Add(this.cbHocKyBD);
+            this.Controls.Add(this.btnXemChiTiet);
+            this.Controls.Add(this.cbLopBD);
+            this.Controls.Add(this.btnSuaDiem);
+            this.Controls.Add(this.btnThemDiem);
             this.Controls.Add(this.guna2Panel1);
             this.Controls.Add(this.statCardDaNhap);
             this.Controls.Add(this.statCardDiemThapNhat);
             this.Controls.Add(this.statCardDiemCaoNhat);
             this.Controls.Add(this.statCardDiemTrungBinh);
-            this.Controls.Add(this.btnKhoaDiem);
             this.Controls.Add(this.tableXemBangDiem);
             this.Controls.Add(this.btnXuatExcel);
-            this.Controls.Add(this.btnLuuDiem);
             this.Controls.Add(this.tableNhapDiem);
             this.Controls.Add(this.cbHocKyNamHoc);
             this.Controls.Add(this.cbLop);
@@ -533,29 +502,35 @@
         private Guna.UI2.WinForms.Guna2ComboBox cbLop;
         private Guna.UI2.WinForms.Guna2ComboBox cbHocKyNamHoc;
         private Guna.UI2.WinForms.Guna2DataGridView tableNhapDiem;
-        private System.Windows.Forms.DataGridViewTextBoxColumn MãHS;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
-        private Guna.UI2.WinForms.Guna2Button btnLuuDiem;
         private Guna.UI2.WinForms.Guna2Button btnXuatExcel;
         private Guna.UI2.WinForms.Guna2Button btnNhapDiem;
         private Guna.UI2.WinForms.Guna2Button btnXemBangDiem;
         private Guna.UI2.WinForms.Guna2DataGridView tableXemBangDiem;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private Guna.UI2.WinForms.Guna2Button btnKhoaDiem;
         private StatCardQuanLiHocSinh statCardDiemTrungBinh;
         private StatCardQuanLiHocSinh statCardDiemCaoNhat;
         private StatCardQuanLiHocSinh statCardDiemThapNhat;
         private StatCardQuanLiHocSinh statCardDaNhap;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn maHS;
+        private System.Windows.Forms.DataGridViewTextBoxColumn hoVaTen;
+        private System.Windows.Forms.DataGridViewTextBoxColumn diemTX;
+        private System.Windows.Forms.DataGridViewTextBoxColumn diemGK;
+        private System.Windows.Forms.DataGridViewTextBoxColumn diemCK;
+        private System.Windows.Forms.DataGridViewTextBoxColumn diemTB;
+        private System.Windows.Forms.DataGridViewTextBoxColumn maHS1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn hoTen;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dToan;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dVan;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dAnh;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dVatLi;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dHoa;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dTB;
+        private Guna.UI2.WinForms.Guna2Button btnThemDiem;
+        private Guna.UI2.WinForms.Guna2Button btnSuaDiem;
+        private Guna.UI2.WinForms.Guna2ComboBox cbLopBD;
+        private Guna.UI2.WinForms.Guna2Button btnXemChiTiet;
+        private Guna.UI2.WinForms.Guna2ComboBox cbHocKyBD;
+        private Guna.UI2.WinForms.Guna2Button btnReload;
+        private Guna.UI2.WinForms.Guna2TextBox txtSearch;
     }
 }
