@@ -48,27 +48,20 @@
             this.btnNhapDiem = new Guna.UI2.WinForms.Guna2Button();
             this.btnXemBangDiem = new Guna.UI2.WinForms.Guna2Button();
             this.tableXemBangDiem = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.maHS1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hoTen = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dToan = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dVan = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dAnh = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dVatLi = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dHoa = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dTB = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnKhoaDiem = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
-            this.btnThemDiem = new Guna.UI2.WinForms.Guna2Button();
-            this.btnSuaDiem = new Guna.UI2.WinForms.Guna2Button();
-            this.cbLopBD = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.btnXemChiTiet = new Guna.UI2.WinForms.Guna2Button();
-            this.cbHocKyBD = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.btnReload = new Guna.UI2.WinForms.Guna2Button();
             this.statCardDaNhap = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardDiemThapNhat = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardDiemCaoNhat = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardDiemTrungBinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.headerQuanLiNhapDiem = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
-            this.txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.tableNhapDiem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tableXemBangDiem)).BeginInit();
             this.guna2Panel1.SuspendLayout();
@@ -162,12 +155,12 @@
             this.tableNhapDiem.ColumnHeadersHeight = 19;
             this.tableNhapDiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tableNhapDiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.maHS,
-            this.hoVaTen,
-            this.diemTX,
-            this.diemGK,
-            this.diemCK,
-            this.diemTB});
+            this.MãHS,
+            this.Column1,
+            this.Column2,
+            this.Column3,
+            this.Column7,
+            this.Column8});
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -317,14 +310,13 @@
             this.tableXemBangDiem.ColumnHeadersHeight = 19;
             this.tableXemBangDiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tableXemBangDiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.maHS1,
-            this.hoTen,
-            this.dToan,
-            this.dVan,
-            this.dAnh,
-            this.dVatLi,
-            this.dHoa,
-            this.dTB});
+            this.dataGridViewTextBoxColumn1,
+            this.dataGridViewTextBoxColumn2,
+            this.dataGridViewTextBoxColumn3,
+            this.dataGridViewTextBoxColumn4,
+            this.dataGridViewTextBoxColumn5,
+            this.dataGridViewTextBoxColumn6,
+            this.Column4});
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -408,10 +400,6 @@
             // 
             // dTB
             // 
-            this.dTB.HeaderText = "TB Chung";
-            this.dTB.MinimumWidth = 6;
-            this.dTB.Name = "dTB";
-            // 
             // guna2Panel1
             // 
             this.guna2Panel1.BackColor = System.Drawing.Color.Transparent;
@@ -424,112 +412,6 @@
             this.guna2Panel1.Size = new System.Drawing.Size(293, 48);
             this.guna2Panel1.TabIndex = 28;
             // 
-            // btnThemDiem
-            // 
-            this.btnThemDiem.BorderRadius = 10;
-            this.btnThemDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
-            this.btnThemDiem.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.btnThemDiem.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.btnThemDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus1;
-            this.btnThemDiem.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThemDiem.Location = new System.Drawing.Point(988, 707);
-            this.btnThemDiem.Name = "btnThemDiem";
-            this.btnThemDiem.Size = new System.Drawing.Size(156, 40);
-            this.btnThemDiem.TabIndex = 29;
-            this.btnThemDiem.Text = "Thêm điểm";
-            this.btnThemDiem.Click += new System.EventHandler(this.btnThemDiem_Click);
-            // 
-            // btnSuaDiem
-            // 
-            this.btnSuaDiem.BorderRadius = 10;
-            this.btnSuaDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
-            this.btnSuaDiem.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.btnSuaDiem.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.btnSuaDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus1;
-            this.btnSuaDiem.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnSuaDiem.Location = new System.Drawing.Point(757, 707);
-            this.btnSuaDiem.Name = "btnSuaDiem";
-            this.btnSuaDiem.Size = new System.Drawing.Size(156, 40);
-            this.btnSuaDiem.TabIndex = 30;
-            this.btnSuaDiem.Text = "Sửa điểm";
-            this.btnSuaDiem.Click += new System.EventHandler(this.btnSuaDiem_Click);
-            // 
-            // cbLopBD
-            // 
-            this.cbLopBD.BackColor = System.Drawing.Color.Transparent;
-            this.cbLopBD.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cbLopBD.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbLopBD.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbLopBD.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbLopBD.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLopBD.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
-            this.cbLopBD.ItemHeight = 30;
-            this.cbLopBD.Items.AddRange(new object[] {
-            "Chọn lớp",
-            "Lớp 6A1",
-            "Lớp 7A2"});
-            this.cbLopBD.Location = new System.Drawing.Point(1024, 20);
-            this.cbLopBD.Margin = new System.Windows.Forms.Padding(2);
-            this.cbLopBD.Name = "cbLopBD";
-            this.cbLopBD.Size = new System.Drawing.Size(120, 36);
-            this.cbLopBD.StartIndex = 0;
-            this.cbLopBD.TabIndex = 31;
-            this.cbLopBD.SelectedIndexChanged += new System.EventHandler(this.cbLopBD_SelectedIndexChanged);
-            // 
-            // btnXemChiTiet
-            // 
-            this.btnXemChiTiet.BorderRadius = 10;
-            this.btnXemChiTiet.FillColor = System.Drawing.Color.Gray;
-            this.btnXemChiTiet.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.btnXemChiTiet.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.btnXemChiTiet.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.search;
-            this.btnXemChiTiet.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnXemChiTiet.Location = new System.Drawing.Point(757, 707);
-            this.btnXemChiTiet.Name = "btnXemChiTiet";
-            this.btnXemChiTiet.Size = new System.Drawing.Size(156, 40);
-            this.btnXemChiTiet.TabIndex = 32;
-            this.btnXemChiTiet.Text = "Xem chi tiết";
-            this.btnXemChiTiet.Click += new System.EventHandler(this.btnXemChiTiet_Click);
-            // 
-            // cbHocKyBD
-            // 
-            this.cbHocKyBD.BackColor = System.Drawing.Color.Transparent;
-            this.cbHocKyBD.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cbHocKyBD.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbHocKyBD.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbHocKyBD.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbHocKyBD.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbHocKyBD.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
-            this.cbHocKyBD.ItemHeight = 30;
-            this.cbHocKyBD.Items.AddRange(new object[] {
-            "Chọn học kỳ",
-            "Học Kỳ I - 2023 - 2024",
-            "Học Kỳ II - 2023 - 2024",
-            "Học Kỳ I - 2024 - 2025",
-            "Học Kỳ II - 2024 - 2025"});
-            this.cbHocKyBD.Location = new System.Drawing.Point(768, 20);
-            this.cbHocKyBD.Margin = new System.Windows.Forms.Padding(2);
-            this.cbHocKyBD.Name = "cbHocKyBD";
-            this.cbHocKyBD.Size = new System.Drawing.Size(184, 36);
-            this.cbHocKyBD.StartIndex = 0;
-            this.cbHocKyBD.TabIndex = 33;
-            this.cbHocKyBD.SelectedIndexChanged += new System.EventHandler(this.cbHocKyBD_SelectedIndexChanged);
-            // 
-            // btnReload
-            // 
-            this.btnReload.BorderRadius = 10;
-            this.btnReload.FillColor = System.Drawing.Color.ForestGreen;
-            this.btnReload.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.btnReload.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.btnReload.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.repair;
-            this.btnReload.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnReload.Location = new System.Drawing.Point(531, 707);
-            this.btnReload.Name = "btnReload";
-            this.btnReload.Size = new System.Drawing.Size(156, 40);
-            this.btnReload.TabIndex = 34;
-            this.btnReload.Text = "Reload thống kê";
-            this.btnReload.Click += new System.EventHandler(this.btnReload_Click);
-            // 
             // statCardDaNhap
             // 
             this.statCardDaNhap.BackColor = System.Drawing.Color.Transparent;
@@ -538,7 +420,6 @@
             this.statCardDaNhap.Name = "statCardDaNhap";
             this.statCardDaNhap.Size = new System.Drawing.Size(262, 136);
             this.statCardDaNhap.TabIndex = 27;
-            this.statCardDaNhap.Load += new System.EventHandler(this.statCardDaNhap_Load);
             // 
             // statCardDiemThapNhat
             // 
@@ -558,7 +439,6 @@
             this.statCardDiemCaoNhat.Name = "statCardDiemCaoNhat";
             this.statCardDiemCaoNhat.Size = new System.Drawing.Size(262, 136);
             this.statCardDiemCaoNhat.TabIndex = 27;
-            this.statCardDiemCaoNhat.Load += new System.EventHandler(this.statCardDiemCaoNhat_Load);
             // 
             // statCardDiemTrungBinh
             // 
@@ -568,7 +448,6 @@
             this.statCardDiemTrungBinh.Name = "statCardDiemTrungBinh";
             this.statCardDiemTrungBinh.Size = new System.Drawing.Size(262, 136);
             this.statCardDiemTrungBinh.TabIndex = 27;
-            this.statCardDiemTrungBinh.Load += new System.EventHandler(this.statCardDiemTrungBinh_Load);
             // 
             // headerQuanLiNhapDiem
             // 
@@ -580,27 +459,6 @@
             this.headerQuanLiNhapDiem.TabIndex = 0;
             this.headerQuanLiNhapDiem.Visible = false;
             this.headerQuanLiNhapDiem.Load += new System.EventHandler(this.headerQuanLiNhapDiem_Load);
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.BorderRadius = 8;
-            this.txtSearch.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtSearch.DefaultText = "";
-            this.txtSearch.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txtSearch.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.txtSearch.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtSearch.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtSearch.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtSearch.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtSearch.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.search;
-            this.txtSearch.Location = new System.Drawing.Point(16, 707);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.PlaceholderText = "Tìm kiếm...";
-            this.txtSearch.SelectedText = "";
-            this.txtSearch.Size = new System.Drawing.Size(256, 40);
-            this.txtSearch.TabIndex = 35;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
             // DiemSo_NhapDiem
             // 
