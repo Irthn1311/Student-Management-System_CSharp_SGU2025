@@ -38,6 +38,11 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             }
         }
 
+        public string MaHocSinh
+        {
+            get { return this._maHS.ToString(); }
+        }
+
         public string HoTen
         {
             get { return this._hoTen; }

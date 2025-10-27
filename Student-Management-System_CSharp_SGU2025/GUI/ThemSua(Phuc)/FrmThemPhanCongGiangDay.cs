@@ -61,7 +61,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_
             {
                 List<GiaoVienDTO> dsGV = giaoVienBUS.DocDSGiaoVien();
                 cbGiaoVien.Items.Clear();
-                cbGiaoVien.Items.Add("-- Chọn giáo viên --");
+                cbGiaoVien.Items.Add(new ComboBoxItem
+                {
+                    Text = "-- Chọn giáo viên --",
+                    Value = ""
+                });
 
                 if (dsGV != null && dsGV.Count > 0)
                 {
@@ -92,7 +96,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_
             {
                 List<MonHocDTO> dsMH = monHocBUS.DocDSMH();
                 cbMonHoc.Items.Clear();
-                cbMonHoc.Items.Add("-- Chọn môn học --");
+                cbMonHoc.Items.Add(new ComboBoxItem
+                {
+                    Text = "-- Chọn môn học --",
+                    Value = 0
+                });
 
                 if (dsMH != null && dsMH.Count > 0)
                 {
@@ -123,7 +131,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_
             {
                 List<LopDTO> dsLop = lopHocBUS.DocDSLop();
                 cbLop.Items.Clear();
-                cbLop.Items.Add("-- Chọn lớp --");
+                cbLop.Items.Add(new ComboBoxItem
+                {
+                    Text = "-- Chọn lớp --",
+                    Value = 0
+                });
 
                 if (dsLop != null && dsLop.Count > 0)
                 {
@@ -154,7 +166,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_
             {
                 List<HocKyDTO> dsHK = hocKyBUS.DocDSHocKy();
                 cbHocKy.Items.Clear();
-                cbHocKy.Items.Add("-- Chọn học kỳ --");
+                cbHocKy.Items.Add(new ComboBoxItem
+                {
+                    Text = "-- Chọn học kỳ --",
+                    Value = 0
+                });
 
                 if (dsHK != null && dsHK.Count > 0)
                 {

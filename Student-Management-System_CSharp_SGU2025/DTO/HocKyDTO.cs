@@ -1,26 +1,27 @@
-using System;
+﻿using System;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
-    internal class HocKyDTO
+    public class HocKyDTO
     {
         private int maHocKy;
         private string tenHocKy;
         private string maNamHoc;
-        private DateTime ngayBD;
-        private DateTime ngayKT;
         private string trangThai;
+        private DateTime? ngayBD;
+        private DateTime? ngayKT;
 
         public HocKyDTO() { }
 
-        public HocKyDTO(int maHocKy, string tenHocKy, string maNamHoc, DateTime ngayBD, DateTime ngayKT, string trangThai)
+        public HocKyDTO(int maHocKy, string tenHocKy, string maNamHoc,
+                        string trangThai, DateTime? ngayBD, DateTime? ngayKT)
         {
             this.maHocKy = maHocKy;
             this.tenHocKy = tenHocKy;
             this.maNamHoc = maNamHoc;
+            this.trangThai = trangThai;
             this.ngayBD = ngayBD;
             this.ngayKT = ngayKT;
-            this.trangThai = trangThai;
         }
 
         public int MaHocKy
@@ -32,43 +33,31 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         public string TenHocKy
         {
             get { return tenHocKy; }
-            set
-            {
-                if (!string.IsNullOrWhiteSpace(value))
-                    tenHocKy = value;
-                else
-                    throw new ArgumentException("Tên học kỳ không được để trống");
-            }
+            set { tenHocKy = value; }
         }
 
         public string MaNamHoc
         {
             get { return maNamHoc; }
-            set
-            {
-                if (!string.IsNullOrWhiteSpace(value))
-                    maNamHoc = value;
-                else
-                    throw new ArgumentException("Mã năm học không được để trống");
-            }
-        }
-
-        public DateTime NgayBD
-        {
-            get { return ngayBD; }
-            set { ngayBD = value; }
-        }
-
-        public DateTime NgayKT
-        {
-            get { return ngayKT; }
-            set { ngayKT = value; }
+            set { maNamHoc = value; }
         }
 
         public string TrangThai
         {
             get { return trangThai; }
             set { trangThai = value; }
+        }
+
+        public DateTime? NgayBD
+        {
+            get { return ngayBD; }
+            set { ngayBD = value; }
+        }
+
+        public DateTime? NgayKT
+        {
+            get { return ngayKT; }
+            set { ngayKT = value; }
         }
     }
 }

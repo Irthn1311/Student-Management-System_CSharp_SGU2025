@@ -27,7 +27,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
                 if (!string.IsNullOrWhiteSpace(value))
                     maNamHoc = value;
                 else
-                    throw new ArgumentException("Mã năm học không được để trống");  
+                    throw new ArgumentException("Mã năm học không được để trống");
             }
         }
 

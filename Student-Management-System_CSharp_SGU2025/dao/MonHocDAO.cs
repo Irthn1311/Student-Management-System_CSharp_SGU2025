@@ -33,11 +33,12 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
         //tat ca
-        public List<MonHocDTO> DocDSMH(){
+        public List<MonHocDTO> DocDSMH()
+        {
             List<MonHocDTO> ds = new List<MonHocDTO>();
-            string query="select MaMonHoc, TenMonHoc, SoTiet,GhiChu from MonHoc";
+            string query = "select MaMonHoc, TenMonHoc, SoTiet,GhiChu from MonHoc";
             //Tạo đối tượng kết nối tới cơ sở dữ liệu MySQL bằng hàm GetConnection() (do bạn tự định nghĩa trong lớp ConnectionDatabase).            
-            using (MySqlConnection conn=ConnectionDatabase.GetConnection()) 
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
                 //Tạo một đối tượng lệnh (command) để thực hiện câu truy vấn SQL query thông qua kết nối conn.
@@ -60,7 +61,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
             return ds;
         }
-      public MonHocDTO LayDSMonHocTheoId(int maMonHoc)
+        public MonHocDTO LayDSMonHocTheoId(int maMonHoc)
         {
             MonHocDTO monHoc = null;
             string query = "select MaMonHoc,TenMonHoc,SoTiet,GhiChu from MonHoc where MaMonHoc=@MaMonHoc";
@@ -72,7 +73,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        
+
                         if (reader.Read()) //chi can doc 1 dong
                         {
                             monHoc = new MonHocDTO
@@ -85,7 +86,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         }
                     }
                 }
-              
+
             }
             return monHoc; // tra ve doi tuong do, hoac la null
         }
@@ -121,10 +122,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public bool UpdateMonHoc(MonHocDTO monhoc) //cap nhat theo ma
         {
             string query = "update MonHoc set TenMonHoc=@TenMonHoc,SoTiet=@SoTiet, GhiChu=@GhiChu where MaMonHoc=@MaMonHoc";
-            using(MySqlConnection conn = ConnectionDatabase.GetConnection())
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
-                using (MySqlCommand cmd=new MySqlCommand(query, conn))
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@TenMonHoc", monhoc.tenMon);
                     cmd.Parameters.AddWithValue("@SoTiet", monhoc.soTiet);
@@ -138,14 +139,34 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public bool DeleteMonHoc(int maMonHoc)
         {
             string query = "delete from MonHoc where MaMonHoc=@MaMonHoc";
-            using (MySqlConnection conn=ConnectionDatabase.GetConnection())
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
-                using (MySqlCommand cmd=new MySqlCommand(query, conn))
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
                     int result = cmd.ExecuteNonQuery();
                     return result > 0;
+                }
+            }
+        }
+        // ✅✅✅ THÊM METHOD MỚI - TRẢ VỀ ID VỪA THÊM
+        public int ThemMonHocVaLayId(MonHocDTO monhoc)
+        {
+            string query = "INSERT INTO MonHoc(TenMonHoc, SoTiet, GhiChu) VALUES(@TenMonHoc, @SoTiet, @GhiChu); SELECT LAST_INSERT_ID();";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TenMonHoc", monhoc.tenMon);
+                    cmd.Parameters.AddWithValue("@SoTiet", monhoc.soTiet);
+                    cmd.Parameters.AddWithValue("@GhiChu", monhoc.ghiChu);
+
+                    // ✅ Lấy ID vừa thêm
+                    object result = cmd.ExecuteScalar();
+                    return result != null ? Convert.ToInt32(result) : 0;
                 }
             }
         }

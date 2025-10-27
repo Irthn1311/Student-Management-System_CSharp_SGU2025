@@ -10,11 +10,11 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 {
     internal class LopHocBUS
     {
-        private LopHocDAO lopDAO;
+        private LopDAO lopDAO;
 
         public LopHocBUS()
         {
-            lopDAO = new LopHocDAO();
+            lopDAO = new LopDAO();
         }
 
         // Thêm lớp học với validation

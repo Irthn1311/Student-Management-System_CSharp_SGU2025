@@ -140,19 +140,19 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public bool XoaNamHoc(string maNamHoc)
         {
             string query = "DELETE FROM NamHoc WHERE MaNamHoc = @MaNamHoc";
-            
+
             try
             {
                 using (MySqlConnection conn = ConnectionDatabase.GetConnection())
                 {
                     conn.Open();
-                    
+
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
-                        
+
                         int result = cmd.ExecuteNonQuery();
-                        
+
                         // Trả về true nếu có ít nhất 1 row bị xóa
                         return result > 0;
                     }

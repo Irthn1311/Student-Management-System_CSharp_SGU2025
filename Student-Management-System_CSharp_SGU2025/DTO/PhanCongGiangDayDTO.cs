@@ -16,7 +16,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         public PhanCongGiangDayDTO() { }
 
         // Constructor đầy đủ tham số
-        public PhanCongGiangDayDTO(int maPhanCong, int maLop, string maGiaoVien, int maMonHoc, 
+        public PhanCongGiangDayDTO(int maPhanCong, int maLop, string maGiaoVien, int maMonHoc,
                                    int maHocKy, DateTime ngayBatDau, DateTime ngayKetThuc)
         {
             this.maPhanCong = maPhanCong;

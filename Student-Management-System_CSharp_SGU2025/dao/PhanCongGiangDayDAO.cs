@@ -26,7 +26,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmd.Parameters.AddWithValue("@MaHocKy", phanCong.MaHocKy);
                         cmd.Parameters.AddWithValue("@NgayBatDau", phanCong.NgayBatDau);
                         cmd.Parameters.AddWithValue("@NgayKetThuc", phanCong.NgayKetThuc);
-                        
+
                         int result = cmd.ExecuteNonQuery();
                         return result > 0;
                     }
@@ -58,6 +58,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         {
                             while (reader.Read())
                             {
+
                                 PhanCongGiangDayDTO pc = new PhanCongGiangDayDTO
                                 {
                                     MaPhanCong = reader.GetInt32("MaPhanCong"),
@@ -102,18 +103,24 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
-                            {
-                                phanCong = new PhanCongGiangDayDTO
+                            
                                 {
-                                    MaPhanCong = reader.GetInt32("MaPhanCong"),
-                                    MaLop = reader.GetInt32("MaLop"),
-                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
-                                    MaMonHoc = reader.GetInt32("MaMonHoc"),
-                                    MaHocKy = reader.GetInt32("MaHocKy"),
-                                    NgayBatDau = reader.GetDateTime("NgayBatDau"),
-                                    NgayKetThuc = reader.GetDateTime("NgayKetThuc")
-                                };
-                            }
+                                    phanCong = new PhanCongGiangDayDTO
+                                    {
+                                        MaPhanCong = reader.GetInt32("MaPhanCong"),
+                                        MaLop = reader.GetInt32("MaLop"),
+                                        MaGiaoVien = reader.GetString("MaGiaoVien"),
+                                        MaMonHoc = reader.GetInt32("MaMonHoc"),
+                                        MaHocKy = reader.GetInt32("MaHocKy"),
+                                        NgayBatDau = reader.GetDateTime("NgayBatDau"),
+                                        NgayKetThuc = reader.GetDateTime("NgayKetThuc")
+                                    };
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Warning: Record with null values found in LayPhanCongTheoMa");
+                                }
+                            
                         }
                     }
                 }
@@ -147,6 +154,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         {
                             while (reader.Read())
                             {
+                                
+
                                 PhanCongGiangDayDTO pc = new PhanCongGiangDayDTO
                                 {
                                     MaPhanCong = reader.GetInt32("MaPhanCong"),
@@ -192,6 +201,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         {
                             while (reader.Read())
                             {
+                                
+
                                 PhanCongGiangDayDTO pc = new PhanCongGiangDayDTO
                                 {
                                     MaPhanCong = reader.GetInt32("MaPhanCong"),
@@ -237,6 +248,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         {
                             while (reader.Read())
                             {
+                               
+
                                 PhanCongGiangDayDTO pc = new PhanCongGiangDayDTO
                                 {
                                     MaPhanCong = reader.GetInt32("MaPhanCong"),
@@ -352,7 +365,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
                         cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
                         cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
-                        
+
                         if (maPhanCongHienTai.HasValue)
                         {
                             cmd.Parameters.AddWithValue("@MaPhanCongHienTai", maPhanCongHienTai.Value);

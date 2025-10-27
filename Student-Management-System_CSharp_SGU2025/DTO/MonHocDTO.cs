@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
-    internal class MonHocDTO
+    public class MonHocDTO
     {
         public int maMon;
         public string tenMon;
@@ -29,7 +29,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return maMon; }
             set
             {
-                if (maMon >0)
+                if (maMon > 0)
                 {
                     maMon = value;
                 }
@@ -44,7 +44,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return tenMon; }
             set
             {
-                if(tenMon == "")
+                if (tenMon == "")
                 {
                     tenMon = value;
                 }

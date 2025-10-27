@@ -119,11 +119,16 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             }
         }
 
-        private string TinhTrangThai(DateTime ngayBD, DateTime ngayKT)
+        private string TinhTrangThai(DateTime? ngayBD, DateTime? ngayKT)
         {
             DateTime now = DateTime.Now.Date;
-            DateTime batDau = ngayBD.Date;
-            DateTime ketThuc = ngayKT.Date;
+            
+            // Kiểm tra nếu ngày bắt đầu hoặc kết thúc là null
+            if (!ngayBD.HasValue || !ngayKT.HasValue)
+                return "Chưa xác định";
+            
+            DateTime batDau = ngayBD.Value.Date;
+            DateTime ketThuc = ngayKT.Value.Date;
 
             if (now >= batDau && now <= ketThuc)
                 return "Đang diễn ra";
