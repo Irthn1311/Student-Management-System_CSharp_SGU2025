@@ -1,112 +1,101 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
     public class HocSinhDTO
     {
-        private int _maHS;
-        private string _hoTen;
-        private DateTime _ngaySinh;
-        private string _gioiTinh;
-        private string _sdtHS;
-        private string _email;
-        private string _trangThai;
+        private string maHocSinh;
+        private string hoTen;
+        private DateTime? ngaySinh;
+        private string gioiTinh;
+        private string sdths;
+        private string email;
+        private string trangThai;
 
         public HocSinhDTO() { }
 
-        public HocSinhDTO(int maHS, string hoTen, DateTime ngaySinh, string gioiTinh, string sdtHS, string email, string trangThai)
+        public HocSinhDTO(string maHocSinh, string hoTen, DateTime? ngaySinh,
+                          string gioiTinh, string sdths, string email, string trangThai)
         {
-            this.MaHS = maHS;
-            this.HoTen = hoTen;
-            this.NgaySinh = ngaySinh;
-            this.GioiTinh = gioiTinh;
-            this.SdtHS = sdtHS;
-            this.Email = email;
-            this.TrangThai = trangThai;
+            this.maHocSinh = maHocSinh;
+            this.hoTen = hoTen;
+            this.ngaySinh = ngaySinh;
+            this.gioiTinh = gioiTinh;
+            this.sdths = sdths;
+            this.email = email;
+            this.trangThai = trangThai;
         }
 
-        public int MaHS
+        ~HocSinhDTO()
         {
-            get { return this._maHS; }
+            Console.WriteLine("Huy doi tuong HocSinhDTO");
+        }
+
+        public string MaHocSinh
+        {
+            get { return maHocSinh; }
             set
             {
-                if (value <= 0 && this._maHS != 0)
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Mã học sinh phải là số dương.");
+                    Console.WriteLine("Ma hoc sinh khong duoc de trong");
                 }
-                this._maHS = value;
+                else
+                {
+                    maHocSinh = value;
+                }
             }
         }
 
         public string HoTen
         {
-            get { return this._hoTen; }
+            get { return hoTen; }
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Họ tên không được để trống.");
+                    Console.WriteLine("Ho ten khong duoc de trong");
                 }
-                this._hoTen = value.Trim();
+                else
+                {
+                    hoTen = value;
+                }
             }
         }
 
-        public DateTime NgaySinh
+        public DateTime? NgaySinh
         {
-            get { return this._ngaySinh; }
-            set { this._ngaySinh = value; }
+            get { return ngaySinh; }
+            set { ngaySinh = value; }
         }
 
         public string GioiTinh
         {
-            get { return this._gioiTinh; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException("Giới tính không được để trống.");
-                }
-                this._gioiTinh = value;
-            }
+            get { return gioiTinh; }
+            set { gioiTinh = value; }
         }
 
-        public string SdtHS
+        public string SDTHS
         {
-            get { return this._sdtHS; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException("Số điện thoại học sinh không được để trống.");
-                }
-                this._sdtHS = value.Trim();
-            }
+            get { return sdths; }
+            set { sdths = value; }
         }
 
         public string Email
         {
-            get { return this._email; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException("Email học sinh không được để trống.");
-                }
-                this._email = value.Trim();
-            }
+            get { return email; }
+            set { email = value; }
         }
 
         public string TrangThai
         {
-            get { return this._trangThai; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException("Trạng thái không được để trống.");
-                }
-                this._trangThai = value.Trim();
-            }
+            get { return trangThai; }
+            set { trangThai = value; }
         }
     }
 }
