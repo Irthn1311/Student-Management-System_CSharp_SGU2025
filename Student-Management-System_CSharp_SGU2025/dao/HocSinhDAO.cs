@@ -1,20 +1,17 @@
-﻿using MySql.Data.MySqlClient;
-using Student_Management_System_CSharp_SGU2025.ConnectDatabase; // Namespace chứa ConnectionDatabase
-using Student_Management_System_CSharp_SGU2025.DTO;          // Namespace chứa HocSinhDTO
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data; // Cần thiết cho CommandType (mặc dù không dùng trực tiếp ở đây)
+using MySql.Data.MySqlClient;
+using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
+using Student_Management_System_CSharp_SGU2025.DTO;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
-    internal class HocSinhDAO
+    public class HocSinhDAO
     {
         /// <summary>
-        /// Kiểm tra xem Mã Học Sinh đã tồn tại trong database chưa.
+        /// Lấy tất cả học sinh
         /// </summary>
-        /// <param name="maHocSinh">Mã học sinh cần kiểm tra.</param>
-        /// <returns>True nếu tồn tại, False nếu không.</returns>
-        public bool KiemTraTonTai(int maHocSinh)
+        public List<HocSinhDTO> GetAllHocSinh()
         {
             string sql = "SELECT COUNT(*) FROM HocSinh WHERE MaHocSinh = @maHS";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
@@ -98,48 +95,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 sql += " AND MaHocSinh != @maHS"; // Loại trừ chính học sinh này
             }
 
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                try
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@email", email.Trim());
-                        if (maHocSinhToExclude > 0)
-                        {
-                            cmd.Parameters.AddWithValue("@maHS", maHocSinhToExclude);
-                        }
-                        long count = (long)cmd.ExecuteScalar();
-                        return count > 0;
-                    }
-                }
-                catch (MySqlException ex)
-                {
-                    Console.WriteLine("Lỗi kiểm tra trùng Email học sinh: " + ex.Message);
-                    throw;
-                }
-                finally
-                {
-                    ConnectionDatabase.CloseConnection(conn);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Lấy danh sách tất cả học sinh từ database.
-        /// </summary>
-        /// <returns>Danh sách các đối tượng HocSinhDTO.</returns>
-        public List<HocSinhDTO> LayDanhSachHocSinh()
-        {
-            List<HocSinhDTO> dsHocSinh = new List<HocSinhDTO>();
-            string sql = "SELECT * FROM HocSinh";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                try
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -158,46 +115,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         }
                     }
                 }
-                catch (MySqlException ex)
-                {
-                    Console.WriteLine("Lỗi lấy danh sách học sinh: " + ex.Message);
-                    throw;
-                }
-                finally
-                {
-                    ConnectionDatabase.CloseConnection(conn);
-                }
             }
-            return dsHocSinh;
-        }
-
-        /// <summary>
-        /// Đếm tổng số tất cả học sinh từ database.
-        /// </summary>
-        /// <returns>Tổng số lượng học sinh tại trường</returns>
-        public int DemTongSoLuongHocSinh()
-        {
-            int count = 0;
-            string sql = "SELECT COUNT(*) FROM HocSinh";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            catch (Exception ex)
             {
-                try
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-                    {
-                        count = Convert.ToInt32(cmd.ExecuteScalar());
-                    }
-                }
-                catch (MySqlException ex)
-                {
-                    Console.WriteLine("Lỗi đếm số lượng học sinh: " + ex.Message);
-                    throw;
-                }
-                finally
-                {
-                    ConnectionDatabase.CloseConnection(conn);
-                }
+                throw new Exception("Lỗi khi lấy danh sách học sinh: " + ex.Message);
             }
             return count;
         }
@@ -212,26 +133,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             string sql = "SELECT COUNT(*) FROM HocSinh WHERE GioiTinh = 'Nam'";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
-                try
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-                    {
-                        count = Convert.ToInt32(cmd.ExecuteScalar());
-                    }
-                }
-                catch (MySqlException ex)
-                {
-                    Console.WriteLine("Lỗi đếm số lượng học sinh nam: " + ex.Message);
-                    throw;
-                }
-                finally
-                {
-                    ConnectionDatabase.CloseConnection(conn);
-                }
+                ConnectionDatabase.CloseConnection(conn);
             }
-            return count;
-        }
 
         /// <summary>
         /// Đếm tổng số tất cả học sinh nữ từ database.
@@ -265,11 +168,9 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
 
         /// <summary>
-        /// Đếm tổng số tất cả học sinh có trạng thái "Đang học" từ database.
+        /// Lấy học sinh theo mã
         /// </summary>
-        /// <returns>Tổng số lượng học sinh có trạng thái "Đang học" tại trường</returns>
-        
-        public int DemTongSoLuongHocSinhDangHoc()
+        public HocSinhDTO GetHocSinhByMa(string maHocSinh)
         {
             int count = 0;
             string sql = "SELECT COUNT(*) FROM HocSinh WHERE TrangThai = 'Đang học'";
@@ -296,7 +197,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return count;
         }
 
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
 
+                string query = "SELECT MaHocSinh, HoTen, NgaySinh, GioiTinh, SDTHS, Email, TrangThai " +
+                              "FROM HocSinh WHERE MaHocSinh = @MaHocSinh";
 
         /// <summary>
         /// Thêm một học sinh mới vào database và trả về ID của học sinh đó.
@@ -312,32 +219,22 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 MySqlTransaction transaction = null;
                 try
                 {
-                    conn.Open();
-                    transaction = conn.BeginTransaction();
+                    cmd.Parameters.AddWithValue("@MaHocSinh", maHocSinh);
 
-                    using (MySqlCommand cmd = new MySqlCommand(sql, conn, transaction))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        cmd.Parameters.AddWithValue("@hoTen", hs.HoTen);
-                        cmd.Parameters.AddWithValue("@ngaySinh", hs.NgaySinh);
-                        cmd.Parameters.AddWithValue("@gioiTinh", hs.GioiTinh);
-                        cmd.Parameters.AddWithValue("@sdtHS", (object)hs.SdtHS ?? DBNull.Value);
-                        cmd.Parameters.AddWithValue("@email", (object)hs.Email ?? DBNull.Value);
-                        cmd.Parameters.AddWithValue("@trangThai", hs.TrangThai);
-
-                        // Dùng ExecuteScalar để lấy giá trị ID trả về từ LAST_INSERT_ID()
-                        object result = cmd.ExecuteScalar();
-
-                        if (result != null && result != DBNull.Value)
+                        if (reader.Read())
                         {
-                            transaction.Commit();
-                            return Convert.ToInt32(result); // Trả về ID mới
-                        }
-                        else
-                        {
-                            // Trường hợp ExecuteScalar không trả về gì (lỗi không mong muốn)
-                            transaction.Rollback();
-                            Console.WriteLine("Lỗi thêm học sinh: Không lấy được LAST_INSERT_ID.");
-                            return -1; // Trả về -1 báo lỗi
+                            hs = new HocSinhDTO
+                            {
+                                MaHocSinh = reader["MaHocSinh"].ToString(),
+                                HoTen = reader["HoTen"].ToString(),
+                                NgaySinh = reader["NgaySinh"] != DBNull.Value ? Convert.ToDateTime(reader["NgaySinh"]) : (DateTime?)null,
+                                GioiTinh = reader["GioiTinh"].ToString(),
+                                SDTHS = reader["SDTHS"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                TrangThai = reader["TrangThai"].ToString()
+                            };
                         }
                     }
                 }
@@ -404,33 +301,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                          WHERE MaHocSinh = @maHS";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
-                try
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@hoTen", hs.HoTen);
-                        cmd.Parameters.AddWithValue("@ngaySinh", hs.NgaySinh);
-                        cmd.Parameters.AddWithValue("@gioiTinh", hs.GioiTinh);
-                        cmd.Parameters.AddWithValue("@sdtHS", (object)hs.SdtHS ?? DBNull.Value);
-                        cmd.Parameters.AddWithValue("@email", (object)hs.Email ?? DBNull.Value);
-                        cmd.Parameters.AddWithValue("@trangThai", hs.TrangThai);
-                        cmd.Parameters.AddWithValue("@maHS", hs.MaHS); // Điều kiện WHERE
-
-                        int result = cmd.ExecuteNonQuery();
-                        return result > 0;
-                    }
-                }
-                catch (MySqlException ex)
-                {
-                    Console.WriteLine("Lỗi cập nhật học sinh: " + ex.Message);
-                    // throw;
-                    return false;
-                }
-                finally
-                {
-                    ConnectionDatabase.CloseConnection(conn);
-                }
+                throw new Exception("Lỗi khi lấy thông tin học sinh: " + ex.Message);
             }
         }
 
@@ -478,8 +349,6 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     ConnectionDatabase.CloseConnection(conn);
                 }
             }
-            return null; // Không tìm thấy
-        }
 
         /// <summary>
         /// Cập nhật trạng thái cho một học sinh.
@@ -515,10 +384,5 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 }
             }
         }
-
-        // --- Bạn có thể thêm các hàm tìm kiếm khác ở đây ---
-        // Ví dụ: Tìm theo tên, tìm theo lớp (cần JOIN), ...
-        // public List<HocSinhDTO> TimHocSinhTheoTen(string ten) { ... }
-        // public List<HocSinhDTO> LayDanhSachHocSinhTheoLop(int maLop, int maHocKy) { ... } // Cần JOIN với PhanLop
     }
 }

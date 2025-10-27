@@ -6,30 +6,28 @@ using System.Threading.Tasks;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
-    internal class MonHocDTO
+    public class MonHocDTO
     {
-        public int maMon;
+        public string maMon;
         public string tenMon;
         public int soTiet;
-        public string ghiChu;
         public MonHocDTO() { }
-        public MonHocDTO(int maMon, string tenMon, int soTiet, string ghiChu)
+        public MonHocDTO(string maMon, string tenMon, int soTiet)
         {
             this.maMon = maMon;
             this.tenMon = tenMon;
             this.soTiet = soTiet;
-            this.ghiChu = ghiChu;
         }
         ~MonHocDTO()
         {
             Console.WriteLine("Huy doi tuong MonHocDTO");
         }
-        public int MaMon
+        public string MaMon
         {
             get { return maMon; }
             set
             {
-                if (maMon >0)
+                if (maMon == "")
                 {
                     maMon = value;
                 }
@@ -67,14 +65,6 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
                 {
                     Console.WriteLine("So tiet phai lon hon 0");
                 }
-            }
-        }
-        public string GhiChu
-        {
-            get { return ghiChu; }
-            set
-            {
-                ghiChu = value;
             }
         }
     }

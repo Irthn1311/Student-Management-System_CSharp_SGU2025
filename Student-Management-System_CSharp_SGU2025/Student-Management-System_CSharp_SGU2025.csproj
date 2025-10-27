@@ -165,6 +165,9 @@
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
     <Compile Include="DAO\GiaoVienDAO.cs" />
     <Compile Include="DAO\HanhKiemDAO.cs" />
+    <Compile Include="DAO\LopHocDAO.cs" />
+    <Compile Include="DAO\MonHocDAO.cs" />
+    <Compile Include="DAO\NamHocDAO.cs" />
     <Compile Include="DTO\GiaoVienDTO.cs" />
     <Compile Include="DTO\HanhKiemDTO.cs" />
     <Compile Include="DAO\HocKyDAO.cs" />

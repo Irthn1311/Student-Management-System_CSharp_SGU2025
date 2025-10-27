@@ -1,5 +1,6 @@
 ﻿using System;
 
+
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
     public class HocSinhDTO
@@ -14,7 +15,19 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
 
         public HocSinhDTO() { }
 
-        public HocSinhDTO(int maHS, string hoTen, DateTime ngaySinh, string gioiTinh, string sdtHS, string email, string trangThai)
+        public HocSinhDTO(string maHocSinh, string hoTen, DateTime? ngaySinh,
+                          string gioiTinh, string sdths, string email, string trangThai)
+        {
+            this.maHocSinh = maHocSinh;
+            this.hoTen = hoTen;
+            this.ngaySinh = ngaySinh;
+            this.gioiTinh = gioiTinh;
+            this.sdths = sdths;
+            this.email = email;
+            this.trangThai = trangThai;
+        }
+
+        ~HocSinhDTO()
         {
             this.MaHS = maHS;
             this.HoTen = hoTen;
@@ -51,10 +64,10 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             }
         }
 
-        public DateTime NgaySinh
+        public DateTime? NgaySinh
         {
-            get { return this._ngaySinh; }
-            set { this._ngaySinh = value; }
+            get { return ngaySinh; }
+            set { ngaySinh = value; }
         }
 
         public string GioiTinh
@@ -70,7 +83,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             }
         }
 
-        public string SdtHS
+        public string SDTHS
         {
             get { return this._sdtHS; }
             set
