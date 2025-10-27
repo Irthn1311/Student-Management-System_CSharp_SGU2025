@@ -137,7 +137,7 @@ CREATE TABLE HocSinhPhuHuynh (
 );
 
 CREATE TABLE PhanLop (
-    MaHocSinh VARCHAR(20),
+    MaHocSinh INT,
     MaLop INT,
     MaHocKy INT,
     PRIMARY KEY (MaHocSinh, MaLop, MaHocKy),
