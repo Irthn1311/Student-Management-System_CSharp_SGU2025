@@ -537,6 +537,56 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
             }
         }
 
+		private void RenderFromTemp(int semesterId, int weekNo)
+		{
+			tableThoiKhoaBieu.Controls.Clear();
+			var bus = new ThoiKhoaBieuBUS();
+			var slots = bus.GetWeek(semesterId, weekNo);
+
+			// Initialize DAOs for lookup
+			var monDao = new MonHocBUS();
+			var gvDao = new GiaoVienBUS();
+
+			foreach (var s in slots)
+			{
+				// Get subject and teacher names
+				string tenMon = "Môn " + s.MaMon;
+				string tenGV = s.MaGV;
+				
+				try
+				{
+					var mon = monDao.LayDSMonHocTheoId(s.MaMon);
+					if (mon != null) tenMon = mon.tenMon;
+					
+					var gv = gvDao.LayGiaoVienTheoMa(s.MaGV);
+					if (gv != null) tenGV = gv.HoTen;
+				}
+				catch
+				{
+					// Fallback to IDs if lookup fails
+				}
+
+				var card = new StatCardTKB();
+				var colorSet = GetColorSetForSubject(tenMon);
+				card.SetData(
+					tenMon,
+					tenGV,
+					string.IsNullOrEmpty(s.Phong) ? "Phòng TBA" : s.Phong,
+					colorSet.TextColor,
+					colorSet.ProgressColor1,
+					colorSet.ProgressColor2
+				);
+				card.Dock = DockStyle.Fill;
+				card.Margin = new Padding(5);
+				
+				// Map Thu (2-7) to grid column (1-6), Tiet (1-10) to row (1-10)
+				int col = s.Thu - 1;  // Thu 2 -> col 1, Thu 7 -> col 6
+				int row = s.Tiet;     // Tiet 1 -> row 1, Tiet 10 -> row 10
+				
+				tableThoiKhoaBieu.Controls.Add(card, col, row);
+			}
+		}
+
         private (Color TextColor, Color ProgressColor1, Color ProgressColor2) GetColorSetForSubject(string subject)
         {
             switch (subject)
