@@ -497,6 +497,9 @@
     <Compile Include="GUI\TaiSuDung\StatCardQuanLiHocSinh.Designer.cs">
       <DependentUpon>StatCardQuanLiHocSinh.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ThoiKhoaBieu\FrmAutoTKBPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GUI\ThoiKhoaBieu\ThoiKhoaBieu.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -700,6 +703,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="ConnectDatabase\DB_UniqueIndexes.sql" />
     <Content Include="ConnectDatabase\QuanLyHocSinh.sql" />
     <Content Include="GUI\Images\3que.png" />
     <Content Include="GUI\Images\add.png" />
