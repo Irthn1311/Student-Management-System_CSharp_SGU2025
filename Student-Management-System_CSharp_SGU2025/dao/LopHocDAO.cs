@@ -187,6 +187,12 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return list;
         }
 
+        public List<LopDTO> GetByHocKy(int hocKyId)
+        {
+            // Hiện chưa ràng buộc lớp theo học kỳ → trả toàn bộ danh sách lớp.
+            return DocDSLop();
+        }
+        
         /// <summary>
         /// Lấy tên lớp theo mã lớp
         /// </summary>
