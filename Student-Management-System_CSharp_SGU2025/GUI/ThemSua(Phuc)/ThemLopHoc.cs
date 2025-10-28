@@ -43,13 +43,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 List<GiaoVienDTO> dsgv = giaoVienBUS.DocDSGiaoVien();
 
                 // ✅ Lấy danh sách GVCN đã phân công
-                List<string> dsGVCNDaPhanCong = lopHocBUS.LayDanhSachMaGVCNDangPhanCong();
+                List<string> dsGVCNDaPhanCong = lopHocBUS.LayDanhSachMaGVCNDangPhanCong() ?? new List<string>();
 
                 var dshienthi = new List<object>();
                 dshienthi.Add(new { MaGiaoVien = "", HoTen = "-- Chọn giáo viên --" });
 
                 // ✅ CHỈ THÊM GIÁO VIÊN CHƯA LÀM GVCN
-                foreach (var gv in dsgv)
+                foreach (var gv in dsgv ?? new List<GiaoVienDTO>())
                 {
                     if (!dsGVCNDaPhanCong.Contains(gv.MaGiaoVien))
                     {
@@ -132,6 +132,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
+                // Kiểm tra sĩ số
+                if (string.IsNullOrWhiteSpace(txtSiSo.Text) || !int.TryParse(txtSiSo.Text.Trim(), out int siSo) || siSo < 0)
+                {
+                    MessageBox.Show("Vui lòng nhập sĩ số hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtSiSo.Focus();
+                    return;
+                }
+
                 // Kiểm tra giáo viên chủ nhiệm
                 if (cbGVCN.SelectedValue == null || string.IsNullOrEmpty(cbGVCN.SelectedValue.ToString()))
                 {
@@ -145,10 +153,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 lopMoi.maLop = Convert.ToInt32(txtMaLop.Text); // ✅ GÁN MÃ LỚP THỦ CÔNG
                 lopMoi.tenLop = txtTenLop.Text.Trim();
                 lopMoi.maKhoi = Convert.ToInt32(cbKhoi.SelectedItem.ToString());
+                lopMoi.siSo = siSo;
                 lopMoi.maGVCN = cbGVCN.SelectedValue.ToString();
 
                 // Thêm lớp học
-                bool kq = lopHocBUS.ThemLop(lopMoi);
+                bool kq = lopHocBUS.ThemLop(lopMoi, out string message, out string errorField);
 
                 if (kq)
                 {
@@ -158,7 +167,27 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
                 else
                 {
-                    MessageBox.Show("Thêm lớp học thất bại. Vui lòng kiểm tra lại thông tin.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (string.IsNullOrEmpty(message)) message = "Thêm lớp học thất bại. Vui lòng kiểm tra lại thông tin.";
+                    MessageBox.Show(message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    // Focus theo errorField
+                    switch (errorField)
+                    {
+                        case "tenLop":
+                            txtTenLop.Focus();
+                            break;
+                        case "maKhoi":
+                            cbKhoi.Focus();
+                            break;
+                        case "siSo":
+                            txtSiSo.Focus();
+                            break;
+                        case "maGVCN":
+                            cbGVCN.Focus();
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             catch (ArgumentException ex)

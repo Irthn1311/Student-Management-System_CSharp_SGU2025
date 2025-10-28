@@ -54,8 +54,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_
         {
             try
             {
-                List<GiaoVienDTO> dsgv = giaoVienBUS.DocDSGiaoVien();
-                List<string> dsGVCNDaPhanCong = lopHocBUS.LayDanhSachMaGVCNDangPhanCong();
+                List<GiaoVienDTO> dsgv = giaoVienBUS.DocDSGiaoVien() ?? new List<GiaoVienDTO>();
+                List<string> dsGVCNDaPhanCong = lopHocBUS.LayDanhSachMaGVCNDangPhanCong() ?? new List<string>();
 
                 var dshienthi = new List<object>();
                 dshienthi.Add(new { MaGiaoVien = "", HoTen = "-- Chọn giáo viên --" });
@@ -63,7 +63,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_
                 foreach (var gv in dsgv)
                 {
                     // ✅ Hiển thị giáo viên chưa làm GVCN HOẶC đang là GVCN của lớp này
-                    if (!dsGVCNDaPhanCong.Contains(gv.MaGiaoVien) || gv.MaGiaoVien == maGVCNHienTai)
+                    if (!dsGVCNDaPhanCong.Contains(gv.MaGiaoVien) || (!string.IsNullOrEmpty(maGVCNHienTai) && gv.MaGiaoVien == maGVCNHienTai))
                     {
                         dshienthi.Add(new { MaGiaoVien = gv.MaGiaoVien, HoTen = gv.HoTen });
                     }
@@ -90,6 +90,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_
                     txtMaLop.Text = lop.maLop.ToString();
                     txtTenLop.Text = lop.tenLop;
                     cbKhoi.SelectedItem = lop.maKhoi.ToString();
+                    txtSiSo.Text = lop.siSo.ToString();
                     cbGVCN.SelectedValue = lop.maGVCN;
                 }
                 else
@@ -135,15 +136,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_
                     return;
                 }
 
+                // Kiểm tra sĩ số
+                if (string.IsNullOrWhiteSpace(txtSiSo.Text) || !int.TryParse(txtSiSo.Text.Trim(), out int siSo) || siSo < 0)
+                {
+                    MessageBox.Show("Vui lòng nhập sĩ số hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtSiSo.Focus();
+                    return;
+                }
+
                 // Tạo đối tượng LopDTO với dữ liệu mới
                 LopDTO lopCapNhat = new LopDTO();
                 lopCapNhat.maLop = maLopHienTai; // ✅ Giữ nguyên mã lớp (không thay đổi)
                 lopCapNhat.tenLop = txtTenLop.Text.Trim();
                 lopCapNhat.maKhoi = Convert.ToInt32(cbKhoi.SelectedItem.ToString());
+                lopCapNhat.siSo = siSo;
                 lopCapNhat.maGVCN = cbGVCN.SelectedValue.ToString();
 
                 // Cập nhật lớp học
-                bool kq = lopHocBUS.CapNhatLop(lopCapNhat);
+                bool kq = lopHocBUS.CapNhatLop(lopCapNhat, out string message, out string errorField);
 
                 if (kq)
                 {
@@ -153,7 +163,27 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_
                 }
                 else
                 {
-                    MessageBox.Show("Cập nhật lớp học thất bại. Vui lòng kiểm tra lại thông tin.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (string.IsNullOrEmpty(message)) message = "Cập nhật lớp học thất bại. Vui lòng kiểm tra lại thông tin.";
+                    MessageBox.Show(message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    // Focus theo errorField
+                    switch (errorField)
+                    {
+                        case "tenLop":
+                            txtTenLop.Focus();
+                            break;
+                        case "maKhoi":
+                            cbKhoi.Focus();
+                            break;
+                        case "siSo":
+                            txtSiSo.Focus();
+                            break;
+                        case "maGVCN":
+                            cbGVCN.Focus();
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             catch (ArgumentException ex)

@@ -118,6 +118,7 @@ CREATE TABLE LopHoc (
     MaLop INT PRIMARY KEY AUTO_INCREMENT,
     TenLop VARCHAR(50) NOT NULL,
     MaKhoi INT,
+    SiSo INT,
     MaGiaoVienChuNhiem VARCHAR(15),
     FOREIGN KEY (MaKhoi) REFERENCES KhoiLop(MaKhoi),
     FOREIGN KEY (MaGiaoVienChuNhiem) REFERENCES GiaoVien(MaGiaoVien)
@@ -267,22 +268,22 @@ INSERT INTO GiaoVien (MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai
 ('GV015', 'Phạm Hoàng Bảo', '1996-05-03', 'Nam', 'HCMC', '0324567281', 'phạm.hoàng.bảo.gv015@hotmail.com', 'Đang giảng dạy');
 
 
-INSERT INTO LopHoc (TenLop, MaKhoi, MaGiaoVienChuNhiem) VALUES
-('10A1', 10, 'GV001'),
-('10A2', 10, 'GV002'),
-('10A3', 10, 'GV003'),
-('10A4', 10, 'GV004'),
-('10A5', 10, 'GV005'),
-('11A1', 11, 'GV006'),
-('11A2', 11, 'GV007'),
-('11A3', 11, 'GV008'),
-('11A4', 11, 'GV009'),
-('11A5', 11, 'GV010'),
-('12A1', 12, 'GV011'),
-('12A2', 12, 'GV012'),
-('12A3', 12, 'GV013'),
-('12A4', 12, 'GV014'),
-('12A5', 12, 'GV015');
+INSERT INTO LopHoc (TenLop, MaKhoi,SiSo, MaGiaoVienChuNhiem) VALUES
+('10A1', 10,30, 'GV001'),
+('10A2', 10,30, 'GV002'),
+('10A3', 10,30, 'GV003'),
+('10A4', 10,30, 'GV004'),
+('10A5', 10,30, 'GV005'),
+('11A1', 11,30, 'GV006'),
+('11A2', 11,30, 'GV007'),
+('11A3', 11,30, 'GV008'),
+('11A4', 11,30, 'GV009'),
+('11A5', 11,30, 'GV010'),
+('12A1', 12,30, 'GV011'),
+('12A2', 12,30, 'GV012'),
+('12A3', 12,30, 'GV013'),
+('12A4', 12,30, 'GV014'),
+('12A5', 12,30, 'GV015');
 
 
 -- INSERT học sinh (500)

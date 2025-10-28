@@ -105,6 +105,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns.Add("MaLop", "Mã lớp");
             dgvLop.Columns.Add("TenLop", "Tên lớp");
             dgvLop.Columns.Add("Khoi", "Khối");
+            dgvLop.Columns.Add("SiSo", "Sĩ số");
             dgvLop.Columns.Add("GVCN", "Giáo viên CN");
             dgvLop.Columns.Add("ThaoTac", "Thao tác");
 
@@ -117,6 +118,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns["MaLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvLop.Columns["TenLop"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvLop.Columns["Khoi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvLop.Columns["SiSo"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvLop.Columns["GVCN"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             dgvLop.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
@@ -179,7 +181,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     }
                 }
 
-                dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", tenGVCN);
+                dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", lop.siSo, tenGVCN);
             }
         }
 
@@ -211,13 +213,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                int soLopKhoi10 = danhSachLopGoc.Count(l => l.maKhoi == 10);
-                int soLopKhoi11 = danhSachLopGoc.Count(l => l.maKhoi == 11);
-                int soLopKhoi12 = danhSachLopGoc.Count(l => l.maKhoi == 12);
+                var ds = danhSachLopGoc ?? new List<LopDTO>();
+                int soLopKhoi10 = ds.Count(l => l.maKhoi == 10);
+                int soLopKhoi11 = ds.Count(l => l.maKhoi == 11);
+                int soLopKhoi12 = ds.Count(l => l.maKhoi == 12);
 
-                statCardKhoi1.SetData("Khối 10", $"{soLopKhoi10} lớp", "");
-                statCardKhoi2.SetData("Khối 11", $"{soLopKhoi11} lớp", "");
-                statCardKhoi3.SetData("Khối 12", $"{soLopKhoi12} lớp", "");
+                int siSoKhoi10 = ds.Where(l => l.maKhoi == 10).Sum(l => l.siSo);
+                int siSoKhoi11 = ds.Where(l => l.maKhoi == 11).Sum(l => l.siSo);
+                int siSoKhoi12 = ds.Where(l => l.maKhoi == 12).Sum(l => l.siSo);
+
+                statCardKhoi1.SetData("Khối 10", $"{soLopKhoi10} lớp", $"{siSoKhoi10} học sinh");
+                statCardKhoi2.SetData("Khối 11", $"{soLopKhoi11} lớp", $"{siSoKhoi11} học sinh");
+                statCardKhoi3.SetData("Khối 12", $"{soLopKhoi12} lớp", $"{siSoKhoi12} học sinh");
             }
             catch (Exception ex)
             {

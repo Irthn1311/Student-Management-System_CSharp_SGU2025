@@ -10,7 +10,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
     {
         public int maLop;
         public string tenLop;
-
+       
         public int maKhoi;
         public int siSo;
         public string maGVCN;

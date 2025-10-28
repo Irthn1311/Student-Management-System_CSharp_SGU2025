@@ -36,7 +36,9 @@
             this.cbKhoi = new Guna.UI2.WinForms.Guna2ComboBox();
             this.txtTenLop = new Guna.UI2.WinForms.Guna2TextBox();
             this.txtMaLop = new Guna.UI2.WinForms.Guna2TextBox();
+            this.txtSiSo = new Guna.UI2.WinForms.Guna2TextBox();
             this.lblGVCN = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.lblSiSo = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.txtKhoi = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblTenLop = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblMaLop = new Guna.UI2.WinForms.Guna2HtmlLabel();
@@ -54,7 +56,9 @@
             this.guna2Panel1.Controls.Add(this.cbKhoi);
             this.guna2Panel1.Controls.Add(this.txtTenLop);
             this.guna2Panel1.Controls.Add(this.txtMaLop);
+            this.guna2Panel1.Controls.Add(this.txtSiSo);
             this.guna2Panel1.Controls.Add(this.lblGVCN);
+            this.guna2Panel1.Controls.Add(this.lblSiSo);
             this.guna2Panel1.Controls.Add(this.txtKhoi);
             this.guna2Panel1.Controls.Add(this.lblTenLop);
             this.guna2Panel1.Controls.Add(this.lblMaLop);
@@ -92,7 +96,7 @@
             this.btnDong.FillColor = System.Drawing.Color.YellowGreen;
             this.btnDong.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDong.ForeColor = System.Drawing.Color.White;
-            this.btnDong.Location = new System.Drawing.Point(41, 374);
+            this.btnDong.Location = new System.Drawing.Point(56, 411);
             this.btnDong.Name = "btnDong";
             this.btnDong.Size = new System.Drawing.Size(122, 29);
             this.btnDong.TabIndex = 7;
@@ -112,7 +116,7 @@
             this.btnThem.ForeColor = System.Drawing.Color.White;
             this.btnThem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus2;
             this.btnThem.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThem.Location = new System.Drawing.Point(241, 374);
+            this.btnThem.Location = new System.Drawing.Point(269, 411);
             this.btnThem.Name = "btnThem";
             this.btnThem.Size = new System.Drawing.Size(149, 29);
             this.btnThem.TabIndex = 6;
@@ -132,7 +136,7 @@
             this.cbGVCN.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbGVCN.ImeMode = System.Windows.Forms.ImeMode.KatakanaHalf;
             this.cbGVCN.ItemHeight = 30;
-            this.cbGVCN.Location = new System.Drawing.Point(159, 302);
+            this.cbGVCN.Location = new System.Drawing.Point(176, 334);
             this.cbGVCN.Name = "cbGVCN";
             this.cbGVCN.Size = new System.Drawing.Size(242, 36);
             this.cbGVCN.TabIndex = 5;
@@ -155,7 +159,7 @@
             "10",
             "11",
             "12"});
-            this.cbKhoi.Location = new System.Drawing.Point(159, 230);
+            this.cbKhoi.Location = new System.Drawing.Point(176, 209);
             this.cbKhoi.Name = "cbKhoi";
             this.cbKhoi.Size = new System.Drawing.Size(242, 36);
             this.cbKhoi.StartIndex = 0;
@@ -177,7 +181,7 @@
             this.txtTenLop.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtTenLop.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtTenLop.ImeMode = System.Windows.Forms.ImeMode.KatakanaHalf;
-            this.txtTenLop.Location = new System.Drawing.Point(159, 159);
+            this.txtTenLop.Location = new System.Drawing.Point(176, 154);
             this.txtTenLop.Name = "txtTenLop";
             this.txtTenLop.PlaceholderText = "";
             this.txtTenLop.SelectedText = "";
@@ -199,18 +203,40 @@
             this.txtMaLop.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtMaLop.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtMaLop.ImeMode = System.Windows.Forms.ImeMode.KatakanaHalf;
-            this.txtMaLop.Location = new System.Drawing.Point(159, 88);
+            this.txtMaLop.Location = new System.Drawing.Point(176, 88);
             this.txtMaLop.Name = "txtMaLop";
             this.txtMaLop.PlaceholderText = "";
             this.txtMaLop.SelectedText = "";
             this.txtMaLop.Size = new System.Drawing.Size(242, 32);
             this.txtMaLop.TabIndex = 1;
             // 
+            // txtSiSo
+            // 
+            this.txtSiSo.BackColor = System.Drawing.Color.Transparent;
+            this.txtSiSo.BorderColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.txtSiSo.BorderRadius = 5;
+            this.txtSiSo.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtSiSo.DefaultText = "";
+            this.txtSiSo.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtSiSo.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtSiSo.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtSiSo.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtSiSo.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtSiSo.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtSiSo.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtSiSo.ImeMode = System.Windows.Forms.ImeMode.KatakanaHalf;
+            this.txtSiSo.Location = new System.Drawing.Point(176, 268);
+            this.txtSiSo.Name = "txtSiSo";
+            this.txtSiSo.PlaceholderText = "";
+            this.txtSiSo.SelectedText = "";
+            this.txtSiSo.Size = new System.Drawing.Size(242, 32);
+            this.txtSiSo.TabIndex = 4;
+            // 
             // lblGVCN
             // 
             this.lblGVCN.BackColor = System.Drawing.Color.Transparent;
             this.lblGVCN.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGVCN.Location = new System.Drawing.Point(31, 315);
+            this.lblGVCN.Location = new System.Drawing.Point(52, 340);
             this.lblGVCN.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lblGVCN.Name = "lblGVCN";
             this.lblGVCN.Size = new System.Drawing.Size(46, 23);
@@ -218,11 +244,23 @@
             this.lblGVCN.Text = "GVCN";
             this.lblGVCN.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // lblSiSo
+            // 
+            this.lblSiSo.BackColor = System.Drawing.Color.Transparent;
+            this.lblSiSo.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSiSo.Location = new System.Drawing.Point(52, 277);
+            this.lblSiSo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.lblSiSo.Name = "lblSiSo";
+            this.lblSiSo.Size = new System.Drawing.Size(37, 23);
+            this.lblSiSo.TabIndex = 11;
+            this.lblSiSo.Text = "Sĩ số";
+            this.lblSiSo.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // txtKhoi
             // 
             this.txtKhoi.BackColor = System.Drawing.Color.Transparent;
             this.txtKhoi.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtKhoi.Location = new System.Drawing.Point(31, 243);
+            this.txtKhoi.Location = new System.Drawing.Point(52, 222);
             this.txtKhoi.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtKhoi.Name = "txtKhoi";
             this.txtKhoi.Size = new System.Drawing.Size(36, 23);
@@ -234,7 +272,7 @@
             // 
             this.lblTenLop.BackColor = System.Drawing.Color.Transparent;
             this.lblTenLop.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTenLop.Location = new System.Drawing.Point(31, 168);
+            this.lblTenLop.Location = new System.Drawing.Point(52, 163);
             this.lblTenLop.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lblTenLop.Name = "lblTenLop";
             this.lblTenLop.Size = new System.Drawing.Size(58, 23);
@@ -246,7 +284,7 @@
             // 
             this.lblMaLop.BackColor = System.Drawing.Color.Transparent;
             this.lblMaLop.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMaLop.Location = new System.Drawing.Point(31, 88);
+            this.lblMaLop.Location = new System.Drawing.Point(56, 98);
             this.lblMaLop.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lblMaLop.Name = "lblMaLop";
             this.lblMaLop.Size = new System.Drawing.Size(54, 23);
@@ -294,11 +332,13 @@
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private Guna.UI2.WinForms.Guna2TextBox txtMaLop;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblGVCN;
+        private Guna.UI2.WinForms.Guna2HtmlLabel lblSiSo;
         private Guna.UI2.WinForms.Guna2HtmlLabel txtKhoi;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblTenLop;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblMaLop;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
         private Guna.UI2.WinForms.Guna2TextBox txtTenLop;
+        private Guna.UI2.WinForms.Guna2TextBox txtSiSo;
         private Guna.UI2.WinForms.Guna2ComboBox cbKhoi;
         private Guna.UI2.WinForms.Guna2ComboBox cbGVCN;
         private Guna.UI2.WinForms.Guna2Button btnDong;
