@@ -32,6 +32,21 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 			return _dao.GetWeek(semesterId, weekNo);
 		}
 
+		public List<AssignmentSlot> GetWeekByClass(int semesterId, int weekNo, int maLop)
+		{
+			return _dao.GetWeekByClass(semesterId, weekNo, maLop);
+		}
+
+		public bool HasScheduleForSemester(int semesterId)
+		{
+			return _dao.HasScheduleForSemester(semesterId);
+		}
+
+		public List<AssignmentSlot> GetOfficialSchedule(int semesterId, int? maLop = null)
+		{
+			return _dao.GetOfficialSchedule(semesterId, maLop);
+		}
+
 		public bool HasConflict(int semesterId, int weekNo, AssignmentSlot slot)
 		{
 			return _dao.HasConflict(semesterId, weekNo, slot);

@@ -138,6 +138,126 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 			return result;
 		}
 
+		/// <summary>
+		/// Lấy TKB của 1 lớp cụ thể (từ temp hoặc official)
+		/// </summary>
+		public List<AssignmentSlot> GetWeekByClass(int semesterId, int weekNo, int maLop)
+		{
+			const string sql = @"SELECT SemesterId, WeekNo, MaLop, Thu, Tiet, MaMon, MaGV, Phong 
+								 FROM TKB_Temp 
+								 WHERE SemesterId=@SemesterId AND WeekNo=@WeekNo AND MaLop=@MaLop";
+			var result = new List<AssignmentSlot>();
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+					cmd.Parameters.AddWithValue("@WeekNo", weekNo);
+					cmd.Parameters.AddWithValue("@MaLop", maLop);
+					using (var reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							result.Add(new AssignmentSlot
+							{
+								MaLop = reader.GetInt32("MaLop"),
+								Thu = reader.GetInt32("Thu"),
+								Tiet = reader.GetInt32("Tiet"),
+								MaMon = reader.GetInt32("MaMon"),
+								MaGV = reader.GetString("MaGV"),
+								Phong = reader.IsDBNull(reader.GetOrdinal("Phong")) ? string.Empty : reader.GetString("Phong")
+							});
+						}
+					}
+				}
+			}
+			return result;
+		}
+
+		/// <summary>
+		/// Kiểm tra xem học kỳ đã có TKB chưa (temp hoặc official)
+		/// </summary>
+		public bool HasScheduleForSemester(int semesterId)
+		{
+			const string sqlTemp = @"SELECT COUNT(*) FROM TKB_Temp WHERE SemesterId=@SemesterId";
+			const string sqlOfficial = @"SELECT COUNT(*) 
+										 FROM ThoiKhoaBieu tkb
+										 JOIN PhanCongGiangDay pc ON tkb.MaPhanCong = pc.MaPhanCong
+										 WHERE pc.MaHocKy = @SemesterId";
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				
+				// Check temp first
+				using (var cmd = new MySqlCommand(sqlTemp, conn))
+				{
+					cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+					int count = Convert.ToInt32(cmd.ExecuteScalar());
+					if (count > 0) return true;
+				}
+				
+				// Check official
+				using (var cmd = new MySqlCommand(sqlOfficial, conn))
+				{
+					cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+					int count = Convert.ToInt32(cmd.ExecuteScalar());
+					return count > 0;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Lấy TKB chính thức của học kỳ và lớp
+		/// </summary>
+		public List<AssignmentSlot> GetOfficialSchedule(int semesterId, int? maLop = null)
+		{
+			string sql = @"SELECT pc.MaLop, 
+								  CAST(SUBSTRING_INDEX(tkb.ThuTrongTuan, ' ', -1) AS SIGNED) AS Thu,
+								  tkb.TietBatDau AS Tiet,
+								  pc.MaMonHoc AS MaMon,
+								  pc.MaGiaoVien AS MaGV,
+								  tkb.PhongHoc AS Phong
+						   FROM ThoiKhoaBieu tkb
+						   JOIN PhanCongGiangDay pc ON tkb.MaPhanCong = pc.MaPhanCong
+						   WHERE pc.MaHocKy = @SemesterId";
+			
+			if (maLop.HasValue && maLop.Value > 0)
+			{
+				sql += " AND pc.MaLop = @MaLop";
+			}
+
+			var result = new List<AssignmentSlot>();
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+					if (maLop.HasValue && maLop.Value > 0)
+					{
+						cmd.Parameters.AddWithValue("@MaLop", maLop.Value);
+					}
+					using (var reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							result.Add(new AssignmentSlot
+							{
+								MaLop = reader.GetInt32("MaLop"),
+								Thu = reader.GetInt32("Thu"),
+								Tiet = reader.GetInt32("Tiet"),
+								MaMon = reader.GetInt32("MaMon"),
+								MaGV = reader.GetString("MaGV"),
+								Phong = reader.IsDBNull(reader.GetOrdinal("Phong")) ? string.Empty : reader.GetString("Phong")
+							});
+						}
+					}
+				}
+			}
+			return result;
+		}
+
 		public bool HasConflict(int semesterId, int weekNo, AssignmentSlot slot)
 		{
 			const string sql = @"

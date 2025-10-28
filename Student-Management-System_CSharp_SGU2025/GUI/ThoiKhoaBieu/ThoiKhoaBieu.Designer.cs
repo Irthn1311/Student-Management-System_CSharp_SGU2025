@@ -539,11 +539,6 @@
             this.cbLop.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbLop.ItemHeight = 30;
-            this.cbLop.Items.AddRange(new object[] {
-            "Chọn lớp",
-            "Lớp 10A1",
-            "Lớp 10A2",
-            "Lớp 10A3"});
             this.cbLop.Location = new System.Drawing.Point(627, 29);
             this.cbLop.Margin = new System.Windows.Forms.Padding(2);
             this.cbLop.Name = "cbLop";
@@ -562,18 +557,13 @@
             this.cbHocKyNamHoc.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbHocKyNamHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbHocKyNamHoc.ItemHeight = 30;
-            this.cbHocKyNamHoc.Items.AddRange(new object[] {
-            "Chọn học kỳ",
-            "Học Kỳ I - 2023 - 2024",
-            "Học Kỳ II - 2023 - 2024",
-            "Học Kỳ I - 2024 - 2025",
-            "Học Kỳ II - 2024 - 2025"});
             this.cbHocKyNamHoc.Location = new System.Drawing.Point(763, 29);
             this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
             this.cbHocKyNamHoc.Size = new System.Drawing.Size(198, 36);
             this.cbHocKyNamHoc.StartIndex = 0;
             this.cbHocKyNamHoc.TabIndex = 17;
+            this.cbHocKyNamHoc.SelectedIndexChanged += new System.EventHandler(this.cbHocKyNamHoc_SelectedIndexChanged);
             // 
             // btnSapXepTuDong
             // 
@@ -647,7 +637,7 @@
             this.MinimumSize = new System.Drawing.Size(1168, 768);
             this.Name = "ThoiKhoaBieu";
             this.Size = new System.Drawing.Size(1151, 751);
-            this.Load += new System.EventHandler(this.ThoiKhoaBieu_Load_1);
+            this.Load += new System.EventHandler(this.ThoiKhoaBieu_Load);
             this.guna2Panel1.ResumeLayout(false);
             this.guna2Panel2.ResumeLayout(false);
             this.guna2Panel2.PerformLayout();
