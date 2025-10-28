@@ -413,5 +413,42 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void btnAutoPhanCong_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var uc = new Student_Management_System_CSharp_SGU2025.GUI.PhanCong.ucAutoPhanCongPreview();
+                uc.Dock = DockStyle.Fill;
+                using (var frm = new Form())
+                {
+                    frm.Text = "Auto Phân công (Preview)";
+                    frm.StartPosition = FormStartPosition.CenterParent;
+                    frm.Size = new Size(900, 600);
+                    frm.Controls.Add(uc);
+                    frm.ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi mở Auto Phân công: {ex.Message}");
+            }
+        }
+
+        private void btnNhapDeXuat_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var persist = new Student_Management_System_CSharp_SGU2025.Services.AssignmentPersistService();
+                persist.AcceptToOfficial(1);
+                LoadData();
+                LoadStatCards();
+                MessageBox.Show("Đã nhập từ đề xuất vào PhanCongGiangDay.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Không thể nhập đề xuất: {ex.Message}");
+            }
+        }
     }
 }

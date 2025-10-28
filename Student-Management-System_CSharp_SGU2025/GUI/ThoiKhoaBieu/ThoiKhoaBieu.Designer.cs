@@ -594,6 +594,7 @@
             this.btnSapXepTuDong.Size = new System.Drawing.Size(163, 35);
             this.btnSapXepTuDong.TabIndex = 27;
             this.btnSapXepTuDong.Text = "Sắp xếp tự động";
+            this.btnSapXepTuDong.Click += new System.EventHandler(this.btnGenerateAuto_Click);
             // 
             // btnLuuDiem
             // 
@@ -613,6 +614,7 @@
             this.btnLuuDiem.Size = new System.Drawing.Size(149, 35);
             this.btnLuuDiem.TabIndex = 28;
             this.btnLuuDiem.Text = "Lưu thời khóa biểu ";
+            this.btnLuuDiem.Click += new System.EventHandler(this.btnAccept_Click);
             // 
             // btnXoa
             // 
@@ -633,6 +635,7 @@
             this.btnXoa.Size = new System.Drawing.Size(69, 35);
             this.btnXoa.TabIndex = 47;
             this.btnXoa.Text = "Xóa";
+            this.btnXoa.Click += new System.EventHandler(this.btnRollback_Click);
             // 
             // ThoiKhoaBieu
             // 
