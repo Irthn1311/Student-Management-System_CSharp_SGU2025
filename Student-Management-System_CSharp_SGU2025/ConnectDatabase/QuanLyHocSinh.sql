@@ -181,6 +181,35 @@ CREATE TABLE ThoiKhoaBieu (
     FOREIGN KEY (MaPhanCong) REFERENCES PhanCongGiangDay(MaPhanCong)
 );
 
+-- Bảng tạm cho Auto Phân công
+CREATE TABLE IF NOT EXISTS PhanCong_Temp (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    MaLop INT NOT NULL,
+    MaGiaoVien VARCHAR(15) NOT NULL,
+    MaMonHoc INT NOT NULL,
+    MaHocKy INT NOT NULL,
+    SoTietTuan INT NOT NULL,
+    Score INT NULL,
+    Note NVARCHAR(255) NULL,
+    UNIQUE KEY uq_pc_temp (MaLop, MaGiaoVien, MaMonHoc, MaHocKy),
+    INDEX idx_pc_temp_hk (MaHocKy)
+);
+
+-- Bảng tạm để lưu lịch sinh tự động trước khi chấp nhận chính thức
+CREATE TABLE IF NOT EXISTS TKB_Temp (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    SemesterId INT NOT NULL,
+    WeekNo INT NOT NULL,
+    MaLop INT NOT NULL,
+    Thu INT NOT NULL,
+    Tiet INT NOT NULL,
+    MaMon INT NOT NULL,
+    MaGV VARCHAR(15) NOT NULL,
+    Phong VARCHAR(50) NULL,
+    UNIQUE KEY uq_temp_slot (SemesterId, WeekNo, MaLop, Thu, Tiet),
+    INDEX idx_temp_teacher (SemesterId, WeekNo, MaGV, Thu, Tiet)
+);
+
 CREATE TABLE DiemSo (
     MaHocSinh INT,
     MaMonHoc INT,

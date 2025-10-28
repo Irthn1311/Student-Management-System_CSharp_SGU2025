@@ -16,6 +16,17 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 );*/
     internal class MonHocDAO
     {
+        public List<MonHocDTO> GetByHocKy(int hocKyId)
+        {
+            // Mặc định tất cả môn áp dụng cho mọi học kỳ
+            return DocDSMH();
+        }
+
+        public int GetRequiredPeriods(int maMonHoc, int? maLop = null)
+        {
+            var mh = LayDSMonHocTheoId(maMonHoc);
+            return mh != null ? mh.soTiet : 0;
+        }
         public bool ThemMonHoc(MonHocDTO monhoc)
         {
             string query = "insert into MonHoc(TenMonHoc,SoTiet,GhiChu) values(@TenMonHoc,@SoTiet,@GhiChu)";

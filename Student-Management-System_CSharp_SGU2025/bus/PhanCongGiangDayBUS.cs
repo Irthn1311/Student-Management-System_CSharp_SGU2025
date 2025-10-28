@@ -14,6 +14,25 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             phanCongDAO = new PhanCongGiangDayDAO();
         }
 
+        /// <summary>
+        /// Lấy danh sách phân công theo học kỳ (để sinh thời khóa biểu).
+        /// </summary>
+        public List<PhanCongGiangDayDTO> GetBySemester(int semesterId)
+        {
+            return phanCongDAO.LayPhanCongTheoHocKy(semesterId);
+        }
+
+        /// <summary>
+        /// Trả về số tiết/tuần yêu cầu của một (Lớp, Môn) theo cấu hình môn học.
+        /// Hiện tại dùng trường SoTiet từ MonHoc như mặc định (có thể mở rộng per-class sau).
+        /// </summary>
+        public int GetRequiredPeriods(int maLop, int maMon, int semesterId)
+        {
+            var monHocDAO = new Student_Management_System_CSharp_SGU2025.DAO.MonHocDAO();
+            var mh = monHocDAO.LayDSMonHocTheoId(maMon);
+            return mh != null ? mh.soTiet : 0;
+        }
+
         // Thêm phân công giảng dạy
         public bool ThemPhanCong(PhanCongGiangDayDTO phanCong)
         {

@@ -177,6 +177,7 @@
     <Compile Include="BUS\PhanLopBLL.cs" />
     <Compile Include="BUS\PhuHuynhBLL.cs" />
     <Compile Include="BUS\ThemDiemBUS.cs" />
+    <Compile Include="BUS\ThoiKhoaBieuBUS.cs" />
     <Compile Include="DAO\DiemSoDAO.cs" />
     <Compile Include="DAO\HocSinhDAO.cs" />
     <Compile Include="DAO\HocSinhPhuHuynhDAO.cs" />
@@ -186,6 +187,7 @@
     <Compile Include="DAO\NhapDiemDAO.cs" />
     <Compile Include="DAO\PhanLopDAO.cs" />
     <Compile Include="DAO\PhuHuynhDAO.cs" />
+    <Compile Include="DAO\ThoiKhoaBieuDAO.cs" />
     <Compile Include="DTO\ChiTietDiemDTO.cs" />
     <Compile Include="DTO\DiemSoDTO.cs" />
     <Compile Include="DTO\HocSinhDTO.cs" />
@@ -296,6 +298,9 @@
     </Compile>
     <Compile Include="GUI\NamHoc\ucNamHoc.Designer.cs">
       <DependentUpon>ucNamHoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\PhanCong\ucAutoPhanCongPreview.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
       <SubType>UserControl</SubType>
@@ -528,6 +533,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Scheduling\Models.cs" />
+    <Compile Include="Scheduling\SchedulingService.cs" />
+    <Compile Include="Services\AssignmentAutoService.cs" />
+    <Compile Include="Services\AssignmentPersistService.cs" />
     <EmbeddedResource Include="GUI\CaiDat\CaiDat.resx">
       <DependentUpon>CaiDat.cs</DependentUpon>
     </EmbeddedResource>
@@ -674,11 +683,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="docs\CaiTienTKB.md" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="reports\ACTION_PLAN.md" />
+    <None Include="reports\BUGS.md" />
+    <None Include="reports\CODE_HEALTH.md" />
+    <None Include="reports\COVERAGE.json" />
+    <None Include="reports\INVENTORY.md" />
+    <None Include="reports\PROGRESS.md" />
+    <None Include="reports\SMOKE_TEST.md" />
+    <None Include="reports\TODO.md" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

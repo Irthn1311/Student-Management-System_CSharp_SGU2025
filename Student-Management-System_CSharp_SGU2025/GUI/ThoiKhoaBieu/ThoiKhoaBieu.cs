@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Student_Management_System_CSharp_SGU2025.Scheduling;
+using System.Threading;
+using Student_Management_System_CSharp_SGU2025.BUS;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
 {
@@ -42,82 +45,133 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
 
         private void ThoiKhoaBieu_Load_1(object sender, EventArgs e)
         {
-            var lichHoc = new[] {
-                // Tiết 1
-                new { Mon = "Toán học", GV = "Nguyễn T. Hoa", Phong = "A101", Thu = 2, Tiet = 1 },
-                new { Mon = "Vật lý", GV = "Hoàng T. Lan", Phong = "A102", Thu = 3, Tiet = 1 },
-                new { Mon = "Tiếng Anh", GV = "Lê T. Mai", Phong = "C301", Thu = 4, Tiet = 1 },
-                new { Mon = "Sinh học", GV = "Đỗ T. Thu", Phong = "A104", Thu = 5, Tiet = 1 },
-                new { Mon = "Toán học", GV = "Nguyễn T. Hoa", Phong = "A101", Thu = 6, Tiet = 1 },
-                new { Mon = "Thể dục", GV = "Phạm V. Đức", Phong = "Sân TD", Thu = 7, Tiet = 1 },
+            // On load, we could fetch temp or official week and render if needed.
+            RenderFromTemp(1, 1);
+        }
 
-                // Tiết 2
-                new { Mon = "Toán học", GV = "Nguyễn T. Hoa", Phong = "A101", Thu = 2, Tiet = 2 },
-                new { Mon = "Vật lý", GV = "Hoàng T. Lan", Phong = "A102", Thu = 3, Tiet = 2 },
-                new { Mon = "Ngữ văn", GV = "Trần V. Nam", Phong = "B201", Thu = 5, Tiet = 2 },
-                new { Mon = "Thể dục", GV = "Phạm V. Đức", Phong = "Sân TD", Thu = 7, Tiet = 2 },
-
-                // Tiết 3
-                new { Mon = "Hóa học", GV = "Vũ V. Hùng", Phong = "A103", Thu = 3, Tiet = 3 },
-                new { Mon = "Toán học", GV = "Nguyễn T. Hoa", Phong = "A101", Thu = 4, Tiet = 3 },
-                new { Mon = "Vật lý", GV = "Hoàng T. Lan", Phong = "A102", Thu = 5, Tiet = 3 },
-                new { Mon = "Ngữ văn", GV = "Trần V. Nam", Phong = "B201", Thu = 6, Tiet = 3 },
-    
-                // Tiết 4
-                new { Mon = "Tiếng Anh", GV = "Lê T. Mai", Phong = "C301", Thu = 2, Tiet = 4 },
-                new { Mon = "Sinh học", GV = "Đỗ T. Thu", Phong = "A104", Thu = 4, Tiet = 4 },
-                new { Mon = "Lịch sử", GV = "Ngô T. Hường", Phong = "B203", Thu = 5, Tiet = 4 },
-                new { Mon = "Quốc phòng", GV = "Hoàng V. Kiên", Phong = "E501", Thu = 7, Tiet = 4 },
-
-                // Tiết 5
-                new { Mon = "Thể dục", GV = "Phạm V. Đức", Phong = "Sân TD", Thu = 2, Tiet = 5 },
-                new { Mon = "GDCD", GV = "Bùi V. Toàn", Phong = "B202", Thu = 3, Tiet = 5 },
-                new { Mon = "Địa lý", GV = "Trần V. Long", Phong = "B204", Thu = 4, Tiet = 5 },
-                new { Mon = "Tin học", GV = "Lê V. An", Phong = "D401", Thu = 5, Tiet = 5 },
-
-                // Tiết 6 (Buổi chiều)
-                new { Mon = "Ngữ văn", GV = "Trần V. Nam", Phong = "B201", Thu = 3, Tiet = 6 },
-                new { Mon = "Hóa học", GV = "Vũ V. Hùng", Phong = "A103", Thu = 5, Tiet = 6 },
-
-                // Tiết 7
-                new { Mon = "Tin học", GV = "Lê V. An", Phong = "D401", Thu = 2, Tiet = 7 },
-                new { Mon = "Lịch sử", GV = "Ngô T. Hường", Phong = "B203", Thu = 4, Tiet = 7 },
-    
-                // Tiết 8
-                new { Mon = "Địa lý", GV = "Trần V. Long", Phong = "B204", Thu = 3, Tiet = 8 },
-                new { Mon = "Sinh học", GV = "Đỗ T. Thu", Phong = "A104", Thu = 6, Tiet = 8 },
-
-                // Tiết 9
-                new { Mon = "Quốc phòng", GV = "Hoàng V. Kiên", Phong = "E501", Thu = 4, Tiet = 9 },
-    
-                // Tiết 10
-                new { Mon = "GDCD", GV = "Bùi V. Toàn", Phong = "B202", Thu = 2, Tiet = 10 }
-            };
-
-            // Lặp qua từng môn học để tạo thẻ
-            foreach (var mon in lichHoc)
+        // Hook: Generate Auto TKB
+        private void btnGenerateAuto_Click(object sender, EventArgs e)
+        {
+            try
             {
-                var card = new StatCardTKB();
-                var colorSet = GetColorSetForSubject(mon.Mon);
+                Cursor.Current = Cursors.WaitCursor;
+                int semesterId = 1; // TODO: bind from UI
+                int weekNo = 1;     // TODO: bind from UI
 
-                card.SetData(
-                    mon.Mon,
-                    mon.GV,
-                    mon.Phong,
-                    colorSet.TextColor,
-                    colorSet.ProgressColor1,
-                    colorSet.ProgressColor2
-                );
+                var service = new SchedulingService();
+                var req = service.BuildRequestFromDatabase(semesterId, weekNo);
+                if (req.Assignments == null || req.Assignments.Count == 0)
+                {
+                    MessageBox.Show("Chưa có dữ liệu phân công trong học kỳ này.");
+                    return;
+                }
 
-                card.Dock = DockStyle.Fill;
-                card.Margin = new Padding(5);
-
-                // 👇 SỬA LẠI TỌA ĐỘ Ở ĐÂY 👇
-                // Cột: mon.Thu - 1 (vì cột "Thứ 2" là cột 1, "Thứ 3" là 2,...)
-                // Hàng: mon.Tiet (vì hàng "Tiết 1" là hàng 1, "Tiết 2" là 2,...)
-                tableThoiKhoaBieu.Controls.Add(card, mon.Thu - 1, mon.Tiet);
+                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(req.TimeBudgetSec + 5)))
+                {
+                    var sol = service.GenerateSchedule(req, cts.Token);
+                    if (!service.ValidateHardConstraints(sol))
+                    {
+                        MessageBox.Show("Còn vi phạm cứng. Hệ thống vẫn sẽ lưu vào tạm để bạn xem.", "Scheduling", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    service.PersistToTemp(semesterId, weekNo, sol);
+                    RenderFromTemp(semesterId, weekNo);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi sinh TKB: {ex.Message}", "Scheduling", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
             }
         }
+
+        private void btnAccept_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                int semesterId = 1;
+                int weekNo = 1;
+                var service = new SchedulingService();
+                service.AcceptToOfficial(semesterId, weekNo);
+                MessageBox.Show("Đã lưu thời khóa biểu chính thức.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Không thể lưu lịch chính thức: {ex.Message}");
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        private void btnRollback_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var service = new SchedulingService();
+                service.RollbackTemp();
+                tableThoiKhoaBieu.Controls.Clear();
+                MessageBox.Show("Đã xóa lịch tạm.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Không thể xóa lịch tạm: {ex.Message}");
+            }
+        }
+
+		private void RenderFromTemp(int semesterId, int weekNo)
+		{
+			tableThoiKhoaBieu.Controls.Clear();
+			var bus = new ThoiKhoaBieuBUS();
+			var slots = bus.GetWeek(semesterId, weekNo);
+
+			// Initialize DAOs for lookup
+			var monDao = new MonHocBUS();
+			var gvDao = new GiaoVienBUS();
+
+			foreach (var s in slots)
+			{
+				// Get subject and teacher names
+				string tenMon = "Môn " + s.MaMon;
+				string tenGV = s.MaGV;
+				
+				try
+				{
+					var mon = monDao.LayDSMonHocTheoId(s.MaMon);
+					if (mon != null) tenMon = mon.tenMon;
+					
+					var gv = gvDao.LayGiaoVienTheoMa(s.MaGV);
+					if (gv != null) tenGV = gv.HoTen;
+				}
+				catch
+				{
+					// Fallback to IDs if lookup fails
+				}
+
+				var card = new StatCardTKB();
+				var colorSet = GetColorSetForSubject(tenMon);
+				card.SetData(
+					tenMon,
+					tenGV,
+					string.IsNullOrEmpty(s.Phong) ? "Phòng TBA" : s.Phong,
+					colorSet.TextColor,
+					colorSet.ProgressColor1,
+					colorSet.ProgressColor2
+				);
+				card.Dock = DockStyle.Fill;
+				card.Margin = new Padding(5);
+				
+				// Map Thu (2-7) to grid column (1-6), Tiet (1-10) to row (1-10)
+				int col = s.Thu - 1;  // Thu 2 -> col 1, Thu 7 -> col 6
+				int row = s.Tiet;     // Tiet 1 -> row 1, Tiet 10 -> row 10
+				
+				tableThoiKhoaBieu.Controls.Add(card, col, row);
+			}
+		}
 
         private (Color TextColor, Color ProgressColor1, Color ProgressColor2) GetColorSetForSubject(string subject)
         {
