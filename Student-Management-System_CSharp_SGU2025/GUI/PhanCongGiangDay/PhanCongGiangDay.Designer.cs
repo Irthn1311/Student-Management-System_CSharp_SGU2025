@@ -30,6 +30,8 @@
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.dgvPhanCong = new Guna.UI2.WinForms.Guna2DataGridView();
             this.btnPhanCongMoi = new Guna.UI2.WinForms.Guna2Button();
+            this.btnAutoPhanCong = new Guna.UI2.WinForms.Guna2Button();
+            this.btnNhapDeXuat = new Guna.UI2.WinForms.Guna2Button();
             this.panelPhanCongGiangDay.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhanCong)).BeginInit();
             this.SuspendLayout();
@@ -44,6 +46,8 @@
             this.panelPhanCongGiangDay.Controls.Add(this.cbLop);
             this.panelPhanCongGiangDay.Controls.Add(this.cbHocKyNamHoc);
             this.panelPhanCongGiangDay.Controls.Add(this.dgvPhanCong);
+            this.panelPhanCongGiangDay.Controls.Add(this.btnNhapDeXuat);
+            this.panelPhanCongGiangDay.Controls.Add(this.btnAutoPhanCong);
             this.panelPhanCongGiangDay.Controls.Add(this.btnPhanCongMoi);
             this.panelPhanCongGiangDay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPhanCongGiangDay.Location = new System.Drawing.Point(0, 0);
@@ -230,6 +234,34 @@
             this.btnPhanCongMoi.Text = "Phân công mới";
             this.btnPhanCongMoi.Click += new System.EventHandler(this.btnPhanCongMoi_Click);
             // 
+            // btnAutoPhanCong
+            // 
+            this.btnAutoPhanCong.BorderRadius = 10;
+            this.btnAutoPhanCong.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
+            this.btnAutoPhanCong.ForeColor = System.Drawing.Color.White;
+            this.btnAutoPhanCong.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus8;
+            this.btnAutoPhanCong.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnAutoPhanCong.Location = new System.Drawing.Point(206, 22);
+            this.btnAutoPhanCong.Name = "btnAutoPhanCong";
+            this.btnAutoPhanCong.Size = new System.Drawing.Size(190, 40);
+            this.btnAutoPhanCong.TabIndex = 19;
+            this.btnAutoPhanCong.Text = "Auto Phân công (Mới)";
+            this.btnAutoPhanCong.Click += new System.EventHandler(this.btnAutoPhanCong_Click);
+            // 
+            // btnNhapDeXuat
+            // 
+            this.btnNhapDeXuat.BorderRadius = 10;
+            this.btnNhapDeXuat.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
+            this.btnNhapDeXuat.ForeColor = System.Drawing.Color.White;
+            this.btnNhapDeXuat.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.download;
+            this.btnNhapDeXuat.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnNhapDeXuat.Location = new System.Drawing.Point(410, 22);
+            this.btnNhapDeXuat.Name = "btnNhapDeXuat";
+            this.btnNhapDeXuat.Size = new System.Drawing.Size(190, 40);
+            this.btnNhapDeXuat.TabIndex = 20;
+            this.btnNhapDeXuat.Text = "Nhập từ đề xuất";
+            this.btnNhapDeXuat.Click += new System.EventHandler(this.btnNhapDeXuat_Click);
+            // 
             // PhanCongGiangDay
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -256,5 +288,7 @@
         private StatCardPhanCongGiangDay statCardPhanCongGiangDay3;
         private StatCardPhanCongGiangDay statCardPhanCongGiangDay2;
         private StatCardPhanCongGiangDay statCardPhanCongGiangDay1;
+        private Guna.UI2.WinForms.Guna2Button btnAutoPhanCong;
+        private Guna.UI2.WinForms.Guna2Button btnNhapDeXuat;
     }
 }

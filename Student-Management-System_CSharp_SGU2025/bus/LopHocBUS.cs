@@ -17,38 +17,72 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             lopDAO = new LopDAO();
         }
 
-        // Thêm lớp học với validation
+        // Thêm lớp học với validation (ném lỗi)
         public bool ThemLop(LopDTO lop)
         {
-            // Validation dữ liệu
+            string _; string __;
+            return ThemLop(lop, out _, out __);
+        }
+
+        // Thêm lớp học với validation (trả về thông báo)
+        public bool ThemLop(LopDTO lop, out string message, out string errorField)
+        {
+            message = string.Empty;
+            errorField = string.Empty;
+
+            if (lop == null)
+            {
+                message = "Dữ liệu lớp không hợp lệ.";
+                errorField = "lop";
+                return false;
+            }
+
             if (string.IsNullOrWhiteSpace(lop.tenLop))
             {
-                throw new ArgumentException("Tên lớp không được để trống.");
+                message = "Tên lớp không được để trống.";
+                errorField = "tenLop";
+                return false;
             }
-
             if (lop.maKhoi <= 0)
             {
-                throw new ArgumentException("Mã khối phải lớn hơn 0.");
+                message = "Mã khối phải lớn hơn 0.";
+                errorField = "maKhoi";
+                return false;
             }
-
+            if (lop.siSo < 0)
+            {
+                message = "Sĩ số không được nhỏ hơn 0.";
+                errorField = "siSo";
+                return false;
+            }
             if (string.IsNullOrWhiteSpace(lop.maGVCN))
             {
-                throw new ArgumentException("Mã giáo viên chủ nhiệm không được để trống.");
+                message = "Mã giáo viên chủ nhiệm không được để trống.";
+                errorField = "maGVCN";
+                return false;
             }
 
-            // Kiểm tra xem lớp với tên này đã tồn tại chưa
             if (lopDAO.LayLopTheoTen(lop.tenLop) != null)
             {
-                throw new ArgumentException("Lớp với tên này đã tồn tại.");
+                message = "Lớp với tên này đã tồn tại.";
+                errorField = "tenLop";
+                return false;
             }
 
-            // Kiểm tra xem GVCN có bị trùng với lớp khác không (mỗi GV chỉ làm GVCN cho 1 lớp)
             if (KiemTraGVCNDaDuocPhanCong(lop.maGVCN))
             {
-                throw new ArgumentException("Giáo viên này đã được phân công làm GVCN cho một lớp khác.");
+                message = "Giáo viên này đã được phân công làm GVCN cho một lớp khác.";
+                errorField = "maGVCN";
+                return false;
             }
 
-            return lopDAO.ThemLop(lop);
+            bool ok = lopDAO.ThemLop(lop);
+            if (!ok)
+            {
+                message = "Thêm lớp học thất bại.";
+                errorField = string.Empty;
+            }
+            return ok;
         }
 
         // Đọc danh sách lớp học
@@ -79,47 +113,83 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             return lopDAO.LayLopTheoTen(tenLop);
         }
 
-        // Cập nhật lớp học với validation
+        // Cập nhật lớp học với validation (ném lỗi)
         public bool CapNhatLop(LopDTO lop)
         {
-            // Validation dữ liệu
+            string _; string __;
+            return CapNhatLop(lop, out _, out __);
+        }
+
+        // Cập nhật lớp học với validation (trả về thông báo)
+        public bool CapNhatLop(LopDTO lop, out string message, out string errorField)
+        {
+            message = string.Empty;
+            errorField = string.Empty;
+
+            if (lop == null)
+            {
+                message = "Dữ liệu lớp không hợp lệ.";
+                errorField = "lop";
+                return false;
+            }
             if (lop.maLop <= 0)
             {
-                throw new ArgumentException("Mã lớp phải lớn hơn 0.");
+                message = "Mã lớp phải lớn hơn 0.";
+                errorField = "maLop";
+                return false;
             }
-
             if (string.IsNullOrWhiteSpace(lop.tenLop))
             {
-                throw new ArgumentException("Tên lớp không được để trống.");
+                message = "Tên lớp không được để trống.";
+                errorField = "tenLop";
+                return false;
             }
-
             if (lop.maKhoi <= 0)
             {
-                throw new ArgumentException("Mã khối phải lớn hơn 0.");
+                message = "Mã khối phải lớn hơn 0.";
+                errorField = "maKhoi";
+                return false;
             }
-
+            if (lop.siSo < 0)
+            {
+                message = "Sĩ số không được nhỏ hơn 0.";
+                errorField = "siSo";
+                return false;
+            }
             if (string.IsNullOrWhiteSpace(lop.maGVCN))
             {
-                throw new ArgumentException("Mã giáo viên chủ nhiệm không được để trống.");
+                message = "Mã giáo viên chủ nhiệm không được để trống.";
+                errorField = "maGVCN";
+                return false;
             }
 
-            // Kiểm tra xem tên lớp mới có bị trùng với lớp khác không (trừ lớp hiện tại)
             LopDTO lopHienTai = lopDAO.LayLopTheoId(lop.maLop);
-            if (lopHienTai != null && lopHienTai.tenLop != lop.tenLop && lopDAO.LayLopTheoTen(lop.tenLop) != null)
+            if (lopHienTai == null)
             {
-                throw new ArgumentException("Tên lớp này đã tồn tại cho một lớp khác.");
+                message = "Không tìm thấy lớp để cập nhật.";
+                errorField = "maLop";
+                return false;
             }
-
-            // Kiểm tra GVCN mới có bị trùng không (nếu thay đổi GVCN)
+            if (lopHienTai.tenLop != lop.tenLop && lopDAO.LayLopTheoTen(lop.tenLop) != null)
+            {
+                message = "Tên lớp này đã tồn tại cho một lớp khác.";
+                errorField = "tenLop";
+                return false;
+            }
             if (lopHienTai.maGVCN != lop.maGVCN && KiemTraGVCNDaDuocPhanCong(lop.maGVCN))
             {
-                throw new ArgumentException("Giáo viên này đã được phân công làm GVCN cho một lớp khác.");
+                message = "Giáo viên này đã được phân công làm GVCN cho một lớp khác.";
+                errorField = "maGVCN";
+                return false;
             }
 
-            // Lưu ý: Validation về phân công môn học (không trùng môn cho cùng GV cùng lớp) cần được xử lý ở BUS riêng cho phân công,
-            // vì lớp Lop không trực tiếp quản lý phân công môn. Giả sử có BUS PhânCôngBUS để kiểm tra điều này nếu cần.
-
-            return lopDAO.CapNhatLop(lop);
+            bool ok = lopDAO.CapNhatLop(lop);
+            if (!ok)
+            {
+                message = "Cập nhật lớp học thất bại.";
+                errorField = string.Empty;
+            }
+            return ok;
         }
         // ✅ THÊM METHOD MỚI vào class LopHocBUS
         public int LayMaLopTiepTheo()
@@ -150,7 +220,9 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         // Phương thức hỗ trợ: Kiểm tra GVCN đã được phân công chưa
         private bool KiemTraGVCNDaDuocPhanCong(string maGVCN)
         {
+            if (string.IsNullOrWhiteSpace(maGVCN)) return false;
             List<LopDTO> dsLop = lopDAO.DocDSLop();
+            if (dsLop == null) return false;
             return dsLop.Any(l => l.maGVCN == maGVCN);
         }
 

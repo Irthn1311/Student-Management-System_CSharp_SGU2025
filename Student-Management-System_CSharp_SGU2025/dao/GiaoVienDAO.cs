@@ -3,11 +3,57 @@ using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
     internal class GiaoVienDAO
     {
+        public List<GiaoVienDTO> GetByHocKy(int hocKyId)
+        {
+            // Giáo viên độc lập theo học kỳ → trả tất cả, có thể mở rộng sau
+            return DocDSGiaoVien();
+        }
+
+        public List<int> GetChuyenMon(string maGiaoVien)
+        {
+            var ds = new List<int>();
+            string query = @"SELECT MaMonHoc FROM GiaoVien_MonHoc WHERE MaGiaoVien=@MaGiaoVien";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ds.Add(reader.GetInt32("MaMonHoc"));
+                        }
+                    }
+                }
+            }
+            return ds;
+        }
+
+        public int GetCurrentLoad(string maGiaoVien, int hocKyId)
+        {
+            string query = @"SELECT COALESCE(SUM(m.SoTiet),0) AS LoadTiet
+                             FROM PhanCongGiangDay pc JOIN MonHoc m ON pc.MaMonHoc=m.MaMonHoc
+                             WHERE pc.MaGiaoVien=@MaGiaoVien AND pc.MaHocKy=@MaHocKy";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                    cmd.Parameters.AddWithValue("@MaHocKy", hocKyId);
+                    object val = cmd.ExecuteScalar();
+                    return Convert.ToInt32(val);
+                }
+            }
+        }
         // ✅ LẤY TÊN GIÁO VIÊN THEO MÃ (Requirement chính của bạn)
         public string LayTenGiaoVienTheoMa(string maGiaoVien)
         {

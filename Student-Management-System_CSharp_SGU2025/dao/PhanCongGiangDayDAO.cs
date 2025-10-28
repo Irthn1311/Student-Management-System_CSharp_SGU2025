@@ -8,6 +8,68 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 {
     internal class PhanCongGiangDayDAO
     {
+        public List<PhanCongGiangDayDTO> GetByHocKy(int hocKyId)
+        {
+            return LayPhanCongTheoHocKy(hocKyId);
+        }
+
+        public void InsertBatch(List<PhanCongGiangDayDTO> list, MySqlTransaction tx)
+        {
+            string query = @"INSERT INTO PhanCongGiangDay(MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc)
+                            VALUES(@MaLop, @MaGiaoVien, @MaMonHoc, @MaHocKy, @NgayBatDau, @NgayKetThuc)";
+            var conn = tx.Connection;
+            foreach (var pc in list)
+            {
+                using (var cmd = new MySqlCommand(query, conn, tx))
+                {
+                    cmd.Parameters.AddWithValue("@MaLop", pc.MaLop);
+                    cmd.Parameters.AddWithValue("@MaGiaoVien", pc.MaGiaoVien);
+                    cmd.Parameters.AddWithValue("@MaMonHoc", pc.MaMonHoc);
+                    cmd.Parameters.AddWithValue("@MaHocKy", pc.MaHocKy);
+                    cmd.Parameters.AddWithValue("@NgayBatDau", pc.NgayBatDau);
+                    cmd.Parameters.AddWithValue("@NgayKetThuc", pc.NgayKetThuc);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpsertTemp(List<Services.PhanCongCandidate> list)
+        {
+            const string clearSql = "DELETE FROM PhanCong_Temp";
+            const string insertSql = @"INSERT INTO PhanCong_Temp(MaLop, MaGiaoVien, MaMonHoc, MaHocKy, SoTietTuan, Score, Note)
+                                       VALUES(@MaLop, @MaGiaoVien, @MaMonHoc, @MaHocKy, @SoTietTuan, @Score, @Note)";
+            using (var conn = ConnectDatabase.ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (var tx = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        using (var clr = new MySqlCommand(clearSql, conn, tx)) clr.ExecuteNonQuery();
+                        foreach (var c in list)
+                        {
+                            using (var cmd = new MySqlCommand(insertSql, conn, tx))
+                            {
+                                cmd.Parameters.AddWithValue("@MaLop", c.MaLop);
+                                cmd.Parameters.AddWithValue("@MaGiaoVien", c.MaGiaoVien);
+                                cmd.Parameters.AddWithValue("@MaMonHoc", c.MaMonHoc);
+                                cmd.Parameters.AddWithValue("@MaHocKy", 1);
+                                cmd.Parameters.AddWithValue("@SoTietTuan", c.SoTietTuan);
+                                cmd.Parameters.AddWithValue("@Score", c.Score);
+                                cmd.Parameters.AddWithValue("@Note", string.IsNullOrEmpty(c.Note) ? (object)DBNull.Value : c.Note);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                        tx.Commit();
+                    }
+                    catch
+                    {
+                        tx.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
         // Thêm phân công giảng dạy
         public bool ThemPhanCong(PhanCongGiangDayDTO phanCong)
         {

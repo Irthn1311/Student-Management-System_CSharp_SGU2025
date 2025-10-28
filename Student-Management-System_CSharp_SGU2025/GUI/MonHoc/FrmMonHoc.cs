@@ -1,10 +1,8 @@
 ﻿using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
-using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
-using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -13,128 +11,56 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     public partial class FrmMonHoc : UserControl
     {
         private MonHocBUS monHocBUS;
-        private List<MonHocDTO> danhSachMonHocGoc;
-
-        // ✅ Định nghĩa các loại môn học
-        private const string LOAI_MON_CHINH = "Môn chính";
-        private const string LOAI_KHOA_HOC_TU_NHIEN = "Khoa học tự nhiên";
-        private const string LOAI_KHOA_HOC_XA_HOI = "Khoa học xã hội";
-        private const string LOAI_KY_NANG_KHAC = "Kỹ năng khác";
+        private BindingList<MonHocDTO> bindingListMonHoc;
+        private MonHocDTO monHocDangChon;
+        private bool dangThem = false;
 
         public FrmMonHoc()
         {
             InitializeComponent();
             monHocBUS = new MonHocBUS();
-            danhSachMonHocGoc = new List<MonHocDTO>();
+            bindingListMonHoc = new BindingList<MonHocDTO>();
         }
 
         private void FrmMonHoc_Load(object sender, EventArgs e)
         {
-            // ===================================
-            // 1️⃣ CẤU HÌNH DATAGRIDVIEW
-            // ===================================
             SetupDataGridView();
-
-            // ===================================
-            // 2️⃣ NẠP DỮ LIỆU
-            // ===================================
             LoadData();
-
-            // ===================================
-            // 3️⃣ GẮN SỰ KIỆN
-            // ===================================
-            dgvMonHoc.CellPainting += dgvMonHoc_CellPainting;
-            dgvMonHoc.CellClick += dgvMonHoc_CellClick;
-
-            //// ✅ GẮN SỰ KIỆN CLICK CHO CÁC STAT CARD
-            //statcardMonHoc1.Click += StatCardMonChinh_Click;
-            //statcardMonHoc2.Click += StatCardKhoaHocTuNhien_Click;
-            //statcardMonHoc3.Click += StatCardKhoaHocXaHoi_Click;
-            //statcardMonHoc4.Click += StatCardKyNangKhac_Click;
-
-            //// ✅ Gắn sự kiện cho tất cả controls con của StatCard
-            //GanSuKienClickChoTatCaControl(statcardMonHoc1, StatCardMonChinh_Click);
-            //GanSuKienClickChoTatCaControl(statcardMonHoc2, StatCardKhoaHocTuNhien_Click);
-            //GanSuKienClickChoTatCaControl(statcardMonHoc3, StatCardKhoaHocXaHoi_Click);
-            //GanSuKienClickChoTatCaControl(statcardMonHoc4, StatCardKyNangKhac_Click);
-
-            // ===================================
-            // 4️⃣ CẬP NHẬT STAT CARD
-            // ===================================
-            CapNhatStatCards();
+            dgvMonHoc.SelectionChanged += dgvMonHoc_SelectionChanged;
+            VoHieuHoaControls();
+            txtTenMon.Validating += txtTenMon_Validating;
+            txtSoTiet.Validating += txtSoTiet_Validating;
+            txtMaMon.Validating += txtMaMon_Validating;
+            this.AutoValidate = AutoValidate.EnableAllowFocusChange;
         }
 
-        // ✅ HÀM HỖ TRỢ: Gắn sự kiện click cho tất cả controls con
-        private void GanSuKienClickChoTatCaControl(Control parent, EventHandler clickHandler)
-        {
-            foreach (Control ctrl in parent.Controls)
-            {
-                ctrl.Click += clickHandler;
-                if (ctrl.HasChildren)
-                {
-                    GanSuKienClickChoTatCaControl(ctrl, clickHandler);
-                }
-            }
-        }
-
-        // ✅ SỰ KIỆN CLICK CHO MÔN CHÍNH
-        private void StatCardMonChinh_Click(object sender, EventArgs e)
-        {
-            var monChinh = danhSachMonHocGoc.Where(m => m.ghiChu == LOAI_MON_CHINH).ToList();
-            HienThiDanhSachMonHoc(monChinh);
-        }
-
-        // ✅ SỰ KIỆN CLICK CHO KHOA HỌC TỰ NHIÊN
-        private void StatCardKhoaHocTuNhien_Click(object sender, EventArgs e)
-        {
-            var khoaHocTuNhien = danhSachMonHocGoc.Where(m => m.ghiChu == LOAI_KHOA_HOC_TU_NHIEN).ToList();
-            HienThiDanhSachMonHoc(khoaHocTuNhien);
-        }
-
-        // ✅ SỰ KIỆN CLICK CHO KHOA HỌC XÃ HỘI
-        private void StatCardKhoaHocXaHoi_Click(object sender, EventArgs e)
-        {
-            var khoaHocXaHoi = danhSachMonHocGoc.Where(m => m.ghiChu == LOAI_KHOA_HOC_XA_HOI).ToList();
-            HienThiDanhSachMonHoc(khoaHocXaHoi);
-        }
-
-        // ✅ SỰ KIỆN CLICK CHO KỸ NĂNG KHÁC
-        private void StatCardKyNangKhac_Click(object sender, EventArgs e)
-        {
-            var kyNangKhac = danhSachMonHocGoc.Where(m => m.ghiChu == LOAI_KY_NANG_KHAC).ToList();
-            HienThiDanhSachMonHoc(kyNangKhac);
-        }
-
-        // ✅ CẤU HÌNH DATAGRIDVIEW
+        // =======================================================
+        // === PHẦN CHUẨN BỊ VÀ HỖ TRỢ ===
+        // =======================================================
         private void SetupDataGridView()
         {
             dgvMonHoc.AutoGenerateColumns = false;
             dgvMonHoc.AllowUserToAddRows = false;
             dgvMonHoc.ReadOnly = true;
-            dgvMonHoc.RowTemplate.Height = 40;
+            dgvMonHoc.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvMonHoc.MultiSelect = false;
+            dgvMonHoc.DataSource = bindingListMonHoc;
 
-            // Style cho tiêu đề cột
-            dgvMonHoc.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-            dgvMonHoc.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 136, 229);
-            dgvMonHoc.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvMonHoc.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(30, 136, 229);
-            dgvMonHoc.ColumnHeadersHeight = 40;
-            dgvMonHoc.EnableHeadersVisualStyles = false;
-
-            // Style cho các dòng dữ liệu
-            dgvMonHoc.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
-            dgvMonHoc.DefaultCellStyle.SelectionBackColor = Color.FromArgb(230, 240, 255);
-            dgvMonHoc.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvMonHoc.Columns["MaMon"].DataPropertyName = "maMon";
+            dgvMonHoc.Columns["TenMon"].DataPropertyName = "tenMon";
+            dgvMonHoc.Columns["SoTiet"].DataPropertyName = "soTiet";
+            dgvMonHoc.Columns["GhiChu"].DataPropertyName = "ghiChu";
         }
 
-        // ✅ LOAD DỮ LIỆU CHÍNH
         private void LoadData()
         {
             try
             {
-                danhSachMonHocGoc = monHocBUS.DocDSMH();
-                HienThiDanhSachMonHoc(danhSachMonHocGoc);
-                CapNhatStatCards();
+                var danhSach = monHocBUS.DocDSMH();
+                CapNhatBindingList(danhSach);
+
+                if (bindingListMonHoc.Count > 0 && dgvMonHoc.Rows.Count > 0)
+                    dgvMonHoc.CurrentCell = dgvMonHoc.Rows[0].Cells[0];
             }
             catch (Exception ex)
             {
@@ -142,220 +68,280 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
-        // ✅ HIỂN THỊ DANH SÁCH MÔN HỌC
-        private void HienThiDanhSachMonHoc(List<MonHocDTO> danhSach)
+        private void CapNhatBindingList(List<MonHocDTO> danhSachMoi)
         {
-            dgvMonHoc.Rows.Clear();
-
-            foreach (MonHocDTO mh in danhSach)
+            for (int i = bindingListMonHoc.Count - 1; i >= 0; i--)
             {
-                dgvMonHoc.Rows.Add(
-                    mh.maMon.ToString(),
-                    mh.tenMon,
-                    $"{mh.soTiet} tiết",
-                    mh.ghiChu
-                );
+                var mhCu = bindingListMonHoc[i];
+                if (!danhSachMoi.Any(m => m.maMon == mhCu.maMon))
+                    bindingListMonHoc.RemoveAt(i);
+            }
+
+            foreach (var mhMoi in danhSachMoi)
+            {
+                var mhCu = bindingListMonHoc.FirstOrDefault(m => m.maMon == mhMoi.maMon);
+                if (mhCu == null)
+                    bindingListMonHoc.Add(mhMoi);
+                else
+                {
+                    mhCu.tenMon = mhMoi.tenMon;
+                    mhCu.soTiet = mhMoi.soTiet;
+                    mhCu.ghiChu = mhMoi.ghiChu;
+                }
+            }
+            bindingListMonHoc.ResetBindings();
+        }
+
+        private void dgvMonHoc_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvMonHoc.CurrentRow?.DataBoundItem is MonHocDTO mh && !dangThem)
+            {
+                monHocDangChon = mh;
+                HienThiThongTinMonHoc(mh);
             }
         }
 
-        // ✅ CẬP NHẬT STAT CARDS ĐỘNG - DỰA TRÊN TRƯỜNG GhiChu
-        private void CapNhatStatCards()
+        private void HienThiThongTinMonHoc(MonHocDTO mh)
         {
-            try
+            if (mh == null) return;
+            txtMaMon.Text = mh.maMon.ToString();
+            txtTenMon.Text = mh.tenMon;
+            txtSoTiet.Text = mh.soTiet.ToString();
+            cboLoaiMon.Text = mh.ghiChu;
+        }
+
+        private void XoaDuLieuControls()
+        {
+            txtMaMon.Clear();
+            txtTenMon.Clear();
+            txtSoTiet.Clear();
+            cboLoaiMon.SelectedIndex = -1;
+            monHocDangChon = null;
+        }
+
+        private void VoHieuHoaControls()
+        {
+            txtTenMon.Enabled = false;
+            txtSoTiet.Enabled = false;
+            cboLoaiMon.Enabled = false;
+            btnLuu.Enabled = false;
+            btnHuy.Enabled = false;
+        }
+
+        private void KichHoatControls()
+        {
+            txtTenMon.Enabled = true;
+            txtSoTiet.Enabled = true;
+            cboLoaiMon.Enabled = true;
+            btnLuu.Enabled = true;
+            btnHuy.Enabled = true;
+        }
+
+        private bool KiemTraDuLieu()
+        {
+            if (string.IsNullOrWhiteSpace(txtTenMon.Text))
             {
-                // Phân loại môn học theo GhiChu
-                var monChinh = danhSachMonHocGoc.Where(m => m.ghiChu == LOAI_MON_CHINH).ToList();
-                var khoaHocTuNhien = danhSachMonHocGoc.Where(m => m.ghiChu == LOAI_KHOA_HOC_TU_NHIEN).ToList();
-                var khoaHocXaHoi = danhSachMonHocGoc.Where(m => m.ghiChu == LOAI_KHOA_HOC_XA_HOI).ToList();
-                var kyNangKhac = danhSachMonHocGoc.Where(m => m.ghiChu == LOAI_KY_NANG_KHAC).ToList();
-
-                // Card 1 - Môn chính
-                statcardMonHoc1.SetData(
-                    monChinh.Count.ToString(),
-                    LOAI_MON_CHINH,
-                    monChinh.Count > 0 ? string.Join(", ", monChinh.Select(m => m.tenMon)) : "Chưa có môn học"
-                );
-                statcardMonHoc1.PanelBackgroundColor = Color.FromArgb(219, 234, 254);
-                statcardMonHoc1.SoLuongForeColor = Color.FromArgb(30, 136, 229);
-                statcardMonHoc1.Cursor = Cursors.Hand;
-
-                // Card 2 - Khoa học tự nhiên
-                statcardMonHoc2.SetData(
-                    khoaHocTuNhien.Count.ToString(),
-                    LOAI_KHOA_HOC_TU_NHIEN,
-                    khoaHocTuNhien.Count > 0 ? string.Join(", ", khoaHocTuNhien.Select(m => m.tenMon)) : "Chưa có môn học"
-                );
-                statcardMonHoc2.PanelBackgroundColor = Color.FromArgb(220, 252, 231);
-                statcardMonHoc2.SoLuongForeColor = Color.FromArgb(22, 163, 74);
-                statcardMonHoc2.Cursor = Cursors.Hand;
-
-                // Card 3 - Khoa học xã hội
-                statcardMonHoc3.SetData(
-                    khoaHocXaHoi.Count.ToString(),
-                    LOAI_KHOA_HOC_XA_HOI,
-                    khoaHocXaHoi.Count > 0 ? string.Join(", ", khoaHocXaHoi.Select(m => m.tenMon)) : "Chưa có môn học"
-                );
-                statcardMonHoc3.PanelBackgroundColor = Color.FromArgb(255, 237, 213);
-                statcardMonHoc3.SoLuongForeColor = Color.FromArgb(234, 88, 12);
-                statcardMonHoc3.Cursor = Cursors.Hand;
-
-                // Card 4 - Kỹ năng khác
-                statcardMonHoc4.SetData(
-                    kyNangKhac.Count.ToString(),
-                    LOAI_KY_NANG_KHAC,
-                    kyNangKhac.Count > 0 ? string.Join(", ", kyNangKhac.Select(m => m.tenMon)) : "Chưa có môn học"
-                );
-                statcardMonHoc4.PanelBackgroundColor = Color.FromArgb(243, 243, 255);
-                statcardMonHoc4.SoLuongForeColor = Color.FromArgb(147, 51, 234);
-                statcardMonHoc4.Cursor = Cursors.Hand;
+                MessageBox.Show("Vui lòng nhập tên môn học!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
             }
-            catch (Exception ex)
+
+            if (!int.TryParse(txtSoTiet.Text, out int soTiet) || soTiet <= 0)
             {
-                MessageBox.Show($"Lỗi khi cập nhật thống kê: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Số tiết phải là số nguyên dương!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (cboLoaiMon.SelectedIndex == -1)
+            {
+                MessageBox.Show("Vui lòng chọn loại môn học!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        // =======================================================
+        // === PHẦN NGHIỆP VỤ: THÊM – SỬA – XÓA ===
+        // =======================================================
+
+        // ✅ THÊM MÔN HỌC
+        private void ThemMonHoc()
+        {
+            var monHocMoi = new MonHocDTO
+            {
+                tenMon = txtTenMon.Text.Trim(),
+                soTiet = int.Parse(txtSoTiet.Text),
+                ghiChu = cboLoaiMon.Text
+            };
+
+            int maMoiTao = monHocBUS.ThemMonHocVaLayId(monHocMoi);
+            if (maMoiTao > 0)
+            {
+                monHocMoi.maMon = maMoiTao;
+                bindingListMonHoc.Add(monHocMoi);
+
+                MessageBox.Show("Thêm môn học thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dgvMonHoc.CurrentCell = dgvMonHoc.Rows[bindingListMonHoc.Count - 1].Cells[0];
+            }
+            else
+            {
+                MessageBox.Show("Không thể thêm môn học!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // ✅ VẼ ICON TRONG CỘT THAO TÁC
-        private void dgvMonHoc_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        // ✅ SỬA MÔN HỌC
+        private void SuaMonHoc()
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == dgvMonHoc.Columns["TuyChinh"].Index)
+            if (monHocDangChon == null)
             {
-                e.Paint(e.CellBounds, DataGridViewPaintParts.All);
-
-                Image editIcon = Properties.Resources.edit_icon;
-                Image deleteIcon = Properties.Resources.delete_icon;
-
-                int iconSize = 20;
-                int spacing = 10;
-                int totalWidth = iconSize * 2 + spacing;
-
-                int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
-                int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
-
-                e.Graphics.DrawImage(editIcon, new Rectangle(startX, y, iconSize, iconSize));
-                e.Graphics.DrawImage(deleteIcon, new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize));
-
-                e.Handled = true;
-            }
-        }
-
-        // ✅ XỬ LÝ CLICK ICON (SỬA VÀ XÓA)
-        private void dgvMonHoc_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0 || e.ColumnIndex != dgvMonHoc.Columns["TuyChinh"].Index)
+                MessageBox.Show("Vui lòng chọn môn học để sửa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
-
-            Point clickPoint = dgvMonHoc.PointToClient(Cursor.Position);
-            Rectangle cellRect = dgvMonHoc.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
-
-            int iconSize = 20;
-            int spacing = 10;
-            int totalWidth = iconSize * 2 + spacing;
-            int startX = cellRect.Left + (cellRect.Width - totalWidth) / 2;
-
-            int xEdit = startX;
-            int xDelete = startX + iconSize + spacing;
-
-            int maMon = Convert.ToInt32(dgvMonHoc.Rows[e.RowIndex].Cells["MaMon"].Value);
-            string tenMon = dgvMonHoc.Rows[e.RowIndex].Cells["TenMon"].Value.ToString();
-
-            // ✅ CLICK ICON SỬA
-            if (clickPoint.X >= xEdit && clickPoint.X <= xEdit + iconSize)
-            {
-                FrmSuaMonHoc formSua = new FrmSuaMonHoc(maMon);
-                formSua.StartPosition = FormStartPosition.CenterParent;
-
-                DialogResult result = formSua.ShowDialog();
-
-                if (result == DialogResult.OK)
-                {
-                    LoadData();
-                }
             }
-            // ✅ CLICK ICON XÓA
-            else if (clickPoint.X >= xDelete && clickPoint.X <= xDelete + iconSize)
+
+            monHocDangChon.tenMon = txtTenMon.Text.Trim();
+            monHocDangChon.soTiet = int.Parse(txtSoTiet.Text);
+            monHocDangChon.ghiChu = cboLoaiMon.Text;
+
+            if (monHocBUS.UpdateMonHoc(monHocDangChon))
             {
-                DialogResult dr = MessageBox.Show(
-                    $"Bạn có chắc chắn muốn xóa môn học:\n\n" +
-                    $"Mã môn: {maMon}\n" +
-                    $"Tên môn: {tenMon}\n\n" +
-                    $"⚠️ Hành động này không thể hoàn tác!",
-                    "Xác nhận xóa môn học",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
+                bindingListMonHoc.ResetBindings();
+                MessageBox.Show("Cập nhật môn học thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Không thể cập nhật môn học!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
-                if (dr == DialogResult.Yes)
+        // ✅ XÓA MÔN HỌC
+        private void XoaMonHoc()
+        {
+            if (monHocDangChon == null)
+            {
+                MessageBox.Show("Vui lòng chọn môn học cần xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var dr = MessageBox.Show(
+                $"Bạn có chắc muốn xóa môn học {monHocDangChon.tenMon}?",
+                "Xác nhận",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (dr == DialogResult.Yes)
+            {
+                if (monHocBUS.DeleteMonHoc(monHocDangChon.maMon))
                 {
-                    try
-                    {
-                        bool kq = monHocBUS.DeleteMonHoc(maMon);
-
-                        if (kq)
-                        {
-                            MessageBox.Show(
-                                $"✓ Đã xóa môn học '{tenMon}' thành công!",
-                                "Thành công",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information
-                            );
-                            LoadData();
-                        }
-                        else
-                        {
-                            MessageBox.Show(
-                                $"✗ Không thể xóa môn học '{tenMon}'!",
-                                "Lỗi",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error
-                            );
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Lỗi khi xóa: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    bindingListMonHoc.Remove(monHocDangChon);
+                    XoaDuLieuControls();
+                    MessageBox.Show("Đã xóa môn học!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Không thể xóa môn học!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        // ✅ NÚT THÊM MÔN HỌC
+        // =======================================================
+        // === PHẦN GỌI HÀM QUA NÚT NHẤN ===
+        // =======================================================
+
         private void btnThemMonHoc_Click(object sender, EventArgs e)
         {
-            FrmThemMonHoc formThem = new FrmThemMonHoc();
-            formThem.StartPosition = FormStartPosition.CenterParent;
+            dangThem = true;
+            XoaDuLieuControls();
+            KichHoatControls();
 
-            DialogResult result = formThem.ShowDialog();
+            txtMaMon.Text = "Tự động";
+            txtTenMon.Focus();
 
-            if (result == DialogResult.OK)
+            btnThemMonHoc.Enabled = btnSua.Enabled = btnXoa.Enabled = false;
+        }
+
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            if (monHocDangChon == null)
             {
-                LoadData();
+                MessageBox.Show("Vui lòng chọn môn học cần sửa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            dangThem = false;
+            KichHoatControls();
+            btnThemMonHoc.Enabled = btnSua.Enabled = btnXoa.Enabled = false;
+        }
+
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            XoaMonHoc();
+        }
+
+        private void btnLuu_Click(object sender, EventArgs e)
+        {
+            if (!KiemTraDuLieu()) return;
+
+            if (dangThem)
+                ThemMonHoc();
+            else
+                SuaMonHoc();
+
+            dangThem = false;
+            VoHieuHoaControls();
+            btnThemMonHoc.Enabled = btnSua.Enabled = btnXoa.Enabled = true;
+        }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            dangThem = false;
+            VoHieuHoaControls();
+            btnThemMonHoc.Enabled = btnSua.Enabled = btnXoa.Enabled = true;
+
+            if (monHocDangChon != null)
+                HienThiThongTinMonHoc(monHocDangChon);
+            else
+                XoaDuLieuControls();
+        }
+
+        private void txtTenMon_Validating(object sender, CancelEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtTenMon.Text))
+            {
+                e.Cancel = true;
+                errorProvider1.SetError(txtTenMon, "Tên môn học không được để trống.");
+            }
+            else
+            {
+                e.Cancel = false;
+                errorProvider1.SetError(txtTenMon, null);
             }
         }
-
-        private void guna2HtmlLabel2_Click(object sender, EventArgs e)
+        private void txtSoTiet_Validating(object sender, CancelEventArgs e)
         {
-
+            if (!int.TryParse(txtSoTiet.Text, out int soTiet) || soTiet <= 0)
+            {
+                e.Cancel = true;
+                errorProvider1.SetError(txtSoTiet, "Số tiết phải là số nguyên dương.");
+            }
+            else
+            {
+                e.Cancel = false;
+                errorProvider1.SetError(txtSoTiet, null);
+            }
         }
-
-        private void statcardMonHoc2_Load(object sender, EventArgs e)
+        private void txtMaMon_Validating(object sender, CancelEventArgs e)
         {
-
-        }
-
-        private void statcardMonHoc1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panelMonHoc_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void dgvMonHoc_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
+            if (!dangThem && (string.IsNullOrWhiteSpace(txtMaMon.Text) || !int.TryParse(txtMaMon.Text, out int maMon) || maMon <= 0))
+            {
+                e.Cancel = true;
+                errorProvider1.SetError(txtMaMon, "Mã môn học không hợp lệ.");
+            }
+            else
+            {
+                e.Cancel = false;
+                errorProvider1.SetError(txtMaMon, null);
+            }
         }
     }
 }
