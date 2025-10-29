@@ -710,6 +710,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="ConnectDatabase\01_schema.sql" />
+    <Content Include="ConnectDatabase\02_unique_indexes.sql" />
+    <Content Include="ConnectDatabase\03_sample_seed.sql" />
     <Content Include="ConnectDatabase\DB_UniqueIndexes.sql" />
     <Content Include="ConnectDatabase\QuanLyHocSinh.sql" />
     <Content Include="GUI\Images\3que.png" />
