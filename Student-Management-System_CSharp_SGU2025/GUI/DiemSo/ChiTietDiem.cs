@@ -73,20 +73,56 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                     lblDTB.ForeColor = Color.Gray;
                 }
 
-                // Hiển thị điểm các môn
-                HienThiDiem(dToan, dto.DiemToan);
-                HienThiDiem(dNguVan, dto.DiemNguVan);
-                HienThiDiem(dTiengAnh, dto.DiemTiengAnh);
-                HienThiDiem(dLichSu, dto.DiemLichSu);
-                HienThiDiem(dDiaLy, dto.DiemDiaLy);
-                HienThiDiem(dGDTC, dto.DiemGDTC);
-                HienThiDiem(dGDQP, dto.DiemGDQP);
-                HienThiDiem(dVatLy, dto.DiemVatLy);
-                HienThiDiem(dHoaHoc, dto.DiemHoaHoc);
-                HienThiDiem(dSinhHoc, dto.DiemSinhHoc);
-                HienThiDiem(dCongNghe, dto.DiemCongNghe);
-                HienThiDiem(dTinHoc, dto.DiemTinHoc);
-                HienThiDiem(dGDCD, dto.DiemGDCD);
+                // Mảng các label điểm theo thứ tự
+                Label[] diemLabels = new Label[]
+                {
+            diem1, diem2, diem3, diem4, diem5, diem6, diem7,
+            diem8, diem9, diem10, diem11, diem12, diem13
+                };
+
+                // Hiển thị điểm các môn theo thứ tự MaMonHoc
+                for (int i = 1; i <= 13; i++)
+                {
+                    if (dto.DiemCacMon.ContainsKey(i))
+                    {
+                        DiemMonHocDTO diemMon = dto.DiemCacMon[i];
+                        HienThiDiem(diemLabels[i - 1], diemMon.DiemTrungBinh);
+                    }
+                    else
+                    {
+                        // Nếu môn học không tồn tại, ẩn label hoặc hiển thị "N/A"
+                        if (i - 1 < diemLabels.Length)
+                        {
+                            diemLabels[i - 1].Text = "N/A";
+                            diemLabels[i - 1].ForeColor = Color.LightGray;
+                        }
+                    }
+                }
+
+                // Thêm vào LoadChiTietDiem
+                Label[] tenMonLabels = new Label[]
+                {
+    tenMon1, tenMon2, tenMon3, tenMon4, tenMon5, tenMon6,
+    tenMon7, tenMon8, tenMon9, tenMon10, tenMon11, tenMon12, tenMon13
+                };
+
+                for (int i = 1; i <= 13; i++)
+                {
+                    if (dto.DiemCacMon.ContainsKey(i))
+                    {
+                        DiemMonHocDTO diemMon = dto.DiemCacMon[i];
+                        tenMonLabels[i - 1].Text = diemMon.TenMonHoc + ":";
+                        HienThiDiem(diemLabels[i - 1], diemMon.DiemTrungBinh);
+                    }
+                    else
+                    {
+                        tenMonLabels[i - 1].Text = "Môn " + i + ":";
+                        diemLabels[i - 1].Text = "N/A";
+                        diemLabels[i - 1].ForeColor = Color.LightGray;
+                    }
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -204,7 +240,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
             headerCell.BackgroundColor = new BaseColor(33, 150, 243);
             headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
             headerCell.Padding = 15;
-            headerCell.Border = iTextRectangle.NO_BORDER; // DÙNG ALIAS
+            headerCell.Border = iTextRectangle.NO_BORDER;
             headerTable.AddCell(headerCell);
             document.Add(headerTable);
 
@@ -236,24 +272,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
             diemSoTitle.SpacingAfter = 10;
             document.Add(diemSoTitle);
 
-            // Bảng điểm
+            // Bảng điểm - Tự động dựa theo môn học trong database
             PdfPTable scoreTable = new PdfPTable(3);
             scoreTable.WidthPercentage = 100;
             scoreTable.SetWidths(new float[] { 1f, 1f, 1f });
 
-            AddScoreRow(scoreTable, "Toán:", currentDiemDTO.DiemToan, normalFont, bf);
-            AddScoreRow(scoreTable, "Ngữ văn:", currentDiemDTO.DiemNguVan, normalFont, bf);
-            AddScoreRow(scoreTable, "Tiếng Anh:", currentDiemDTO.DiemTiengAnh, normalFont, bf);
-            AddScoreRow(scoreTable, "Lịch sử:", currentDiemDTO.DiemLichSu, normalFont, bf);
-            AddScoreRow(scoreTable, "GDTC:", currentDiemDTO.DiemGDTC, normalFont, bf);
-            AddScoreRow(scoreTable, "GDQP:", currentDiemDTO.DiemGDQP, normalFont, bf);
-            AddScoreRow(scoreTable, "Địa lý:", currentDiemDTO.DiemDiaLy, normalFont, bf);
-            AddScoreRow(scoreTable, "Vật lý:", currentDiemDTO.DiemVatLy, normalFont, bf);
-            AddScoreRow(scoreTable, "Hóa học:", currentDiemDTO.DiemHoaHoc, normalFont, bf);
-            AddScoreRow(scoreTable, "Sinh học:", currentDiemDTO.DiemSinhHoc, normalFont, bf);
-            AddScoreRow(scoreTable, "Công nghệ:", currentDiemDTO.DiemCongNghe, normalFont, bf);
-            AddScoreRow(scoreTable, "Tin học:", currentDiemDTO.DiemTinHoc, normalFont, bf);
-            AddScoreRow(scoreTable, "GDCD:", currentDiemDTO.DiemGDCD, normalFont, bf);
+            // Sắp xếp môn học theo MaMonHoc
+            var sortedMonHoc = currentDiemDTO.DiemCacMon.OrderBy(x => x.Key);
+
+            foreach (var monHoc in sortedMonHoc)
+            {
+                DiemMonHocDTO diemMon = monHoc.Value;
+                AddScoreRow(scoreTable, diemMon.TenMonHoc + ":", diemMon.DiemTrungBinh, normalFont, bf);
+            }
 
             document.Add(scoreTable);
 
@@ -315,6 +346,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                 return new BaseColor(234, 179, 8);
             else
                 return new BaseColor(220, 38, 38);
+        }
+
+        private void diem3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void diem6_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

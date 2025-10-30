@@ -45,7 +45,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             try
             {
-                return monHocDAO.DocDSMH();
+                return monHocDAO.GetAllMonHoc();
             }
             catch (Exception ex)
             {
@@ -60,7 +60,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             try
             {
-                return hocKyDAO.DocDSHocKy();
+                return hocKyDAO.GetAllHocKy();
             }
             catch (Exception ex)
             {
