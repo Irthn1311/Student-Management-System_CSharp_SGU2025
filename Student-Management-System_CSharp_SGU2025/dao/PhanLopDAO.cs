@@ -461,5 +461,62 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
             return dsHocSinh;
         }
+
+        public List<HocSinhDTO> GetHocSinhTheoLop(int maLop)
+        {
+            List<HocSinhDTO> list = new List<HocSinhDTO>();
+            MySqlConnection conn = null;
+
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+                    SELECT DISTINCT hs.MaHocSinh, hs.HoTen, hs.NgaySinh, 
+                           hs.GioiTinh, hs.SDTHS, hs.Email, hs.TrangThai
+                    FROM HocSinh hs
+                    INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh
+                    WHERE pl.MaLop = @MaLop AND hs.TrangThai = 'Đang học'
+                    ORDER BY hs.MaHocSinh";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaLop", maLop);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            HocSinhDTO hs = new HocSinhDTO
+                            {
+                                MaHS = Convert.ToInt32(reader["MaHocSinh"]),
+                                HoTen = reader["HoTen"].ToString(),
+                                NgaySinh = reader["NgaySinh"] != DBNull.Value
+                                ? Convert.ToDateTime(reader["NgaySinh"])
+                                : DateTime.MinValue,
+
+                                GioiTinh = reader["GioiTinh"].ToString(),
+                                SdtHS = reader["SDTHS"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                TrangThai = reader["TrangThai"].ToString()
+                            };
+                            list.Add(hs);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy danh sách học sinh theo lớp: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+
+            return list;
+        }
+
     }
 }

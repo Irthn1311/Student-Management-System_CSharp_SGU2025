@@ -241,14 +241,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
         {
             try
             {
-                // Get the selected hoc ky or use a default value
-                int maHocKy = 1; // Default value, you might want to get this from UI
-                if (cbHocKy.SelectedValue != null && int.TryParse(cbHocKy.SelectedValue.ToString(), out int selectedHocKy))
-                {
-                    maHocKy = selectedHocKy;
-                }
-                
-                List<HocSinhDTO> danhSachHS = themDiemBUS.GetHocSinhTheoLop(maLop, maHocKy);
+                List<HocSinhDTO> danhSachHS = themDiemBUS.GetHocSinhTheoLop(maLop);
 
                 cbHocSinh.DataSource = null;
                 cbHocSinh.Items.Clear();
@@ -256,7 +249,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
 
                 foreach (var hs in danhSachHS)
                 {
+                    //string displayText = $"{hs.MaHocSinh} - {hs.HoTen}";
+                    //cbHocSinh.Items.Add(new { Text = displayText, Value = hs.MaHocSinh });
                     string displayText = $"{hs.MaHocSinh} - {hs.HoTen}";
+                    // Thay đổi: Lưu MaHocSinh dạng string (đã là string từ DTO)
                     cbHocSinh.Items.Add(new { Text = displayText, Value = hs.MaHocSinh });
                 }
 
@@ -676,9 +672,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                         return;
                     }
 
-                    string maHocSinh = ((dynamic)cbHocSinh.SelectedItem).Value;
-                    int maHocKy = ((dynamic)cbHocKy.SelectedItem).Value;
-                    string maMon = ((dynamic)cbMonHoc.SelectedItem).Value;
+                    //string maHocSinh = ((dynamic)cbHocSinh.SelectedItem).Value;
+                    //int maHocKy = ((dynamic)cbHocKy.SelectedItem).Value;
+                    //string maMon = ((dynamic)cbMonHoc.SelectedItem).Value;
+
+                    string maHocSinh = ((dynamic)cbHocSinh.SelectedItem).Value.ToString();
+                    int maHocKy = Convert.ToInt32(((dynamic)cbHocKy.SelectedItem).Value);
+                    string maMon = ((dynamic)cbMonHoc.SelectedItem).Value.ToString();
 
                     int maMonHoc;
                     if (!int.TryParse(maMon, out maMonHoc))
@@ -747,44 +747,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
             }
             catch (Exception ex)
             {
-                //if (ex.Message == "DIEM_DA_TON_TAI")
-                //{
-                //    string tenHS = ((dynamic)cbHocSinh.SelectedItem).Text;
-                //    string tenMH = ((dynamic)cbMonHoc.SelectedItem).Text;
-                //    string tenHK = ((dynamic)cbHocKy.SelectedItem).Text;
-
-                //    MessageBox.Show(
-                //        $"Học sinh '{tenHS}' đã có điểm môn '{tenMH}' trong '{tenHK}'!\n\n" +
-                //        "Vui lòng sử dụng chức năng 'Sửa điểm' để cập nhật điểm.",
-                //        "Điểm đã tồn tại",
-                //        MessageBoxButtons.OK,
-                //        MessageBoxIcon.Warning);
-                //}
-                //else
-                //{
-                //    MessageBox.Show("Lỗi khi lưu điểm: " + ex.Message, "Lỗi",
-                //                   MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //}
-
-                //if (ex.Message == "DIEM_DA_DAY_DU")
-                //{
-                //    string tenHS = ((dynamic)cbHocSinh.SelectedItem).Text;
-                //    string tenMH = ((dynamic)cbMonHoc.SelectedItem).Text;
-                //    string tenHK = ((dynamic)cbHocKy.SelectedItem).Text;
-
-                //    MessageBox.Show(
-                //        $"Học sinh '{tenHS}' đã có đủ điểm môn '{tenMH}' trong '{tenHK}'!\n\n" +
-                //        "Các cột điểm Thường xuyên, Giữa kỳ và Cuối kỳ đều đã được nhập.\n" +
-                //        "Vui lòng sử dụng chức năng 'Sửa điểm' để cập nhật.",
-                //        "Điểm đã đầy đủ",
-                //        MessageBoxButtons.OK,
-                //        MessageBoxIcon.Warning);
-                //}
-                //else
-                //{
-                //    MessageBox.Show("Lỗi khi lưu điểm: " + ex.Message, "Lỗi",
-                //                   MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //}
+          
 
                 if (ex.Message == "DIEM_DA_DAY_DU")
                 {

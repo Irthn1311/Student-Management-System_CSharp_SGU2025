@@ -449,7 +449,6 @@
             this.txtSearch.Location = new System.Drawing.Point(16, 704);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(2);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.PasswordChar = '\0';
             this.txtSearch.PlaceholderText = "Tìm kiếm học sinh...";
             this.txtSearch.SelectedText = "";
             this.txtSearch.Size = new System.Drawing.Size(200, 36);
@@ -488,7 +487,6 @@
             this.cbHocKyBD.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKyBD.Name = "cbHocKyBD";
             this.cbHocKyBD.Size = new System.Drawing.Size(184, 36);
-            this.cbHocKyBD.StartIndex = 0;
             this.cbHocKyBD.TabIndex = 28;
             this.cbHocKyBD.SelectedIndexChanged += new System.EventHandler(this.cbHocKyBD_SelectedIndexChanged);
             // 
@@ -525,7 +523,6 @@
             this.cbLopBD.Margin = new System.Windows.Forms.Padding(2);
             this.cbLopBD.Name = "cbLopBD";
             this.cbLopBD.Size = new System.Drawing.Size(120, 36);
-            this.cbLopBD.StartIndex = 0;
             this.cbLopBD.TabIndex = 30;
             this.cbLopBD.SelectedIndexChanged += new System.EventHandler(this.cbLopBD_SelectedIndexChanged);
             // 
@@ -540,7 +537,7 @@
             this.btnSuaDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(179)))), ((int)(((byte)(8)))));
             this.btnSuaDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnSuaDiem.ForeColor = System.Drawing.Color.White;
-            this.btnSuaDiem.Location = new System.Drawing.Point(200, 704);
+            this.btnSuaDiem.Location = new System.Drawing.Point(882, 704);
             this.btnSuaDiem.Margin = new System.Windows.Forms.Padding(2);
             this.btnSuaDiem.Name = "btnSuaDiem";
             this.btnSuaDiem.Size = new System.Drawing.Size(120, 43);
@@ -559,7 +556,7 @@
             this.btnThemDiem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this.btnThemDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnThemDiem.ForeColor = System.Drawing.Color.White;
-            this.btnThemDiem.Location = new System.Drawing.Point(70, 704);
+            this.btnThemDiem.Location = new System.Drawing.Point(1024, 704);
             this.btnThemDiem.Margin = new System.Windows.Forms.Padding(2);
             this.btnThemDiem.Name = "btnThemDiem";
             this.btnThemDiem.Size = new System.Drawing.Size(120, 43);
