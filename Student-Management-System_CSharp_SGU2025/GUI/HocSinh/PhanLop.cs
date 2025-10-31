@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 {
@@ -18,14 +19,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private HocSinhBLL hocSinhBus;
         private HocKyBUS hocKyBus;
         private PhanLopBLL phanLopBLL;
+        private PhanLopTuDongBLL phanLopTuDongBLL;
         private List<DTO.LopDTO> danhSachLop;
         private List<DTO.HocKyDTO> danhSachHocKy;
-        private List<DTO.HocSinhDTO> hocSinhDTO;
-        private List<DTO.HocSinhDTO> hocSinhDTOGoc; // Danh sách học sinh gốc để tìm kiếm
         private List<(int maHocSinh, int maLop, int maHocKy)> danhSachPhanLop;
-        
-        private bool isShowingHocSinh = true;
-        private int selectedHocSinhIndex = -1; // Index của học sinh được chọn
+        private List<(int maHocSinh, int maLop, int maHocKy)> danhSachPhanLopGoc; // Danh sách phân lớp gốc để tìm kiếm
 
         public PhanLop()
         {
@@ -34,11 +32,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             hocSinhBus = new HocSinhBLL();
             hocKyBus = new HocKyBUS();
             phanLopBLL = new PhanLopBLL();
+            phanLopTuDongBLL = new PhanLopTuDongBLL();
             danhSachLop = new List<DTO.LopDTO>();
             danhSachHocKy = new List<DTO.HocKyDTO>();
-            hocSinhDTO = new List<DTO.HocSinhDTO>();
-            hocSinhDTOGoc = new List<DTO.HocSinhDTO>();
             danhSachPhanLop = new List<(int maHocSinh, int maLop, int maHocKy)>();
+            danhSachPhanLopGoc = new List<(int, int, int)>();
 
             LoadComboBox();
             SetupTables();
@@ -86,121 +84,122 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void btnChon_Click(object sender, EventArgs e)
         {
-            if (selectedHocSinhIndex >= 0 && selectedHocSinhIndex < hocSinhDTO.Count)
-            {
-                HocSinhDTO selectedHocSinh = hocSinhDTO[selectedHocSinhIndex];
-                txtHocSinhDuocChon.Text = selectedHocSinh.HoTen;
-            }
-            else
-            {
-                MessageBox.Show("Vui lòng chọn một học sinh trước khi nhấn nút Chọn.", "Thông báo",
-                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            // btnChon giờ là btnTimKiem - chức năng tìm kiếm
+            // Chức năng này đã được xử lý bởi txtTimKiem_TextChanged
+            // Nút này có thể dùng để focus vào ô tìm kiếm hoặc xóa tìm kiếm
+            txtTimKiem.Focus();
         }
 
         private void btnThemPhanLop_Click(object sender, EventArgs e)
         {
             try
             {
-                // Kiểm tra các điều kiện đầu vào
-                if (string.IsNullOrEmpty(txtHocSinhDuocChon.Text.Trim()))
-                {
-                    MessageBox.Show("Vui lòng chọn học sinh trước khi thêm phân lớp.", "Thông báo",
-                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
+                // btnThemPhanLop giờ là btnPhanLopTuDong - Phân lớp tự động
+                
+                // Kiểm tra đã chọn học kỳ chưa
                 if (cbHocKyNamHoc.SelectedIndex <= 0)
                 {
-                    MessageBox.Show("Vui lòng chọn học kỳ.", "Thông báo",
+                    MessageBox.Show("Vui lòng chọn học kỳ hiện tại để phân lớp tự động.", "Thông báo",
                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                if (cbLop.SelectedIndex <= 0)
-                {
-                    MessageBox.Show("Vui lòng chọn lớp.", "Thông báo",
-                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                // Lấy mã học sinh từ tên đã chọn
-                string tenHocSinhChon = txtHocSinhDuocChon.Text.Trim();
-                int maHocSinh = -1;
-
-                foreach (var hs in hocSinhDTOGoc)
-                {
-                    if (hs.HoTen == tenHocSinhChon)
-                    {
-                        maHocSinh = hs.MaHS;
-                        break;
-                    }
-                }
-
-                if (maHocSinh == -1)
-                {
-                    MessageBox.Show("Không tìm thấy học sinh được chọn.", "Lỗi",
-                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // Lấy mã lớp từ ComboBox
-                string tenLopChon = cbLop.SelectedItem.ToString();
-                int maLop = -1;
-
-                foreach (var lop in danhSachLop)
-                {
-                    if (lop.TenLop == tenLopChon)
-                    {
-                        maLop = lop.MaLop;
-                        break;
-                    }
-                }
-
-                // Lấy mã học kỳ từ ComboBox
+                // Lấy mã học kỳ hiện tại
                 string tenHocKyChon = cbHocKyNamHoc.SelectedItem.ToString();
-                int maHocKy = -1;
+                int maHocKyHienTai = -1;
 
                 foreach (var hk in danhSachHocKy)
                 {
                     if ((hk.TenHocKy + "-" + hk.MaNamHoc) == tenHocKyChon)
                     {
-                        maHocKy = hk.MaHocKy;
+                        maHocKyHienTai = hk.MaHocKy;
                         break;
                     }
                 }
 
-                // Gọi hàm thêm phân lớp từ BLL
-                bool result = phanLopBLL.AddPhanLop(maHocSinh, maLop, maHocKy);
-
-                if (result)
+                if (maHocKyHienTai == -1)
                 {
-                    MessageBox.Show($"Đã thêm phân lớp cho học sinh {tenHocSinhChon} vào lớp {tenLopChon} học kỳ {tenHocKyChon}.",
-                                   "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Cập nhật lại bảng phân lớp
-                    LoadTablePhanLop();
-
-                    // Xóa thông tin đã chọn
-                    txtHocSinhDuocChon.Clear();
-                    selectedHocSinhIndex = -1;
-                }
-                else
-                {
-                    MessageBox.Show("Thêm phân lớp thất bại.", "Lỗi",
+                    MessageBox.Show("Không tìm thấy học kỳ được chọn.", "Lỗi",
                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(ex.Message, "Lỗi dữ liệu",
-                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                // Kiểm tra điều kiện phân lớp
+                var kiemTra = phanLopTuDongBLL.KiemTraDieuKienPhanLop(maHocKyHienTai);
+                if (!kiemTra.success)
+                {
+                    MessageBox.Show($"Không thể phân lớp tự động:\n{kiemTra.message}", "Thông báo",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Hiển thị preview trước khi thực hiện
+                var preview = phanLopTuDongBLL.TaoPreviewPhanLop(maHocKyHienTai);
+                
+                string previewMessage = "=== XEM TRƯỚC KẾT QUẢ PHÂN LỚP TỰ ĐỘNG ===\n\n";
+                previewMessage += $"Loại phân lớp: {preview["LoaiPhanLop"]}\n";
+                previewMessage += $"Tổng số học sinh hợp lệ: {preview["TongSoHocSinh"]}\n\n";
+
+                if (preview.ContainsKey("SoHSDuocLenLop"))
+                {
+                    previewMessage += $"• Học sinh được lên lớp: {preview["SoHSDuocLenLop"]}\n";
+                    previewMessage += $"• Học sinh ở lại: {preview["SoHSOLai"]}\n";
+                    previewMessage += $"• Tỷ lệ lên lớp: {preview["TyLeLenLop"]:F2}%\n\n";
+                }
+
+                if (preview.ContainsKey("SoHSKhongHopLe") && (int)preview["SoHSKhongHopLe"] > 0)
+                {
+                    previewMessage += $"⚠️ Có {preview["SoHSKhongHopLe"]} học sinh không đủ điều kiện phân lớp\n";
+                    previewMessage += "(Thiếu điểm, hạnh kiểm hoặc xếp loại)\n\n";
+                }
+
+                previewMessage += "\nBạn có muốn tiếp tục phân lớp tự động không?";
+
+                DialogResult result = MessageBox.Show(previewMessage, "Xác nhận phân lớp tự động",
+                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    // Hiển thị progress
+                    this.Cursor = Cursors.WaitCursor;
+                    
+                    // Thực hiện phân lớp tự động
+                    var ketQua = phanLopTuDongBLL.ThucHienPhanLopTuDong(maHocKyHienTai);
+                    
+                    this.Cursor = Cursors.Default;
+
+                    if (ketQua.success)
+                    {
+                        MessageBox.Show($"✓ Phân lớp tự động thành công!\n\n" +
+                                       $"Đã phân lớp: {ketQua.soHocSinhDaPhanLop} học sinh\n\n" +
+                                       $"{ketQua.message}",
+                                       "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // Refresh lại bảng phân lớp
+                        LoadTablePhanLop();
+                        
+                        // Tự động chuyển sang tab Phân lớp để xem kết quả
+                        btnPhanLop_Click(null, null);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"✗ Phân lớp tự động thất bại!\n\n{ketQua.message}",
+                                       "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Đã xảy ra lỗi khi thêm phân lớp: " + ex.Message, "Lỗi",
-                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Cursor = Cursors.Default;
+                MessageBox.Show($"Đã xảy ra lỗi khi phân lớp tự động:\n{ex.Message}\n\nStack trace:\n{ex.StackTrace}",
+                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void PhanLop_Load(object sender, EventArgs e)
+        {
+            // Form load event - được gọi tự động khi form được mở
+            // Các thao tác khởi tạo đã được thực hiện trong constructor
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
@@ -211,14 +210,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void btnHocSinh_Click(object sender, EventArgs e)
         {
-            isShowingHocSinh = true;
-            UpdateView();
+            // Chức năng này không còn dùng nữa vì đã xóa tableHocSinh
         }
 
         private void btnPhanLop_Click(object sender, EventArgs e)
         {
-            isShowingHocSinh = false;
-            UpdateView();
+            // Chức năng này không còn dùng nữa vì đã xóa tableHocSinh
         }
 
         private void cbLop_SelectedIndexChanged(object sender, EventArgs e)
@@ -230,37 +227,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void SetupTables()
         {
-            SetupTableHocSinh();
             SetupTablePhanLop();
-            UpdateView();
-        }
-
-        private void SetupTableHocSinh()
-        {
-            // Xóa cột cũ và cấu hình chung
-            tableHocSinh.Columns.Clear();
-            ApplyBaseTableStyle(tableHocSinh);
-
-            // Thêm cột mới (không có cột Lớp và Thao tác)
-            tableHocSinh.Columns.Add("MaHS", "Mã HS");
-            tableHocSinh.Columns.Add("HoTen", "Họ và tên");
-            tableHocSinh.Columns.Add("NgaySinh", "Ngày sinh");
-            tableHocSinh.Columns.Add("GioiTinh", "Giới tính");
-            tableHocSinh.Columns.Add("TrangThai", "Trạng thái");
-
-            // Căn chỉnh cột
-            ApplyColumnAlignmentAndWrapping(tableHocSinh);
-            tableHocSinh.Columns["HoTen"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-
-            // Tùy chỉnh kích thước
-            tableHocSinh.Columns["MaHS"].FillWeight = 15; tableHocSinh.Columns["MaHS"].MinimumWidth = 80;
-            tableHocSinh.Columns["HoTen"].FillWeight = 35; tableHocSinh.Columns["HoTen"].MinimumWidth = 200;
-            tableHocSinh.Columns["NgaySinh"].FillWeight = 15; tableHocSinh.Columns["NgaySinh"].MinimumWidth = 120;
-            tableHocSinh.Columns["GioiTinh"].FillWeight = 15; tableHocSinh.Columns["GioiTinh"].MinimumWidth = 100;
-            tableHocSinh.Columns["TrangThai"].FillWeight = 20; tableHocSinh.Columns["TrangThai"].MinimumWidth = 120;
-
-            // Gắn sự kiện
-            tableHocSinh.CellFormatting += tableHocSinh_CellFormatting;
         }
 
         private void SetupTablePhanLop()
@@ -296,20 +263,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void UpdateView()
         {
-            if (isShowingHocSinh)
-            {
-                tableHocSinh.Visible = true;
-                tablePhanLop.Visible = false;
-                btnHocSinh.FillColor = Color.FromArgb(22, 163, 74);
-                btnPhanLop.FillColor = Color.FromArgb(200, 200, 200);
-            }
-            else
-            {
-                tableHocSinh.Visible = false;
-                tablePhanLop.Visible = true;
-                btnHocSinh.FillColor = Color.FromArgb(200, 200, 200);
-                btnPhanLop.FillColor = Color.FromArgb(22, 163, 74);
-            }
+            // Hàm này không còn dùng nữa vì đã xóa chức năng chuyển đổi giữa 2 bảng
         }
 
         #endregion
@@ -318,26 +272,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void LoadData()
         {
-            LoadTableHocSinh();
             LoadTablePhanLop();
-        }
-
-        private void LoadTableHocSinh()
-        {
-            tableHocSinh.Rows.Clear();
-            hocSinhDTO = hocSinhBus.GetAllHocSinh();
-            hocSinhDTOGoc = new List<DTO.HocSinhDTO>(hocSinhDTO); // Lưu danh sách gốc
-
-            foreach (HocSinhDTO hs in hocSinhDTO)
-            {
-                tableHocSinh.Rows.Add(hs.MaHS, hs.HoTen, hs.NgaySinh.ToString("dd/MM/yyyy"),
-                                     hs.GioiTinh, hs.TrangThai);
-            }
         }
 
         private void LoadTablePhanLop()
         {
             danhSachPhanLop = phanLopBLL.GetAllPhanLop();
+            danhSachPhanLopGoc = new List<(int, int, int)>(danhSachPhanLop); // Lưu danh sách gốc để tìm kiếm
             RefreshTablePhanLop(danhSachPhanLop);
         }
 
@@ -347,19 +288,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void tableHocSinh_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0) return;
-
-            // Giới tính
-            if (tableHocSinh.Columns[e.ColumnIndex].Name == "GioiTinh" && e.Value != null)
-            {
-                FormatGenderCell(e);
-            }
-
-            // Trạng thái
-            if (tableHocSinh.Columns[e.ColumnIndex].Name == "TrangThai" && e.Value != null)
-            {
-                FormatStatusCell(e);
-            }
+            // Hàm này không còn dùng nữa vì đã xóa tableHocSinh
         }
 
         private void tablePhanLop_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
@@ -389,17 +318,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void SetupEventHandlers()
         {
-            // Event handler cho txtTimKiem
+            // Event handler cho txtTimKiem - bây giờ dùng cho tablePhanLop
             txtTimKiem.TextChanged += txtTimKiem_TextChanged;
             
             // Event handler cho btnChon
             btnChon.Click += btnChon_Click;
-            
-            
-            
-            // Event handler cho tableHocSinh
-            tableHocSinh.CellClick += tableHocSinh_CellClick;
-            tableHocSinh.CellDoubleClick += tableHocSinh_CellDoubleClick;
             
             // Event handler cho ComboBox
             cbHocKyNamHoc.SelectedIndexChanged += cbHocKyNamHoc_SelectedIndexChanged;
@@ -410,53 +333,41 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         {
             string searchText = txtTimKiem.Text.Trim().ToLower();
             
+            List<(int maHocSinh, int maLop, int maHocKy)> filteredPhanLop;
+            
             if (string.IsNullOrEmpty(searchText))
             {
-                // Nếu ô tìm kiếm trống, hiển thị tất cả học sinh
-                hocSinhDTO = new List<DTO.HocSinhDTO>(hocSinhDTOGoc);
+                // Nếu ô tìm kiếm trống, hiển thị tất cả phân lớp
+                filteredPhanLop = new List<(int, int, int)>(danhSachPhanLopGoc);
             }
             else
             {
-                // Lọc học sinh theo từ khóa tìm kiếm
-                hocSinhDTO = hocSinhDTOGoc.Where(hs => 
-                    hs.HoTen.ToLower().Contains(searchText) ||
-                    hs.MaHS.ToString().Contains(searchText) ||
-                    hs.NgaySinh.ToString("dd/MM/yyyy").Contains(searchText) ||
-                    hs.GioiTinh.ToLower().Contains(searchText) ||
-                    hs.TrangThai.ToLower().Contains(searchText)
-                ).ToList();
+                // Lọc phân lớp theo tên học sinh
+                filteredPhanLop = danhSachPhanLopGoc.Where(pl =>
+                {
+                    string tenHocSinh = hocSinhBus.GetHocSinhById(pl.maHocSinh)?.HoTen ?? "";
+                    return tenHocSinh.ToLower().Contains(searchText) ||
+                           pl.maHocSinh.ToString().Contains(searchText);
+                }).ToList();
             }
             
             // Cập nhật lại bảng
-            RefreshTableHocSinh();
+            RefreshTablePhanLop(filteredPhanLop);
         }
 
         private void tableHocSinh_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.RowIndex < hocSinhDTO.Count)
-            {
-                selectedHocSinhIndex = e.RowIndex;
-            }
+            // Hàm này không còn dùng nữa vì đã xóa tableHocSinh
         }
 
         private void tableHocSinh_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.RowIndex < hocSinhDTO.Count)
-            {
-                selectedHocSinhIndex = e.RowIndex;
-                HocSinhDTO selectedHocSinh = hocSinhDTO[selectedHocSinhIndex];
-                txtHocSinhDuocChon.Text = selectedHocSinh.HoTen;
-            }
+            // Hàm này không còn dùng nữa vì đã xóa tableHocSinh
         }
 
         private void RefreshTableHocSinh()
         {
-            tableHocSinh.Rows.Clear();
-            foreach (HocSinhDTO hs in hocSinhDTO)
-            {
-                tableHocSinh.Rows.Add(hs.MaHS, hs.HoTen, hs.NgaySinh.ToString("dd/MM/yyyy"),
-                                     hs.GioiTinh, hs.TrangThai);
-            }
+            // Hàm này không còn dùng nữa vì đã xóa tableHocSinh
         }
 
 

@@ -2,6 +2,7 @@
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
@@ -510,6 +511,43 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             {
                 Console.WriteLine("Lỗi BLL GetThongKePhanLop: " + ex.Message);
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách học sinh theo học kỳ (có phân lớp hoặc chưa)
+        /// </summary>
+        public List<HocSinhDTO> LayHocSinhTheoHocKy(int maHocKy)
+        {
+            try
+            {
+                // Lấy tất cả học sinh đã phân lớp trong học kỳ
+                List<(int maHocSinh, int maLop, int maHocKy)> phanLopList = phanLopDAO.LayTatCaPhanLop();
+                
+                // Lọc theo học kỳ
+                var hocSinhIds = phanLopList
+                    .Where(pl => pl.maHocKy == maHocKy)
+                    .Select(pl => pl.maHocSinh)
+                    .Distinct()
+                    .ToList();
+
+                // Lấy thông tin chi tiết học sinh
+                List<HocSinhDTO> result = new List<HocSinhDTO>();
+                foreach (int maHocSinh in hocSinhIds)
+                {
+                    HocSinhDTO hs = hocSinhDAO.TimHocSinhTheoMa(maHocSinh);
+                    if (hs != null)
+                    {
+                        result.Add(hs);
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi BLL LayHocSinhTheoHocKy: " + ex.Message);
+                return new List<HocSinhDTO>();
             }
         }
     }
