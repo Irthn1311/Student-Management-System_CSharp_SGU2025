@@ -220,6 +220,74 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return ds;
         }
 
+
+        // === Quản lý Năm Học ===
+        public NamHocDTO LayNamHocTheoMa(string maNamHoc)
+        {
+            string query = "SELECT MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc FROM NamHoc WHERE MaNamHoc = @MaNamHoc";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new NamHocDTO
+                                {
+                                    MaNamHoc = reader.GetString("MaNamHoc"),
+                                    TenNamHoc = reader.GetString("TenNamHoc"),
+                                    NgayBD = reader.GetDateTime("NgayBatDau"),
+                                    NgayKT = reader.GetDateTime("NgayKetThuc")
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayNamHocTheoMa: {ex.Message}");
+                throw;
+            }
+
+            return null;
+        }
+
+
+        public bool ThemNamHoc(NamHocDTO namHoc)
+        {
+            string query = "INSERT INTO NamHoc(MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc) VALUES(@MaNamHoc, @TenNamHoc, @NgayBatDau, @NgayKetThuc)";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaNamHoc", namHoc.MaNamHoc);
+                        cmd.Parameters.AddWithValue("@TenNamHoc", namHoc.TenNamHoc);
+                        cmd.Parameters.AddWithValue("@NgayBatDau", namHoc.NgayBD);
+                        cmd.Parameters.AddWithValue("@NgayKetThuc", namHoc.NgayKT);
+
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi ThemNamHoc: {ex.Message}");
+                return false;
+            }
+        }
+
         public List<HocKyDTO> GetAllHocKy()
         {
             List<HocKyDTO> list = new List<HocKyDTO>();

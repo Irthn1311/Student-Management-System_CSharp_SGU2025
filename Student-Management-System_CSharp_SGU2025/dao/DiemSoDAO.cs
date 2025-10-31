@@ -379,5 +379,57 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
+        /// <summary>
+        /// Lấy điểm trung bình các môn học của học sinh theo học kỳ
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        /// <param name="maHocSinh">Mã học sinh</param>
+        /// <param name="maHocKy">Mã học kỳ</param>
+        /// <returns>Dictionary với key là MaMonHoc, value là điểm trung bình môn đó</returns>
+        public Dictionary<int, float?> LayDiemTrungBinhMonTheoHocKy(int maHocSinh, int maHocKy)
+        {
+            Dictionary<int, float?> diemTBMonHoc = new Dictionary<int, float?>();
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+                    SELECT MaMonHoc, DiemTrungBinh 
+                    FROM DiemSo 
+                    WHERE MaHocSinh = @MaHocSinh AND MaHocKy = @MaHocKy";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaHocSinh", maHocSinh);
+                    cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int maMonHoc = Convert.ToInt32(reader["MaMonHoc"]);
+                            float? diemTB = reader["DiemTrungBinh"] != DBNull.Value 
+                                ? Convert.ToSingle(reader["DiemTrungBinh"]) 
+                                : (float?)null;
+                            
+                            diemTBMonHoc[maMonHoc] = diemTB;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lấy điểm TB môn học của HS {maHocSinh} trong HK {maHocKy}: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+
+            return diemTBMonHoc;
+        }
+
     }
 }
