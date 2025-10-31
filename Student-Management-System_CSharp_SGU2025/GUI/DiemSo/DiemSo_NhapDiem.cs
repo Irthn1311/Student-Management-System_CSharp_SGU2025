@@ -189,9 +189,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         /// <summary>
         /// Load thống kê lên các stat cards
         /// </summary>
-        private void LoadThongKe()
+        private void LoadThongKe(int? maHocKy = null)
         {
-            if (!selectedMaHocKy.HasValue)
+            // Ưu tiên lấy từ tham số, không thì lấy từ selectedMaHocKy (tab Nhập Điểm)
+            int? hocKyCanLoad = maHocKy ?? selectedMaHocKy;
+
+            if (!hocKyCanLoad.HasValue)
             {
                 // Reset về giá trị mặc định nếu chưa chọn học kỳ
                 statCardDiemTrungBinh.lbCardValue.Text = "0.0";
@@ -207,7 +210,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             try
             {
-                ThongKeDTO thongKe = nhapDiemBUS.GetThongKeDiemTheoHocKy(selectedMaHocKy.Value);
+                ThongKeDTO thongKe = nhapDiemBUS.GetThongKeDiemTheoHocKy(hocKyCanLoad.Value);
 
                 // Card Điểm Trung Bình
                 statCardDiemTrungBinh.lbCardValue.Text = thongKe.DiemTBChung.ToString("0.0");
@@ -659,7 +662,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 selectedMaHocKy = (int)item.Value;
                 ApplyFilter();
-                LoadThongKe();
+                LoadThongKe(selectedMaHocKy);
             }
         }
 
@@ -1082,6 +1085,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 // Load bảng điểm
                 LoadBangDiem();
+                LoadThongKe(selectedMaHocKyBD.Value);
+
             }
         }
 
@@ -1297,12 +1302,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Hiển thị loading indicator
                 Cursor = Cursors.WaitCursor;
 
-                // LUÔN LUÔN reload thống kê (4 stat cards) bất kể đang ở tab nào
-                LoadThongKe();
+                //// LUÔN LUÔN reload thống kê (4 stat cards) bất kể đang ở tab nào
+                //LoadThongKe();
 
                 // Reload dữ liệu tùy theo tab đang hiển thị
                 if (btnNhapDiem.FillColor == selectedColor)
                 {
+                    LoadThongKe(selectedMaHocKy);
                     // Đang ở tab Nhập Điểm - reload bảng nhập điểm
                     ApplyFilter();
 
@@ -1311,6 +1317,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
                 else if (btnXemBangDiem.FillColor == selectedColor)
                 {
+                    LoadThongKe(selectedMaHocKyBD);
                     // Đang ở tab Xem Bảng Điểm - reload bảng điểm
                     LoadBangDiem();
 

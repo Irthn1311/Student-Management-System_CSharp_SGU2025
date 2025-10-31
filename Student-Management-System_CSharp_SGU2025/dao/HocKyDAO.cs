@@ -220,70 +220,54 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return ds;
         }
 
-        // === Quản lý Năm Học ===
-        public NamHocDTO LayNamHocTheoMa(string maNamHoc)
+        public List<HocKyDTO> GetAllHocKy()
         {
-            string query = "SELECT MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc FROM NamHoc WHERE MaNamHoc = @MaNamHoc";
-            
+            List<HocKyDTO> list = new List<HocKyDTO>();
+            MySqlConnection conn = null;
+
             try
             {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+                    SELECT MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT
+                    FROM HocKy
+                    ORDER BY MaHocKy DESC";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        while (reader.Read())
                         {
-                            if (reader.Read())
+                            HocKyDTO hk = new HocKyDTO
                             {
-                                return new NamHocDTO
-                                {
-                                    MaNamHoc = reader.GetString("MaNamHoc"),
-                                    TenNamHoc = reader.GetString("TenNamHoc"),
-                                    NgayBD = reader.GetDateTime("NgayBatDau"),
-                                    NgayKT = reader.GetDateTime("NgayKetThuc")
-                                };
-                            }
+                                MaHocKy = Convert.ToInt32(reader["MaHocKy"]),
+                                TenHocKy = reader["TenHocKy"].ToString(),
+                                MaNamHoc = reader["MaNamHoc"].ToString(),
+                                TrangThai = reader["TrangThai"].ToString(),
+                                NgayBD = reader["NgayBD"] != DBNull.Value ?
+                                    Convert.ToDateTime(reader["NgayBD"]) : (DateTime?)null,
+                                NgayKT = reader["NgayKT"] != DBNull.Value ?
+                                    Convert.ToDateTime(reader["NgayKT"]) : (DateTime?)null
+                            };
+                            list.Add(hk);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi LayNamHocTheoMa: {ex.Message}");
-                throw;
+                throw new Exception("Lỗi khi lấy danh sách học kỳ: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
             }
 
-            return null;
+            return list;
         }
 
-        public bool ThemNamHoc(NamHocDTO namHoc)
-        {
-            string query = "INSERT INTO NamHoc(MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc) VALUES(@MaNamHoc, @TenNamHoc, @NgayBatDau, @NgayKetThuc)";
-            
-            try
-            {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaNamHoc", namHoc.MaNamHoc);
-                        cmd.Parameters.AddWithValue("@TenNamHoc", namHoc.TenNamHoc);
-                        cmd.Parameters.AddWithValue("@NgayBatDau", namHoc.NgayBD);
-                        cmd.Parameters.AddWithValue("@NgayKetThuc", namHoc.NgayKT);
-                        
-                        int result = cmd.ExecuteNonQuery();
-                        return result > 0;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi ThemNamHoc: {ex.Message}");
-                return false;
-            }
-        }
     }
 }

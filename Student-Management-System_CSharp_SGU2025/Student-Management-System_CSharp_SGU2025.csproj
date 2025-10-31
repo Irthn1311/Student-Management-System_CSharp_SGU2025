@@ -303,8 +303,11 @@
     <Compile Include="GUI\NamHoc\ucNamHoc.Designer.cs">
       <DependentUpon>ucNamHoc.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\PhanCong\ucAutoPhanCongPreview.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="GUI\PhanCong\frmAutoPhanCongPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\PhanCong\frmAutoPhanCongPreview.Designer.cs">
+      <DependentUpon>frmAutoPhanCongPreview.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
       <SubType>UserControl</SubType>
@@ -544,6 +547,7 @@
     <Compile Include="Scheduling\SchedulingService.cs" />
     <Compile Include="Services\AssignmentAutoService.cs" />
     <Compile Include="Services\AssignmentPersistService.cs" />
+    <Compile Include="Services\SemesterHelper.cs" />
     <EmbeddedResource Include="GUI\CaiDat\CaiDat.resx">
       <DependentUpon>CaiDat.cs</DependentUpon>
     </EmbeddedResource>
@@ -608,6 +612,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\NamHoc\ucNamHoc.resx">
       <DependentUpon>ucNamHoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\PhanCong\frmAutoPhanCongPreview.resx">
+      <DependentUpon>frmAutoPhanCongPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\RecentActivityItem.resx">
       <DependentUpon>RecentActivityItem.cs</DependentUpon>
@@ -707,6 +714,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="ConnectDatabase\01_schema.sql" />
+    <Content Include="ConnectDatabase\02_unique_indexes.sql" />
+    <Content Include="ConnectDatabase\03_sample_seed.sql" />
     <Content Include="ConnectDatabase\DB_UniqueIndexes.sql" />
     <Content Include="ConnectDatabase\QuanLyHocSinh.sql" />
     <Content Include="GUI\Images\3que.png" />
