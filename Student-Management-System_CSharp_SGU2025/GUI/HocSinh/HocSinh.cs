@@ -22,6 +22,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
     {
 
         private bool isShowingHocSinh = true;
+        private bool isLoadingData = false; // Flag để kiểm soát việc lọc khi load
 
         private HocSinhBLL hocSinhBLL;
         private PhuHuynhBLL phuHuynhBLL;
@@ -30,8 +31,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private PhanLopBLL phanLopBLL;
         private HocKyBUS hocKyBUS;
 
-        private List<HocSinhDTO> danhSachHocSinh;
-        private List<PhuHuynhDTO> danhSachPhuHuynh;
+        // ✅ Chuyển sang BindingList để tự động cập nhật DataGridView
+        private BindingList<HocSinhDTO> bindingListHocSinh;
+        private BindingList<PhuHuynhDTO> bindingListPhuHuynh;
+        
+        // Danh sách tổng (để lọc)
+        private List<HocSinhDTO> danhSachHocSinhFull;
+        private List<PhuHuynhDTO> danhSachPhuHuynhFull;
         private List<(int hocSinh, int phuHuynh, string moiQuanHe)> danhSachMoiQuanHe;
         
 
@@ -46,8 +52,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             phanLopBLL = new PhanLopBLL();
             hocKyBUS = new HocKyBUS();
 
-            danhSachHocSinh = new List<HocSinhDTO>();
-            danhSachPhuHuynh = new List<PhuHuynhDTO>();
+            // ✅ Khởi tạo BindingList
+            bindingListHocSinh = new BindingList<HocSinhDTO>();
+            bindingListPhuHuynh = new BindingList<PhuHuynhDTO>();
+            
+            danhSachHocSinhFull = new List<HocSinhDTO>();
+            danhSachPhuHuynhFull = new List<PhuHuynhDTO>();
             danhSachMoiQuanHe = new List<(int hocSinh, int phuHuynh, string moiQuanHe)>();
 
         }
@@ -64,6 +74,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void HocSinh_Load_1(object sender, EventArgs e)
         {
+            isLoadingData = true; // Bắt đầu load dữ liệu
+            
             // --- Thiết lập giao diện ban đầu ---
             SetInitialView();
 
@@ -79,6 +91,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
             // --- Cấu hình Header và Thẻ Thống kê ---
             SetupHeaderAndStats();
+            
+            isLoadingData = false; // Kết thúc load dữ liệu
         }
 
         private void SetInitialView()
@@ -109,6 +123,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 headerQuanLiHocSinh.lbHeader.Text = "Thông tin Phụ huynh"; 
                 headerQuanLiHocSinh.lbGhiChu.Text = "Trang chủ / Phụ huynh";
             }
+            
+            // Reset bảng Mối Quan Hệ về hiển thị tất cả khi chuyển view
+            LoadSampleDataMoiQuanHe();
         }
 
         // Cấu hình Header và Thẻ Thống kê (Tách ra từ Load cũ)
@@ -236,12 +253,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             tableHocSinh.CellPainting += tableHocSinh_CellPainting;
             tableHocSinh.CellClick -= tableHocSinh_CellClick; // Gỡ sự kiện cũ (nếu có)
             tableHocSinh.CellClick += tableHocSinh_CellClick;
+            tableHocSinh.SelectionChanged -= tableHocSinh_SelectionChanged; // Gỡ sự kiện cũ (nếu có)
+            tableHocSinh.SelectionChanged += tableHocSinh_SelectionChanged;
         }
 
         private void LoadSampleDataHocSinh()
         {
             tableHocSinh.Rows.Clear();
-            danhSachHocSinh = hocSinhBLL.GetAllHocSinh();
+            danhSachHocSinhFull = hocSinhBLL.GetAllHocSinh(); // ✅ Load vào Full list
 
             try
             {
@@ -249,9 +268,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 List<(int maHocSinh, int maLop, int maHocKy)> allPhanLop = phanLopBLL.GetAllPhanLop();
                 List<LopDTO> allLopHoc = lopHocBUS.DocDSLop();
 
+                // ✅ Xóa và load lại BindingList
+                bindingListHocSinh.Clear();
+
                 // 2. Duyệt qua từng học sinh
-                foreach (HocSinhDTO hs in danhSachHocSinh)
+                foreach (HocSinhDTO hs in danhSachHocSinhFull)
                 {
+                    // ✅ Thêm vào BindingList
+                    bindingListHocSinh.Add(hs);
+
                     int maLopMoiNhat = -1;
                     int hocKyMoiNhat = -1;
 
@@ -292,7 +317,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             {
                 MessageBox.Show("Lỗi khi tải dữ liệu phân lớp: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 // Fallback nếu có lỗi
-                foreach (HocSinhDTO hs in danhSachHocSinh)
+                foreach (HocSinhDTO hs in danhSachHocSinhFull) // ✅ Dùng Full list
                 {
                     tableHocSinh.Rows.Add(hs.MaHS, hs.HoTen, hs.NgaySinh.ToString("dd/MM/yyyy"), hs.GioiTinh, "Lỗi", hs.TrangThai, "");
                 }
@@ -352,6 +377,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             }
         }
 
+        // Xử lý khi chọn dòng trong bảng Học Sinh - Lọc bảng Mối Quan Hệ
+        private void tableHocSinh_SelectionChanged(object sender, EventArgs e)
+        {
+            // Không xử lý khi đang load dữ liệu ban đầu
+            if (isLoadingData) return;
+            
+            if (tableHocSinh.SelectedRows.Count > 0)
+            {
+                var selectedRow = tableHocSinh.SelectedRows[0];
+                if (selectedRow.Cells["MaHS"].Value != null)
+                {
+                    int maHocSinh = Convert.ToInt32(selectedRow.Cells["MaHS"].Value);
+                    LoadMoiQuanHeByHocSinh(maHocSinh);
+                }
+            }
+            else
+            {
+                // Nếu không có dòng nào được chọn, hiển thị tất cả
+                LoadSampleDataMoiQuanHe();
+            }
+        }
+
         #endregion
 
         #region Bảng Phụ Huynh
@@ -388,16 +435,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             // --- Gắn sự kiện ---
             tablePhuHuynh.CellPainting += tablePhuHuynh_CellPainting;
             tablePhuHuynh.CellClick += tablePhuHuynh_CellClick;
+            tablePhuHuynh.SelectionChanged -= tablePhuHuynh_SelectionChanged; // Gỡ sự kiện cũ (nếu có)
+            tablePhuHuynh.SelectionChanged += tablePhuHuynh_SelectionChanged;
         }
 
         private void LoadSampleDataPhuHuynh()
         {
             tablePhuHuynh.Rows.Clear();
 
-            danhSachPhuHuynh = phuHuynhBLL.GetAllPhuHuynh();
+            danhSachPhuHuynhFull = phuHuynhBLL.GetAllPhuHuynh(); // ✅ Load vào Full list
+            
+            // ✅ Xóa và load lại BindingList
+            bindingListPhuHuynh.Clear();
 
-            foreach (PhuHuynhDTO ph in danhSachPhuHuynh)
+            foreach (PhuHuynhDTO ph in danhSachPhuHuynhFull)
             {
+                // ✅ Thêm vào BindingList
+                bindingListPhuHuynh.Add(ph);
+                
                 tablePhuHuynh.Rows.Add(ph.MaPhuHuynh, ph.HoTen, ph.SoDienThoai, ph.Email, ph.DiaChi, "");
             }
         }
@@ -437,6 +492,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             }
         }
 
+        // Xử lý khi chọn dòng trong bảng Phụ Huynh - Lọc bảng Mối Quan Hệ
+        private void tablePhuHuynh_SelectionChanged(object sender, EventArgs e)
+        {
+            // Không xử lý khi đang load dữ liệu ban đầu
+            if (isLoadingData) return;
+            
+            if (tablePhuHuynh.SelectedRows.Count > 0)
+            {
+                var selectedRow = tablePhuHuynh.SelectedRows[0];
+                if (selectedRow.Cells["MaPH"].Value != null)
+                {
+                    int maPhuHuynh = Convert.ToInt32(selectedRow.Cells["MaPH"].Value);
+                    LoadMoiQuanHeByPhuHuynh(maPhuHuynh);
+                }
+            }
+            else
+            {
+                // Nếu không có dòng nào được chọn, hiển thị tất cả
+                LoadSampleDataMoiQuanHe();
+            }
+        }
+
+        #endregion
+
         #region Bảng Mối Quan Hệ
 
         private void SetupTableMoiQuanHe()
@@ -469,6 +548,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             // --- Gắn sự kiện ---
             tableMoiQuanHe.CellPainting += tableMoiQuanHe_CellPainting;
             tableMoiQuanHe.CellClick += tableMoiQuanHe_CellClick;
+            tableMoiQuanHe.SelectionChanged -= DataGridView_SelectionChanged; // Gỡ sự kiện cũ
+            tableMoiQuanHe.SelectionChanged += DataGridView_SelectionChanged; // Gắn sự kiện clear selection
         }
 
         private void LoadSampleDataMoiQuanHe()
@@ -490,6 +571,42 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 );
             }
 
+        }
+
+        // Lọc bảng Mối Quan Hệ theo Học Sinh được chọn
+        private void LoadMoiQuanHeByHocSinh(int maHocSinh)
+        {
+            tableMoiQuanHe.Rows.Clear();
+            danhSachMoiQuanHe = hocSinhPhuHuynhBLL.GetAllQuanHe();
+
+            // Lọc chỉ các mối quan hệ có học sinh này
+            var filteredList = danhSachMoiQuanHe.Where(x => x.hocSinh == maHocSinh).ToList();
+
+            foreach ((int maHS, int maPH, string mqh) item in filteredList)
+            {
+                string tenHS = hocSinhBLL.GetHocSinhById(item.maHS)?.HoTen ?? $"Không tìm thấy HS ({item.maHS})";
+                string tenPH = phuHuynhBLL.GetPhuHuynhById(item.maPH)?.HoTen ?? $"Không tìm thấy PH ({item.maPH})";
+
+                tableMoiQuanHe.Rows.Add(tenHS, tenPH, item.mqh, "");
+            }
+        }
+
+        // Lọc bảng Mối Quan Hệ theo Phụ Huynh được chọn
+        private void LoadMoiQuanHeByPhuHuynh(int maPhuHuynh)
+        {
+            tableMoiQuanHe.Rows.Clear();
+            danhSachMoiQuanHe = hocSinhPhuHuynhBLL.GetAllQuanHe();
+
+            // Lọc chỉ các mối quan hệ có phụ huynh này
+            var filteredList = danhSachMoiQuanHe.Where(x => x.phuHuynh == maPhuHuynh).ToList();
+
+            foreach ((int maHS, int maPH, string mqh) item in filteredList)
+            {
+                string tenHS = hocSinhBLL.GetHocSinhById(item.maHS)?.HoTen ?? $"Không tìm thấy HS ({item.maHS})";
+                string tenPH = phuHuynhBLL.GetPhuHuynhById(item.maPH)?.HoTen ?? $"Không tìm thấy PH ({item.maPH})";
+
+                tableMoiQuanHe.Rows.Add(tenHS, tenPH, item.mqh, "");
+            }
         }
 
         // Vẽ icon cho bảng Mối Quan Hệ
@@ -558,8 +675,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         #endregion
 
-        #endregion
-
         #region Hàm dùng chung và Helper
 
         // Hàm áp dụng style cơ bản cho DataGridView
@@ -600,12 +715,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             // Xóa sự kiện cũ để tránh gắn nhiều lần
             dgv.CellMouseEnter -= DataGridView_CellMouseEnter;
             dgv.CellMouseLeave -= DataGridView_CellMouseLeave;
-            dgv.SelectionChanged -= DataGridView_SelectionChanged;
 
-            // Gắn sự kiện hover và selection
+            // Gắn sự kiện hover
             dgv.CellMouseEnter += DataGridView_CellMouseEnter;
             dgv.CellMouseLeave += DataGridView_CellMouseLeave;
-            dgv.SelectionChanged += DataGridView_SelectionChanged;
 
             // Đảm bảo màu header không đổi khi click
             dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = dgv.ColumnHeadersDefaultCellStyle.BackColor;
@@ -664,23 +777,113 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         DialogResult result = frmEditHS.ShowDialog();
                         if (result == DialogResult.OK)
                         {
-                            // Nếu form sửa trả về OK (đã lưu thành công) -> Load lại dữ liệu
-                            FilterAndLoadHocSinh();
-                            LoadSampleDataMoiQuanHe();
+                            // ✅ Lấy học sinh đã cập nhật từ form
+                            HocSinhDTO updatedHS = frmEditHS.UpdatedHocSinh;
 
-                            SetupHeaderAndStats();     
+                            if (updatedHS != null)
+                            {
+                                // ✅ Cập nhật trong BindingList
+                                var hsInList = bindingListHocSinh.FirstOrDefault(hs => hs.MaHS == maToEdit);
+                                if (hsInList != null)
+                                {
+                                    int index = bindingListHocSinh.IndexOf(hsInList);
+                                    bindingListHocSinh[index] = updatedHS;
+                                }
+
+                                // ✅ Cập nhật trong Full list
+                                var hsInFullList = danhSachHocSinhFull.FirstOrDefault(hs => hs.MaHS == maToEdit);
+                                if (hsInFullList != null)
+                                {
+                                    int index = danhSachHocSinhFull.IndexOf(hsInFullList);
+                                    danhSachHocSinhFull[index] = updatedHS;
+                                }
+
+                                // ✅ Cập nhật dòng trong bảng thay vì reload
+                                // Lấy thông tin phân lớp (nếu có)
+                                List<(int maHocSinh, int maLop, int maHocKy)> allPhanLop = phanLopBLL.GetAllPhanLop();
+                                List<LopDTO> allLopHoc = lopHocBUS.DocDSLop();
+
+                                int maLopMoiNhat = -1;
+                                int hocKyMoiNhat = -1;
+
+                                foreach (var pl in allPhanLop)
+                                {
+                                    if (pl.maHocSinh == updatedHS.MaHS && pl.maHocKy > hocKyMoiNhat)
+                                    {
+                                        hocKyMoiNhat = pl.maHocKy;
+                                        maLopMoiNhat = pl.maLop;
+                                    }
+                                }
+
+                                string tenLopHienThi = "Chưa PL";
+                                if (maLopMoiNhat != -1)
+                                {
+                                    foreach (var lop in allLopHoc)
+                                    {
+                                        if (lop.MaLop == maLopMoiNhat)
+                                        {
+                                            tenLopHienThi = lop.TenLop;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                // Cập nhật dòng hiện tại trong bảng
+                                dgv.Rows[rowIndex].SetValues(
+                                    updatedHS.MaHS, 
+                                    updatedHS.HoTen, 
+                                    updatedHS.NgaySinh.ToString("dd/MM/yyyy"), 
+                                    updatedHS.GioiTinh, 
+                                    tenLopHienThi, 
+                                    updatedHS.TrangThai, 
+                                    ""
+                                );
+                            }
+
+                            LoadSampleDataMoiQuanHe();
+                            SetupHeaderAndStats();
                         }
                     }
                     else if (dgv == tablePhuHuynh) // Nếu là bảng Phụ Huynh
                     {
-                        ChinhSuaPhuHuynh frmEditHS = new ChinhSuaPhuHuynh(maToEdit);
-                        frmEditHS.StartPosition = FormStartPosition.CenterParent; // Hiện giữa form cha
+                        ChinhSuaPhuHuynh frmEditPH = new ChinhSuaPhuHuynh(maToEdit);
+                        frmEditPH.StartPosition = FormStartPosition.CenterParent; // Hiện giữa form cha
 
                         // Hiển thị form và kiểm tra kết quả sau khi đóng
-                        DialogResult result = frmEditHS.ShowDialog();
+                        DialogResult result = frmEditPH.ShowDialog();
                         if (result == DialogResult.OK)
                         {
-                            LoadSampleDataPhuHuynh();
+                            // ✅ Lấy phụ huynh đã cập nhật từ form
+                            PhuHuynhDTO updatedPH = frmEditPH.UpdatedPhuHuynh;
+
+                            if (updatedPH != null)
+                            {
+                                // ✅ Cập nhật trong BindingList
+                                var phInList = bindingListPhuHuynh.FirstOrDefault(ph => ph.MaPhuHuynh == maToEdit);
+                                if (phInList != null)
+                                {
+                                    int index = bindingListPhuHuynh.IndexOf(phInList);
+                                    bindingListPhuHuynh[index] = updatedPH;
+                                }
+
+                                // ✅ Cập nhật trong Full list
+                                var phInFullList = danhSachPhuHuynhFull.FirstOrDefault(ph => ph.MaPhuHuynh == maToEdit);
+                                if (phInFullList != null)
+                                {
+                                    int index = danhSachPhuHuynhFull.IndexOf(phInFullList);
+                                    danhSachPhuHuynhFull[index] = updatedPH;
+                                }
+
+                                // ✅ Cập nhật dòng trong bảng thay vì reload
+                                dgv.Rows[rowIndex].SetValues(
+                                    updatedPH.MaPhuHuynh, 
+                                    updatedPH.HoTen, 
+                                    updatedPH.SoDienThoai, 
+                                    updatedPH.Email, 
+                                    updatedPH.DiaChi, 
+                                    ""
+                                );
+                            }
                         }
                     }
                     
@@ -703,10 +906,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
                             if (deleteHSSuccess) // Chỉ cần kiểm tra xóa HS thành công
                             {
-                                MessageBox.Show("Đã xóa học sinh và các mối quan hệ liên quan.");
-                                FilterAndLoadHocSinh(); // Nạp lại bảng HS
+                                // ✅ Xóa khỏi BindingList và Full list thay vì reload
+                                var hsToRemove = bindingListHocSinh.FirstOrDefault(hs => hs.MaHS == maHS);
+                                if (hsToRemove != null)
+                                {
+                                    bindingListHocSinh.Remove(hsToRemove);
+                                }
+
+                                var hsFullToRemove = danhSachHocSinhFull.FirstOrDefault(hs => hs.MaHS == maHS);
+                                if (hsFullToRemove != null)
+                                {
+                                    danhSachHocSinhFull.Remove(hsFullToRemove);
+                                }
+
+                                // ✅ Xóa dòng khỏi bảng thay vì reload
+                                tableHocSinh.Rows.RemoveAt(rowIndex);
+
                                 LoadSampleDataMoiQuanHe(); // Nạp lại bảng MQH
                                 SetupHeaderAndStats();      // Cập nhật lại các thẻ thống kê
+                                
+                                MessageBox.Show("Đã xóa học sinh và các mối quan hệ liên quan.");
                             }
                             else
                             {
@@ -729,10 +948,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
                             if (deletePHSuccess)
                             {
-                                MessageBox.Show("Đã xóa phụ huynh và các mối quan hệ liên quan.");
-                                LoadSampleDataPhuHuynh(); // Nạp lại bảng PH
+                                // ✅ Xóa khỏi BindingList và Full list thay vì reload
+                                var phToRemove = bindingListPhuHuynh.FirstOrDefault(ph => ph.MaPhuHuynh == maPH);
+                                if (phToRemove != null)
+                                {
+                                    bindingListPhuHuynh.Remove(phToRemove);
+                                }
+
+                                var phFullToRemove = danhSachPhuHuynhFull.FirstOrDefault(ph => ph.MaPhuHuynh == maPH);
+                                if (phFullToRemove != null)
+                                {
+                                    danhSachPhuHuynhFull.Remove(phFullToRemove);
+                                }
+
+                                // ✅ Xóa dòng khỏi bảng thay vì reload
+                                tablePhuHuynh.Rows.RemoveAt(rowIndex);
+
                                 LoadSampleDataMoiQuanHe(); // Nạp lại bảng MQH
                                 SetupHeaderAndStats();      // Cập nhật lại các thẻ thống kê
+                                
+                                MessageBox.Show("Đã xóa phụ huynh và các mối quan hệ liên quan.");
                             }
                             else
                             {
@@ -806,7 +1041,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             }
         }
 
-        // Bỏ chọn dòng khi selection thay đổi
+        // Bỏ chọn dòng cho bảng Mối Quan Hệ
         private void DataGridView_SelectionChanged(object sender, EventArgs e)
         {
             var dgv = sender as Guna.UI2.WinForms.Guna2DataGridView;
@@ -837,13 +1072,57 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             // 3. Kiểm tra kết quả trả về từ form Thêm
             if (result == DialogResult.OK)
             {
-                
                 try
                 {
-                    FilterAndLoadHocSinh();    // Load lại bảng Học sinh
-                    LoadSampleDataMoiQuanHe();  // Load lại bảng Mối quan hệ
+                    // ✅ Lấy học sinh vừa tạo từ form
+                    HocSinhDTO newHS = frm.NewHocSinh;
+
+                    if (newHS != null)
+                    {
+                        // ✅ Thêm trực tiếp vào BindingList thay vì load lại toàn bộ
+                        bindingListHocSinh.Add(newHS);
+                        danhSachHocSinhFull.Add(newHS);
+
+                        // ✅ Thêm dòng mới vào bảng thay vì load lại toàn bộ
+                        // Lấy thông tin phân lớp (nếu có)
+                        List<(int maHocSinh, int maLop, int maHocKy)> allPhanLop = phanLopBLL.GetAllPhanLop();
+                        List<LopDTO> allLopHoc = lopHocBUS.DocDSLop();
+
+                        int maLopMoiNhat = -1;
+                        int hocKyMoiNhat = -1;
+
+                        foreach (var pl in allPhanLop)
+                        {
+                            if (pl.maHocSinh == newHS.MaHS && pl.maHocKy > hocKyMoiNhat)
+                            {
+                                hocKyMoiNhat = pl.maHocKy;
+                                maLopMoiNhat = pl.maLop;
+                            }
+                        }
+
+                        string tenLopHienThi = "Chưa PL";
+                        if (maLopMoiNhat != -1)
+                        {
+                            foreach (var lop in allLopHoc)
+                            {
+                                if (lop.MaLop == maLopMoiNhat)
+                                {
+                                    tenLopHienThi = lop.TenLop;
+                                    break;
+                                }
+                            }
+                        }
+
+                        tableHocSinh.Rows.Add(newHS.MaHS, newHS.HoTen, newHS.NgaySinh.ToString("dd/MM/yyyy"), 
+                                             newHS.GioiTinh, tenLopHienThi, newHS.TrangThai, "");
+                    }
+
+                    // Load lại bảng Mối quan hệ
+                    LoadSampleDataMoiQuanHe();
                                                 
-                    SetupHeaderAndStats();      // Cập nhật lại các thẻ thống kê
+                    // Cập nhật lại các thẻ thống kê
+                    SetupHeaderAndStats();
+                    
                     MessageBox.Show("Dữ liệu đã được cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -871,10 +1150,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             // 3. Kiểm tra kết quả trả về từ form Thêm
             if (result == DialogResult.OK)
             {
-
                 try
                 {
-                    LoadSampleDataPhuHuynh();    // Load lại bảng 
+                    // ✅ Lấy phụ huynh vừa tạo từ form
+                    PhuHuynhDTO newPH = frm.NewPhuHuynh;
+
+                    if (newPH != null)
+                    {
+                        // ✅ Thêm trực tiếp vào BindingList thay vì load lại toàn bộ
+                        bindingListPhuHuynh.Add(newPH);
+                        danhSachPhuHuynhFull.Add(newPH);
+
+                        // ✅ Thêm dòng mới vào bảng thay vì load lại toàn bộ
+                        tablePhuHuynh.Rows.Add(newPH.MaPhuHuynh, newPH.HoTen, newPH.SoDienThoai, 
+                                              newPH.Email, newPH.DiaChi, "");
+                    }
                   
                     MessageBox.Show("Dữ liệu đã được cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -1053,16 +1343,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 string selectedLop = cbLop.SelectedItem?.ToString();
                 string selectedHocKy = cbHocKyNamHoc.SelectedItem?.ToString();
 
-                // Lấy tất cả học sinh
-                danhSachHocSinh = hocSinhBLL.GetAllHocSinh();
+                // ✅ Lấy tất cả học sinh vào Full list
+                danhSachHocSinhFull = hocSinhBLL.GetAllHocSinh();
 
                 // Lấy tất cả phân lớp
                 List<(int maHocSinh, int maLop, int maHocKy)> allPhanLop = phanLopBLL.GetAllPhanLop();
                 List<LopDTO> allLopHoc = lopHocBUS.DocDSLop();
                 List<HocKyDTO> allHocKy = hocKyBUS.DocDSHocKy();
 
+                // ✅ Xóa BindingList để chuẩn bị load lại
+                bindingListHocSinh.Clear();
+
                 // Duyệt qua từng học sinh và kiểm tra điều kiện lọc
-                foreach (HocSinhDTO hs in danhSachHocSinh)
+                foreach (HocSinhDTO hs in danhSachHocSinhFull)
                 {
                     bool shouldShow = true;
 
@@ -1126,6 +1419,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     // Nếu học sinh thỏa mãn điều kiện lọc, thêm vào bảng
                     if (shouldShow)
                     {
+                        // ✅ Thêm vào BindingList
+                        bindingListHocSinh.Add(hs);
+                        
                         string tenLopHienThi = "Chưa PL";
                         if (maLopMoiNhat != -1)
                         {
