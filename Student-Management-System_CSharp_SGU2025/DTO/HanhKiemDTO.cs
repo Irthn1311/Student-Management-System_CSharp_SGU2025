@@ -3,18 +3,19 @@ using System.Text;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
-    internal class HanhKiem
+    // Đổi tên class HanhKiem thành HanhKiemDTO cho nhất quán
+    internal class HanhKiemDTO
     {
         // Fields (Thuộc tính cơ bản)
-        private string maHocSinh;
+        private int maHocSinh; // Sửa từ string sang int
         private int maHocKy;
         private string xepLoai;
         private string nhanXet;
 
         // Constructors (Hàm khởi tạo)
-        public HanhKiem() { }
+        public HanhKiemDTO() { }
 
-        public HanhKiem(string maHocSinh, int maHocKy, string xepLoai, string nhanXet)
+        public HanhKiemDTO(int maHocSinh, int maHocKy, string xepLoai, string nhanXet) // Sửa string sang int
         {
             this.MaHocSinh = maHocSinh;
             this.MaHocKy = maHocKy;
@@ -23,25 +24,24 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         }
 
         // Destructor (Hàm hủy)
-        ~HanhKiem()
+        ~HanhKiemDTO()
         {
-            // Console.WriteLine("Huy doi tuong HanhKiem");
         }
 
         // Properties (Thuộc tính)
-        public string MaHocSinh
+        public int MaHocSinh // Sửa từ string sang int
         {
             get { return maHocSinh; }
             set
             {
-                if (!string.IsNullOrEmpty(value))
+                if (value > 0)
                 {
                     maHocSinh = value;
                 }
                 else
                 {
-                    // Logic xử lý lỗi: In ra console (Giống ví dụ KhoiLop)
-                    Console.WriteLine("Ma hoc sinh khong duoc de trong.");
+                    // Sửa Console.WriteLine thành throw Exception
+                    throw new ArgumentException("Mã học sinh phải là số dương.");
                 }
             }
         }
@@ -57,7 +57,8 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
                 }
                 else
                 {
-                    Console.WriteLine("Ma hoc ky phai lon hon 0.");
+                    // Sửa Console.WriteLine thành throw Exception
+                    throw new ArgumentException("Mã học kỳ phải là số dương.");
                 }
             }
         }
@@ -67,13 +68,14 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return xepLoai; }
             set
             {
-                if (!string.IsNullOrEmpty(value))
+                if (!string.IsNullOrWhiteSpace(value))
                 {
-                    xepLoai = value;
+                    xepLoai = value.Trim();
                 }
                 else
                 {
-                    Console.WriteLine("Xep loai hanh kiem khong duoc de trong.");
+                    // Sửa Console.WriteLine thành throw Exception
+                    throw new ArgumentException("Xếp loại hạnh kiểm không được để trống.");
                 }
             }
         }
@@ -83,8 +85,8 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return nhanXet; }
             set
             {
-                // Cho phép null hoặc empty nếu không bắt buộc
-                nhanXet = value;
+                // Cho phép null, nhưng nếu có giá trị thì Trim()
+                nhanXet = value?.Trim();
             }
         }
     }

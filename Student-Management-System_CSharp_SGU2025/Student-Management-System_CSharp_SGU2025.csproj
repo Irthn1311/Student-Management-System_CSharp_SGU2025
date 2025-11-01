@@ -176,9 +176,11 @@
     <Compile Include="BUS\KhenThuongKyLuatBUS.cs" />
     <Compile Include="BUS\NhapDiemBUS.cs" />
     <Compile Include="BUS\PhanLopBLL.cs" />
+        <Compile Include="bus\PhanLopTuDongBLL.cs" />
     <Compile Include="BUS\PhuHuynhBLL.cs" />
     <Compile Include="BUS\ThemDiemBUS.cs" />
     <Compile Include="BUS\ThoiKhoaBieuBUS.cs" />
+    <Compile Include="BUS\XepLoaiBUS.cs" />
     <Compile Include="DAO\DiemSoDAO.cs" />
     <Compile Include="DAO\HocSinhDAO.cs" />
     <Compile Include="DAO\HocSinhPhuHuynhDAO.cs" />
@@ -190,6 +192,7 @@
     <Compile Include="DAO\PhanLopDAO.cs" />
     <Compile Include="DAO\PhuHuynhDAO.cs" />
     <Compile Include="DAO\ThoiKhoaBieuDAO.cs" />
+    <Compile Include="DAO\XepLoaiDAO.cs" />
     <Compile Include="DTO\ChiTietDiemDTO.cs" />
     <Compile Include="DTO\KhenThuongKyLuatDTO.cs" />
     <Compile Include="DTO\DiemSoDTO.cs" />
@@ -218,6 +221,7 @@
     <Compile Include="DTO\PhanCongGiangDayDTO.cs" />
     <Compile Include="DTO\ThoiKhoaBieuDTO.cs" />
     <Compile Include="DTO\ThongKeDTO.cs" />
+    <Compile Include="DTO\XepLoaiDTO.cs" />
     <Compile Include="GUI\CaiDat\CaiDat.cs">
       <SubType>UserControl</SubType>
     </Compile>

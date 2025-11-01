@@ -27,9 +27,10 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             errors = new List<string>();
 
             if (string.IsNullOrWhiteSpace(hs.HoTen)) errors.Add("Họ và tên không được để trống.");
-            if (!IsValidNgaySinh(hs.NgaySinh)) errors.Add("Ngày sinh không hợp lệ (tuổi 16-18)."); // Thêm giải thích
+            else if (Regex.IsMatch(hs.HoTen, @"\d")) errors.Add("Họ và tên không được chứa số.");
+            if (!IsValidNgaySinh(hs.NgaySinh)) errors.Add("Ngày sinh không hợp lệ (từ 16 tuổi trở lên).");
             if (string.IsNullOrWhiteSpace(hs.GioiTinh) || (hs.GioiTinh != "Nam" && hs.GioiTinh != "Nữ")) errors.Add("Vui lòng chọn giới tính.");
-            if (string.IsNullOrWhiteSpace(hs.TrangThai) || (hs.TrangThai != "Đang học" && hs.TrangThai != "Nghỉ học")) errors.Add("Trạng thái không hợp lệ.");
+            if (string.IsNullOrWhiteSpace(hs.TrangThai) || (hs.TrangThai != "Đang học" && hs.TrangThai != "Nghỉ học" && hs.TrangThai != "Đã tốt nghiệp")) errors.Add("Trạng thái không hợp lệ.");
 
             
             if (string.IsNullOrWhiteSpace(hs.Email))
@@ -108,7 +109,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 return false;
             }
 
-            // 2. Kiểm tra tuổi hợp lệ (16-18 tuổi)
+            // 2. Kiểm tra tuổi hợp lệ (từ 16 tuổi trở lên)
             int currentYear = DateTime.Now.Year;
             int birthYear = ngaySinh.Year;
             int age = currentYear - birthYear;
@@ -120,10 +121,10 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 age--;
             }
 
-            // Kiểm tra xem tuổi có nằm trong khoảng 16 đến 18 không
-            if (age < 16 || age > 18)
+            // Kiểm tra xem tuổi có từ 16 trở lên không
+            if (age < 16)
             {
-                return false; // Không đúng độ tuổi cấp 3
+                return false; // Chưa đủ 16 tuổi
             }
 
             return true; // Hợp lệ

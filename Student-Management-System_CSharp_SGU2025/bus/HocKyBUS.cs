@@ -137,5 +137,39 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             else
                 return "Đã kết thúc";
         }
+
+        // === Quản lý Năm Học ===
+        public NamHocDTO LayNamHocTheoMa(string maNamHoc)
+        {
+            try
+            {
+                return hocKyDAO.LayNamHocTheoMa(maNamHoc);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS LayNamHocTheoMa: {ex.Message}");
+                return null;
+            }
+        }
+
+        public bool ThemNamHoc(string maNamHoc, string tenNamHoc, DateTime ngayBD, DateTime ngayKT)
+        {
+            try
+            {
+                NamHocDTO namHoc = new NamHocDTO
+                {
+                    MaNamHoc = maNamHoc,
+                    TenNamHoc = tenNamHoc,
+                    NgayBD = ngayBD,
+                    NgayKT = ngayKT
+                };
+                return hocKyDAO.ThemNamHoc(namHoc);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS ThemNamHoc: {ex.Message}");
+                return false;
+            }
+        }
     }
 }
