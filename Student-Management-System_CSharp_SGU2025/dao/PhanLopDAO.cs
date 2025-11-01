@@ -518,5 +518,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return list;
         }
 
+
+
     }
 }

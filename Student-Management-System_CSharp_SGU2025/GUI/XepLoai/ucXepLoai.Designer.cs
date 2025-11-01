@@ -250,7 +250,7 @@
             this.label4.Location = new System.Drawing.Point(24, 24);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(89, 16);
+            this.label4.Size = new System.Drawing.Size(90, 16);
             this.label4.TabIndex = 0;
             this.label4.Text = "Học lực Khá";
             this.label4.Click += new System.EventHandler(this.label4_Click);
@@ -306,7 +306,7 @@
             this.label7.Location = new System.Drawing.Point(24, 24);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(80, 16);
+            this.label7.Size = new System.Drawing.Size(85, 16);
             this.label7.TabIndex = 0;
             this.label7.Text = "Trung bình";
             this.label7.Click += new System.EventHandler(this.label7_Click);
@@ -362,7 +362,7 @@
             this.label10.Location = new System.Drawing.Point(24, 24);
             this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(34, 16);
+            this.label10.Size = new System.Drawing.Size(35, 16);
             this.label10.TabIndex = 0;
             this.label10.Text = "Yếu";
             this.label10.Click += new System.EventHandler(this.label10_Click);
@@ -1268,7 +1268,7 @@
             this.MinimumSize = new System.Drawing.Size(1168, 768);
             this.Name = "ucXepLoai";
             this.Padding = new System.Windows.Forms.Padding(24);
-            this.Size = new System.Drawing.Size(1151, 751);
+            this.Size = new System.Drawing.Size(1151, 768);
             this.Load += new System.EventHandler(this.ucXepLoai_Load);
             this.guna2Panel1.ResumeLayout(false);
             this.guna2Panel1.PerformLayout();
