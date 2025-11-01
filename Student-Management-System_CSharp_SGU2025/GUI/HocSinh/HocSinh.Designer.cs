@@ -61,18 +61,18 @@
             this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1 = new System.Windows.Forms.Panel();
             this.guna2GradientPanel1 = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.btnXuatExcel = new Guna.UI2.WinForms.Guna2Button();
             this.guna2GradientPanel2 = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.btnNhapExcel = new Guna.UI2.WinForms.Guna2Button();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.btnPhanLop = new Guna.UI2.WinForms.Guna2Button();
+            this.btnThemPhuHuynh = new Guna.UI2.WinForms.Guna2Button();
+            this.btnThemHocSinh = new Guna.UI2.WinForms.Guna2Button();
             this.statCardDangHoc = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardNu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardNam = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardTongHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.headerQuanLiHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
-            this.btnPhanLop = new Guna.UI2.WinForms.Guna2Button();
-            this.btnNhapExcel = new Guna.UI2.WinForms.Guna2Button();
-            this.btnXuatExcel = new Guna.UI2.WinForms.Guna2Button();
-            this.btnThemPhuHuynh = new Guna.UI2.WinForms.Guna2Button();
-            this.btnThemHocSinh = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.tableHocSinh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tablePhuHuynh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tableMoiQuanHe)).BeginInit();
@@ -424,6 +424,28 @@
             this.guna2GradientPanel1.Size = new System.Drawing.Size(190, 103);
             this.guna2GradientPanel1.TabIndex = 23;
             // 
+            // btnXuatExcel
+            // 
+            this.btnXuatExcel.BackColor = System.Drawing.Color.Transparent;
+            this.btnXuatExcel.BorderRadius = 5;
+            this.btnXuatExcel.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnXuatExcel.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnXuatExcel.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnXuatExcel.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnXuatExcel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnXuatExcel.FillColor = System.Drawing.Color.Transparent;
+            this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnXuatExcel.ForeColor = System.Drawing.Color.White;
+            this.btnXuatExcel.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.download;
+            this.btnXuatExcel.ImageSize = new System.Drawing.Size(25, 25);
+            this.btnXuatExcel.Location = new System.Drawing.Point(0, 0);
+            this.btnXuatExcel.Margin = new System.Windows.Forms.Padding(2);
+            this.btnXuatExcel.Name = "btnXuatExcel";
+            this.btnXuatExcel.Size = new System.Drawing.Size(190, 103);
+            this.btnXuatExcel.TabIndex = 22;
+            this.btnXuatExcel.Text = "Xuất Excel";
+            this.btnXuatExcel.Click += new System.EventHandler(this.btnXuatExcel_Click);
+            // 
             // guna2GradientPanel2
             // 
             this.guna2GradientPanel2.BackColor = System.Drawing.Color.Transparent;
@@ -435,6 +457,27 @@
             this.guna2GradientPanel2.Name = "guna2GradientPanel2";
             this.guna2GradientPanel2.Size = new System.Drawing.Size(190, 103);
             this.guna2GradientPanel2.TabIndex = 24;
+            // 
+            // btnNhapExcel
+            // 
+            this.btnNhapExcel.BackColor = System.Drawing.Color.Transparent;
+            this.btnNhapExcel.BorderRadius = 5;
+            this.btnNhapExcel.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnNhapExcel.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnNhapExcel.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnNhapExcel.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnNhapExcel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnNhapExcel.FillColor = System.Drawing.Color.Transparent;
+            this.btnNhapExcel.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNhapExcel.ForeColor = System.Drawing.Color.White;
+            this.btnNhapExcel.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.download;
+            this.btnNhapExcel.ImageSize = new System.Drawing.Size(25, 25);
+            this.btnNhapExcel.Location = new System.Drawing.Point(0, 0);
+            this.btnNhapExcel.Margin = new System.Windows.Forms.Padding(2);
+            this.btnNhapExcel.Name = "btnNhapExcel";
+            this.btnNhapExcel.Size = new System.Drawing.Size(190, 103);
+            this.btnNhapExcel.TabIndex = 22;
+            this.btnNhapExcel.Text = "Nhập Excel";
             // 
             // cbHocKyNamHoc
             // 
@@ -459,6 +502,64 @@
             this.cbHocKyNamHoc.StartIndex = 0;
             this.cbHocKyNamHoc.TabIndex = 25;
             this.cbHocKyNamHoc.SelectedIndexChanged += new System.EventHandler(this.cbHocKyNamHoc_SelectedIndexChanged);
+            // 
+            // btnPhanLop
+            // 
+            this.btnPhanLop.BorderRadius = 7;
+            this.btnPhanLop.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnPhanLop.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnPhanLop.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnPhanLop.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnPhanLop.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(115)))), ((int)(((byte)(22)))));
+            this.btnPhanLop.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPhanLop.ForeColor = System.Drawing.Color.White;
+            this.btnPhanLop.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
+            this.btnPhanLop.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnPhanLop.Location = new System.Drawing.Point(574, 35);
+            this.btnPhanLop.Margin = new System.Windows.Forms.Padding(2);
+            this.btnPhanLop.Name = "btnPhanLop";
+            this.btnPhanLop.Size = new System.Drawing.Size(168, 36);
+            this.btnPhanLop.TabIndex = 26;
+            this.btnPhanLop.Text = "Phân lớp";
+            this.btnPhanLop.Click += new System.EventHandler(this.guna2Button1_Click_1);
+            // 
+            // btnThemPhuHuynh
+            // 
+            this.btnThemPhuHuynh.BorderRadius = 7;
+            this.btnThemPhuHuynh.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemPhuHuynh.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemPhuHuynh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnThemPhuHuynh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnThemPhuHuynh.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThemPhuHuynh.ForeColor = System.Drawing.Color.White;
+            this.btnThemPhuHuynh.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
+            this.btnThemPhuHuynh.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnThemPhuHuynh.Location = new System.Drawing.Point(17, 35);
+            this.btnThemPhuHuynh.Margin = new System.Windows.Forms.Padding(2);
+            this.btnThemPhuHuynh.Name = "btnThemPhuHuynh";
+            this.btnThemPhuHuynh.Size = new System.Drawing.Size(168, 36);
+            this.btnThemPhuHuynh.TabIndex = 15;
+            this.btnThemPhuHuynh.Text = "Thêm phụ huynh";
+            this.btnThemPhuHuynh.Click += new System.EventHandler(this.btnThemPhuHuynh_Click);
+            // 
+            // btnThemHocSinh
+            // 
+            this.btnThemHocSinh.BorderRadius = 7;
+            this.btnThemHocSinh.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemHocSinh.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemHocSinh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnThemHocSinh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnThemHocSinh.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThemHocSinh.ForeColor = System.Drawing.Color.White;
+            this.btnThemHocSinh.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
+            this.btnThemHocSinh.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnThemHocSinh.Location = new System.Drawing.Point(17, 35);
+            this.btnThemHocSinh.Margin = new System.Windows.Forms.Padding(2);
+            this.btnThemHocSinh.Name = "btnThemHocSinh";
+            this.btnThemHocSinh.Size = new System.Drawing.Size(168, 36);
+            this.btnThemHocSinh.TabIndex = 1;
+            this.btnThemHocSinh.Text = "Thêm học sinh";
+            this.btnThemHocSinh.Click += new System.EventHandler(this.btnThemHocSinh_Click);
             // 
             // statCardDangHoc
             // 
@@ -507,107 +608,6 @@
             this.headerQuanLiHocSinh.Visible = false;
             this.headerQuanLiHocSinh.Load += new System.EventHandler(this.headerQuanLiHocSinh_Load);
             // 
-            // btnPhanLop
-            // 
-            this.btnPhanLop.BorderRadius = 7;
-            this.btnPhanLop.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnPhanLop.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnPhanLop.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnPhanLop.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnPhanLop.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(115)))), ((int)(((byte)(22)))));
-            this.btnPhanLop.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPhanLop.ForeColor = System.Drawing.Color.White;
-            this.btnPhanLop.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
-            this.btnPhanLop.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnPhanLop.Location = new System.Drawing.Point(574, 35);
-            this.btnPhanLop.Margin = new System.Windows.Forms.Padding(2);
-            this.btnPhanLop.Name = "btnPhanLop";
-            this.btnPhanLop.Size = new System.Drawing.Size(168, 36);
-            this.btnPhanLop.TabIndex = 26;
-            this.btnPhanLop.Text = "Phân lớp";
-            this.btnPhanLop.Click += new System.EventHandler(this.guna2Button1_Click_1);
-            // 
-            // btnNhapExcel
-            // 
-            this.btnNhapExcel.BackColor = System.Drawing.Color.Transparent;
-            this.btnNhapExcel.BorderRadius = 5;
-            this.btnNhapExcel.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnNhapExcel.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnNhapExcel.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnNhapExcel.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnNhapExcel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnNhapExcel.FillColor = System.Drawing.Color.Transparent;
-            this.btnNhapExcel.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNhapExcel.ForeColor = System.Drawing.Color.White;
-            this.btnNhapExcel.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.download;
-            this.btnNhapExcel.ImageSize = new System.Drawing.Size(25, 25);
-            this.btnNhapExcel.Location = new System.Drawing.Point(0, 0);
-            this.btnNhapExcel.Margin = new System.Windows.Forms.Padding(2);
-            this.btnNhapExcel.Name = "btnNhapExcel";
-            this.btnNhapExcel.Size = new System.Drawing.Size(190, 103);
-            this.btnNhapExcel.TabIndex = 22;
-            this.btnNhapExcel.Text = "Nhập Excel";
-            // 
-            // btnXuatExcel
-            // 
-            this.btnXuatExcel.BackColor = System.Drawing.Color.Transparent;
-            this.btnXuatExcel.BorderRadius = 5;
-            this.btnXuatExcel.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnXuatExcel.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnXuatExcel.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnXuatExcel.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnXuatExcel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnXuatExcel.FillColor = System.Drawing.Color.Transparent;
-            this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnXuatExcel.ForeColor = System.Drawing.Color.White;
-            this.btnXuatExcel.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.download;
-            this.btnXuatExcel.ImageSize = new System.Drawing.Size(25, 25);
-            this.btnXuatExcel.Location = new System.Drawing.Point(0, 0);
-            this.btnXuatExcel.Margin = new System.Windows.Forms.Padding(2);
-            this.btnXuatExcel.Name = "btnXuatExcel";
-            this.btnXuatExcel.Size = new System.Drawing.Size(190, 103);
-            this.btnXuatExcel.TabIndex = 22;
-            this.btnXuatExcel.Text = "Xuất Excel";
-            this.btnXuatExcel.Click += new System.EventHandler(this.btnXuatExcel_Click);
-            // 
-            // btnThemPhuHuynh
-            // 
-            this.btnThemPhuHuynh.BorderRadius = 7;
-            this.btnThemPhuHuynh.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemPhuHuynh.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemPhuHuynh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnThemPhuHuynh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnThemPhuHuynh.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnThemPhuHuynh.ForeColor = System.Drawing.Color.White;
-            this.btnThemPhuHuynh.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
-            this.btnThemPhuHuynh.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThemPhuHuynh.Location = new System.Drawing.Point(17, 35);
-            this.btnThemPhuHuynh.Margin = new System.Windows.Forms.Padding(2);
-            this.btnThemPhuHuynh.Name = "btnThemPhuHuynh";
-            this.btnThemPhuHuynh.Size = new System.Drawing.Size(168, 36);
-            this.btnThemPhuHuynh.TabIndex = 15;
-            this.btnThemPhuHuynh.Text = "Thêm phụ huynh";
-            this.btnThemPhuHuynh.Click += new System.EventHandler(this.btnThemPhuHuynh_Click);
-            // 
-            // btnThemHocSinh
-            // 
-            this.btnThemHocSinh.BorderRadius = 7;
-            this.btnThemHocSinh.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemHocSinh.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemHocSinh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnThemHocSinh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnThemHocSinh.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnThemHocSinh.ForeColor = System.Drawing.Color.White;
-            this.btnThemHocSinh.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
-            this.btnThemHocSinh.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThemHocSinh.Location = new System.Drawing.Point(17, 35);
-            this.btnThemHocSinh.Margin = new System.Windows.Forms.Padding(2);
-            this.btnThemHocSinh.Name = "btnThemHocSinh";
-            this.btnThemHocSinh.Size = new System.Drawing.Size(168, 36);
-            this.btnThemHocSinh.TabIndex = 1;
-            this.btnThemHocSinh.Text = "Thêm học sinh";
-            this.btnThemHocSinh.Click += new System.EventHandler(this.btnThemHocSinh_Click);
-            // 
             // HocSinh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -634,7 +634,7 @@
             this.MaximumSize = new System.Drawing.Size(1168, 768);
             this.MinimumSize = new System.Drawing.Size(1168, 768);
             this.Name = "HocSinh";
-            this.Size = new System.Drawing.Size(1168, 768);
+            this.Size = new System.Drawing.Size(1151, 768);
             this.Load += new System.EventHandler(this.HocSinh_Load_1);
             ((System.ComponentModel.ISupportInitialize)(this.tableHocSinh)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tablePhuHuynh)).EndInit();
