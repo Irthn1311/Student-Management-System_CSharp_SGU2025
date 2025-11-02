@@ -83,14 +83,17 @@ INSERT INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
 -- Năm học
 INSERT INTO NamHoc (MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc) VALUES
 ('2024-2025', 'Năm học 2024-2025', '2024-09-01', '2025-05-31'),
-('2025-2026', 'Năm học 2025-2026', '2025-09-01', '2026-05-31');
+('2025-2026', 'Năm học 2025-2026', '2025-09-01', '2026-05-31'),
+('2026-2027', 'Năm học 2026-2027', '2026-09-01', '2027-05-31');
 
--- Học kỳ (2 học kỳ/năm)
+-- Học kỳ (4 học kỳ cho test 2 kịch bản)
 INSERT INTO HocKy (MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT) VALUES
-(1, 'Học kỳ I', '2024-2025', 'Đã kết thúc', '2024-09-01', '2024-12-31'),
-(2, 'Học kỳ II', '2024-2025', 'Đã kết thúc', '2025-01-01', '2025-05-31'),
-(3, 'Học kỳ I', '2025-2026', 'Đang diễn ra', '2025-09-01', '2025-12-31'),
-(4, 'Học kỳ II', '2025-2026', 'Chưa bắt đầu', '2026-01-01', '2026-05-31');
+-- Năm 2025-2026: Test kịch bản HK1 -> HK2
+(1, 'Học kỳ I', '2025-2026', 'Đang diễn ra', '2025-09-01', '2026-01-15'),
+(2, 'Học kỳ II', '2025-2026', 'Chưa bắt đầu', '2026-01-16', '2026-05-31'),
+-- Năm 2026-2027: Sẵn sàng cho test kịch bản HK2 -> HK1 năm sau
+(3, 'Học kỳ I', '2026-2027', 'Chưa bắt đầu', '2026-09-01', '2027-01-15'),
+(4, 'Học kỳ II', '2026-2027', 'Chưa bắt đầu', '2027-01-16', '2027-05-31');
 
 -- =====================================================================
 -- PHẦN 3: GIÁO VIÊN (65-70 giáo viên)

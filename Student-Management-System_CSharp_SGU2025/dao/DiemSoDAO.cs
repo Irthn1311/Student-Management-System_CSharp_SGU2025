@@ -431,5 +431,51 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return diemTBMonHoc;
         }
 
+        /// <summary>
+        /// Lấy tất cả điểm số trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<DiemSoDTO> GetAllDiemSo()
+        {
+            List<DiemSoDTO> danhSachDiem = new List<DiemSoDTO>();
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+                string query = @"SELECT MaHocSinh, MaMonHoc, MaHocKy, 
+                                DiemThuongXuyen, DiemGiuaKy, DiemCuoiKy, DiemTrungBinh 
+                                FROM DiemSo";
+                
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        DiemSoDTO diem = new DiemSoDTO
+                        {
+                            MaHocSinh = reader["MaHocSinh"].ToString(),
+                            MaMonHoc = Convert.ToInt32(reader["MaMonHoc"]),
+                            MaHocKy = Convert.ToInt32(reader["MaHocKy"]),
+                            DiemThuongXuyen = reader["DiemThuongXuyen"] != DBNull.Value ? Convert.ToSingle(reader["DiemThuongXuyen"]) : (float?)null,
+                            DiemGiuaKy = reader["DiemGiuaKy"] != DBNull.Value ? Convert.ToSingle(reader["DiemGiuaKy"]) : (float?)null,
+                            DiemCuoiKy = reader["DiemCuoiKy"] != DBNull.Value ? Convert.ToSingle(reader["DiemCuoiKy"]) : (float?)null,
+                            DiemTrungBinh = reader["DiemTrungBinh"] != DBNull.Value ? Convert.ToSingle(reader["DiemTrungBinh"]) : (float?)null
+                        };
+                        danhSachDiem.Add(diem);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy tất cả điểm số: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+            return danhSachDiem;
+        }
+
     }
 }

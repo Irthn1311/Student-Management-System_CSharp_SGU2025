@@ -518,5 +518,39 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return list;
         }
 
+        /// <summary>
+        /// Xóa tất cả phân lớp trong học kỳ cụ thể.
+        /// </summary>
+        /// <param name="maHocKy">Mã học kỳ.</param>
+        /// <returns>True nếu xóa thành công, False nếu thất bại.</returns>
+        public bool XoaTatCaPhanLopTheoHocKy(int maHocKy)
+        {
+            string sql = "DELETE FROM PhanLop WHERE MaHocKy = @maHK";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maHK", maHocKy);
+                        
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        Console.WriteLine($"Đã xóa {rowsAffected} bản ghi phân lớp của học kỳ {maHocKy}");
+                        return true;
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi xóa phân lớp theo học kỳ: " + ex.Message);
+                    return false;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+        }
+
     }
 }

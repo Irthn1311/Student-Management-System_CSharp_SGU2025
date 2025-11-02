@@ -550,5 +550,52 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 return new List<HocSinhDTO>();
             }
         }
+
+        /// <summary>
+        /// Đếm số lượng học sinh đã được phân lớp trong học kỳ cụ thể.
+        /// </summary>
+        /// <param name="maHocKy">Mã học kỳ.</param>
+        /// <returns>Số lượng học sinh.</returns>
+        public int CountHocSinhInHocKy(int maHocKy)
+        {
+            if (maHocKy <= 0)
+            {
+                throw new ArgumentException("Mã học kỳ không hợp lệ.");
+            }
+
+            try
+            {
+                List<(int maHocSinh, int maLop, int maHocKy)> phanLopList = phanLopDAO.LayTatCaPhanLop();
+                return phanLopList.Count(pl => pl.maHocKy == maHocKy);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi BLL CountHocSinhInHocKy: " + ex.Message);
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Xóa tất cả phân lớp trong học kỳ cụ thể.
+        /// </summary>
+        /// <param name="maHocKy">Mã học kỳ.</param>
+        /// <returns>True nếu thành công.</returns>
+        public bool DeleteAllPhanLopByHocKy(int maHocKy)
+        {
+            if (maHocKy <= 0)
+            {
+                throw new ArgumentException("Mã học kỳ không hợp lệ.");
+            }
+
+            try
+            {
+                return phanLopDAO.XoaTatCaPhanLopTheoHocKy(maHocKy);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi BLL DeleteAllPhanLopByHocKy: " + ex.Message);
+                return false;
+            }
+        }
     }
 }

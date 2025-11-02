@@ -175,7 +175,7 @@
     <Compile Include="BUS\HocSinhPhuHuynhBLL.cs" />
     <Compile Include="BUS\NhapDiemBUS.cs" />
     <Compile Include="BUS\PhanLopBLL.cs" />
-        <Compile Include="bus\PhanLopTuDongBLL.cs" />
+    <Compile Include="bus\PhanLopTuDongBLL.cs" />
     <Compile Include="BUS\PhuHuynhBLL.cs" />
     <Compile Include="BUS\ThemDiemBUS.cs" />
     <Compile Include="BUS\ThoiKhoaBieuBUS.cs" />
@@ -314,6 +314,9 @@
     </Compile>
     <Compile Include="GUI\RecentActivityItem.Designer.cs">
       <DependentUpon>RecentActivityItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ScrollableMessageBox.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\TaiKhoan\frmAddPhanQuyen.cs">
       <SubType>Form</SubType>
