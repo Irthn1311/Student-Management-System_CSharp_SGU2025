@@ -45,7 +45,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             try
             {
-                return monHocDAO.DocDSMH();
+                return monHocDAO.GetAllMonHoc();
             }
             catch (Exception ex)
             {
@@ -60,7 +60,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             try
             {
-                return hocKyDAO.DocDSHocKy();
+                return hocKyDAO.GetAllHocKy();
             }
             catch (Exception ex)
             {
@@ -299,6 +299,22 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             catch (Exception ex)
             {
                 throw new Exception("Lỗi nghiệp vụ khi lấy bảng điểm: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả điểm số trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<DiemSoDTO> GetAllDiemSo()
+        {
+            try
+            {
+                return diemSoDAO.GetAllDiemSo();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy tất cả điểm số: " + ex.Message);
             }
         }
 

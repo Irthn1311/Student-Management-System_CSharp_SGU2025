@@ -54,11 +54,17 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 if (phanCong.NgayKetThuc <= phanCong.NgayBatDau)
                     throw new ArgumentException("Ngày kết thúc phải sau ngày bắt đầu");
 
-                // Kiểm tra trùng lặp
+                // Kiểm tra giáo viên có chuyên môn phù hợp
+                if (!phanCongDAO.KiemTraGiaoVienChuyenMon(phanCong.MaGiaoVien, phanCong.MaMonHoc))
+                {
+                    throw new Exception("Giáo viên không có chuyên môn phù hợp để dạy môn học này!");
+                }
+
+                // Kiểm tra trùng lặp (Lớp - Môn - Học kỳ)
                 if (phanCongDAO.KiemTraTrungLap(phanCong.MaLop, phanCong.MaGiaoVien,
                                                 phanCong.MaMonHoc, phanCong.MaHocKy))
                 {
-                    throw new Exception("Phân công này đã tồn tại trong hệ thống!");
+                    throw new Exception("Phân công này đã tồn tại trong hệ thống (trùng Lớp-Môn-Học kỳ)!");
                 }
 
                 return phanCongDAO.ThemPhanCong(phanCong);
@@ -170,12 +176,18 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 if (phanCong.NgayKetThuc <= phanCong.NgayBatDau)
                     throw new ArgumentException("Ngày kết thúc phải sau ngày bắt đầu");
 
+                // Kiểm tra giáo viên có chuyên môn phù hợp
+                if (!phanCongDAO.KiemTraGiaoVienChuyenMon(phanCong.MaGiaoVien, phanCong.MaMonHoc))
+                {
+                    throw new Exception("Giáo viên không có chuyên môn phù hợp để dạy môn học này!");
+                }
+
                 // Kiểm tra trùng lặp (trừ bản ghi hiện tại)
                 if (phanCongDAO.KiemTraTrungLap(phanCong.MaLop, phanCong.MaGiaoVien,
                                                 phanCong.MaMonHoc, phanCong.MaHocKy,
                                                 phanCong.MaPhanCong))
                 {
-                    throw new Exception("Phân công này đã tồn tại trong hệ thống!");
+                    throw new Exception("Phân công này đã tồn tại trong hệ thống (trùng Lớp-Môn-Học kỳ)!");
                 }
 
                 return phanCongDAO.CapNhatPhanCong(phanCong);
@@ -217,6 +229,67 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             catch (Exception ex)
             {
                 throw new Exception($"Lỗi khi kiểm tra phân công: {ex.Message}", ex);
+            }
+        }
+
+        // Kiểm tra giáo viên có chuyên môn phù hợp
+        public bool KiemTraGiaoVienChuyenMon(string maGiaoVien, int maMonHoc)
+        {
+            try
+            {
+                return phanCongDAO.KiemTraGiaoVienChuyenMon(maGiaoVien, maMonHoc);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi kiểm tra chuyên môn: {ex.Message}", ex);
+            }
+        }
+
+        // Kiểm tra học kỳ có cho phép chỉnh sửa (không phải quá khứ)
+        public bool KiemTraHocKyChoPhepChinhSua(int maHocKy)
+        {
+            try
+            {
+                var hocKyDAO = new HocKyDAO();
+                var hocKy = hocKyDAO.LayHocKyTheoMa(maHocKy);
+                
+                if (hocKy == null || !hocKy.NgayKT.HasValue)
+                    return false;
+
+                // Nếu ngày kết thúc < ngày hiện tại => quá khứ => không cho sửa
+                return hocKy.NgayKT.Value.Date >= DateTime.Now.Date;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi kiểm tra học kỳ: {ex.Message}", ex);
+            }
+        }
+
+        // Lọc phân công theo nhiều tiêu chí
+        public List<PhanCongGiangDayDTO> LocPhanCong(int? maHocKy = null, int? maLop = null, 
+                                                      int? maMonHoc = null, string maGiaoVien = null)
+        {
+            try
+            {
+                List<PhanCongGiangDayDTO> ds = DocDSPhanCong();
+
+                if (maHocKy.HasValue)
+                    ds = ds.FindAll(pc => pc.MaHocKy == maHocKy.Value);
+
+                if (maLop.HasValue)
+                    ds = ds.FindAll(pc => pc.MaLop == maLop.Value);
+
+                if (maMonHoc.HasValue)
+                    ds = ds.FindAll(pc => pc.MaMonHoc == maMonHoc.Value);
+
+                if (!string.IsNullOrWhiteSpace(maGiaoVien))
+                    ds = ds.FindAll(pc => pc.MaGiaoVien == maGiaoVien);
+
+                return ds;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lọc phân công: {ex.Message}", ex);
             }
         }
     }

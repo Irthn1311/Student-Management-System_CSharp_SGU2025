@@ -220,11 +220,12 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return ds;
         }
 
+
         // === Quản lý Năm Học ===
         public NamHocDTO LayNamHocTheoMa(string maNamHoc)
         {
             string query = "SELECT MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc FROM NamHoc WHERE MaNamHoc = @MaNamHoc";
-            
+
             try
             {
                 using (MySqlConnection conn = ConnectionDatabase.GetConnection())
@@ -258,10 +259,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return null;
         }
 
+
         public bool ThemNamHoc(NamHocDTO namHoc)
         {
             string query = "INSERT INTO NamHoc(MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc) VALUES(@MaNamHoc, @TenNamHoc, @NgayBatDau, @NgayKetThuc)";
-            
+
             try
             {
                 using (MySqlConnection conn = ConnectionDatabase.GetConnection())
@@ -273,7 +275,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmd.Parameters.AddWithValue("@TenNamHoc", namHoc.TenNamHoc);
                         cmd.Parameters.AddWithValue("@NgayBatDau", namHoc.NgayBD);
                         cmd.Parameters.AddWithValue("@NgayKetThuc", namHoc.NgayKT);
-                        
+
                         int result = cmd.ExecuteNonQuery();
                         return result > 0;
                     }
@@ -285,5 +287,55 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 return false;
             }
         }
+
+        public List<HocKyDTO> GetAllHocKy()
+        {
+            List<HocKyDTO> list = new List<HocKyDTO>();
+            MySqlConnection conn = null;
+
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+                    SELECT MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT
+                    FROM HocKy
+                    ORDER BY MaHocKy DESC";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            HocKyDTO hk = new HocKyDTO
+                            {
+                                MaHocKy = Convert.ToInt32(reader["MaHocKy"]),
+                                TenHocKy = reader["TenHocKy"].ToString(),
+                                MaNamHoc = reader["MaNamHoc"].ToString(),
+                                TrangThai = reader["TrangThai"].ToString(),
+                                NgayBD = reader["NgayBD"] != DBNull.Value ?
+                                    Convert.ToDateTime(reader["NgayBD"]) : (DateTime?)null,
+                                NgayKT = reader["NgayKT"] != DBNull.Value ?
+                                    Convert.ToDateTime(reader["NgayKT"]) : (DateTime?)null
+                            };
+                            list.Add(hk);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy danh sách học kỳ: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+
+            return list;
+        }
+
     }
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
-    internal class HanhKiemBUS
+    public class HanhKiemBUS
     {
         private HanhKiemDAO hanhKiemDAO = new HanhKiemDAO();
         // Sửa "TB" thành "Trung bình"
@@ -82,6 +82,22 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             {
                 Console.WriteLine($"Lỗi BUS GetHanhKiemByStudent: {ex.Message}");
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả hạnh kiểm trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<HanhKiemDTO> GetAllHanhKiem()
+        {
+            try
+            {
+                return hanhKiemDAO.GetAllHanhKiem();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy tất cả hạnh kiểm: " + ex.Message);
             }
         }
     }

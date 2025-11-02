@@ -23,7 +23,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             SELECT 
                 hs.MaHocSinh,
                 hs.HoTen,
-                ds.DiemMieng,
+                ds.DiemThuongXuyen,
                 ds.DiemGiuaKy,
                 ds.DiemCuoiKy,
                 ds.DiemTrungBinh
@@ -47,8 +47,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             {
                                 MaHocSinh = reader["MaHocSinh"].ToString(),
                                 HoTen = reader["HoTen"].ToString(),
-                                DiemTX = reader["DiemMieng"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemMieng"]) : (float?)null,
+                                DiemTX = reader["DiemThuongXuyen"] != DBNull.Value ?
+                                    Convert.ToSingle(reader["DiemThuongXuyen"]) : (float?)null,
                                 DiemGK = reader["DiemGiuaKy"] != DBNull.Value ?
                                     Convert.ToSingle(reader["DiemGiuaKy"]) : (float?)null,
                                 DiemCK = reader["DiemCuoiKy"] != DBNull.Value ?
@@ -86,7 +86,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             SELECT 
                 hs.MaHocSinh,
                 hs.HoTen,
-                ds.DiemMieng,
+                ds.DiemThuongXuyen,
                 ds.DiemGiuaKy,
                 ds.DiemCuoiKy,
                 ds.DiemTrungBinh
@@ -112,8 +112,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             {
                                 MaHocSinh = reader["MaHocSinh"].ToString(),
                                 HoTen = reader["HoTen"].ToString(),
-                                DiemTX = reader["DiemMieng"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemMieng"]) : (float?)null,
+                                DiemTX = reader["DiemThuongXuyen"] != DBNull.Value ?
+                                    Convert.ToSingle(reader["DiemThuongXuyen"]) : (float?)null,
                                 DiemGK = reader["DiemGiuaKy"] != DBNull.Value ?
                                     Convert.ToSingle(reader["DiemGiuaKy"]) : (float?)null,
                                 DiemCK = reader["DiemCuoiKy"] != DBNull.Value ?
@@ -308,7 +308,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
 
         /// <summary>
-        /// Lấy chi tiết điểm đầy đủ 13 môn của một học sinh theo học kỳ
+        /// Lấy chi tiết điểm đầy đủ của một học sinh theo học kỳ
         /// </summary>
         public ChiTietDiemDTO GetChiTietDiem(string maHocSinh, int maHocKy)
         {
@@ -319,29 +319,18 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn = ConnectionDatabase.GetConnection();
                 conn.Open();
 
-                string query = @"
+                // Query lấy thông tin học sinh và điểm TB chung
+                string queryHocSinh = @"
             SELECT 
                 hs.MaHocSinh,
                 hs.HoTen,
-                MAX(CASE WHEN mh.MaMonHoc = 1 THEN ds.DiemTrungBinh END) as DiemNguVan,
-                MAX(CASE WHEN mh.MaMonHoc = 2 THEN ds.DiemTrungBinh END) as DiemToan,
-                MAX(CASE WHEN mh.MaMonHoc = 3 THEN ds.DiemTrungBinh END) as DiemTiengAnh,
-                MAX(CASE WHEN mh.MaMonHoc = 4 THEN ds.DiemTrungBinh END) as DiemLichSu,
-                MAX(CASE WHEN mh.MaMonHoc = 5 THEN ds.DiemTrungBinh END) as DiemGDTC,
-                MAX(CASE WHEN mh.MaMonHoc = 6 THEN ds.DiemTrungBinh END) as DiemGDQP,
-                MAX(CASE WHEN mh.MaMonHoc = 7 THEN ds.DiemTrungBinh END) as DiemDiaLy,
-                MAX(CASE WHEN mh.MaMonHoc = 8 THEN ds.DiemTrungBinh END) as DiemVatLy,
-                MAX(CASE WHEN mh.MaMonHoc = 9 THEN ds.DiemTrungBinh END) as DiemHoaHoc,
-                MAX(CASE WHEN mh.MaMonHoc = 10 THEN ds.DiemTrungBinh END) as DiemSinhHoc,
-                MAX(CASE WHEN mh.MaMonHoc = 11 THEN ds.DiemTrungBinh END) as DiemCongNghe,
-                MAX(CASE WHEN mh.MaMonHoc = 12 THEN ds.DiemTrungBinh END) as DiemTinHoc,
-                MAX(CASE WHEN mh.MaMonHoc = 13 THEN ds.DiemTrungBinh END) as DiemGDCD,
                 CASE 
                     WHEN (SELECT COUNT(DISTINCT ds2.MaMonHoc)
                           FROM DiemSo ds2
                           WHERE ds2.MaHocSinh = @MaHocSinh 
                             AND ds2.MaHocKy = @MaHocKy
-                            AND ds2.DiemTrungBinh IS NOT NULL) = 13
+                            AND ds2.DiemTrungBinh IS NOT NULL) = 
+                         (SELECT COUNT(*) FROM MonHoc)
                     THEN (SELECT AVG(ds2.DiemTrungBinh)
                           FROM DiemSo ds2
                           WHERE ds2.MaHocSinh = @MaHocSinh 
@@ -350,12 +339,9 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     ELSE NULL
                 END as DiemTB
             FROM HocSinh hs
-            LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh AND ds.MaHocKy = @MaHocKy
-            LEFT JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
-            WHERE hs.MaHocSinh = @MaHocSinh
-            GROUP BY hs.MaHocSinh, hs.HoTen";
+            WHERE hs.MaHocSinh = @MaHocSinh";
 
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlCommand cmd = new MySqlCommand(queryHocSinh, conn))
                 {
                     cmd.Parameters.AddWithValue("@MaHocSinh", maHocSinh);
                     cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
@@ -368,35 +354,48 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             {
                                 MaHocSinh = reader["MaHocSinh"].ToString(),
                                 HoTen = reader["HoTen"].ToString(),
-                                DiemNguVan = reader["DiemNguVan"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemNguVan"]) : (float?)null,
-                                DiemToan = reader["DiemToan"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemToan"]) : (float?)null,
-                                DiemTiengAnh = reader["DiemTiengAnh"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemTiengAnh"]) : (float?)null,
-                                DiemLichSu = reader["DiemLichSu"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemLichSu"]) : (float?)null,
-                                DiemGDTC = reader["DiemGDTC"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemGDTC"]) : (float?)null,
-                                DiemGDQP = reader["DiemGDQP"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemGDQP"]) : (float?)null,
-                                DiemDiaLy = reader["DiemDiaLy"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemDiaLy"]) : (float?)null,
-                                DiemVatLy = reader["DiemVatLy"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemVatLy"]) : (float?)null,
-                                DiemHoaHoc = reader["DiemHoaHoc"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemHoaHoc"]) : (float?)null,
-                                DiemSinhHoc = reader["DiemSinhHoc"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemSinhHoc"]) : (float?)null,
-                                DiemCongNghe = reader["DiemCongNghe"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemCongNghe"]) : (float?)null,
-                                DiemTinHoc = reader["DiemTinHoc"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemTinHoc"]) : (float?)null,
-                                DiemGDCD = reader["DiemGDCD"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemGDCD"]) : (float?)null,
                                 DiemTB = reader["DiemTB"] != DBNull.Value ?
                                     Convert.ToSingle(reader["DiemTB"]) : (float?)null
                             };
+                        }
+                    }
+                }
+
+                if (dto == null)
+                {
+                    return null;
+                }
+
+                // Query lấy điểm các môn học
+                string queryDiem = @"
+            SELECT 
+                mh.MaMonHoc,
+                mh.TenMonHoc,
+                ds.DiemTrungBinh
+            FROM MonHoc mh
+            LEFT JOIN DiemSo ds ON mh.MaMonHoc = ds.MaMonHoc 
+                AND ds.MaHocSinh = @MaHocSinh 
+                AND ds.MaHocKy = @MaHocKy
+            ORDER BY mh.MaMonHoc";
+
+                using (MySqlCommand cmd = new MySqlCommand(queryDiem, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaHocSinh", maHocSinh);
+                    cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int maMonHoc = Convert.ToInt32(reader["MaMonHoc"]);
+                            DiemMonHocDTO diemMon = new DiemMonHocDTO
+                            {
+                                MaMonHoc = maMonHoc,
+                                TenMonHoc = reader["TenMonHoc"].ToString(),
+                                DiemTrungBinh = reader["DiemTrungBinh"] != DBNull.Value ?
+                                    Convert.ToSingle(reader["DiemTrungBinh"]) : (float?)null
+                            };
+                            dto.DiemCacMon.Add(maMonHoc, diemMon);
                         }
                     }
                 }

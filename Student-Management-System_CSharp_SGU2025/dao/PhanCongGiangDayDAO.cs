@@ -337,6 +337,26 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return ds;
         }
 
+        // Kiểm tra giáo viên có chuyên môn dạy môn học
+        public bool KiemTraGiaoVienChuyenMon(string maGiaoVien, int maMonHoc)
+        {
+            const string sql = @"
+                SELECT 1 FROM GiaoVienChuyenMon WHERE MaGiaoVien=@MaGiaoVien AND MaMonHoc=@MaMonHoc
+                UNION ALL
+                SELECT 1 FROM GiaoVien_MonHoc WHERE MaGiaoVien=@MaGiaoVien AND MaMonHoc=@MaMonHoc LIMIT 1";
+            using (var conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (var cmd = new MySqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                    cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
+                    var obj = cmd.ExecuteScalar();
+                    return obj != null;
+                }
+            }
+        }
+
         // Cập nhật phân công
         public bool CapNhatPhanCong(PhanCongGiangDayDTO phanCong)
         {
