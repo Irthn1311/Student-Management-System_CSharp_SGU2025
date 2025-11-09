@@ -349,6 +349,38 @@ LIMIT 924;
 SELECT 'Students insertion completed (1008 students)' AS Status;
 
 -- =====================================================================
+-- PHẦN 5B: TẠO TÀI KHOẢN ĐĂNG NHẬP CHO TẤT CẢ HỌC SINH
+-- =====================================================================
+
+-- Tạo tài khoản NguoiDung cho TẤT CẢ học sinh (username = HS{MaHocSinh}, password = 123456)
+-- TrangThai: 'Hoạt động' nếu HS đang học/nghỉ học, 'Tạm khóa' nếu thôi học/bảo lưu
+INSERT INTO NguoiDung (TenDangNhap, MatKhau, TrangThai)
+SELECT 
+    CONCAT('HS', MaHocSinh) as TenDangNhap,
+    '123456' as MatKhau,
+    IF(HocSinh.TrangThai IN ('Đang học', 'Nghỉ học'), 'Hoạt động', 'Tạm khóa') as TrangThai
+FROM HocSinh
+ORDER BY MaHocSinh;
+
+SELECT 'Student accounts created (1008 accounts)' AS Status;
+
+-- Cập nhật TenDangNhap cho TẤT CẢ học sinh
+UPDATE HocSinh 
+SET TenDangNhap = CONCAT('HS', MaHocSinh);
+
+SELECT 'Student TenDangNhap updated (1008 students)' AS Status;
+
+-- Gán vai trò 'student' cho TẤT CẢ tài khoản học sinh
+INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro)
+SELECT 
+    CONCAT('HS', MaHocSinh) as TenDangNhap,
+    'student' as MaVaiTro
+FROM HocSinh
+ORDER BY MaHocSinh;
+
+SELECT 'Student roles assigned (1008 roles)' AS Status;
+
+-- =====================================================================
 -- PHẦN 6: PHỤ HUYNH VÀ LIÊN KẾT
 -- =====================================================================
 

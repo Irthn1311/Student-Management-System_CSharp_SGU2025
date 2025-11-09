@@ -213,12 +213,12 @@ namespace Student_Management_System_CSharp_SGU2025.ConnectDatabase
                 if (conn != null && conn.State == ConnectionState.Open)
                 {
                     conn.Close();
-                    Debug.WriteLine("✅ Đã đóng kết nối database");
+                    // Debug.WriteLine("✅ Đã đóng kết nối database"); // Commented to reduce console spam
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("Lỗi khi đóng kết nối: " + ex.Message);
+                throw new Exception("L�i khi đóng kết nối: " + ex.Message);
             }
         }
     }

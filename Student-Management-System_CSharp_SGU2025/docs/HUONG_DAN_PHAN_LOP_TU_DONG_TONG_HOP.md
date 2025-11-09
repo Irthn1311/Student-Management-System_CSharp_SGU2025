@@ -222,11 +222,28 @@ lopIndex++;
 
 ### 3.1. Điều kiện học sinh hợp lệ
 
+Hệ thống hỗ trợ **4 trạng thái học sinh** với logic nghiệp vụ khác nhau:
+
+| Trạng thái   | Tài khoản    | Phân lớp | Giải thích                                      |
+| ------------ | ------------ | -------- | ----------------------------------------------- |
+| **Đang học** | ✅ Hoạt động | ✅ CÓ    | Học sinh đang đi học bình thường                |
+| **Nghỉ học** | ✅ Hoạt động | ✅ CÓ    | Nghỉ tạm thời, vẫn được phân lớp để dễ quay lại |
+| **Bảo lưu**  | ❌ Tạm khóa  | ❌ KHÔNG | Bảo lưu học vị, không được phân lớp             |
+| **Thôi học** | ❌ Tạm khóa  | ❌ KHÔNG | Đã thôi học vĩnh viễn, không được phân lớp      |
+
+**Lưu ý quan trọng:**
+
+- ✅ "Đang học" + "Nghỉ học": Được phân lớp tự động (tài khoản hoạt động)
+- ❌ "Bảo lưu" + "Thôi học": Không được phân lớp (tài khoản bị khóa)
+- ⚠️ "Nghỉ học" khác với "Thôi học": Nghỉ tạm thời có thể quay lại, thôi học là vĩnh viễn
+
+**Code:**
+
 ```csharp
-✅ Trạng thái = "Đang học"
-❌ Trạng thái = "Đã tốt nghiệp" → Bỏ qua
-❌ Trạng thái = "Nghỉ học" → Bỏ qua
-❌ Trạng thái = "Bảo lưu" → Bỏ qua
+// Lọc học sinh hợp lệ cho phân lớp
+var danhSachHocSinhDangHoc = hocSinhBLL.GetAllHocSinh()
+    .Where(hs => hs.TrangThai == "Đang học" || hs.TrangThai == "Nghỉ học")
+    .ToList();
 ```
 
 ### 3.2. Điều kiện dữ liệu đầy đủ (Kịch bản 2)
@@ -494,14 +511,36 @@ mysql -u root -p QuanLyHocSinh < 04_data_hk2_for_test.sql
 
 ### 6.2. Dữ liệu trong file 03_sample_seed_optimized.sql
 
-| Dữ liệu   | Số lượng | Ghi chú                         |
-| --------- | -------- | ------------------------------- |
-| Học sinh  | 500      | 475 "Đang học", 25 "Đã nghỉ"    |
-| Phụ huynh | 500      | 1-1 với học sinh                |
-| Giáo viên | 30       | Đủ 13 tổ bộ môn                 |
-| Lớp học   | 24       | 8 lớp/khối (10, 11, 12)         |
-| Năm học   | 3        | 2024-2025, 2025-2026, 2026-2027 |
-| Học kỳ    | 4        | HK1+HK2 cho 2 năm               |
+| Dữ liệu   | Số lượng | Ghi chú                                                   |
+| --------- | -------- | --------------------------------------------------------- |
+| Học sinh  | 500      | 450 "Đang học", 15 "Nghỉ học", 5 "Bảo lưu", 30 "Thôi học" |
+| Tài khoản | 500      | Tất cả học sinh đều có tài khoản (HS1-HS500)              |
+| Phụ huynh | 500      | 1-1 với học sinh                                          |
+| Giáo viên | 30       | Đủ 13 tổ bộ môn                                           |
+| Lớp học   | 24       | 8 lớp/khối (10, 11, 12)                                   |
+| Năm học   | 3        | 2024-2025, 2025-2026, 2026-2027                           |
+| Học kỳ    | 4        | HK1+HK2 cho 2 năm                                         |
+
+**Phân bổ trạng thái học sinh (500 HS):**
+
+```sql
+-- Phân bổ trong 03_sample_seed_optimized.sql
+CASE
+    WHEN seq <= 450 THEN 'Đang học'   -- 450 học sinh (90%)
+    WHEN seq <= 465 THEN 'Nghỉ học'   -- 15 học sinh (3%)
+    WHEN seq <= 470 THEN 'Bảo lưu'    -- 5 học sinh (1%)
+    ELSE 'Thôi học'                    -- 30 học sinh (6%)
+END
+```
+
+**Logic tài khoản theo trạng thái:**
+
+```sql
+-- Tất cả học sinh đều có tài khoản, trạng thái quyết định active/locked
+IF(HocSinh.TrangThai IN ('Đang học', 'Nghỉ học'), 'Hoạt động', 'Tạm khóa')
+-- "Đang học" + "Nghỉ học" → Tài khoản hoạt động (có thể login)
+-- "Bảo lưu" + "Thôi học" → Tài khoản tạm khóa (không login được)
+```
 
 **Năm sinh học sinh:**
 
@@ -514,14 +553,15 @@ Sinh 2006-2012 (7 năm)
 **Phân lớp sẵn trong file:**
 
 ```sql
--- Đã phân 475 HS vào HK1 2025-2026
+-- Đã phân 465 HS "Đang học" + "Nghỉ học" vào HK1 2025-2026
+-- ("Bảo lưu" và "Thôi học" không được phân lớp)
 INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy) ...
 ```
 
 **Điểm số sẵn:**
 
 ```sql
--- 475 HS × 13 môn = 6,175 bản ghi
+-- 465 HS × 13 môn = 6,045 bản ghi
 -- Điểm random từ 5.0-10.0
 INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, ...) ...
 ```
@@ -545,18 +585,21 @@ INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, ...) ...
 
 ```
 ✓ Phân lớp tự động thành công!
-Đã phân lớp: 475 học sinh
+Đã phân lớp: 465 học sinh
 
 Kịch bản: HK1 → HK2 (Giữ nguyên lớp)
 Nguồn: Học kỳ I 2025-2026
 
-✅ THÀNH CÔNG: 475 học sinh
+✅ THÀNH CÔNG: 465 học sinh
+   • "Đang học": 450 học sinh
+   • "Nghỉ học": 15 học sinh
+   • ("Bảo lưu" + "Thôi học" không được phân lớp)
 ```
 
 **Kiểm tra:**
 
 ```sql
-SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 2; -- Phải = 475
+SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 2; -- Phải = 465
 
 -- Kiểm tra học sinh giữ nguyên lớp
 SELECT
@@ -591,18 +634,22 @@ WHERE l1.TenLop != l2.TenLop; -- Phải = 0 (không có ai đổi lớp)
 
 ```
 ✓ Phân lớp tự động thành công!
-Đã phân lớp: 415 học sinh
+Đã phân lớp: 405 học sinh
 
 Kịch bản: HK2 năm trước → HK1 năm sau
 Nguồn: Học kỳ II 2025-2026
 
-✅ THÀNH CÔNG: 415 học sinh
-   • Lên lớp: 350 học sinh
+✅ THÀNH CÔNG: 405 học sinh
+   • Lên lớp: 340 học sinh
    • Ở lại: 65 học sinh
-   • Tỷ lệ lên lớp: 84.3%
+   • Tỷ lệ lên lớp: 83.9%
 
 ⚠️ LỖI/CẢNH BÁO: 60 trường hợp
    (Các HS thiếu điểm/hạnh kiểm)
+
+📊 Học sinh "Nghỉ học" (15 HS):
+   • Đủ điều kiện lên lớp: 12 học sinh
+   • Ở lại lớp cũ: 3 học sinh
 ```
 
 **Kiểm tra:**
@@ -663,18 +710,19 @@ DELETE FROM PhanLop WHERE MaHocKy = 1;
 
 ```
 ✓ Phân lớp tự động thành công!
-Đã phân lớp: 475 học sinh
+Đã phân lớp: 465 học sinh
 
 Kịch bản: Phân lớp lần đầu (Dựa vào năm sinh)
 Phân đều học sinh vào các lớp theo khối
 
-✅ THÀNH CÔNG: 475 học sinh
-   • Lên lớp: 171 học sinh (Khối 10)
-   • Ở lại (học lại): 303 học sinh (Khối 11, 12)
-   • Tỷ lệ lên lớp: 36.0%
+✅ THÀNH CÔNG: 465 học sinh
+   • "Đang học": 450 học sinh
+   • "Nghỉ học": 15 học sinh
+   • Phân bổ đều vào 24 lớp (3 khối)
 
-⚠️ LỖI/CẢNH BÁO: 1 trường hợp
-   1. HS X: Năm sinh 2005 không phù hợp khối nào
+⚠️ LỖI/CẢNH BÁO: 35 trường hợp
+   • 30 HS "Thôi học": Không được phân lớp
+   • 5 HS "Bảo lưu": Không được phân lớp
 ```
 
 **Kiểm tra phân bổ đều:**
@@ -689,7 +737,7 @@ WHERE pl.MaHocKy = 1
 GROUP BY l.TenLop
 ORDER BY l.MaLop;
 
--- Kỳ vọng: Mỗi lớp ~19-20 HS
+-- Kỳ vọng: Mỗi lớp ~19-20 HS (465 ÷ 24 ≈ 19.4)
 ```
 
 ---
@@ -1165,10 +1213,17 @@ Text = message.Replace("\n", Environment.NewLine)
 
 ---
 
-**Phiên bản:** 2.0 (Tổng hợp)  
-**Ngày cập nhật:** 02/11/2025  
+**Phiên bản:** 2.1 (Cập nhật logic trạng thái học sinh)  
+**Ngày cập nhật:** 09/11/2025  
 **Tác giả:** GitHub Copilot  
 **Trạng thái:** ✅ Hoàn thiện 100%
+
+### Thay đổi phiên bản 2.1:
+
+- ✅ Cập nhật 4 trạng thái học sinh: Đang học, Nghỉ học, Bảo lưu, Thôi học
+- ✅ "Nghỉ học" bây giờ được phân lớp (khác với "Thôi học")
+- ✅ Tất cả học sinh đều có tài khoản, trạng thái quyết định active/locked
+- ✅ Cập nhật dữ liệu mẫu: 450 Đang học, 15 Nghỉ học, 5 Bảo lưu, 30 Thôi học
 
 ---
 

@@ -463,6 +463,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                     reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString("Email"),
                                     reader.GetString("TrangThai")
                                 );
+                                
+                                // ✅ Đọc thêm TenDangNhap từ database
+                                if (!reader.IsDBNull(reader.GetOrdinal("TenDangNhap")))
+                                {
+                                    hs.TenDangNhap = reader.GetString("TenDangNhap");
+                                }
+                                
                                 return hs;
                             }
                         }
@@ -507,6 +514,40 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 {
                     Console.WriteLine("Lỗi cập nhật trạng thái học sinh: " + ex.Message);
                     // throw;
+                    return false;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật TenDangNhap cho học sinh (liên kết với NguoiDung).
+        /// </summary>
+        /// <param name="maHocSinh">Mã học sinh cần cập nhật.</param>
+        /// <param name="tenDangNhap">Tên đăng nhập mới.</param>
+        /// <returns>True nếu cập nhật thành công, False nếu thất bại.</returns>
+        public bool CapNhatTenDangNhap(int maHocSinh, string tenDangNhap)
+        {
+            string sql = "UPDATE HocSinh SET TenDangNhap = @tenDangNhap WHERE MaHocSinh = @maHS";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@tenDangNhap", tenDangNhap);
+                        cmd.Parameters.AddWithValue("@maHS", maHocSinh);
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi cập nhật TenDangNhap học sinh: " + ex.Message);
                     return false;
                 }
                 finally

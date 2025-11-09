@@ -196,7 +196,13 @@ SELECT
     IF((seq MOD 2) = 0, 'Nam', 'Nữ') as GioiTinh,
     CONCAT('09', LPAD(12340000 + seq, 8, '0')) as SDTHS,
     CONCAT('hs', LPAD(seq, 3, '0'), '@student.edu.vn') as Email,
-    IF(seq <= 475, 'Đang học', 'Đã nghỉ') as TrangThai
+    -- Trạng thái: 450 Đang học, 15 Nghỉ học, 5 Bảo lưu, 30 Thôi học
+    CASE 
+        WHEN seq <= 450 THEN 'Đang học'
+        WHEN seq <= 465 THEN 'Nghỉ học'
+        WHEN seq <= 470 THEN 'Bảo lưu'
+        ELSE 'Thôi học'
+    END as TrangThai
 FROM (
     SELECT @row := @row + 1 as seq
     FROM (SELECT 0 UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t1,
@@ -207,6 +213,38 @@ FROM (
 ) numbers;
 
 SELECT 'Hoc sinh da duoc tao (500 hoc sinh)' AS Status;
+
+-- =====================================================================
+-- PHẦN 5B: TẠO TÀI KHOẢN ĐĂNG NHẬP CHO TẤT CẢ HỌC SINH (500 accounts)
+-- =====================================================================
+
+-- Tạo tài khoản NguoiDung cho TẤT CẢ học sinh (username = HS{MaHocSinh}, password = 123456)
+-- TrangThai: 'Hoạt động' nếu HS đang học/nghỉ học, 'Tạm khóa' nếu thôi học/bảo lưu
+INSERT INTO NguoiDung (TenDangNhap, MatKhau, TrangThai)
+SELECT 
+    CONCAT('HS', MaHocSinh) as TenDangNhap,
+    '123456' as MatKhau,
+    IF(HocSinh.TrangThai IN ('Đang học', 'Nghỉ học'), 'Hoạt động', 'Tạm khóa') as TrangThai
+FROM HocSinh
+ORDER BY MaHocSinh;
+
+SELECT 'Student accounts created (500 accounts)' AS Status;
+
+-- Cập nhật TenDangNhap cho TẤT CẢ học sinh
+UPDATE HocSinh 
+SET TenDangNhap = CONCAT('HS', MaHocSinh);
+
+SELECT 'Student TenDangNhap updated (500 students)' AS Status;
+
+-- Gán vai trò 'student' cho TẤT CẢ tài khoản học sinh
+INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro)
+SELECT 
+    CONCAT('HS', MaHocSinh) as TenDangNhap,
+    'student' as MaVaiTro
+FROM HocSinh
+ORDER BY MaHocSinh;
+
+SELECT 'Student roles assigned (500 roles)' AS Status;
 
 -- =====================================================================
 -- PHẦN 6: PHỤ HUYNH (500 phụ huynh)

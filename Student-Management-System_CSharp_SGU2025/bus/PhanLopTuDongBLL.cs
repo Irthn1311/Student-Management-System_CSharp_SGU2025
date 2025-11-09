@@ -102,8 +102,9 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 }
 
                 // 3. LẤY DỮ LIỆU CẦN THIẾT
+                // Lấy học sinh "Đang học" HOẶC "Nghỉ học" (cho phép phân lớp)
                 List<HocSinhDTO> danhSachHocSinhDangHoc = hocSinhBLL.GetAllHocSinh()
-                    .Where(hs => hs.TrangThai == "Đang học")
+                    .Where(hs => hs.TrangThai == "Đang học" || hs.TrangThai == "Nghỉ học")
                     .ToList();
                 List<(int maHocSinh, int maLop, int maHocKy)> allPhanLopHist = phanLopBLL.GetAllPhanLop();
                 List<LopDTO> allLop = lopHocBUS.DocDSLop();
@@ -123,7 +124,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     // KỊCH BẢN 1: HK1 → HK2 (COPY VỚI KIỂM TRA ĐỦ DỮ LIỆU)
                     // =================================================================
                     Console.WriteLine("\n╔══════════════════════════════════════════════════════════╗");
-                    Console.WriteLine("║   KỊCH BẢN 1: HK1 → HK2 (Giữ nguyên lớp)               ║");
+                    Console.WriteLine("║   KỊCH BẢN 1: HK1 → HK2 (Giữ nguyên lớp)                ║");
                     Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
 
                     // ✅ SỬA: Lấy TẤT CẢ học sinh "Đang học" (không cần kiểm tra đã phân lớp HK1)
@@ -1070,8 +1071,9 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 }
 
                 // 3. LẤY DỮ LIỆU
+                // Lấy học sinh "Đang học" HOẶC "Nghỉ học" (cho phép phân lớp)
                 List<HocSinhDTO> danhSachHocSinhDangHoc = hocSinhBLL.GetAllHocSinh()
-                    .Where(hs => hs.TrangThai == "Đang học")
+                    .Where(hs => hs.TrangThai == "Đang học" || hs.TrangThai == "Nghỉ học")
                     .ToList();
 
                 List<(int maHocSinh, int maLop, int maHocKy)> allPhanLopHist = phanLopBLL.GetAllPhanLop();
