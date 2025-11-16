@@ -3,18 +3,18 @@ using System.Text;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
-    internal class HanhKiem
+    internal class HanhKiemDTO
     {
         // Fields (Thuộc tính cơ bản)
-        private string maHocSinh;
+        private int maHocSinh;
         private int maHocKy;
         private string xepLoai;
         private string nhanXet;
 
         // Constructors (Hàm khởi tạo)
-        public HanhKiem() { }
+        public HanhKiemDTO() { }
 
-        public HanhKiem(string maHocSinh, int maHocKy, string xepLoai, string nhanXet)
+        public HanhKiemDTO(int maHocSinh, int maHocKy, string xepLoai, string nhanXet)
         {
             this.MaHocSinh = maHocSinh;
             this.MaHocKy = maHocKy;
@@ -23,25 +23,26 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         }
 
         // Destructor (Hàm hủy)
-        ~HanhKiem()
+        ~HanhKiemDTO()
         {
-            // Console.WriteLine("Huy doi tuong HanhKiem");
+            // Console.WriteLine("Huy doi tuong HanhKiemDTO");
         }
 
         // Properties (Thuộc tính)
-        public string MaHocSinh
+        public int MaHocSinh
         {
             get { return maHocSinh; }
             set
             {
-                if (!string.IsNullOrEmpty(value))
+                // int is a value type and cannot be null or empty, so just check for a valid value (e.g., > 0)
+                if (value > 0)
                 {
                     maHocSinh = value;
                 }
                 else
                 {
                     // Logic xử lý lỗi: In ra console (Giống ví dụ KhoiLop)
-                    Console.WriteLine("Ma hoc sinh khong duoc de trong.");
+                    Console.WriteLine("Ma hoc sinh phai lon hon 0.");
                 }
             }
         }

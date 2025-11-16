@@ -1,79 +1,173 @@
-﻿using Student_Management_System_CSharp_SGU2025.DAO;
+﻿// HanhKiemBUS.cs
+using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
     internal class HanhKiemBUS
     {
-        private HanhKiemDAO hanhKiemDAO = new HanhKiemDAO();
-        // Danh sách xếp loại hợp lệ theo yêu cầu
-        private readonly List<string> XepLoaiHopLe = new List<string> { "Tốt", "Khá", "TB", "Yếu" };
+        private HanhKiemDAO hanhKiemDAO;
+        private KhenThuongKyLuatDAO ktklDAO;
+        private XepLoaiDAO xepLoaiDAO;
 
-        // === 1. Hiển thị: Đọc Danh Sách Hạnh Kiểm (Đầy đủ) ===
-        public List<HanhKiem> DocDSHanhKiem()
+        public HanhKiemBUS()
         {
-            // Gọi hàm JOIN từ DAO để lấy danh sách đầy đủ (HK + Tên HS + Tên HK)
-            return hanhKiemDAO.DocDSHanhKiemDayDu();
+            hanhKiemDAO = new HanhKiemDAO();
+            ktklDAO = new KhenThuongKyLuatDAO();
+            xepLoaiDAO = new XepLoaiDAO();
         }
 
-        // === 2. CRUD + Validate: Thêm Hạnh Kiểm ===
-        public string ThemHanhKiem(HanhKiem hk)
+        public string TinhHanhKiemTuDong(int maHocSinh, int maHocKy)
         {
-            // Validation 1: Dữ liệu cơ bản
-            if (string.IsNullOrEmpty(hk.MaHocSinh) || hk.MaHocKy <= 0)
+            try
             {
-                return "Mã học sinh và Mã học kỳ không được để trống.";
-            }
+                // Lấy học lực - NHANH HƠN vì không query toàn bộ
+                string hocLuc = LayHocLucHocSinh(maHocSinh, maHocKy);
 
-            // Validation 2: Xếp loại hợp lệ
-            if (!XepLoaiHopLe.Contains(hk.XepLoai))
-            {
-                return "Xếp loại phải là 'Tốt', 'Khá', 'TB', hoặc 'Yếu'.";
-            }
+                // Nếu chưa có học lực thì BỎ QUA LUÔN
+                if (string.IsNullOrEmpty(hocLuc))
+                {
+                    return "";
+                }
 
-            // Logic nghiệp vụ: Kiểm tra xem hạnh kiểm này đã tồn tại chưa
-            if (hanhKiemDAO.LayHanhKiemTheoKey(hk.MaHocSinh, hk.MaHocKy) != null)
-            {
-                return "Hạnh kiểm cho học kỳ này đã tồn tại. Vui lòng dùng chức năng Sửa.";
-            }
+                // Lấy mức kỷ luật cao nhất (chỉ tính kỷ luật đã duyệt)
+                string mucKyLuatCaoNhat = LayMucKyLuatCaoNhat(maHocSinh, maHocKy);
 
-            if (hanhKiemDAO.ThemHanhKiem(hk))
-            {
-                return "Thêm hạnh kiểm thành công.";
+                // Áp dụng logic xếp loại
+                return XepLoaiHanhKiem(hocLuc, mucKyLuatCaoNhat);
             }
-            return "Thêm hạnh kiểm thất bại.";
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi tính hạnh kiểm tự động: " + ex.Message);
+                return "";
+            }
+        }
+        private string LayHocLucHocSinh(int maHocSinh, int maHocKy)
+        {
+            try
+            {
+                // TỐI ƯU: Query trực tiếp 1 học sinh thay vì lấy toàn bộ danh sách
+                List<XepLoaiDTO> dsXepLoai = xepLoaiDAO.GetDanhSachXepLoai(maHocKy, null);
+                XepLoaiDTO xepLoai = dsXepLoai.FirstOrDefault(x => x.MaHocSinh == maHocSinh);
+
+                if (xepLoai != null && !string.IsNullOrEmpty(xepLoai.HocLuc))
+                {
+                    return xepLoai.HocLuc;
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        // === 3. CRUD + Validate: Cập nhật Hạnh Kiểm ===
-        public string CapNhatHanhKiem(HanhKiem hk)
+        /// <summary>
+        /// Lấy mức kỷ luật cao nhất của học sinh trong học kỳ (CHỈ TÍNH KỶ LUẬT ĐÃ DUYỆT)
+        /// </summary>
+        private string LayMucKyLuatCaoNhat(int maHocSinh, int maHocKy)
         {
-            // Validation 1: Key
-            if (string.IsNullOrEmpty(hk.MaHocSinh) || hk.MaHocKy <= 0)
+            try
             {
-                return "Mã học sinh và Mã học kỳ không hợp lệ.";
-            }
-            // Validation 2: Xếp loại hợp lệ
-            if (!XepLoaiHopLe.Contains(hk.XepLoai))
-            {
-                return "Xếp loại phải là 'Tốt', 'Khá', 'TB', hoặc 'Yếu'.";
-            }
+                // Lấy danh sách kỷ luật ĐÃ DUYỆT của học sinh trong học kỳ
+                List<KhenThuongKyLuatDTO> dsKyLuat = ktklDAO.LayDanhSachKyLuatDaDuyet(maHocSinh, maHocKy);
 
-            if (hanhKiemDAO.CapNhatHanhKiem(hk))
-            {
-                return "Cập nhật hạnh kiểm thành công.";
+                if (dsKyLuat.Count == 0)
+                    return null;
+
+                // Tìm mức kỷ luật cao nhất theo thứ tự: Kỷ luật > Khiển trách > Cảnh cáo > Nhắc nhở
+                if (dsKyLuat.Any(kl => kl.MucXuLy != null && kl.MucXuLy.Contains("Kỷ luật")))
+                    return "Kỷ luật";
+
+                if (dsKyLuat.Any(kl => kl.MucXuLy != null && kl.MucXuLy.Contains("Khiển trách")))
+                    return "Khiển trách";
+
+                if (dsKyLuat.Any(kl => kl.MucXuLy != null && kl.MucXuLy.Contains("Cảnh cáo")))
+                    return "Cảnh cáo";
+
+                if (dsKyLuat.Any(kl => kl.MucXuLy != null && kl.MucXuLy.Contains("Nhắc nhở")))
+                    return "Nhắc nhở";
+
+                return null;
             }
-            return "Cập nhật hạnh kiểm thất bại.";
+            catch
+            {
+                return null;
+            }
         }
 
-        // === 4. CRUD: Xóa Hạnh Kiểm ===
-        public string XoaHanhKiem(string maHocSinh, int maHocKy)
+        /// <summary>
+        /// Logic xếp loại hạnh kiểm dựa trên học lực và kỷ luật
+        /// </summary>
+        private string XepLoaiHanhKiem(string hocLuc, string mucKyLuat)
         {
-            if (hanhKiemDAO.XoaHanhKiem(maHocSinh, maHocKy))
+            // Mức kỷ luật cao nhất -> Yếu
+            if (mucKyLuat == "Kỷ luật")
+                return "Yếu";
+            // Nếu có mức khiển trách -> Yếu
+            if (mucKyLuat == "Khiển trách")
+                return "Trung bình";
+
+            // Nếu có mức cảnh cáo -> Trung bình
+            if (mucKyLuat == "Cảnh cáo")
+                return "Khá";
+
+            // Nếu có mức nhắc nhở hoặc không vi phạm
+            if (mucKyLuat == "Nhắc nhở" || string.IsNullOrEmpty(mucKyLuat))
             {
-                return "Xóa hạnh kiểm thành công.";
+                // Học lực Giỏi -> Tốt
+                if (hocLuc == "Giỏi")
+                    return "Tốt";
+
+                // Học lực Khá -> Khá
+                if (hocLuc == "Khá")
+                    return "Tốt";
+
+                // Học lực Trung bình, không vi phạm -> Khá
+                if (hocLuc == "Trung bình" && string.IsNullOrEmpty(mucKyLuat))
+                    return "Khá";
+
+                // Học lực Trung bình, có nhắc nhở -> Khá
+                if (hocLuc == "Trung bình" && mucKyLuat == "Nhắc nhở")
+                    return "Khá";
+
+                // Học lực Yếu hoặc Kém, không vi phạm -> Trung bình
+                if (hocLuc == "Yếu")
+                    return "Trung bình";
+
+                // Học lực Trung bình, có nhắc nhở -> Khá
+                if (hocLuc == "Yếu" && mucKyLuat == "Khiển trách")
+                    return "Yếu";
+
+                // Học lực Yếu hoặc Kém, có nhắc nhở -> Trung bình
+                if ( hocLuc == "Kém")
+                    return "Yếu";
             }
-            return "Xóa hạnh kiểm thất bại.";
+
+            // Mặc định -> Khá
+            return "Khá";
+        }
+
+        /// <summary>
+        /// Lưu hạnh kiểm
+        /// </summary>
+        public bool LuuHanhKiem(HanhKiemDTO hk)
+        {
+            return hanhKiemDAO.LuuHanhKiem(hk);
+        }
+
+        /// <summary>
+        /// Lấy hoặc tạo mới hạnh kiểm
+        /// </summary>
+        public HanhKiemDTO LayHanhKiem(int maHocSinh, int maHocKy)
+        {
+
+            return hanhKiemDAO.LayHanhKiem(maHocSinh, maHocKy);
+
         }
     }
 }

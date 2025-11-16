@@ -54,61 +54,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
         {
             try
             {
-                // Tạm thời tắt event để tránh trigger
+                // Tắt event
                 cbLop.SelectedIndexChanged -= cbLop_SelectedIndexChanged;
                 cbHocSinh.SelectedIndexChanged -= cbHocSinh_SelectedIndexChanged;
                 cbHocKy.SelectedIndexChanged -= cbHocKy_SelectedIndexChanged;
                 cbMonHoc.SelectedIndexChanged -= cbMonHoc_SelectedIndexChanged;
 
-                // Load danh sách lớp
-                LoadDanhSachLop();
-
-                // Chọn lớp theo MaLop
-                if (maLop.HasValue && maLop.Value > 0)
-                {
-                    for (int i = 0; i < cbLop.Items.Count; i++)
-                    {
-                        var item = cbLop.Items[i];
-                        // Sử dụng reflection để lấy giá trị MaLop
-                        var maLopProperty = item.GetType().GetProperty("MaLop");
-                        if (maLopProperty != null)
-                        {
-                            int itemMaLop = (int)maLopProperty.GetValue(item);
-                            if (itemMaLop == maLop.Value)
-                            {
-                                cbLop.SelectedIndex = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                // Load học sinh theo lớp
-                if (maLop.HasValue && maLop.Value > 0)
-                {
-                    LoadDanhSachHocSinh(maLop.Value);
-                }
-
-                // Chọn học sinh theo MaHocSinh
-                for (int i = 0; i < cbHocSinh.Items.Count; i++)
-                {
-                    var item = cbHocSinh.Items[i];
-                    if (item.ToString() == "-- Chọn học sinh --") continue;
-
-                    // Sử dụng reflection để lấy Value
-                    var valueProperty = item.GetType().GetProperty("Value");
-                    if (valueProperty != null)
-                    {
-                        string itemMaHS = valueProperty.GetValue(item)?.ToString();
-                        if (itemMaHS == maHocSinh)
-                        {
-                            cbHocSinh.SelectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-
-                // Load và chọn học kỳ
+                // Load và chọn học kỳ TRƯỚC
                 LoadDanhSachHocKy();
                 for (int i = 0; i < cbHocKy.Items.Count; i++)
                 {
@@ -126,6 +78,51 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                                 cbHocKy.SelectedIndex = i;
                                 break;
                             }
+                        }
+                    }
+                }
+
+                // Load danh sách lớp theo học kỳ
+                LoadDanhSachLop(maHocKy);
+
+                // Chọn lớp
+                if (maLop.HasValue && maLop.Value > 0)
+                {
+                    for (int i = 0; i < cbLop.Items.Count; i++)
+                    {
+                        var item = cbLop.Items[i];
+                        var maLopProperty = item.GetType().GetProperty("MaLop");
+                        if (maLopProperty != null)
+                        {
+                            int itemMaLop = (int)maLopProperty.GetValue(item);
+                            if (itemMaLop == maLop.Value)
+                            {
+                                cbLop.SelectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Load và chọn học sinh
+                if (maLop.HasValue && maLop.Value > 0)
+                {
+                    LoadDanhSachHocSinh(maLop.Value, maHocKy);
+                }
+
+                for (int i = 0; i < cbHocSinh.Items.Count; i++)
+                {
+                    var item = cbHocSinh.Items[i];
+                    if (item.ToString() == "-- Chọn học sinh --") continue;
+
+                    var valueProperty = item.GetType().GetProperty("Value");
+                    if (valueProperty != null)
+                    {
+                        string itemMaHS = valueProperty.GetValue(item)?.ToString();
+                        if (itemMaHS == maHocSinh)
+                        {
+                            cbHocSinh.SelectedIndex = i;
+                            break;
                         }
                     }
                 }
@@ -190,19 +187,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
         {
             try
             {
-                // Load danh sách lớp
-                LoadDanhSachLop();
+                // Load học kỳ TRƯỚC TIÊN
+                LoadDanhSachHocKy();
 
-                // Vô hiệu hóa các controls khác cho đến khi chọn lớp
+                // Vô hiệu hóa các controls khác cho đến khi chọn học kỳ
+                cbLop.Enabled = false;
                 cbHocSinh.Enabled = false;
-                cbHocKy.Enabled = false;
                 cbMonHoc.Enabled = false;
                 txtDiemTX.Enabled = false;
                 txtDiemGK.Enabled = false;
                 txtDiemCK.Enabled = false;
                 btnLuu.Enabled = false;
 
+                // Thêm placeholder cho các combobox
+                cbLop.Items.Clear();
+                cbLop.Items.Add("-- Chọn học kỳ trước --");
                 cbLop.SelectedIndex = 0;
+
+                cbHocSinh.Items.Clear();
+                cbHocSinh.Items.Add("-- Chọn học kỳ trước --");
+                cbHocSinh.SelectedIndex = 0;
+
+                cbMonHoc.Items.Clear();
+                cbMonHoc.Items.Add("-- Chọn học kỳ trước --");
+                cbMonHoc.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -210,12 +218,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private void LoadDanhSachLop()
+        /// <summary>
+        /// Load danh sách lớp theo học kỳ đã chọn
+        /// </summary>
+        private void LoadDanhSachLop(int maHocKy)
         {
             try
             {
-                List<LopDTO> danhSachLop = themDiemBUS.GetDanhSachLop();
+                List<LopDTO> danhSachLop = themDiemBUS.GetDanhSachLopTheoHocKy(maHocKy);
 
                 var listForBinding = new List<object>();
                 listForBinding.Add(new { TenLop = "-- Chọn lớp học --", MaLop = -1 });
@@ -231,17 +241,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tải dữ liệu: " + ex.Message,
+                MessageBox.Show("Lỗi khi tải danh sách lớp: " + ex.Message,
                                 "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
 
-        private void LoadDanhSachHocSinh(int maLop)
+        private void LoadDanhSachHocSinh(int maLop, int maHocKy)
         {
             try
             {
-                List<HocSinhDTO> danhSachHS = themDiemBUS.GetHocSinhTheoLop(maLop);
+                List<HocSinhDTO> danhSachHS = themDiemBUS.GetHocSinhTheoLopVaHocKy(maLop, maHocKy);
 
                 cbHocSinh.DataSource = null;
                 cbHocSinh.Items.Clear();
@@ -249,10 +259,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
 
                 foreach (var hs in danhSachHS)
                 {
-                    //string displayText = $"{hs.MaHocSinh} - {hs.HoTen}";
-                    //cbHocSinh.Items.Add(new { Text = displayText, Value = hs.MaHocSinh });
                     string displayText = $"{hs.MaHocSinh} - {hs.HoTen}";
-                    // Thay đổi: Lưu MaHocSinh dạng string (đã là string từ DTO)
                     cbHocSinh.Items.Add(new { Text = displayText, Value = hs.MaHocSinh });
                 }
 
@@ -344,29 +351,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                 if (!int.TryParse(cbLop.SelectedValue.ToString(), out maLop))
                     return;
 
-                if (maLop > 0)
+                if (maLop > 0 && cbHocKy.SelectedIndex > 0)
                 {
-                    LoadDanhSachHocSinh(maLop);
-                    LoadDanhSachHocKy();
-                    LoadDanhSachMonHoc();
+                    // Lấy mã học kỳ
+                    var hocKyItem = cbHocKy.SelectedItem;
+                    var valueProperty = hocKyItem.GetType().GetProperty("Value");
 
-                    cbHocSinh.Enabled = true;
-                    cbHocKy.Enabled = true;
-                    cbMonHoc.Enabled = true;
+                    if (valueProperty != null)
+                    {
+                        int maHocKy = Convert.ToInt32(valueProperty.GetValue(hocKyItem));
+                        LoadDanhSachHocSinh(maLop, maHocKy);
+                        cbHocSinh.Enabled = true;
+                    }
                 }
                 else
                 {
                     cbHocSinh.Enabled = false;
-                    cbHocKy.Enabled = false;
-                    cbMonHoc.Enabled = false;
                     txtDiemTX.Enabled = false;
                     txtDiemGK.Enabled = false;
                     txtDiemCK.Enabled = false;
                     btnLuu.Enabled = false;
 
                     cbHocSinh.Items.Clear();
-                    cbHocKy.Items.Clear();
-                    cbMonHoc.Items.Clear();
                     ClearDiemInputs();
                 }
             }
@@ -386,8 +392,32 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
 
         private void cbHocKy_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Có thể thêm logic kiểm tra điểm đã có hay chưa
-            CheckEnableDiemInput();
+            if (cbHocKy.SelectedIndex <= 0) return;
+
+            var selectedItem = cbHocKy.SelectedItem;
+            var valueProperty = selectedItem.GetType().GetProperty("Value");
+
+            if (valueProperty != null)
+            {
+                object valueObj = valueProperty.GetValue(selectedItem);
+                if (valueObj != null && int.TryParse(valueObj.ToString(), out int maHocKy))
+                {
+                    // Load danh sách lớp theo học kỳ
+                    LoadDanhSachLop(maHocKy);
+                    LoadDanhSachMonHoc();
+
+                    // Enable các combobox
+                    cbLop.Enabled = true;
+                    cbMonHoc.Enabled = true;
+
+                    // Reset các control khác
+                    cbHocSinh.Enabled = false;
+                    txtDiemTX.Enabled = false;
+                    txtDiemGK.Enabled = false;
+                    txtDiemCK.Enabled = false;
+                    btnLuu.Enabled = false;
+                }
+            }
 
         }
 
@@ -724,10 +754,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
 
                     if (success)
                     {
-                        //MessageBox.Show("Lưu điểm thành công!", "Thông báo",
-                        //               MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        //ClearDiemInputs();
-                        //cbHocSinh.SelectedIndex = 0;
 
                         MessageBox.Show("Lưu điểm thành công!", "Thông báo",
                            MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -796,4 +822,3 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
         }
     }
 }
-

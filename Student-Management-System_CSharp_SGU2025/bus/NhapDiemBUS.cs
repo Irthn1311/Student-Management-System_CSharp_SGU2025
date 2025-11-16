@@ -284,5 +284,20 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             }
         }
 
+        /// <summary>
+        /// Lấy danh sách lớp theo học kỳ
+        /// </summary>
+        public List<LopDTO> GetDanhSachLopTheoHocKy(int maHocKy)
+        {
+            try
+            {
+                return lopDAO.GetDanhSachLopTheoHocKy(maHocKy);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy danh sách lớp theo học kỳ: " + ex.Message);
+            }
+        }
+
     }
 }

@@ -31,36 +31,26 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.headerHanhKiem = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.btnLuuHanhKiem = new Guna.UI2.WinForms.Guna2Button();
-            this.paneltrong = new System.Windows.Forms.Panel();
             this.tableHanhKiem = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.statCarHanhKiemTot = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardHanhKiemKha = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.maHS = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hoTen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lop = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hocKi = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.xepLoai = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nhanXet = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panelTrong = new System.Windows.Forms.Panel();
             this.statCardHanhKiemTrungBinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardHanhKiemYeu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardChuaDanhGiaHanhKiem = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardHanhKiemKha = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardHanhKiemYeu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCarHanhKiemTot = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.headerHanhKiem = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
+            this.btnXepHanhKiemTuDong = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.tableHanhKiem)).BeginInit();
             this.SuspendLayout();
-            // 
-            // headerHanhKiem
-            // 
-            this.headerHanhKiem.BackColor = System.Drawing.Color.White;
-            this.headerHanhKiem.Location = new System.Drawing.Point(0, 0);
-            this.headerHanhKiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.headerHanhKiem.Name = "headerHanhKiem";
-            this.headerHanhKiem.Size = new System.Drawing.Size(872, 0);
-            this.headerHanhKiem.TabIndex = 0;
-            this.headerHanhKiem.Visible = false;
-            this.headerHanhKiem.Load += new System.EventHandler(this.headerHanhKiem_Load);
             // 
             // cbHocKyNamHoc
             // 
@@ -78,7 +68,7 @@
             "Học Kỳ II - 2023 - 2024",
             "Học Kỳ I - 2024 - 2025",
             "Học Kỳ II - 2024 - 2025"});
-            this.cbHocKyNamHoc.Location = new System.Drawing.Point(28, 15);
+            this.cbHocKyNamHoc.Location = new System.Drawing.Point(36, 29);
             this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
             this.cbHocKyNamHoc.Size = new System.Drawing.Size(230, 36);
@@ -100,7 +90,7 @@
             "Tất cả lớp",
             "Lớp 6A1",
             "Lớp 7A2"});
-            this.cbLop.Location = new System.Drawing.Point(293, 15);
+            this.cbLop.Location = new System.Drawing.Point(310, 29);
             this.cbLop.Margin = new System.Windows.Forms.Padding(2);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(161, 36);
@@ -120,20 +110,13 @@
             this.btnLuuHanhKiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnLuuHanhKiem.ForeColor = System.Drawing.Color.White;
             this.btnLuuHanhKiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.diskette;
-            this.btnLuuHanhKiem.Location = new System.Drawing.Point(950, 826);
+            this.btnLuuHanhKiem.Location = new System.Drawing.Point(948, 812);
             this.btnLuuHanhKiem.Margin = new System.Windows.Forms.Padding(2);
             this.btnLuuHanhKiem.Name = "btnLuuHanhKiem";
-            this.btnLuuHanhKiem.Size = new System.Drawing.Size(186, 37);
+            this.btnLuuHanhKiem.Size = new System.Drawing.Size(186, 39);
             this.btnLuuHanhKiem.TabIndex = 27;
             this.btnLuuHanhKiem.Text = "Lưu hạnh kiểm";
             this.btnLuuHanhKiem.Click += new System.EventHandler(this.btnLuuHanhKiem_Click);
-            // 
-            // paneltrong
-            // 
-            this.paneltrong.Location = new System.Drawing.Point(248, 817);
-            this.paneltrong.Name = "paneltrong";
-            this.paneltrong.Size = new System.Drawing.Size(200, 64);
-            this.paneltrong.TabIndex = 28;
             // 
             // tableHanhKiem
             // 
@@ -150,12 +133,12 @@
             this.tableHanhKiem.ColumnHeadersHeight = 18;
             this.tableHanhKiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tableHanhKiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Column2,
-            this.Column3,
-            this.Column4,
-            this.Column5,
-            this.Column6});
+            this.maHS,
+            this.hoTen,
+            this.lop,
+            this.hocKi,
+            this.xepLoai,
+            this.nhanXet});
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -165,13 +148,13 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableHanhKiem.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableHanhKiem.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableHanhKiem.Location = new System.Drawing.Point(28, 372);
+            this.tableHanhKiem.Location = new System.Drawing.Point(17, 236);
             this.tableHanhKiem.Margin = new System.Windows.Forms.Padding(2);
             this.tableHanhKiem.Name = "tableHanhKiem";
             this.tableHanhKiem.RowHeadersVisible = false;
             this.tableHanhKiem.RowHeadersWidth = 51;
             this.tableHanhKiem.RowTemplate.Height = 24;
-            this.tableHanhKiem.Size = new System.Drawing.Size(1119, 430);
+            this.tableHanhKiem.Size = new System.Drawing.Size(1117, 548);
             this.tableHanhKiem.TabIndex = 29;
             this.tableHanhKiem.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableHanhKiem.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -194,105 +177,149 @@
             this.tableHanhKiem.ThemeStyle.RowsStyle.Height = 24;
             this.tableHanhKiem.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tableHanhKiem.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this.tableHanhKiem.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tableHanhKiem_CellContentClick);
             // 
-            // Column1
+            // maHS
             // 
-            this.Column1.HeaderText = "Mã Hạnh Kiểm";
-            this.Column1.MinimumWidth = 6;
-            this.Column1.Name = "Column1";
+            this.maHS.HeaderText = "Mã HS";
+            this.maHS.Name = "maHS";
             // 
-            // Column2
+            // hoTen
             // 
-            this.Column2.HeaderText = "Họ và Tên";
-            this.Column2.MinimumWidth = 6;
-            this.Column2.Name = "Column2";
+            this.hoTen.HeaderText = "Họ và Tên";
+            this.hoTen.MinimumWidth = 6;
+            this.hoTen.Name = "hoTen";
             // 
-            // Column3
+            // lop
             // 
-            this.Column3.HeaderText = "Lớp";
-            this.Column3.MinimumWidth = 6;
-            this.Column3.Name = "Column3";
+            this.lop.HeaderText = "Lớp";
+            this.lop.MinimumWidth = 6;
+            this.lop.Name = "lop";
             // 
-            // Column4
+            // hocKi
             // 
-            this.Column4.HeaderText = "Học Kì";
-            this.Column4.MinimumWidth = 6;
-            this.Column4.Name = "Column4";
+            this.hocKi.HeaderText = "Học Kì";
+            this.hocKi.MinimumWidth = 6;
+            this.hocKi.Name = "hocKi";
             // 
-            // Column5
+            // xepLoai
             // 
-            this.Column5.HeaderText = "Xếp Loại";
-            this.Column5.MinimumWidth = 6;
-            this.Column5.Name = "Column5";
+            this.xepLoai.HeaderText = "Xếp Loại";
+            this.xepLoai.MinimumWidth = 6;
+            this.xepLoai.Name = "xepLoai";
             // 
-            // Column6
+            // nhanXet
             // 
-            this.Column6.HeaderText = "Nhận Xét";
-            this.Column6.MinimumWidth = 6;
-            this.Column6.Name = "Column6";
+            this.nhanXet.HeaderText = "Nhận Xét";
+            this.nhanXet.MinimumWidth = 6;
+            this.nhanXet.Name = "nhanXet";
             // 
-            // statCarHanhKiemTot
+            // panelTrong
             // 
-            this.statCarHanhKiemTot.BackColor = System.Drawing.Color.Transparent;
-            this.statCarHanhKiemTot.Location = new System.Drawing.Point(28, 68);
-            this.statCarHanhKiemTot.Margin = new System.Windows.Forms.Padding(2);
-            this.statCarHanhKiemTot.Name = "statCarHanhKiemTot";
-            this.statCarHanhKiemTot.Size = new System.Drawing.Size(262, 136);
-            this.statCarHanhKiemTot.TabIndex = 30;
-            // 
-            // statCardHanhKiemKha
-            // 
-            this.statCardHanhKiemKha.BackColor = System.Drawing.Color.Transparent;
-            this.statCardHanhKiemKha.Location = new System.Drawing.Point(451, 68);
-            this.statCardHanhKiemKha.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardHanhKiemKha.Name = "statCardHanhKiemKha";
-            this.statCardHanhKiemKha.Size = new System.Drawing.Size(262, 136);
-            this.statCardHanhKiemKha.TabIndex = 30;
+            this.panelTrong.Location = new System.Drawing.Point(566, 843);
+            this.panelTrong.Name = "panelTrong";
+            this.panelTrong.Size = new System.Drawing.Size(200, 22);
+            this.panelTrong.TabIndex = 31;
             // 
             // statCardHanhKiemTrungBinh
             // 
             this.statCardHanhKiemTrungBinh.BackColor = System.Drawing.Color.Transparent;
-            this.statCardHanhKiemTrungBinh.Location = new System.Drawing.Point(885, 68);
+            this.statCardHanhKiemTrungBinh.Location = new System.Drawing.Point(704, 80);
             this.statCardHanhKiemTrungBinh.Margin = new System.Windows.Forms.Padding(2);
             this.statCardHanhKiemTrungBinh.Name = "statCardHanhKiemTrungBinh";
-            this.statCardHanhKiemTrungBinh.Size = new System.Drawing.Size(262, 136);
+            this.statCardHanhKiemTrungBinh.Size = new System.Drawing.Size(205, 136);
             this.statCardHanhKiemTrungBinh.TabIndex = 30;
-            // 
-            // statCardHanhKiemYeu
-            // 
-            this.statCardHanhKiemYeu.BackColor = System.Drawing.Color.Transparent;
-            this.statCardHanhKiemYeu.Location = new System.Drawing.Point(235, 223);
-            this.statCardHanhKiemYeu.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardHanhKiemYeu.Name = "statCardHanhKiemYeu";
-            this.statCardHanhKiemYeu.Size = new System.Drawing.Size(262, 136);
-            this.statCardHanhKiemYeu.TabIndex = 30;
             // 
             // statCardChuaDanhGiaHanhKiem
             // 
             this.statCardChuaDanhGiaHanhKiem.BackColor = System.Drawing.Color.Transparent;
-            this.statCardChuaDanhGiaHanhKiem.Location = new System.Drawing.Point(666, 223);
+            this.statCardChuaDanhGiaHanhKiem.Location = new System.Drawing.Point(929, 80);
             this.statCardChuaDanhGiaHanhKiem.Margin = new System.Windows.Forms.Padding(2);
             this.statCardChuaDanhGiaHanhKiem.Name = "statCardChuaDanhGiaHanhKiem";
-            this.statCardChuaDanhGiaHanhKiem.Size = new System.Drawing.Size(262, 136);
+            this.statCardChuaDanhGiaHanhKiem.Size = new System.Drawing.Size(205, 136);
             this.statCardChuaDanhGiaHanhKiem.TabIndex = 30;
+            // 
+            // statCardHanhKiemKha
+            // 
+            this.statCardHanhKiemKha.BackColor = System.Drawing.Color.Transparent;
+            this.statCardHanhKiemKha.Location = new System.Drawing.Point(473, 80);
+            this.statCardHanhKiemKha.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardHanhKiemKha.Name = "statCardHanhKiemKha";
+            this.statCardHanhKiemKha.Size = new System.Drawing.Size(214, 136);
+            this.statCardHanhKiemKha.TabIndex = 30;
+            // 
+            // statCardHanhKiemYeu
+            // 
+            this.statCardHanhKiemYeu.BackColor = System.Drawing.Color.Transparent;
+            this.statCardHanhKiemYeu.Location = new System.Drawing.Point(243, 80);
+            this.statCardHanhKiemYeu.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardHanhKiemYeu.Name = "statCardHanhKiemYeu";
+            this.statCardHanhKiemYeu.Size = new System.Drawing.Size(214, 136);
+            this.statCardHanhKiemYeu.TabIndex = 30;
+            this.statCardHanhKiemYeu.Load += new System.EventHandler(this.statCardHanhKiemYeu_Load);
+            // 
+            // statCarHanhKiemTot
+            // 
+            this.statCarHanhKiemTot.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(253)))), ((int)(((byte)(245)))));
+            this.statCarHanhKiemTot.Location = new System.Drawing.Point(17, 80);
+            this.statCarHanhKiemTot.Margin = new System.Windows.Forms.Padding(2);
+            this.statCarHanhKiemTot.Name = "statCarHanhKiemTot";
+            this.statCarHanhKiemTot.Size = new System.Drawing.Size(205, 136);
+            this.statCarHanhKiemTot.TabIndex = 30;
+            this.statCarHanhKiemTot.Load += new System.EventHandler(this.statCarHanhKiemTot_Load);
+            // 
+            // headerHanhKiem
+            // 
+            this.headerHanhKiem.BackColor = System.Drawing.Color.White;
+            this.headerHanhKiem.Location = new System.Drawing.Point(256, 310);
+            this.headerHanhKiem.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.headerHanhKiem.Name = "headerHanhKiem";
+            this.headerHanhKiem.Size = new System.Drawing.Size(872, 0);
+            this.headerHanhKiem.TabIndex = 0;
+            this.headerHanhKiem.Visible = false;
+            this.headerHanhKiem.Load += new System.EventHandler(this.headerHanhKiem_Load);
+            // 
+            // btnXepHanhKiemTuDong
+            // 
+            this.btnXepHanhKiemTuDong.BackColor = System.Drawing.Color.Transparent;
+            this.btnXepHanhKiemTuDong.BorderRadius = 5;
+            this.btnXepHanhKiemTuDong.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnXepHanhKiemTuDong.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnXepHanhKiemTuDong.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnXepHanhKiemTuDong.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnXepHanhKiemTuDong.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnXepHanhKiemTuDong.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnXepHanhKiemTuDong.ForeColor = System.Drawing.Color.White;
+            this.btnXepHanhKiemTuDong.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus8;
+            this.btnXepHanhKiemTuDong.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnXepHanhKiemTuDong.Location = new System.Drawing.Point(971, 29);
+            this.btnXepHanhKiemTuDong.Margin = new System.Windows.Forms.Padding(2);
+            this.btnXepHanhKiemTuDong.Name = "btnXepHanhKiemTuDong";
+            this.btnXepHanhKiemTuDong.Size = new System.Drawing.Size(163, 35);
+            this.btnXepHanhKiemTuDong.TabIndex = 32;
+            this.btnXepHanhKiemTuDong.Text = "Sắp xếp hạnh kiểm";
+            this.btnXepHanhKiemTuDong.Click += new System.EventHandler(this.btnXepHanhKiemTuDong_Click);
             // 
             // HanhKiem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.btnXepHanhKiemTuDong);
+            this.Controls.Add(this.panelTrong);
             this.Controls.Add(this.statCardHanhKiemTrungBinh);
             this.Controls.Add(this.statCardChuaDanhGiaHanhKiem);
             this.Controls.Add(this.statCardHanhKiemKha);
             this.Controls.Add(this.statCardHanhKiemYeu);
             this.Controls.Add(this.statCarHanhKiemTot);
-            this.Controls.Add(this.paneltrong);
             this.Controls.Add(this.tableHanhKiem);
             this.Controls.Add(this.btnLuuHanhKiem);
             this.Controls.Add(this.cbLop);
             this.Controls.Add(this.cbHocKyNamHoc);
             this.Controls.Add(this.headerHanhKiem);
             this.Margin = new System.Windows.Forms.Padding(2);
+            this.MaximumSize = new System.Drawing.Size(1168, 768);
+            this.MinimumSize = new System.Drawing.Size(1168, 768);
             this.Name = "HanhKiem";
             this.Size = new System.Drawing.Size(1151, 768);
             this.Load += new System.EventHandler(this.HanhKiem_Load);
@@ -307,18 +334,19 @@
         private Guna.UI2.WinForms.Guna2ComboBox cbHocKyNamHoc;
         private Guna.UI2.WinForms.Guna2ComboBox cbLop;
         private Guna.UI2.WinForms.Guna2Button btnLuuHanhKiem;
-        private System.Windows.Forms.Panel paneltrong;
         private Guna.UI2.WinForms.Guna2DataGridView tableHanhKiem;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
         private StatCardQuanLiHocSinh statCarHanhKiemTot;
         private StatCardQuanLiHocSinh statCardHanhKiemKha;
         private StatCardQuanLiHocSinh statCardHanhKiemTrungBinh;
         private StatCardQuanLiHocSinh statCardHanhKiemYeu;
         private StatCardQuanLiHocSinh statCardChuaDanhGiaHanhKiem;
+        private System.Windows.Forms.Panel panelTrong;
+        private System.Windows.Forms.DataGridViewTextBoxColumn maHS;
+        private System.Windows.Forms.DataGridViewTextBoxColumn hoTen;
+        private System.Windows.Forms.DataGridViewTextBoxColumn lop;
+        private System.Windows.Forms.DataGridViewTextBoxColumn hocKi;
+        private System.Windows.Forms.DataGridViewTextBoxColumn xepLoai;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nhanXet;
+        private Guna.UI2.WinForms.Guna2Button btnXepHanhKiemTuDong;
     }
 }

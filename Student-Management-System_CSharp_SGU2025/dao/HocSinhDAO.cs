@@ -516,6 +516,41 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
+        public HocSinhDTO LayHocSinhTheoMa(int maHocSinh)
+        {
+            string sql = "SELECT * FROM HocSinh WHERE MaHocSinh = @maHS";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maHS", maHocSinh);
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new HocSinhDTO
+                                {
+                                    MaHS = reader.GetInt32("MaHocSinh"),
+                                    HoTen = reader.GetString("HoTen"),
+                                    // Thêm các field khác nếu cần
+                                };
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return null;
+        }
+
         // --- Bạn có thể thêm các hàm tìm kiếm khác ở đây ---
         // Ví dụ: Tìm theo tên, tìm theo lớp (cần JOIN), ...
         // public List<HocSinhDTO> TimHocSinhTheoTen(string ten) { ... }
