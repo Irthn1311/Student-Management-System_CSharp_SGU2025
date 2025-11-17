@@ -329,5 +329,21 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 throw;
             }
         }
+
+        /// <summary>
+        /// Lấy tất cả xếp loại trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<XepLoaiDTO> GetAllXepLoai()
+        {
+            try
+            {
+                return xepLoaiDAO.GetAllXepLoai();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy tất cả xếp loại: " + ex.Message);
+            }
+        }
     }
 }

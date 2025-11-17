@@ -214,6 +214,19 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         // Bạn có thể thêm các hàm BLL khác nếu cần
         // Ví dụ: Tìm phụ huynh theo tên, SĐT
         // public List<PhuHuynhDTO> SearchPhuHuynhByName(string name) { ... }
-        // public PhuHuynhDTO GetPhuHuynhBySdt(string sdt) { ... }
+        // Lấy phụ huynh theo SĐT (nếu có)
+        public PhuHuynhDTO GetPhuHuynhBySdt(string sdt)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(sdt)) return null;
+                return phuHuynhDAO.TimPhuHuynhTheoSoDienThoai(sdt.Trim());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi BLL GetPhuHuynhBySdt: " + ex.Message);
+                throw;
+            }
+        }
     }
 }

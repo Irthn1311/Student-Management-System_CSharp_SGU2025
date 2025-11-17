@@ -79,5 +79,47 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
 
         }
+
+        private void btnLogout_Click_1(object sender, EventArgs e)
+        {
+            // Hiển thị hộp thoại xác nhận đăng xuất
+            DialogResult result = MessageBox.Show(
+                "Bạn có chắc chắn muốn đăng xuất?",
+                "Xác nhận đăng xuất",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    // Đóng MainForm hiện tại
+                    Form mainForm = this.FindForm();
+                    if (mainForm != null)
+                    {
+                        mainForm.Hide(); // Ẩn MainForm trước
+                        
+                        // Mở lại form đăng nhập
+                        FrmDangNhap loginForm = new FrmDangNhap();
+                        loginForm.FormClosed += (s, args) => 
+                        {
+                            // Khi form đăng nhập đóng, đóng luôn MainForm
+                            mainForm.Close();
+                        };
+                        loginForm.Show();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        $"Đã xảy ra lỗi khi đăng xuất:\n{ex.Message}",
+                        "Lỗi",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+            }
+        }
     }
 }

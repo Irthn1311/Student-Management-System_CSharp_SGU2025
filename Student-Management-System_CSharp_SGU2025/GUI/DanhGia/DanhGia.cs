@@ -1,4 +1,7 @@
 ﻿using Guna.UI2.WinForms;
+using Student_Management_System_CSharp_SGU2025.DAO;
+using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.BUS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,10 +12,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.IO;
+using ClosedXML.Excel;
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class DanhGia : UserControl
     {
+        private KhenThuongKyLuatDAO ktklDAO = new KhenThuongKyLuatDAO();
+        private HocSinhDAO hocSinhDAO = new HocSinhDAO();
+        private HocKyDAO hocKyDAO = new HocKyDAO();
+        private string searchKeyword = "";
+        private KhenThuongKyLuatBUS ktklBUS = new KhenThuongKyLuatBUS();
+        private int selectedMaHocKy = -1;
+        private int selectedMaLop = -1;
         public DanhGia()
         {
             InitializeComponent();
@@ -26,8 +38,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbKhenThuong.Visible = true;
             tbKyLuat.Visible = false;
 
-            btnAddKhen.Visible = true;
-            btnAddKyLuat.Visible = false;
+            btnAddDanhGia.Visible = true;
+         
 
             btnKhenThuong.FillColor = Color.FromArgb(32, 136, 225); // Khen thưởng active
             btnKhenThuong.ForeColor = Color.White;
@@ -58,6 +70,101 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             thongKeCard4.TieuDe2 = "28";
             thongKeCard4.TieuDe3 = "2.2% học sinh";
             thongKeCard4.FillColor = Color.FromArgb(239,68,68); // Đỏ
+
+            LoadHocKyComboBox();
+            LoadLopComboBox();
+            txtSearch.TextChanged += txtSearch_TextChanged;
+            ApplyFilter();
+
+        }
+
+        /// <summary>
+        /// Cập nhật thống kê cho 4 card
+        /// </summary>
+        private void CapNhatThongKe()
+        {
+            try
+            {
+                int maHocKyHienTai = selectedMaHocKy;
+
+                // Nếu chọn "Tất cả học kỳ", lấy học kỳ gần nhất
+                if (maHocKyHienTai == -1)
+                {
+                    List<HocKyDTO> dsHocKy = hocKyDAO.GetAllHocKy();
+                    if (dsHocKy.Count > 0)
+                    {
+                        maHocKyHienTai = dsHocKy[0].MaHocKy; // Lấy học kỳ đầu tiên (gần nhất)
+                    }
+                    else
+                    {
+                        // Không có học kỳ nào
+                        thongKeCard1.TieuDe2 = "0";
+                        thongKeCard2.TieuDe2 = "0";
+                        thongKeCard2.TieuDe3 = "0% tổng số";
+                        thongKeCard3.TieuDe2 = "0";
+                        thongKeCard3.TieuDe3 = "0% tổng số";
+                        thongKeCard4.TieuDe2 = "0";
+                        thongKeCard4.TieuDe3 = "0% học sinh";
+                        return;
+                    }
+                }
+
+                // 1. Tổng khen thưởng trong học kỳ
+                int tongKhenThuong = ktklDAO.DemKhenThuongTheoHocKy(maHocKyHienTai);
+                thongKeCard1.TieuDe2 = tongKhenThuong.ToString();
+
+                // 2. Cấp trường
+                int soCapTruong = ktklDAO.DemKhenThuongTheoCapVaHocKy("Cấp trường", maHocKyHienTai);
+                thongKeCard2.TieuDe2 = soCapTruong.ToString();
+
+                // Tính % cấp trường trên tổng khen thưởng
+                if (tongKhenThuong > 0)
+                {
+                    double phanTramCapTruong = (double)soCapTruong / tongKhenThuong * 100;
+                    thongKeCard2.TieuDe3 = $"{phanTramCapTruong:F0}% tổng số";
+                }
+                else
+                {
+                    thongKeCard2.TieuDe3 = "0% tổng số";
+                }
+
+                // 3. Cấp tỉnh
+                int soCapTinh = ktklDAO.DemKhenThuongTheoCapVaHocKy("Cấp tỉnh", maHocKyHienTai);
+                thongKeCard3.TieuDe2 = soCapTinh.ToString();
+
+                // Tính % cấp tỉnh trên tổng khen thưởng
+                if (tongKhenThuong > 0)
+                {
+                    double phanTramCapTinh = (double)soCapTinh / tongKhenThuong * 100;
+                    thongKeCard3.TieuDe3 = $"{phanTramCapTinh:F0}% tổng số";
+                }
+                else
+                {
+                    thongKeCard3.TieuDe3 = "0% tổng số";
+                }
+
+                // 4. Vi phạm kỷ luật (đếm số HỌC SINH vi phạm, không phải số lần vi phạm)
+                int soHocSinhViPham = ktklDAO.DemHocSinhKyLuatTheoHocKy(maHocKyHienTai);
+                int tongHocSinh = ktklDAO.DemTongHocSinhTheoHocKy(maHocKyHienTai);
+
+                thongKeCard4.TieuDe2 = soHocSinhViPham.ToString();
+
+                // Tính % học sinh vi phạm trên tổng học sinh
+                if (tongHocSinh > 0)
+                {
+                    double phanTramViPham = (double)soHocSinhViPham / tongHocSinh * 100;
+                    thongKeCard4.TieuDe3 = $"{phanTramViPham:F1}% học sinh";
+                }
+                else
+                {
+                    thongKeCard4.TieuDe3 = "0% học sinh";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi cập nhật thống kê: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // 🌸 Hàm thiết kế giao diện cho bảng khen thưởng
@@ -72,7 +179,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbKhenThuong.Columns.Add("hoTen", "Họ và tên");
             tbKhenThuong.Columns.Add("thanhTich", "Thành tích");
             tbKhenThuong.Columns.Add("capKhen", "Cấp khen");
-            tbKhenThuong.Columns.Add("ngay", "Ngày");
+            tbKhenThuong.Columns.Add("trangThaiKT", "Trạng thái");
+            tbKhenThuong.Columns.Add("ngayKT", "Ngày");
             tbKhenThuong.Columns.Add("thaoTac", "Thao tác");
             tbKhenThuong.CellPainting += TbKhenThuong_CellPainting;
             tbKhenThuong.CellClick += TbKhenThuong_CellClick;
@@ -112,17 +220,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbKhenThuong.Columns["hoTen"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKhenThuong.Columns["thanhTich"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKhenThuong.Columns["capKhen"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            tbKhenThuong.Columns["ngay"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            tbKhenThuong.Columns["trangThaiKT"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            tbKhenThuong.Columns["ngayKT"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKhenThuong.Columns["thaoTac"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             //btnEdit.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             //btnDelete.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
 
             // 🔹 Thêm dữ liệu mẫu
-            tbKhenThuong.Rows.Add("Nguyễn Văn An", "Giải Nhất Toán học cấp trường", "Cấp trường", "15/10/2024");
-            tbKhenThuong.Rows.Add("Trần Thị Bình", "Học sinh Giỏi", "Cấp trường", "12/10/2024");
-            tbKhenThuong.Rows.Add("Lê Hoàng Cường", "Giải Ba Tin học", "Cấp tỉnh", "10/10/2024");
-            tbKhenThuong.Rows.Add("Nguyễn Tuấn Tài", "Giải nhất Tin học", "Cấp tỉnh", "19/1/2024");
+            tbKhenThuong.Rows.Add("Nguyễn Văn An", "Giải Nhất Toán học cấp trường", "Cấp trường", "Đã duyệt", "15/10/2024");
+            tbKhenThuong.Rows.Add("Trần Thị Bình", "Học sinh Giỏi", "Cấp trường", "Đã duyệt", "12/10/2024");
+            tbKhenThuong.Rows.Add("Lê Hoàng Cường", "Giải Ba Tin học", "Cấp tỉnh", "Đã duyệt", "10/10/2024");
+            tbKhenThuong.Rows.Add("Nguyễn Tuấn Tài", "Giải nhất Tin học", "Cấp tỉnh", "Chưa duyệt", "19/1/2024");
 
 
 
@@ -150,8 +259,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
            tbKhenThuong.AllowUserToResizeRows = false;
            tbKhenThuong.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
            tbKhenThuong.MultiSelect = false;
-
+            //LoadKhenThuongData();
         }
+
 
         // 🌸 Hàm thiết kế giao diện cho bảng kỷ luật
         private void SetupKyLuatTable()
@@ -164,7 +274,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbKyLuat.Columns.Add("hocSinh", "Học sinh");
             tbKyLuat.Columns.Add("viPham", "Vi phạm");
             tbKyLuat.Columns.Add("xuLy", "Xử lý");
-            tbKyLuat.Columns.Add("nguoiDuyet", "Người duyệt");
+            tbKyLuat.Columns.Add("trangThaiKL", "Trạng thái");
             tbKyLuat.Columns.Add("ngayKL", "Ngày");
             tbKyLuat.Columns.Add("thaoTacKL", "Thao tác"); // <-- Cột này sẽ chứa 2 icon
 
@@ -206,7 +316,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tbKyLuat.Columns["hocSinh"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKyLuat.Columns["viPham"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKyLuat.Columns["xuLy"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            tbKyLuat.Columns["nguoiDuyet"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            tbKyLuat.Columns["trangThaiKL"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tbKyLuat.Columns["ngayKL"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             // --- KHÔNG CẦN CĂN CHỈNH CHO CÁC CỘT ICON CŨ ---
 
@@ -241,7 +351,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 🌟 GẮN SỰ KIỆN VẼ VÀ CLICK CHO BẢNG KỶ LUẬT 🌟
             tbKyLuat.CellPainting += TbKyLuat_CellPainting;
             tbKyLuat.CellClick += TbKyLuat_CellClick;
+            //LoadKyLuatData();
+
         }
+
+     
 
         private void TbKyLuat_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
@@ -277,44 +391,59 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void TbKyLuat_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Chỉ xử lý khi click vào hàng dữ liệu và cột "thaoTacKL"
+          
+
             if (e.RowIndex >= 0 && e.ColumnIndex == tbKyLuat.Columns["thaoTacKL"].Index)
             {
-                // Lấy thông tin ô và vị trí click tương đối trong ô
                 Rectangle cellBounds = tbKyLuat.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
                 Point clickPosInCell = tbKyLuat.PointToClient(Cursor.Position);
-                int xClick = clickPosInCell.X - cellBounds.Left; // Tọa độ X bên trong ô
+                int xClick = clickPosInCell.X - cellBounds.Left;
 
-                // Tính toán lại vị trí icon như trong CellPainting
                 int iconSize = 18;
-                int spacing = 15; // Phải giống hệt trong CellPainting
+                int spacing = 15;
                 int totalWidth = iconSize * 2 + spacing;
-                int startXInCell = (cellBounds.Width - totalWidth) / 2; // Tọa độ X bắt đầu bên trong ô
+                int startXInCell = (cellBounds.Width - totalWidth) / 2;
 
-                // Xác định vùng của từng icon (tọa độ X bên trong ô)
                 int editIconEndX = startXInCell + iconSize;
                 int deleteIconStartX = startXInCell + iconSize + spacing;
                 int deleteIconEndX = deleteIconStartX + iconSize;
 
-                // Lấy tên học sinh để hiển thị thông báo
                 string tenHS = tbKyLuat.Rows[e.RowIndex].Cells["hocSinh"].Value?.ToString() ?? "Học sinh này";
+                int maKTKL = (int)tbKyLuat.Rows[e.RowIndex].Tag;
 
-                // Kiểm tra xem click vào vùng icon nào
                 if (xClick >= startXInCell && xClick < editIconEndX)
                 {
-                    MessageBox.Show($"Bạn đã click Sửa cho: {tenHS}");
-                    // TODO: Thêm code mở form sửa kỷ luật ở đây
+                    // Mở form sửa kỷ luật
+                    ThemDanhGia frm = new ThemDanhGia(maKTKL);
+                    frm.StartPosition = FormStartPosition.CenterScreen;
+
+                    if (frm.ShowDialog() == DialogResult.OK)
+                    {
+                        ApplyFilter();
+                        MessageBox.Show("Đã cập nhật kỷ luật thành công!", "Thông báo",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
                 else if (xClick >= deleteIconStartX && xClick < deleteIconEndX)
                 {
-                    if (MessageBox.Show($"Bạn có chắc muốn xóa kỷ luật của {tenHS}?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    if (MessageBox.Show($"Bạn có chắc muốn xóa kỷ luật của {tenHS}?",
+                        "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
-                        tbKyLuat.Rows.RemoveAt(e.RowIndex);
-                        MessageBox.Show("Đã xóa kỷ luật.");
-                        // TODO: Thêm code xóa trong cơ sở dữ liệu ở đây
+                        if (ktklDAO.XoaKhenThuongKyLuat(maKTKL))
+                        {
+                            ApplyFilter();
+                            MessageBox.Show("Đã xóa kỷ luật thành công!", "Thông báo",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Không thể xóa kỷ luật!", "Lỗi",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }
+
         }
 
         private void TbKhenThuong_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
@@ -343,6 +472,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void TbKhenThuong_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+           
+
             if (e.RowIndex >= 0 && e.ColumnIndex == tbKhenThuong.Columns["thaoTac"].Index)
             {
                 var cell = tbKhenThuong.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
@@ -353,18 +484,176 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 int editRight = padding + iconSize;
                 int deleteLeft = editRight + 3 * padding;
 
+                string tenHS = tbKhenThuong.Rows[e.RowIndex].Cells["hoTen"].Value?.ToString() ?? "Học sinh này";
+                int maKTKL = (int)tbKhenThuong.Rows[e.RowIndex].Tag;
+
                 if (x < editRight)
                 {
-                    MessageBox.Show($"Sửa dòng: {e.RowIndex + 1}");
+                    // Mở form sửa khen thưởng
+                    ThemDanhGia frm = new ThemDanhGia(maKTKL);
+                    frm.StartPosition = FormStartPosition.CenterScreen;
+
+                    if (frm.ShowDialog() == DialogResult.OK)
+                    {
+                        ApplyFilter();
+                        MessageBox.Show("Đã cập nhật khen thưởng thành công!", "Thông báo",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
                 else if (x > deleteLeft && x < deleteLeft + iconSize)
                 {
-                    MessageBox.Show($"Xóa dòng: {e.RowIndex + 1}");
+                    if (MessageBox.Show($"Bạn có chắc muốn xóa khen thưởng của {tenHS}?",
+                        "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        if (ktklDAO.XoaKhenThuongKyLuat(maKTKL))
+                        {
+                            ApplyFilter();
+                            MessageBox.Show("Đã xóa khen thưởng thành công!", "Thông báo",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Không thể xóa khen thưởng!", "Lỗi",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
                 }
+            }
+
+        }
+
+
+        // Load dữ liệu vào ComboBox học kỳ
+        private void LoadHocKyComboBox()
+        {
+            try
+            {
+                cbHocKyNamHoc.Items.Clear();
+                cbHocKyNamHoc.Items.Add("Tất cả học kỳ");
+
+                List<HocKyDTO> dsHocKy = hocKyDAO.GetAllHocKy();
+
+                foreach (HocKyDTO hk in dsHocKy)
+                {
+                    string displayText = $"{hk.TenHocKy}-{hk.MaNamHoc}";
+                    cbHocKyNamHoc.Items.Add(new ThemDanhGia.ComboBoxItem
+                    {
+                        Text = displayText,
+                        Value = hk.MaHocKy
+                    });
+                }
+
+                cbHocKyNamHoc.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải học kỳ: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Load dữ liệu vào ComboBox lớp
+        private void LoadLopComboBox()
+        {
+            try
+            {
+                cbLop.Items.Clear();
+                cbLop.Items.Add("Tất cả lớp");
+
+                LopDAO lopDAO = new LopDAO();
+                List<LopDTO> dsLop = lopDAO.GetDanhSachLopCoHocSinh();
+
+                foreach (LopDTO lop in dsLop)
+                {
+                    cbLop.Items.Add(new ThemDanhGia.ComboBoxItem
+                    {
+                        Text = lop.TenLop,
+                        Value = lop.MaLop
+                    });
+                }
+
+                cbLop.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải danh sách lớp: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadKhenThuongDataWithFilter()
+        {
+            try
+            {
+                tbKhenThuong.Rows.Clear();
+                List<KhenThuongKyLuatDTO> dsKhenThuong = ktklBUS.LayDanhSachCoLoc(
+                    "Khen thưởng", selectedMaHocKy, selectedMaLop, searchKeyword);
+
+                foreach (var kt in dsKhenThuong)
+                {
+                    HocSinhDTO hs = hocSinhDAO.TimHocSinhTheoMa(kt.MaHocSinh);
+                    string hoTen = hs != null ? hs.HoTen : "Không xác định";
+
+                    tbKhenThuong.Rows.Add(
+                        hoTen,
+                        kt.NoiDung,
+                        kt.CapKhenThuong ?? "",
+                        kt.TrangThaiDuyet,
+                        kt.NgayApDung.ToString("dd/MM/yyyy"),
+                        ""
+                    );
+
+                    tbKhenThuong.Rows[tbKhenThuong.Rows.Count - 1].Tag = kt.MaKTKL;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải dữ liệu khen thưởng: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
 
+        private void LoadKyLuatDataWithFilter()
+        {
+            try
+            {
+                tbKyLuat.Rows.Clear();
+                List<KhenThuongKyLuatDTO> dsKyLuat = ktklBUS.LayDanhSachCoLoc(
+                    "Kỷ luật", selectedMaHocKy, selectedMaLop, searchKeyword);
+
+                foreach (var kl in dsKyLuat)
+                {
+                    HocSinhDTO hs = hocSinhDAO.TimHocSinhTheoMa(kl.MaHocSinh);
+                    string hoTen = hs != null ? hs.HoTen : "Không xác định";
+
+                    tbKyLuat.Rows.Add(
+                        hoTen,
+                        kl.NoiDung,
+                        kl.MucXuLy ?? "",
+                        kl.TrangThaiDuyet,
+                        kl.NgayApDung.ToString("dd/MM/yyyy"),
+                        ""
+                    );
+
+                    tbKyLuat.Rows[tbKyLuat.Rows.Count - 1].Tag = kl.MaKTKL;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải dữ liệu kỷ luật: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        // Áp dụng filter
+        private void ApplyFilter()
+        {
+            LoadKhenThuongDataWithFilter();
+            LoadKyLuatDataWithFilter();
+            CapNhatThongKe();
+        }
         private void guna2HtmlLabel1_Click(object sender, EventArgs e)
         {
 
@@ -419,8 +708,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             tbKhenThuong.Visible = true;
             tbKyLuat.Visible = false;
-            btnAddKhen.Visible = true;
-            btnAddKyLuat.Visible = false;
 
             btnKhenThuong.FillColor = Color.FromArgb(32, 136, 225);
             btnKhenThuong.ForeColor = Color.White;
@@ -433,9 +720,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             tbKhenThuong.Visible = false;
             tbKyLuat.Visible = true;
-
-            btnAddKhen.Visible = false;
-            btnAddKyLuat.Visible = true;
 
             btnKyLuat.FillColor = Color.FromArgb(32, 136, 225);
             btnKyLuat.ForeColor = Color.White;
@@ -451,7 +735,276 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnAddKhen_Click(object sender, EventArgs e)
         {
+            ThemDanhGia frm = new ThemDanhGia();
+            frm.StartPosition = FormStartPosition.CenterScreen;
 
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+                //// Reload cả 2 bảng để đảm bảo dữ liệu luôn đồng bộ
+                //LoadKhenThuongData();
+                //LoadKyLuatData();
+                ApplyFilter();
+
+            }
+
+        }
+
+
+
+        private void thongKeCard1_Load_2(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbHocKyNamHoc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbHocKyNamHoc.SelectedIndex == 0) // "Tất cả học kỳ"
+            {
+                selectedMaHocKy = -1;
+            }
+            else if (cbHocKyNamHoc.SelectedItem is ThemDanhGia.ComboBoxItem item)
+            {
+                selectedMaHocKy = Convert.ToInt32(item.Value);
+            }
+
+            ApplyFilter();
+        }
+
+        private void cbLop_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbLop.SelectedIndex == 0) // "Tất cả lớp"
+            {
+                selectedMaLop = -1;
+            }
+            else if (cbLop.SelectedItem is ThemDanhGia.ComboBoxItem item)
+            {
+                selectedMaLop = Convert.ToInt32(item.Value);
+            }
+
+            ApplyFilter();
+        }
+
+        private void guna2Button1_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                DataGridView currentTable = tbKhenThuong.Visible ? tbKhenThuong : tbKyLuat;
+                string tenBang = tbKhenThuong.Visible ? "khen thưởng" : "kỷ luật";
+
+                if (currentTable.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Vui lòng chọn một đánh giá để duyệt!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                DataGridViewRow selectedRow = currentTable.SelectedRows[0];
+                string hoTen = selectedRow.Cells[0].Value?.ToString() ?? "Học sinh này";
+                int maKTKL = (int)selectedRow.Tag;
+
+                DialogResult confirm = MessageBox.Show(
+                    $"Bạn có chắc muốn duyệt {tenBang} của {hoTen}?",
+                    "Xác nhận duyệt",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirm == DialogResult.Yes)
+                {
+                    var result = ktklBUS.DuyetDanhGia(maKTKL, hoTen);
+
+                    if (result.Success)
+                    {
+                        ApplyFilter();
+                    }
+
+                    MessageBox.Show(result.Message, result.Success ? "Thông báo" : "Lỗi",
+                        MessageBoxButtons.OK,
+                        result.IsWarning ? MessageBoxIcon.Information : (result.Success ? MessageBoxIcon.Information : MessageBoxIcon.Error));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi duyệt đánh giá: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            searchKeyword = txtSearch.Text.Trim();
+            ApplyFilter();
+        }
+
+        private void btnXuatExcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Xác định bảng nào đang hiển thị
+                DataGridView currentTable = tbKhenThuong.Visible ? tbKhenThuong : tbKyLuat;
+                string tenBang = tbKhenThuong.Visible ? "Khen Thưởng" : "Kỷ Luật";
+
+                // Kiểm tra có dữ liệu không
+                if (currentTable.Rows.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu để xuất!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Tạo SaveFileDialog
+                SaveFileDialog saveDialog = new SaveFileDialog
+                {
+                    Filter = "Excel Files|*.xlsx",
+                    Title = "Lưu file Excel",
+                    FileName = $"BaoCao_{tenBang.Replace(" ", "")}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+                };
+
+                if (saveDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // ✅ ClosedXML KHÔNG CẦN SET LICENSE
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add($"Báo cáo {tenBang}");
+
+                        // === TIÊU ĐỀ BÁO CÁO ===
+                        worksheet.Cell("A1").Value = $"BÁO CÁO DANH SÁCH {tenBang.ToUpper()}";
+                        worksheet.Range("A1:F1").Merge();
+                        worksheet.Cell("A1").Style
+                            .Font.SetFontSize(16)
+                            .Font.SetBold()
+                            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+                            .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                        worksheet.Row(1).Height = 30;
+
+                        // Thông tin bổ sung
+                        worksheet.Cell("A2").Value = $"Ngày xuất: {DateTime.Now:dd/MM/yyyy HH:mm}";
+                        worksheet.Range("A2:F2").Merge();
+                        worksheet.Cell("A2").Style
+                            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+                            .Font.SetItalic();
+
+                        // Thông tin lọc
+                        string filterInfo = "Bộ lọc: ";
+                        if (selectedMaHocKy != -1 && cbHocKyNamHoc.SelectedItem != null)
+                        {
+                            filterInfo += $"Học kỳ: {cbHocKyNamHoc.Text} | ";
+                        }
+                        if (selectedMaLop != -1 && cbLop.SelectedItem != null)
+                        {
+                            filterInfo += $"Lớp: {cbLop.Text} | ";
+                        }
+                        if (!string.IsNullOrWhiteSpace(searchKeyword))
+                        {
+                            filterInfo += $"Tìm kiếm: '{searchKeyword}'";
+                        }
+                        if (filterInfo == "Bộ lọc: ")
+                        {
+                            filterInfo = "Bộ lọc: Tất cả";
+                        }
+
+                        worksheet.Cell("A3").Value = filterInfo;
+                        worksheet.Range("A3:F3").Merge();
+                        worksheet.Cell("A3").Style
+                            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+                            .Font.SetItalic();
+                        worksheet.Row(3).Height = 20;
+
+                        // === HEADER ===
+                        int startRow = 5;
+                        int col = 1;
+
+                        // Lấy tên cột (bỏ cột "Thao tác")
+                        for (int i = 0; i < currentTable.Columns.Count; i++)
+                        {
+                            if (currentTable.Columns[i].Name == "thaoTac" ||
+                                currentTable.Columns[i].Name == "thaoTacKL")
+                                continue;
+
+                            worksheet.Cell(startRow, col).Value = currentTable.Columns[i].HeaderText;
+                            col++;
+                        }
+
+                        // Style cho header
+                        var headerRange = worksheet.Range(startRow, 1, startRow, col - 1);
+                        headerRange.Style
+                            .Font.SetBold()
+                            .Fill.SetBackgroundColor(XLColor.FromArgb(79, 129, 189))
+                            .Font.SetFontColor(XLColor.White)
+                            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+                            .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
+                            .Border.SetOutsideBorder(XLBorderStyleValues.Thin)
+                            .Border.SetInsideBorder(XLBorderStyleValues.Thin);
+                        worksheet.Row(startRow).Height = 25;
+
+                        // === DỮ LIỆU ===
+                        int row = startRow + 1;
+                        foreach (DataGridViewRow dgvRow in currentTable.Rows)
+                        {
+                            if (dgvRow.IsNewRow) continue;
+
+                            col = 1;
+                            for (int i = 0; i < currentTable.Columns.Count; i++)
+                            {
+                                if (currentTable.Columns[i].Name == "thaoTac" ||
+                                    currentTable.Columns[i].Name == "thaoTacKL")
+                                    continue;
+
+                                var cellValue = dgvRow.Cells[i].Value;
+                                worksheet.Cell(row, col).Value = cellValue?.ToString() ?? "";
+                                col++;
+                            }
+
+                            // Style cho dòng dữ liệu
+                            var dataRange = worksheet.Range(row, 1, row, col - 1);
+                            dataRange.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                            dataRange.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+
+                            // Màu xen kẽ cho dòng
+                            if (row % 2 == 0)
+                            {
+                                dataRange.Style.Fill.SetBackgroundColor(XLColor.FromArgb(242, 242, 242));
+                            }
+
+                            row++;
+                        }
+
+                        // === TỔNG KẾT ===
+                        int summaryRow = row + 1;
+                        worksheet.Cell(summaryRow, 1).Value = $"Tổng số: {currentTable.Rows.Count} bản ghi";
+                        worksheet.Range(summaryRow, 1, summaryRow, col - 1).Merge();
+                        worksheet.Cell(summaryRow, 1).Style
+                            .Font.SetBold()
+                            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                        // === AUTO-FIT COLUMNS ===
+                        for (int i = 1; i < col; i++)
+                        {
+                            worksheet.Column(i).AdjustToContents();
+                            if (worksheet.Column(i).Width < 15)
+                                worksheet.Column(i).Width = 15;
+                            if (worksheet.Column(i).Width > 50)
+                                worksheet.Column(i).Width = 50;
+                        }
+
+                        // Lưu file
+                        workbook.SaveAs(saveDialog.FileName);
+
+                        MessageBox.Show($"Xuất file Excel thành công!\n\nĐường dẫn:\n{saveDialog.FileName}",
+                            "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        if (MessageBox.Show("Bạn có muốn mở file Excel vừa xuất không?", "Xác nhận",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            System.Diagnostics.Process.Start(saveDialog.FileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi xuất Excel:\n{ex.Message}\n\nChi tiết:\n{ex.StackTrace}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// </summary>
         /// <param name="maHocSinh">Mã học sinh.</param>
         /// <param name="maPhuHuynh">Mã phụ huynh.</param>
-        /// <param name="moiQuanHe">Mối quan hệ (ví dụ: 'Bố', 'Mẹ').</param>
+        /// <param name="moiQuanHe">Mối quan hệ (ví dụ: 'Cha', 'Mẹ', 'Ông', 'Bà', 'Người giám hộ').</param>
         /// <returns>True nếu thêm thành công, False nếu thất bại hoặc đã tồn tại.</returns>
         public bool ThemQuanHe(int maHocSinh, int maPhuHuynh, string moiQuanHe)
         {

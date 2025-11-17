@@ -124,36 +124,129 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     return;
                 }
 
-                // Kiểm tra điều kiện phân lớp
-                var kiemTra = phanLopTuDongBLL.KiemTraDieuKienPhanLop(maHocKyHienTai);
-                if (!kiemTra.success)
+                // *** KIỂM TRA HỌC KỲ ĐƯỢC CHỌN ĐÃ ĐƯỢC PHÂN LỚP CHƯA ***
+                int soHocSinhDaPhanLop = phanLopBLL.CountHocSinhInHocKy(maHocKyHienTai);
+                if (soHocSinhDaPhanLop > 0)
                 {
-                    MessageBox.Show($"Không thể phân lớp tự động:\n{kiemTra.message}", "Thông báo",
-                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    // Lấy tên học kỳ để hiển thị
+                    string tenHocKyHienTai = "";
+                    foreach (var hk in danhSachHocKy)
+                    {
+                        if (hk.MaHocKy == maHocKyHienTai)
+                        {
+                            tenHocKyHienTai = hk.TenHocKy + " " + hk.MaNamHoc;
+                            break;
+                        }
+                    }
+
+                    string thongBao = $"⚠️ HỌC KỲ ĐÃ ĐƯỢC PHÂN LỚP!\n\n";
+                    thongBao += $"Học kỳ: {tenHocKyHienTai}\n\n";
+                    thongBao += $"Số học sinh đã được phân lớp: {soHocSinhDaPhanLop}\n\n";
+                    thongBao += "Nếu muốn phân lớp lại, bạn cần xóa dữ liệu phân lớp cũ.\n\n";
+                    thongBao += "Bạn có đồng ý xóa và phân lớp lại không?";
+                    
+                    DialogResult confirm = MessageBox.Show(thongBao, "Xác nhận xóa và phân lớp lại",
+                                                          MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    
+                    if (confirm == DialogResult.No)
+                    {
+                        return; // Người dùng từ chối, hủy phân lớp
+                    }
+                    
+                    // Người dùng đồng ý → Xóa dữ liệu phân lớp cũ
+                    try
+                    {
+                        this.Cursor = Cursors.WaitCursor;
+                        bool xoaThanhCong = phanLopBLL.DeleteAllPhanLopByHocKy(maHocKyHienTai);
+                        this.Cursor = Cursors.Default;
+                        
+                        if (!xoaThanhCong)
+                        {
+                            MessageBox.Show("Không thể xóa dữ liệu phân lớp cũ!\n\nVui lòng thử lại.",
+                                          "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        
+                        MessageBox.Show($"✓ Đã xóa {soHocSinhDaPhanLop} bản ghi phân lớp cũ.\n\nTiếp tục phân lớp...",
+                                       "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Cursor = Cursors.Default;
+                        MessageBox.Show($"Lỗi khi xóa dữ liệu: {ex.Message}",
+                                       "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
 
                 // Hiển thị preview trước khi thực hiện
                 var preview = phanLopTuDongBLL.TaoPreviewPhanLop(maHocKyHienTai);
+
+                // Kiểm tra lỗi
+                if (preview.ContainsKey("Loi"))
+                {
+                    MessageBox.Show($"Không thể tạo preview:\n\n{preview["Loi"]}", "Lỗi",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 
-                string previewMessage = "=== XEM TRƯỚC KẾT QUẢ PHÂN LỚP TỰ ĐỘNG ===\n\n";
-                previewMessage += $"Loại phân lớp: {preview["LoaiPhanLop"]}\n";
-                previewMessage += $"Tổng số học sinh hợp lệ: {preview["TongSoHocSinh"]}\n\n";
+                // TẠO THÔNG BÁO PREVIEW CHI TIẾT
+                string previewMessage = "╔════════════════════════════════════════════════╗\n";
+                previewMessage += "║      XEM TRƯỚC KẾT QUẢ PHÂN LỚP TỰ ĐỘNG       ║\n";
+                previewMessage += "╚════════════════════════════════════════════════╝\n\n";
 
-                if (preview.ContainsKey("SoHSDuocLenLop"))
+                // Loại phân lớp
+                previewMessage += $"📋 Kịch bản: {preview["LoaiPhanLop"]}\n";
+                if (preview.ContainsKey("HocKyNguon"))
                 {
-                    previewMessage += $"• Học sinh được lên lớp: {preview["SoHSDuocLenLop"]}\n";
-                    previewMessage += $"• Học sinh ở lại: {preview["SoHSOLai"]}\n";
-                    previewMessage += $"• Tỷ lệ lên lớp: {preview["TyLeLenLop"]:F2}%\n\n";
+                    previewMessage += $"   Nguồn dữ liệu: {preview["HocKyNguon"]}\n";
+                }
+                previewMessage += "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+
+                // Tổng số học sinh
+                previewMessage += $"👥 Tổng số học sinh 'Đang học': {preview["TongSoHocSinh"]}\n\n";
+
+                // Hiển thị theo kịch bản
+                if (preview.ContainsKey("SoHSLenLop")) // Kịch bản HK2→HK1
+                {
+                    int soHSLenLop = (int)preview["SoHSLenLop"];
+                    int soHSOLai = (int)preview["SoHSOLai"];
+                    double tyLe = (double)preview["TyLeLenLop"];
+
+                    previewMessage += "📊 DỰ KIẾN:\n";
+                    previewMessage += $"   ✓ Lên lớp: {soHSLenLop} học sinh\n";
+                    previewMessage += $"   ⚠️ Ở lại (học lại): {soHSOLai} học sinh\n";
+                    previewMessage += $"   → Tỷ lệ lên lớp: {tyLe:0.0}%\n\n";
+
+                    if (preview.ContainsKey("SoHSGapLoi") && (int)preview["SoHSGapLoi"] > 0)
+                    {
+                        previewMessage += $"⚠️ Thiếu dữ liệu: {preview["SoHSGapLoi"]} học sinh\n";
+                        previewMessage += "   (Không có đủ điểm HK1/HK2 hoặc hạnh kiểm)\n\n";
+                    }
+                }
+                else if (preview.ContainsKey("SoHSDuDieuKien")) // Kịch bản HK1→HK2
+                {
+                    int duDieuKien = (int)preview["SoHSDuDieuKien"];
+                    int khongDuDieuKien = (int)preview["SoHSKhongDuDieuKien"];
+
+                    previewMessage += "📊 DỰ KIẾN:\n";
+                    previewMessage += $"   ✓ Đủ dữ liệu: {duDieuKien} học sinh\n";
+                    previewMessage += $"      → Sẽ giữ nguyên lớp sang HK2\n\n";
+
+                    if (khongDuDieuKien > 0)
+                    {
+                        previewMessage += $"   ⚠️ Thiếu dữ liệu: {khongDuDieuKien} học sinh\n";
+                        previewMessage += "      (Chưa có điểm, hạnh kiểm hoặc xếp loại HK1)\n\n";
+                    }
+
+                    if (preview.ContainsKey("SoHSGapLoi") && (int)preview["SoHSGapLoi"] > 0)
+                    {
+                        previewMessage += $"   ❌ Lỗi xử lý: {preview["SoHSGapLoi"]} học sinh\n\n";
+                    }
                 }
 
-                if (preview.ContainsKey("SoHSKhongHopLe") && (int)preview["SoHSKhongHopLe"] > 0)
-                {
-                    previewMessage += $"⚠️ Có {preview["SoHSKhongHopLe"]} học sinh không đủ điều kiện phân lớp\n";
-                    previewMessage += "(Thiếu điểm, hạnh kiểm hoặc xếp loại)\n\n";
-                }
-
-                previewMessage += "\nBạn có muốn tiếp tục phân lớp tự động không?";
+                previewMessage += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+                previewMessage += "Bạn có muốn tiếp tục phân lớp tự động không?";
 
                 DialogResult result = MessageBox.Show(previewMessage, "Xác nhận phân lớp tự động",
                                                      MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -170,10 +263,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
                     if (ketQua.success)
                     {
-                        MessageBox.Show($"✓ Phân lớp tự động thành công!\n\n" +
+                        // ✅ Hiển thị thông báo thành công với ScrollableMessageBox nếu có nhiều thông tin
+                        string thongBaoThanhCong = $"✓ Phân lớp tự động thành công!\n\n" +
                                        $"Đã phân lớp: {ketQua.soHocSinhDaPhanLop} học sinh\n\n" +
-                                       $"{ketQua.message}",
-                                       "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                       $"{ketQua.message}";
+                        
+                        // Sử dụng ScrollableMessageBox để xem đầy đủ thông tin
+                        ScrollableMessageBox.Show("Thành công", thongBaoThanhCong, MessageBoxIcon.Information);
 
                         // Refresh lại bảng phân lớp
                         LoadTablePhanLop();
@@ -183,8 +279,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     }
                     else
                     {
-                        MessageBox.Show($"✗ Phân lớp tự động thất bại!\n\n{ketQua.message}",
-                                       "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Kiểm tra nếu message quá dài (> 500 ký tự) thì dùng ScrollableMessageBox
+                        if (ketQua.message.Length > 500)
+                        {
+                            ScrollableMessageBox.Show("Lỗi", $"✗ Phân lớp tự động thất bại!\n\n{ketQua.message}", MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            MessageBox.Show($"✗ Phân lớp tự động thất bại!\n\n{ketQua.message}",
+                                           "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }

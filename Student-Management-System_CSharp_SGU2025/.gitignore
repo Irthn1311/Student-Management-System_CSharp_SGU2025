@@ -1,0 +1,69 @@
+## Visual Studio files
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild/
+bld/
+[Bb]in/
+[Oo]bj/
+
+## ⚠️ BẢO MẬT - QUAN TRỌNG! ⚠️
+## Files chứa thông tin nhạy cảm (Email, Password, Database)
+App.config.local
+*.local
+appsettings.local.json
+secrets.json
+
+## Thông tin database connection string thật
+*ConnectionString.txt
+*DatabaseConfig.txt
+
+## Backup files
+*.bak
+*.backup
+
+## Log files
+*.log
+
+## NuGet Packages
+*.nupkg
+**/packages/*
+!**/packages/build/
+
+## NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+
+## ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+## JustCode
+.JustCode
+
+## TeamCity
+_TeamCity*
+
+## DotCover
+*.dotCover
+
+## Others
+*.Cache
+ClientBin/
+[Ss]tyle[Cc]op.*
+~$*
+*.dbmdl
+*.jfm
+*.pfx
+*.publishsettings
+node_modules/
