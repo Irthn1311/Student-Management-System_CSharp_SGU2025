@@ -8,12 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System.Collections.Generic;
 using Student_Management_System_CSharp_SGU2025.GUI.DiemSo;
 using ClosedXML.Excel;
-using System.IO;
+using System.IO; 
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {

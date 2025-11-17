@@ -66,8 +66,8 @@
     <Reference Include="DocumentFormat.OpenXml.Framework, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.Framework.3.1.1\lib\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus, Version=7.0.9.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.7.0.9\lib\net462\EPPlus.dll</HintPath>
+    <Reference Include="EPPlus, Version=8.2.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.8.2.1\lib\net462\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus.Interfaces, Version=8.1.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.Interfaces.8.1.0\lib\net462\EPPlus.Interfaces.dll</HintPath>
@@ -176,6 +176,7 @@
     <Compile Include="BUS\HocSinhPhuHuynhBLL.cs" />
     <Compile Include="BUS\LoginBUS.cs" />
     <Compile Include="bus\NguoiDungBLL.cs" />
+    <Compile Include="BUS\KhenThuongKyLuatBUS.cs" />
     <Compile Include="BUS\NhapDiemBUS.cs" />
     <Compile Include="BUS\PhanLopBLL.cs" />
     <Compile Include="bus\PhanLopTuDongBLL.cs" />
@@ -187,6 +188,7 @@
     <Compile Include="DAO\HocSinhDAO.cs" />
     <Compile Include="DAO\HocSinhPhuHuynhDAO.cs" />
     <Compile Include="DAO\LoginDAO.cs" />
+    <Compile Include="DAO\KhenThuongKyLuatDAO.cs" />
     <Compile Include="DAO\LopHocDAO.cs" />
     <Compile Include="DAO\MonHocDAO.cs" />
     <Compile Include="DAO\NamHocDAO.cs" />
@@ -197,6 +199,7 @@
     <Compile Include="DAO\ThoiKhoaBieuDAO.cs" />
     <Compile Include="DAO\XepLoaiDAO.cs" />
     <Compile Include="DTO\ChiTietDiemDTO.cs" />
+    <Compile Include="DTO\KhenThuongKyLuatDTO.cs" />
     <Compile Include="DTO\DiemSoDTO.cs" />
     <Compile Include="DTO\HocSinhDTO.cs" />
     <Compile Include="DTO\NguoiDungDTO.cs" />
@@ -272,6 +275,12 @@
     </Compile>
     <Compile Include="GUI\DanhGia\DanhGia.Designer.cs">
       <DependentUpon>DanhGia.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DanhGia\ThemDanhGia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\DanhGia\ThemDanhGia.Designer.cs">
+      <DependentUpon>ThemDanhGia.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Dashboard\ucDashboard.cs">
       <SubType>UserControl</SubType>
@@ -356,9 +365,6 @@
     </Compile>
     <Compile Include="GUI\HanhKiem\HanhKiem.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\HanhKiem\HanhKiem.Designer.cs">
-      <DependentUpon>HanhKiem.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\TaiKhoan\RoleItem.cs">
       <SubType>UserControl</SubType>
@@ -600,6 +606,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\DanhGia\DanhGia.resx">
       <DependentUpon>DanhGia.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\DanhGia\ThemDanhGia.resx">
+      <DependentUpon>ThemDanhGia.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Dashboard\ucDashboard.resx">
       <DependentUpon>ucDashboard.cs</DependentUpon>
