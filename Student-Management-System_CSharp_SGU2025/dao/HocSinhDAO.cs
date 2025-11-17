@@ -523,15 +523,48 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
+        public HocSinhDTO LayHocSinhTheoMa(int maHocSinh)
+        {
+            string sql = "SELECT * FROM HocSinh WHERE MaHocSinh = @maHS";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maHS", maHocSinh);
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new HocSinhDTO
+                                {
+                                    MaHS = reader.GetInt32("MaHocSinh"),
+                                    HoTen = reader.GetString("HoTen"),
+                                    // Thêm các field khác nếu cần
+                                };
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return null;
+        }
+
         /// <summary>
-        /// Cập nhật TenDangNhap cho học sinh (liên kết với NguoiDung).
+        /// Cập nhật tên đăng nhập cho học sinh
         /// </summary>
-        /// <param name="maHocSinh">Mã học sinh cần cập nhật.</param>
-        /// <param name="tenDangNhap">Tên đăng nhập mới.</param>
-        /// <returns>True nếu cập nhật thành công, False nếu thất bại.</returns>
         public bool CapNhatTenDangNhap(int maHocSinh, string tenDangNhap)
         {
             string sql = "UPDATE HocSinh SET TenDangNhap = @tenDangNhap WHERE MaHocSinh = @maHS";
+
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -547,7 +580,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 }
                 catch (MySqlException ex)
                 {
-                    Console.WriteLine("Lỗi cập nhật TenDangNhap học sinh: " + ex.Message);
+                    Console.WriteLine("Lỗi cập nhật tên đăng nhập: " + ex.Message);
                     return false;
                 }
                 finally

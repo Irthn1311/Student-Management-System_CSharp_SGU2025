@@ -1,12 +1,42 @@
--- =====================================================================
--- FILE 01: SCHEMA DEFINITION
--- Mục đích: Tạo database và các bảng cơ bản (DDL thuần túy)
--- Chạy: mysql -u root -p < 01_schema.sql
--- =====================================================================
-
-DROP DATABASE IF EXISTS QuanLyHocSinh;
-CREATE DATABASE QuanLyHocSinh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS QuanLyHocSinh;
 USE QuanLyHocSinh;
+
+-- Bảng tạm (không có foreign key)
+DROP TABLE IF EXISTS TKB_Temp;
+DROP TABLE IF EXISTS PhanCong_Temp;
+
+-- Bảng có foreign key phức tạp nhất (nhiều bảng con)
+DROP TABLE IF EXISTS ThoiKhoaBieu;
+DROP TABLE IF EXISTS PhanCongGiangDay;
+DROP TABLE IF EXISTS DiemSo;
+DROP TABLE IF EXISTS HanhKiem;
+DROP TABLE IF EXISTS XepLoai;
+DROP TABLE IF EXISTS KhenThuongKyLuat;
+DROP TABLE IF EXISTS ThongBao;
+DROP TABLE IF EXISTS PhanLop;
+DROP TABLE IF EXISTS HocSinhPhuHuynh;
+DROP TABLE IF EXISTS GiaoVien_MonHoc;
+
+-- Bảng trung gian
+DROP TABLE IF EXISTS LopHoc;
+DROP TABLE IF EXISTS HocKy;
+DROP TABLE IF EXISTS GiaoVienChuyenMon;
+
+-- Bảng có foreign key đến NguoiDung hoặc VaiTro
+DROP TABLE IF EXISTS NguoiDungVaiTro;
+DROP TABLE IF EXISTS VaiTroChucNang;
+DROP TABLE IF EXISTS HocSinh;
+
+-- Bảng cha (không có foreign key hoặc chỉ có foreign key đến bảng đã drop)
+DROP TABLE IF EXISTS PhuHuynh;
+DROP TABLE IF EXISTS GiaoVien;
+DROP TABLE IF EXISTS MonHoc;
+DROP TABLE IF EXISTS KhoiLop;
+DROP TABLE IF EXISTS NamHoc;
+DROP TABLE IF EXISTS NguoiDung;
+DROP TABLE IF EXISTS ChucNang;
+DROP TABLE IF EXISTS VaiTro;
+
 
 -- =====================================================================
 -- PHẦN 1: CÁC BẢNG HỆ THỐNG VÀ PHÂN QUYỀN (RBAC)

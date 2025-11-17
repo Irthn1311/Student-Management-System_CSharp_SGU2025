@@ -187,5 +187,35 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             }
         }
 
+        /// <summary>
+        /// Lấy danh sách lớp đã được phân lớp trong học kỳ cụ thể
+        /// </summary>
+        public List<LopDTO> GetDanhSachLopTheoHocKy(int maHocKy)
+        {
+            try
+            {
+                return lopHocDAO.GetDanhSachLopTheoHocKy(maHocKy);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy danh sách lớp theo học kỳ: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách học sinh theo lớp và học kỳ
+        /// </summary>
+        public List<HocSinhDTO> GetHocSinhTheoLopVaHocKy(int maLop, int maHocKy)
+        {
+            try
+            {
+                return phanLopDAO.LayDanhSachHocSinhTrongLop(maLop, maHocKy);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy danh sách học sinh: " + ex.Message);
+            }
+        }
+
     }
 }

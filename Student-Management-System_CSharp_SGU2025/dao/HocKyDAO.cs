@@ -269,5 +269,23 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return list;
         }
 
+        /// <summary>
+        /// Lấy năm học theo mã - Delegate to NamHocDAO
+        /// </summary>
+        public NamHocDTO LayNamHocTheoMa(string maNamHoc)
+        {
+            NamHocDAO namHocDAO = new NamHocDAO();
+            return namHocDAO.LayNamHocTheoMa(maNamHoc);
+        }
+
+        /// <summary>
+        /// Thêm năm học - Delegate to NamHocDAO
+        /// </summary>
+        public bool ThemNamHoc(NamHocDTO namHoc)
+        {
+            NamHocDAO namHocDAO = new NamHocDAO();
+            return namHocDAO.themNamHoc(namHoc);
+        }
+
     }
 }

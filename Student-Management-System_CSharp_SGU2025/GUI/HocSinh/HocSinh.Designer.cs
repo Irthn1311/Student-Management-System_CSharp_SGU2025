@@ -63,6 +63,7 @@
             this.btnXuatExcel = new Guna.UI2.WinForms.Guna2Button();
             this.guna2GradientPanel2 = new Guna.UI2.WinForms.Guna2GradientPanel();
             this.btnNhapExcel = new Guna.UI2.WinForms.Guna2Button();
+            this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.btnPhanLop = new Guna.UI2.WinForms.Guna2Button();
             this.btnThemPhuHuynh = new Guna.UI2.WinForms.Guna2Button();
             this.btnThemHocSinh = new Guna.UI2.WinForms.Guna2Button();
@@ -460,7 +461,30 @@
             this.btnNhapExcel.Size = new System.Drawing.Size(190, 103);
             this.btnNhapExcel.TabIndex = 22;
             this.btnNhapExcel.Text = "Nhập Excel";
-            this.btnNhapExcel.Click += new System.EventHandler(this.btnNhapExcel_Click);
+            // 
+            // cbHocKyNamHoc
+            // 
+            this.cbHocKyNamHoc.BackColor = System.Drawing.Color.Transparent;
+            this.cbHocKyNamHoc.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbHocKyNamHoc.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbHocKyNamHoc.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbHocKyNamHoc.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbHocKyNamHoc.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbHocKyNamHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbHocKyNamHoc.ItemHeight = 30;
+            this.cbHocKyNamHoc.Items.AddRange(new object[] {
+            "Tất cả Học kì",
+            "Học Kỳ I - 2023 - 2024",
+            "Học Kỳ II - 2023 - 2024",
+            "Học Kỳ I - 2024 - 2025",
+            "Học Kỳ II - 2024 - 2025"});
+            this.cbHocKyNamHoc.Location = new System.Drawing.Point(760, 35);
+            this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2);
+            this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
+            this.cbHocKyNamHoc.Size = new System.Drawing.Size(198, 36);
+            this.cbHocKyNamHoc.StartIndex = 0;
+            this.cbHocKyNamHoc.TabIndex = 25;
+            this.cbHocKyNamHoc.SelectedIndexChanged += new System.EventHandler(this.cbHocKyNamHoc_SelectedIndexChanged);
             // 
             // btnPhanLop
             // 
@@ -474,10 +498,10 @@
             this.btnPhanLop.ForeColor = System.Drawing.Color.White;
             this.btnPhanLop.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
             this.btnPhanLop.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnPhanLop.Location = new System.Drawing.Point(981, 25);
+            this.btnPhanLop.Location = new System.Drawing.Point(574, 35);
             this.btnPhanLop.Margin = new System.Windows.Forms.Padding(2);
             this.btnPhanLop.Name = "btnPhanLop";
-            this.btnPhanLop.Size = new System.Drawing.Size(168, 46);
+            this.btnPhanLop.Size = new System.Drawing.Size(168, 36);
             this.btnPhanLop.TabIndex = 26;
             this.btnPhanLop.Text = "Phân lớp";
             this.btnPhanLop.Click += new System.EventHandler(this.guna2Button1_Click_1);
@@ -743,5 +767,6 @@
         private Guna.UI2.WinForms.Guna2Button btnTrangSau;
         private Guna.UI2.WinForms.Guna2Button btnTrangTruoc;
         private System.Windows.Forms.Label lblTrangHienTai;
+        private Guna.UI2.WinForms.Guna2ComboBox cbHocKyNamHoc;
     }
 }

@@ -172,6 +172,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="bus\HanhKiemDTO.cs" />
     <Compile Include="bus\HocSinhBLL.cs" />
     <Compile Include="bus\HocSinhPhuHuynhBLL.cs" />
     <Compile Include="bus\LoginBUS.cs" />
@@ -1304,6 +1305,7 @@
     <Content Include="packages\ZstdSharp.Port.0.8.5\lib\netcoreapp3.1\ZstdSharp.dll" />
     <Content Include="packages\ZstdSharp.Port.0.8.5\lib\netstandard2.0\ZstdSharp.dll" />
     <Content Include="packages\ZstdSharp.Port.0.8.5\lib\netstandard2.1\ZstdSharp.dll" />
+    <Content Include="README_FIX.txt" />
     <None Include="Images\search.png" />
     <None Include="GUI\Images\icons8-student-blue.png" />
     <None Include="GUI\Images\icons8-group-tim.png" />
