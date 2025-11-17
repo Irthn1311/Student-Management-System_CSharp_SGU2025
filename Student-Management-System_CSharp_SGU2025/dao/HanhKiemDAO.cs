@@ -7,7 +7,7 @@ using System.Data;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
-    internal class HanhKiemDAO
+    public class HanhKiemDAO
     {
         // === 1. Thêm Hạnh Kiểm (CRUD) ===
         public bool ThemHanhKiem(HanhKiemDTO hk) // Dùng DTO
@@ -147,6 +147,50 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 }
             }
             return hanhKiem;
+        }
+
+        /// <summary>
+        /// Lấy tất cả hạnh kiểm trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<HanhKiemDTO> GetAllHanhKiem()
+        {
+            List<HanhKiemDTO> danhSachHanhKiem = new List<HanhKiemDTO>();
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+                string query = "SELECT MaHocSinh, MaHocKy, XepLoai, NhanXet FROM HanhKiem";
+                
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        HanhKiemDTO hk = new HanhKiemDTO
+                        {
+                            MaHocSinh = reader.GetInt32("MaHocSinh"),
+                            MaHocKy = Convert.ToInt32(reader["MaHocKy"]),
+                            XepLoai = reader["XepLoai"].ToString(),
+                            NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet")
+                        };
+                        danhSachHanhKiem.Add(hk);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy tất cả hạnh kiểm: " + ex.Message);
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return danhSachHanhKiem;
         }
     }
 }

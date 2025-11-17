@@ -326,7 +326,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
 
             // Kiểm tra Mối quan hệ
-            if (cbMoiQuanHe.SelectedIndex <= 0)
+            if (cbMoiQuanHe.SelectedIndex <= 0 || cbMoiQuanHe.SelectedItem.ToString() == "Chọn mối quan hệ")
             {
                 errorProvider.SetError(cbMoiQuanHe, "Vui lòng chọn mối quan hệ");
                 cbMoiQuanHe.Focus();

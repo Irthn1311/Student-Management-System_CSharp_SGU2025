@@ -83,14 +83,17 @@ INSERT INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
 -- Năm học
 INSERT INTO NamHoc (MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc) VALUES
 ('2024-2025', 'Năm học 2024-2025', '2024-09-01', '2025-05-31'),
-('2025-2026', 'Năm học 2025-2026', '2025-09-01', '2026-05-31');
+('2025-2026', 'Năm học 2025-2026', '2025-09-01', '2026-05-31'),
+('2026-2027', 'Năm học 2026-2027', '2026-09-01', '2027-05-31');
 
--- Học kỳ (2 học kỳ/năm)
+-- Học kỳ (4 học kỳ cho test 2 kịch bản)
 INSERT INTO HocKy (MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT) VALUES
-(1, 'Học kỳ I', '2024-2025', 'Đã kết thúc', '2024-09-01', '2024-12-31'),
-(2, 'Học kỳ II', '2024-2025', 'Đã kết thúc', '2025-01-01', '2025-05-31'),
-(3, 'Học kỳ I', '2025-2026', 'Đang diễn ra', '2025-09-01', '2025-12-31'),
-(4, 'Học kỳ II', '2025-2026', 'Chưa bắt đầu', '2026-01-01', '2026-05-31');
+-- Năm 2025-2026: Test kịch bản HK1 -> HK2
+(1, 'Học kỳ I', '2025-2026', 'Đang diễn ra', '2025-09-01', '2026-01-15'),
+(2, 'Học kỳ II', '2025-2026', 'Chưa bắt đầu', '2026-01-16', '2026-05-31'),
+-- Năm 2026-2027: Sẵn sàng cho test kịch bản HK2 -> HK1 năm sau
+(3, 'Học kỳ I', '2026-2027', 'Chưa bắt đầu', '2026-09-01', '2027-01-15'),
+(4, 'Học kỳ II', '2026-2027', 'Chưa bắt đầu', '2027-01-16', '2027-05-31');
 
 -- =====================================================================
 -- PHẦN 3: GIÁO VIÊN (65-70 giáo viên)
@@ -344,6 +347,38 @@ CROSS JOIN (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT
 LIMIT 924;
 
 SELECT 'Students insertion completed (1008 students)' AS Status;
+
+-- =====================================================================
+-- PHẦN 5B: TẠO TÀI KHOẢN ĐĂNG NHẬP CHO TẤT CẢ HỌC SINH
+-- =====================================================================
+
+-- Tạo tài khoản NguoiDung cho TẤT CẢ học sinh (username = HS{MaHocSinh}, password = 123456)
+-- TrangThai: 'Hoạt động' nếu HS đang học/nghỉ học, 'Tạm khóa' nếu thôi học/bảo lưu
+INSERT INTO NguoiDung (TenDangNhap, MatKhau, TrangThai)
+SELECT 
+    CONCAT('HS', MaHocSinh) as TenDangNhap,
+    '123456' as MatKhau,
+    IF(HocSinh.TrangThai IN ('Đang học', 'Nghỉ học'), 'Hoạt động', 'Tạm khóa') as TrangThai
+FROM HocSinh
+ORDER BY MaHocSinh;
+
+SELECT 'Student accounts created (1008 accounts)' AS Status;
+
+-- Cập nhật TenDangNhap cho TẤT CẢ học sinh
+UPDATE HocSinh 
+SET TenDangNhap = CONCAT('HS', MaHocSinh);
+
+SELECT 'Student TenDangNhap updated (1008 students)' AS Status;
+
+-- Gán vai trò 'student' cho TẤT CẢ tài khoản học sinh
+INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro)
+SELECT 
+    CONCAT('HS', MaHocSinh) as TenDangNhap,
+    'student' as MaVaiTro
+FROM HocSinh
+ORDER BY MaHocSinh;
+
+SELECT 'Student roles assigned (1008 roles)' AS Status;
 
 -- =====================================================================
 -- PHẦN 6: PHỤ HUYNH VÀ LIÊN KẾT

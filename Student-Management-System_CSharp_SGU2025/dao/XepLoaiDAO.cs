@@ -320,5 +320,49 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
             return thongKe;
         }
+
+        /// <summary>
+        /// Lấy tất cả xếp loại trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<XepLoaiDTO> GetAllXepLoai()
+        {
+            List<XepLoaiDTO> danhSachXepLoai = new List<XepLoaiDTO>();
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+                string query = "SELECT MaHocSinh, MaHocKy, HocLuc, GhiChu FROM XepLoai";
+                
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        XepLoaiDTO xl = new XepLoaiDTO
+                        {
+                            MaHocSinh = reader.GetInt32("MaHocSinh"),
+                            MaHocKy = reader.GetInt32("MaHocKy"),
+                            HocLuc = reader.IsDBNull(reader.GetOrdinal("HocLuc")) ? "" : reader.GetString("HocLuc"),
+                            GhiChu = reader.IsDBNull(reader.GetOrdinal("GhiChu")) ? "" : reader.GetString("GhiChu")
+                        };
+                        danhSachXepLoai.Add(xl);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy tất cả xếp loại: " + ex.Message);
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return danhSachXepLoai;
+        }
     }
 }

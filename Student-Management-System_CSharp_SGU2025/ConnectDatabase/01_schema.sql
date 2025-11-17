@@ -106,7 +106,9 @@ CREATE TABLE HocSinh (
     GioiTinh NVARCHAR(10),
     SDTHS VARCHAR(15),
     Email VARCHAR(100) UNIQUE,
-    TrangThai VARCHAR(50) DEFAULT 'Đang học'
+    TrangThai VARCHAR(50) DEFAULT 'Đang học',
+    TenDangNhap VARCHAR(20) UNIQUE COMMENT 'Tên đăng nhập liên kết với bảng NguoiDung',
+    FOREIGN KEY (TenDangNhap) REFERENCES NguoiDung(TenDangNhap) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE PhuHuynh (

@@ -87,8 +87,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // --- Load ComboBox Mối Quan Hệ ---
             cbMoiQuanHe.Items.Clear();
             cbMoiQuanHe.Items.Add("Chọn mối quan hệ");
-            cbMoiQuanHe.Items.Add("Bố");
+            cbMoiQuanHe.Items.Add("Cha");
             cbMoiQuanHe.Items.Add("Mẹ");
+            cbMoiQuanHe.Items.Add("Ông");
+            cbMoiQuanHe.Items.Add("Bà");
             cbMoiQuanHe.Items.Add("Người giám hộ");
         }
 
@@ -290,6 +292,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 hasError = true;
             }
 
+            // Kiểm tra Mối quan hệ
+            if (cbMoiQuanHe.SelectedIndex <= 0 || cbMoiQuanHe.SelectedItem.ToString() == "Chọn mối quan hệ")
+            {
+                errorProvider.SetError(cbMoiQuanHe, "Vui lòng chọn mối quan hệ");
+                cbMoiQuanHe.Focus();
+                hasError = true;
+            }
+
             // ✅ Nếu có lỗi, dừng lại và hiển thị thông báo tổng hợp
             if (hasError)
             {
@@ -310,6 +320,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 updatedHs.SdtHS = txtSoDienThoai.Text.Trim();
                 updatedHs.Email = txtEmail.Text.Trim();
                 updatedHs.TrangThai = txtTrangThai.Text.Trim();
+                
+                // ✅ QUAN TRỌNG: Giữ nguyên TenDangNhap từ học sinh gốc
+                updatedHs.TenDangNhap = currentHocSinh.TenDangNhap;
 
                 // 2b. Thông tin quan hệ & phân lớp MỚI
                 int newSelectedMaPhuHuynh = this.selectedMaPhuHuynh;
@@ -341,7 +354,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         hocSinhPhuHuynhBLL.DeleteQuanHe(maHocSinhToEdit, this.originalMaPhuHuynh);
                         hocSinhPhuHuynhBLL.AddQuanHe(maHocSinhToEdit, newSelectedMaPhuHuynh, newMoiQuanHe);
                     }
-                    // TH2: Giữ nguyên phụ huynh, chỉ đổi mối quan hệ (Bố -> Mẹ)
+                    // TH2: Giữ nguyên phụ huynh, chỉ đổi mối quan hệ (Cha -> Mẹ)
                     else if (this.originalMaPhuHuynh == newSelectedMaPhuHuynh)
                     {
                         hocSinhPhuHuynhBLL.UpdateQuanHe(maHocSinhToEdit, newSelectedMaPhuHuynh, newMoiQuanHe);
