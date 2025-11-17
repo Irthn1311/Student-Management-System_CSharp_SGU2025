@@ -605,6 +605,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     tbKhenThuong.Rows[tbKhenThuong.Rows.Count - 1].Tag = kt.MaKTKL;
                 }
+
+                cbLop.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải danh sách lớp: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
@@ -613,6 +620,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
+        private void LoadKhenThuongDataWithFilter()
+        {
+            try
+            {
+                tbKhenThuong.Rows.Clear();
+                List<KhenThuongKyLuatDTO> dsKhenThuong = ktklBUS.LayDanhSachCoLoc(
+                    "Khen thưởng", selectedMaHocKy, selectedMaLop, searchKeyword);
 
         private void LoadKyLuatDataWithFilter()
         {
