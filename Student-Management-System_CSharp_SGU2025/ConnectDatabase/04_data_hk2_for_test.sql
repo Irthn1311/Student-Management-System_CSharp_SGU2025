@@ -107,18 +107,68 @@ SELECT 'Hanh kiem HK2 da duoc tao (475 ban ghi)' AS Status;
 -- =====================================================================
 -- Xếp loại học lực tương ứng với điểm
 
+
+-- Xếp loại học lực + hạnh kiểm chuẩn cho HK2
 INSERT INTO XepLoai (MaHocSinh, MaHocKy, HocLuc, GhiChu)
-SELECT 
-    pl.MaHocSinh,
-    2 as MaHocKy,
-    CASE 
-        WHEN pl.MaHocSinh MOD 5 = 0 THEN 'Yếu'            -- 20% yếu (ở lại)
-        WHEN pl.MaHocSinh MOD 4 = 0 THEN 'Trung bình'     -- 20%
-        WHEN pl.MaHocSinh MOD 3 = 0 THEN 'Khá'            -- 27%
-        ELSE 'Giỏi'                                       -- 33%
-    END as HocLuc,
-    'HK2 - Tự động tạo' as GhiChu
-FROM PhanLop pl
+SELECT
+    hs.MaHocSinh,
+    2 AS MaHocKy,
+    -- Xếp loại cuối cùng: lấy bậc thấp hơn giữa học lực và hạnh kiểm
+    CASE
+        WHEN
+            (CASE
+                WHEN tb_all >= 8.0 AND tb_main >= 8.0 AND min_mon >= 6.5 THEN 1
+                WHEN tb_all >= 6.5 AND tb_main >= 6.5 AND min_mon >= 5.0 THEN 2
+                WHEN tb_all >= 5.0 AND tb_main >= 5.0 AND min_mon >= 3.5 THEN 3
+                WHEN tb_all >= 3.5 AND min_mon >= 2.0 THEN 4
+                ELSE 5
+            END)
+            >
+            (CASE
+                WHEN hk.HocLuc = 'Giỏi' THEN 1
+                WHEN hk.HocLuc = 'Khá' THEN 2
+                WHEN hk.HocLuc = 'Trung bình' THEN 3
+                WHEN hk.HocLuc = 'Yếu' THEN 4
+                ELSE 5
+            END)
+        THEN
+            CASE
+                WHEN hk.HocLuc = 'Giỏi' THEN 'Giỏi'
+                WHEN hk.HocLuc = 'Khá' THEN 'Khá'
+                WHEN hk.HocLuc = 'Trung bình' THEN 'Trung bình'
+                WHEN hk.HocLuc = 'Yếu' THEN 'Yếu'
+                ELSE 'Kém'
+            END
+        ELSE
+            CASE
+                WHEN tb_all >= 8.0 AND tb_main >= 8.0 AND min_mon >= 6.5 THEN 'Giỏi'
+                WHEN tb_all >= 6.5 AND tb_main >= 6.5 AND min_mon >= 5.0 THEN 'Khá'
+                WHEN tb_all >= 5.0 AND tb_main >= 5.0 AND min_mon >= 3.5 THEN 'Trung bình'
+                WHEN tb_all >= 3.5 AND min_mon >= 2.0 THEN 'Yếu'
+                ELSE 'Kém'
+            END
+    END AS HocLuc,
+    'HK2 - Tự động tính theo quy tắc' as GhiChu
+FROM
+    PhanLop pl
+    JOIN HocSinh hs ON pl.MaHocSinh = hs.MaHocSinh
+    LEFT JOIN (
+        SELECT MaHocSinh, MaHocKy, XepLoai
+        FROM HanhKiem
+        WHERE MaHocKy = 2
+    ) hk ON hk.MaHocSinh = hs.MaHocSinh
+    -- Tính điểm trung bình các môn, điểm TB Toán/Văn/Anh, điểm thấp nhất
+    JOIN (
+        SELECT
+            ds.MaHocSinh,
+            AVG(ds.DiemTrungBinh) AS tb_all,
+            MAX(CASE WHEN mh.TenMonHoc IN ('Toán', 'Ngữ văn', 'Tiếng Anh') THEN ds.DiemTrungBinh ELSE 0 END) AS tb_main,
+            MIN(ds.DiemTrungBinh) AS min_mon
+        FROM DiemSo ds
+        JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
+        WHERE ds.MaHocKy = 2
+        GROUP BY ds.MaHocSinh
+    ) diem ON diem.MaHocSinh = hs.MaHocSinh
 WHERE pl.MaHocKy = 2;
 
 SELECT 'Xep loai HK2 da duoc tao (475 ban ghi)' AS Status;

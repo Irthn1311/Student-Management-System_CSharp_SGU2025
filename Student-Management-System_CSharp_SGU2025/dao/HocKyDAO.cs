@@ -10,7 +10,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
     {
         public bool ThemHocKy(HocKyDTO hocKy)
         {
-            string query = "INSERT INTO HocKy(TenHocKy, MaNamHoc, NgayBD, NgayKT, TrangThai) VALUES(@TenHocKy, @MaNamHoc, @NgayBD, @NgayKT, @TrangThai)";
+            // (Code hàm ThemHocKy của bạn... giữ nguyên)
+            string query = "INSERT INTO HocKy(MaHocKy, TenHocKy, MaNamHoc, NgayBD, NgayKT, TrangThai) VALUES(@MaHocKy, @TenHocKy, @MaNamHoc, @NgayBD, @NgayKT, @TrangThai)";
             try
             {
                 using (MySqlConnection conn = ConnectionDatabase.GetConnection())
@@ -18,6 +19,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     conn.Open();
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
+                        cmd.Parameters.AddWithValue("@MaHocKy", hocKy.MaHocKy); // Thêm MaHocKy nếu bạn dùng (dựa trên SQL)
                         cmd.Parameters.AddWithValue("@TenHocKy", hocKy.TenHocKy);
                         cmd.Parameters.AddWithValue("@MaNamHoc", hocKy.MaNamHoc);
                         cmd.Parameters.AddWithValue("@NgayBD", hocKy.NgayBD);
@@ -37,11 +39,12 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         public List<HocKyDTO> DocDSHocKy()
         {
+            // (Code hàm DocDSHocKy của bạn... giữ nguyên)
             List<HocKyDTO> ds = new List<HocKyDTO>();
             string query = @"SELECT hk.MaHocKy, hk.TenHocKy, hk.MaNamHoc, hk.NgayBD, hk.NgayKT, hk.TrangThai 
-                           FROM HocKy hk 
-                           INNER JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc 
-                           ORDER BY nh.NgayBatDau DESC, hk.NgayBD DESC";
+                            FROM HocKy hk 
+                            INNER JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc 
+                            ORDER BY nh.NgayBatDau DESC, hk.NgayBD DESC";
 
             try
             {
@@ -80,6 +83,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         public HocKyDTO LayHocKyTheoMa(int maHocKy)
         {
+            // (Code hàm LayHocKyTheoMa của bạn... giữ nguyên)
             HocKyDTO hocKy = null;
             string query = "SELECT MaHocKy, TenHocKy, MaNamHoc, NgayBD, NgayKT, TrangThai FROM HocKy WHERE MaHocKy=@MaHocKy";
 
@@ -120,6 +124,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         public bool CapNhatHocKy(HocKyDTO hocKy)
         {
+            // (Code hàm CapNhatHocKy của bạn... giữ nguyên)
             string query = "UPDATE HocKy SET TenHocKy=@TenHocKy, MaNamHoc=@MaNamHoc, NgayBD=@NgayBD, NgayKT=@NgayKT, TrangThai=@TrangThai WHERE MaHocKy=@MaHocKy";
 
             try
@@ -149,6 +154,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         public bool XoaHocKy(int maHocKy)
         {
+            // (Code hàm XoaHocKy của bạn... giữ nguyên)
             string query = "DELETE FROM HocKy WHERE MaHocKy = @MaHocKy";
 
             try
@@ -181,6 +187,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         public List<HocKyDTO> LayDanhSachHocKyTheoNamHoc(string maNamHoc)
         {
+            // (Code hàm LayDanhSachHocKyTheoNamHoc của bạn... giữ nguyên)
             List<HocKyDTO> ds = new List<HocKyDTO>();
             string query = "SELECT MaHocKy, TenHocKy, MaNamHoc, NgayBD, NgayKT, TrangThai FROM HocKy WHERE MaNamHoc=@MaNamHoc ORDER BY NgayBD";
 
@@ -222,6 +229,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         public List<HocKyDTO> GetAllHocKy()
         {
+            // (Code hàm GetAllHocKy của bạn... giữ nguyên)
             List<HocKyDTO> list = new List<HocKyDTO>();
             MySqlConnection conn = null;
 
@@ -231,9 +239,9 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn.Open();
 
                 string query = @"
-                    SELECT MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT
-                    FROM HocKy
-                    ORDER BY MaHocKy DESC";
+                        SELECT MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT
+                        FROM HocKy
+                        ORDER BY MaHocKy DESC";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
@@ -269,5 +277,87 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return list;
         }
 
+        // === BẮT ĐẦU HÀM MỚI (ĐÃ SỬA LẠI) ===
+
+        /// <summary>
+        /// Lấy thông tin năm học theo mã.
+        /// </summary>
+        /// <param name="maNamHoc">Mã của năm học (ví dụ: '2025-2026')</param>
+        /// <returns>Đối tượng NamHocDTO hoặc null nếu không tìm thấy.</returns>
+        public NamHocDTO LayNamHocTheoMa(string maNamHoc)
+        {
+            NamHocDTO namHoc = null;
+            string query = "SELECT MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc FROM NamHoc WHERE MaNamHoc = @maNamHoc";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maNamHoc", maNamHoc);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                namHoc = new NamHocDTO();
+
+                                namHoc.MaNamHoc = reader.GetString("MaNamHoc");
+                                namHoc.TenNamHoc = reader.GetString("TenNamHoc");
+
+                                // SỬA LẠI: Đọc GetDateTime() để khớp với NamHocDTO (không phải nullable)
+                                // Giả định rằng NgayBatDau/NgayKetThuc trong CSDL không bao giờ NULL
+                                if (!reader.IsDBNull(reader.GetOrdinal("NgayBatDau")))
+                                    namHoc.NgayBD = reader.GetDateTime("NgayBatDau");
+
+                                if (!reader.IsDBNull(reader.GetOrdinal("NgayKetThuc")))
+                                    namHoc.NgayKT = reader.GetDateTime("NgayKetThuc");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayNamHocTheoMa: {ex.Message}");
+                throw; // Ném lỗi để BLL xử lý
+            }
+            return namHoc;
+        }
+
+        /// <summary>
+        /// Thêm một năm học mới vào CSDL.
+        /// </summary>
+        /// <returns>True nếu thêm thành công, False nếu thất bại.</returns>
+        public bool ThemNamHoc(NamHocDTO namHoc) // SỬA LẠI: Nhận 1 tham số NamHocDTO
+        {
+            string query = "INSERT INTO NamHoc (MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc) VALUES (@maNamHoc, @tenNamHoc, @ngayBD, @ngayKT)";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        // "Giải nén" DTO
+                        cmd.Parameters.AddWithValue("@maNamHoc", namHoc.MaNamHoc);
+                        cmd.Parameters.AddWithValue("@tenNamHoc", namHoc.TenNamHoc);
+                        cmd.Parameters.AddWithValue("@ngayBD", namHoc.NgayBD);
+                        cmd.Parameters.AddWithValue("@ngayKT", namHoc.NgayKT);
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi ThemNamHoc: {ex.Message}");
+                throw; // Ném lỗi để BLL xử lý
+            }
+        }
+
+        // === KẾT THÚC HÀM MỚI ===
     }
 }

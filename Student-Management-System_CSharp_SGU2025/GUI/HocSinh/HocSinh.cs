@@ -519,8 +519,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 var selectedRow = tableHocSinh.SelectedRows[0];
                 if (selectedRow.Cells["MaHS"].Value != null)
                 {
+                    // Lấy đúng mã học sinh để lọc mối quan hệ
                     int maHocSinh = Convert.ToInt32(selectedRow.Cells["MaHS"].Value);
                     LoadMoiQuanHeByHocSinh(maHocSinh);
+                }
+                else
+                {
+                    // Nếu không lấy được mã, hiển thị tất cả
+                    LoadSampleDataMoiQuanHe();
                 }
             }
             else
@@ -722,23 +728,39 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             tableMoiQuanHe.Rows.Clear();
             danhSachMoiQuanHe = hocSinhPhuHuynhBLL.GetAllQuanHe();
 
-            foreach ((int maHS, int maPH, string mqh) item in danhSachMoiQuanHe) // Dùng var hoặc (int maHS, int maPH, string mqh)
+            foreach ((int maHS, int maPH, string mqh) item in danhSachMoiQuanHe)
             {
-                
-                string tenHS = hocSinhBLL.GetHocSinhById(item.maHS)?.HoTen ?? $"Không tìm thấy HS ({item.maHS})";
-                string tenPH = phuHuynhBLL.GetPhuHuynhById(item.maPH)?.HoTen ?? $"Không tìm thấy PH ({item.maPH})";
-
-                tableMoiQuanHe.Rows.Add(
-                    tenHS,            
-                    tenPH,            
-                    item.mqh,    
-                    ""                
-                );
+                var hs = danhSachHocSinhFull.FirstOrDefault(x => x.MaHS == item.maHS);
+                var ph = danhSachPhuHuynhFull.FirstOrDefault(x => x.MaPhuHuynh == item.maPH);
+                string tenHS = hs != null ? $"{hs.MaHS} - {hs.HoTen}" : $"Không tìm thấy HS ({item.maHS})";
+                string tenPH = ph != null ? $"{ph.MaPhuHuynh} - {ph.HoTen}" : $"Không tìm thấy PH ({item.maPH})";
+                tableMoiQuanHe.Rows.Add(tenHS, tenPH, item.mqh, "");
             }
 
         }
 
         // Lọc bảng Mối Quan Hệ theo Học Sinh được chọn
+                /// <summary>
+                /// Kiểm tra học sinh đã có mối quan hệ cùng loại chưa
+                /// </summary>
+                private bool DaTonTaiMoiQuanHeCungLoai(int maHocSinh, string loaiQuanHe)
+                {
+                    danhSachMoiQuanHe = hocSinhPhuHuynhBLL.GetAllQuanHe();
+                    return danhSachMoiQuanHe.Any(x => x.hocSinh == maHocSinh && x.moiQuanHe.Trim().ToLower() == loaiQuanHe.Trim().ToLower());
+                }
+
+                /// <summary>
+                /// Hàm thêm mối quan hệ, chỉ cho phép mỗi loại 1 lần trên mỗi học sinh
+                /// </summary>
+                private bool ThemMoiQuanHeKhongTrung(int maHocSinh, int maPhuHuynh, string loaiQuanHe)
+                {
+                    if (DaTonTaiMoiQuanHeCungLoai(maHocSinh, loaiQuanHe))
+                    {
+                        MessageBox.Show($"Học sinh này đã có mối quan hệ '{loaiQuanHe}'. Không thể thêm trùng!", "Trùng mối quan hệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return false;
+                    }
+                    return hocSinhPhuHuynhBLL.AddQuanHe(maHocSinh, maPhuHuynh, loaiQuanHe);
+                }
         private void LoadMoiQuanHeByHocSinh(int maHocSinh)
         {
             tableMoiQuanHe.Rows.Clear();
@@ -749,9 +771,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
             foreach ((int maHS, int maPH, string mqh) item in filteredList)
             {
-                string tenHS = hocSinhBLL.GetHocSinhById(item.maHS)?.HoTen ?? $"Không tìm thấy HS ({item.maHS})";
-                string tenPH = phuHuynhBLL.GetPhuHuynhById(item.maPH)?.HoTen ?? $"Không tìm thấy PH ({item.maPH})";
-
+                var hs = danhSachHocSinhFull.FirstOrDefault(x => x.MaHS == item.maHS);
+                var ph = danhSachPhuHuynhFull.FirstOrDefault(x => x.MaPhuHuynh == item.maPH);
+                string tenHS = hs != null ? $"{hs.MaHS} - {hs.HoTen}" : $"Không tìm thấy HS ({item.maHS})";
+                string tenPH = ph != null ? $"{ph.MaPhuHuynh} - {ph.HoTen}" : $"Không tìm thấy PH ({item.maPH})";
                 tableMoiQuanHe.Rows.Add(tenHS, tenPH, item.mqh, "");
             }
         }
@@ -767,9 +790,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
             foreach ((int maHS, int maPH, string mqh) item in filteredList)
             {
-                string tenHS = hocSinhBLL.GetHocSinhById(item.maHS)?.HoTen ?? $"Không tìm thấy HS ({item.maHS})";
-                string tenPH = phuHuynhBLL.GetPhuHuynhById(item.maPH)?.HoTen ?? $"Không tìm thấy PH ({item.maPH})";
-
+                var hs = danhSachHocSinhFull.FirstOrDefault(x => x.MaHS == item.maHS);
+                var ph = danhSachPhuHuynhFull.FirstOrDefault(x => x.MaPhuHuynh == item.maPH);
+                string tenHS = hs != null ? $"{hs.MaHS} - {hs.HoTen}" : $"Không tìm thấy HS ({item.maHS})";
+                string tenPH = ph != null ? $"{ph.MaPhuHuynh} - {ph.HoTen}" : $"Không tìm thấy PH ({item.maPH})";
                 tableMoiQuanHe.Rows.Add(tenHS, tenPH, item.mqh, "");
             }
         }
@@ -805,29 +829,44 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             // Chỉ xử lý khi click vào hàng dữ liệu và cột "ThaoTacMQH"
             if (e.RowIndex >= 0 && e.ColumnIndex == tableMoiQuanHe.Columns["ThaoTacMQH"].Index)
             {
-                // Vì chỉ có 1 icon (Xóa), không cần kiểm tra vị trí click X
                 try
                 {
-                    // Lấy lại Tuple từ danh sách gốc dựa vào chỉ số dòng
-                    var quanHeToDelete = danhSachMoiQuanHe[e.RowIndex];
-                    int maHS = quanHeToDelete.hocSinh;
-                    int maPH = quanHeToDelete.phuHuynh;
 
-                    if (MessageBox.Show($"Bạn có chắc muốn xóa mối quan hệ giữa HS {maHS} và PH {maPH}?",
-                                        "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    // Lấy chuỗi hiển thị dạng "MaHS - HoTen" và "MaPhuHuynh - HoTen"
+                    string hsDisplay = tableMoiQuanHe.Rows[e.RowIndex].Cells["HocSinhMQH"].Value?.ToString();
+                    string phDisplay = tableMoiQuanHe.Rows[e.RowIndex].Cells["PhuHuynhMQH"].Value?.ToString();
+
+                    // Tách mã số từ chuỗi hiển thị
+                    int maHS_local = -1;
+                    int maPH_local = -1;
+                    if (!string.IsNullOrEmpty(hsDisplay) && hsDisplay.Contains("-"))
                     {
-                        if (hocSinhPhuHuynhBLL.DeleteQuanHe(maHS, maPH))
-                        {
-                            MessageBox.Show("Đã xóa mối quan hệ.");
-                            LoadSampleDataMoiQuanHe(); // Nạp lại bảng MQH
-                        }
-                        else
-                        {
-                            MessageBox.Show("Xóa mối quan hệ thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        var parts = hsDisplay.Split('-');
+                        int.TryParse(parts[0].Trim(), out maHS_local);
+                    }
+                    if (!string.IsNullOrEmpty(phDisplay) && phDisplay.Contains("-"))
+                    {
+                        var parts = phDisplay.Split('-');
+                        int.TryParse(parts[0].Trim(), out maPH_local);
+                    }
+
+                    if (maHS_local == -1 || maPH_local == -1)
+                    {
+                        MessageBox.Show("Không thể xác định học sinh hoặc phụ huynh để xóa mối quan hệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    if (hocSinhPhuHuynhBLL.DeleteQuanHe(maHS_local, maPH_local))
+                    {
+                        MessageBox.Show("Đã xóa mối quan hệ.");
+                        LoadSampleDataMoiQuanHe(); // Nạp lại bảng MQH
+                    }
+                    else
+                    {
+                        MessageBox.Show("Xóa mối quan hệ thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                catch (ArgumentOutOfRangeException) // Bắt lỗi nếu rowIndex không hợp lệ
+                catch (ArgumentOutOfRangeException)
                 {
                     MessageBox.Show("Không thể lấy thông tin mối quan hệ để xóa.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -1530,7 +1569,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private void btnXuatExcel_Click(object sender, EventArgs e)
         {
             // Yêu cầu bản quyền cho EPPlus 5 trở lên (dùng NonCommercial cho mục đích học tập/cá nhân)
-            
             ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
             using (SaveFileDialog sfd = new SaveFileDialog())
@@ -1618,7 +1656,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     try
                     {
                         ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-                        
+
                         ImportAllDataFromExcel(ofd.FileName);
                         
                         // Reload lại dữ liệu
