@@ -270,6 +270,24 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         }
 
         /// <summary>
+        /// Lấy điểm trung bình các môn học của học sinh theo học kỳ
+        /// </summary>
+        /// <param name="maHocSinh">Mã học sinh</param>
+        /// <param name="maHocKy">Mã học kỳ</param>
+        /// <returns>Dictionary với key là MaMonHoc, value là điểm trung bình môn đó</returns>
+        public Dictionary<int, float?> LayDiemTrungBinhMonTheoHocKy(int maHocSinh, int maHocKy)
+        {
+            try
+            {
+                return diemSoDAO.LayDiemTrungBinhMonTheoHocKy(maHocSinh, maHocKy);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lấy điểm TB môn học của HS {maHocSinh} trong HK {maHocKy}: " + ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Lấy bảng điểm theo học kỳ và lớp
         /// </summary>
         public List<XemBangDiemDTO> GetBangDiemTheoHocKyVaLop(int maHocKy, int? maLop = null)

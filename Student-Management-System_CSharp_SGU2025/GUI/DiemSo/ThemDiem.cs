@@ -259,7 +259,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
 
                 foreach (var hs in danhSachHS)
                 {
+                    //string displayText = $"{hs.MaHocSinh} - {hs.HoTen}";
+                    //cbHocSinh.Items.Add(new { Text = displayText, Value = hs.MaHocSinh });
                     string displayText = $"{hs.MaHocSinh} - {hs.HoTen}";
+                    // Thay đổi: Lưu MaHocSinh dạng string (đã là string từ DTO)
                     cbHocSinh.Items.Add(new { Text = displayText, Value = hs.MaHocSinh });
                 }
 

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
-    internal class HanhKiemBUS
+    public class HanhKiemBUS
     {
         private HanhKiemDAO hanhKiemDAO;
         private KhenThuongKyLuatDAO ktklDAO;
@@ -168,6 +168,36 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
             return hanhKiemDAO.LayHanhKiem(maHocSinh, maHocKy);
 
+        }
+
+        // === 5. Lấy Hạnh Kiểm Theo Học Sinh và Học Kỳ ===
+        public HanhKiemDTO GetHanhKiemByStudent(int maHocSinh, int maHocKy) // Sửa: HanhKiem -> HanhKiemDTO
+        {
+            try
+            {
+                return hanhKiemDAO.LayHanhKiemTheoKey(maHocSinh, maHocKy); // Đã là int
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS GetHanhKiemByStudent: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả hạnh kiểm trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<HanhKiemDTO> GetAllHanhKiem()
+        {
+            try
+            {
+                return hanhKiemDAO.GetAllHanhKiem();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy tất cả hạnh kiểm: " + ex.Message);
+            }
         }
     }
 }

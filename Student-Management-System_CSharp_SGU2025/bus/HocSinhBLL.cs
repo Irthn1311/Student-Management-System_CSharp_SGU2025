@@ -10,10 +10,12 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
     {
         // 1. Tạo thể hiện của HocSinhDAO
         private HocSinhDAO hocSinhDAO;
+        private LoginBUS loginBUS;
 
         public HocSinhBLL()
         {
             hocSinhDAO = new HocSinhDAO(); // Khởi tạo DAO khi BLL được tạo
+            loginBUS = new LoginBUS(); // Khởi tạo LoginBUS để tạo tài khoản
         }
 
         /// <summary>
@@ -27,9 +29,16 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             errors = new List<string>();
 
             if (string.IsNullOrWhiteSpace(hs.HoTen)) errors.Add("Họ và tên không được để trống.");
-            if (!IsValidNgaySinh(hs.NgaySinh)) errors.Add("Ngày sinh không hợp lệ (tuổi 16-18)."); // Thêm giải thích
+            else if (Regex.IsMatch(hs.HoTen, @"\d")) errors.Add("Họ và tên không được chứa số.");
+            if (!IsValidNgaySinh(hs.NgaySinh)) errors.Add("Ngày sinh không hợp lệ (từ 16 tuổi trở lên).");
             if (string.IsNullOrWhiteSpace(hs.GioiTinh) || (hs.GioiTinh != "Nam" && hs.GioiTinh != "Nữ")) errors.Add("Vui lòng chọn giới tính.");
-            if (string.IsNullOrWhiteSpace(hs.TrangThai) || (hs.TrangThai != "Đang học" && hs.TrangThai != "Nghỉ học")) errors.Add("Trạng thái không hợp lệ.");
+            // 4 trạng thái hợp lệ: Đang học, Nghỉ học, Bảo lưu, Thôi học
+            if (string.IsNullOrWhiteSpace(hs.TrangThai) || 
+                (hs.TrangThai != "Đang học" && hs.TrangThai != "Nghỉ học" && 
+                 hs.TrangThai != "Bảo lưu" && hs.TrangThai != "Thôi học")) 
+            {
+                errors.Add("Trạng thái không hợp lệ.");
+            }
 
             
             if (string.IsNullOrWhiteSpace(hs.Email))
@@ -108,7 +117,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 return false;
             }
 
-            // 2. Kiểm tra tuổi hợp lệ (16-18 tuổi)
+            // 2. Kiểm tra tuổi hợp lệ (từ 16 tuổi trở lên)
             int currentYear = DateTime.Now.Year;
             int birthYear = ngaySinh.Year;
             int age = currentYear - birthYear;
@@ -120,10 +129,10 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 age--;
             }
 
-            // Kiểm tra xem tuổi có nằm trong khoảng 16 đến 18 không
-            if (age < 16 || age > 18)
+            // Kiểm tra xem tuổi có từ 16 trở lên không
+            if (age < 16)
             {
-                return false; // Không đúng độ tuổi cấp 3
+                return false; // Chưa đủ 16 tuổi
             }
 
             return true; // Hợp lệ
@@ -222,6 +231,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
         /// <summary>
         /// Thêm học sinh mới sau khi đã kiểm tra dữ liệu và trùng lặp.
+        /// Tự động tạo tài khoản đăng nhập cho học sinh với username "HS{MaHocSinh}" và password "123456".
         /// </summary>
         /// <returns>ID (Ma_Hoc_Sinh) của học sinh vừa thêm, hoặc -1 nếu thất bại.</returns>
         public int AddHocSinh(HocSinhDTO hs)
@@ -245,7 +255,50 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 }
                 // ================================
 
-                return hocSinhDAO.ThemHocSinh(hs);
+                // === BƯỚC 1: Thêm học sinh vào CSDL ===
+                int newMaHocSinh = hocSinhDAO.ThemHocSinh(hs);
+                if (newMaHocSinh <= 0)
+                {
+                    throw new Exception("Thêm học sinh thất bại.");
+                }
+
+                // === BƯỚC 2: Tạo tài khoản đăng nhập ===
+                string tenDangNhap = "HS" + newMaHocSinh;
+                string matKhauMacDinh = "123456";
+                string trangThai = "Hoạt động";
+
+                bool taoTaiKhoanThanhCong = false;
+                try
+                {
+                    taoTaiKhoanThanhCong = loginBUS.ThemNguoiDung(tenDangNhap, matKhauMacDinh, trangThai);
+                }
+                catch (Exception exLogin)
+                {
+                    Console.WriteLine("Lỗi tạo tài khoản đăng nhập: " + exLogin.Message);
+                    // Rollback: Xóa học sinh vừa thêm
+                    hocSinhDAO.XoaHocSinh(newMaHocSinh);
+                    throw new Exception($"Không thể tạo tài khoản đăng nhập cho học sinh. Đã rollback. Chi tiết: {exLogin.Message}");
+                }
+
+                if (!taoTaiKhoanThanhCong)
+                {
+                    // Rollback: Xóa học sinh vừa thêm
+                    hocSinhDAO.XoaHocSinh(newMaHocSinh);
+                    throw new Exception("Tạo tài khoản đăng nhập thất bại. Đã rollback.");
+                }
+
+                // === BƯỚC 3: Cập nhật TenDangNhap cho học sinh ===
+                bool capNhatThanhCong = hocSinhDAO.CapNhatTenDangNhap(newMaHocSinh, tenDangNhap);
+                if (!capNhatThanhCong)
+                {
+                    // Rollback: Xóa học sinh (tài khoản sẽ bị xóa theo CASCADE nếu có ràng buộc)
+                    hocSinhDAO.XoaHocSinh(newMaHocSinh);
+                    throw new Exception("Cập nhật tên đăng nhập cho học sinh thất bại. Đã rollback.");
+                }
+
+                // === THÀNH CÔNG ===
+                Console.WriteLine($"Thêm học sinh thành công. Mã: {newMaHocSinh}, Tài khoản: {tenDangNhap}");
+                return newMaHocSinh;
             }
             catch (ArgumentException) // Bắt lỗi validation (trùng lặp)
             {
@@ -254,12 +307,13 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             catch (Exception ex)
             {
                 Console.WriteLine("Lỗi BLL AddHocSinh: " + ex.Message);
-                return -1;
+                throw; // Ném lại để UI hiển thị thông báo lỗi chi tiết
             }
         }
 
         /// <summary>
         /// Cập nhật thông tin học sinh sau khi đã kiểm tra dữ liệu và trùng lặp.
+        /// Tự động cập nhật trạng thái tài khoản dựa trên trạng thái học sinh.
         /// </summary>
         /// <returns>True nếu thành công, False nếu thất bại.</returns>
         public bool UpdateHocSinh(HocSinhDTO hs)
@@ -290,6 +344,75 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     throw new ArgumentException($"Email '{hs.Email}' đã tồn tại cho một học sinh khác.");
                 }
                 // ===========================================
+
+                // === CẬP NHẬT TRẠNG THÁI TÀI KHOẢN DỰA TRÊN TRẠNG THÁI HỌC SINH ===
+                // Nếu học sinh có tài khoản đăng nhập, cập nhật trạng thái tài khoản
+                if (!string.IsNullOrWhiteSpace(hs.TenDangNhap))
+                {
+                    string trangThaiTaiKhoan;
+                    
+                    // Logic: "Đang học" hoặc "Nghỉ học" → Tài khoản "Hoạt động"
+                    //        "Bảo lưu" hoặc "Thôi học" → Tài khoản "Tạm khóa"
+                    if (hs.TrangThai == "Đang học" || hs.TrangThai == "Nghỉ học")
+                    {
+                        trangThaiTaiKhoan = "Hoạt động";
+                    }
+                    else // "Bảo lưu" hoặc "Thôi học"
+                    {
+                        trangThaiTaiKhoan = "Tạm khóa";
+                    }
+
+                    Console.WriteLine($"[DEBUG] Học sinh {hs.MaHS} ({hs.HoTen}):");
+                    Console.WriteLine($"[DEBUG] - Trạng thái HS: {hs.TrangThai}");
+                    Console.WriteLine($"[DEBUG] - Trạng thái TK sẽ cập nhật: {trangThaiTaiKhoan}");
+                    Console.WriteLine($"[DEBUG] - Username: {hs.TenDangNhap}");
+
+                    // Cập nhật trạng thái tài khoản
+                    try
+                    {
+                        // Lấy thông tin tài khoản hiện tại
+                        var taiKhoan = loginBUS.LayNguoiDungTheoTen(hs.TenDangNhap);
+                        
+                        if (taiKhoan.HasValue)
+                        {
+                            Console.WriteLine($"[DEBUG] - Trạng thái TK hiện tại: {taiKhoan.Value.trangThai}");
+                            
+                            // Chỉ cập nhật nếu trạng thái thay đổi
+                            if (taiKhoan.Value.trangThai != trangThaiTaiKhoan)
+                            {
+                                bool capNhatThanhCong = loginBUS.CapNhatNguoiDung(hs.TenDangNhap, taiKhoan.Value.matKhau, trangThaiTaiKhoan);
+                                
+                                if (capNhatThanhCong)
+                                {
+                                    Console.WriteLine($"[SUCCESS] Đã cập nhật trạng thái tài khoản {hs.TenDangNhap}: {taiKhoan.Value.trangThai} → {trangThaiTaiKhoan}");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"[ERROR] Cập nhật tài khoản {hs.TenDangNhap} THẤT BẠI!");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"[INFO] Trạng thái tài khoản {hs.TenDangNhap} đã đúng, không cần cập nhật.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[WARNING] Không tìm thấy tài khoản {hs.TenDangNhap}");
+                        }
+                    }
+                    catch (Exception exLogin)
+                    {
+                        Console.WriteLine($"[ERROR] Lỗi khi cập nhật trạng thái tài khoản {hs.TenDangNhap}: {exLogin.Message}");
+                        Console.WriteLine($"[ERROR] StackTrace: {exLogin.StackTrace}");
+                        // Không throw exception để không ảnh hưởng đến việc cập nhật học sinh
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[WARNING] Học sinh {hs.MaHS} không có tài khoản đăng nhập (TenDangNhap rỗng)");
+                }
+                // ======================================================================
 
                 return hocSinhDAO.CapNhatHocSinh(hs);
             }
@@ -341,6 +464,49 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 Console.WriteLine("Lỗi BLL GetHocSinhById: " + ex.Message);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Lấy email của học sinh theo mã học sinh (dùng cho khôi phục mật khẩu).
+        /// </summary>
+        /// <param name="maHocSinh">Mã học sinh</param>
+        /// <returns>Email của học sinh, hoặc null nếu không tìm thấy/không có email</returns>
+        public string LayEmailTheoMaHocSinh(int maHocSinh)
+        {
+            try
+            {
+                Console.WriteLine($"[BLL] Đang tìm email cho học sinh có mã: {maHocSinh}");
+                
+                HocSinhDTO hocSinh = hocSinhDAO.TimHocSinhTheoMa(maHocSinh);
+                
+                if (hocSinh == null)
+                {
+                    Console.WriteLine($"[BLL] Không tìm thấy học sinh có mã: {maHocSinh}");
+                    return null;
+                }
+
+                if (string.IsNullOrWhiteSpace(hocSinh.Email))
+                {
+                    Console.WriteLine($"[BLL] Học sinh {maHocSinh} ({hocSinh.HoTen}) không có email");
+                    return null;
+                }
+
+                Console.WriteLine($"[BLL] Tìm thấy email: {hocSinh.Email} cho học sinh {hocSinh.HoTen}");
+                return hocSinh.Email;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Lỗi BLL LayEmailTheoMaHocSinh: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// ✅ Cập nhật TenDangNhap cho học sinh (dùng sau khi tạo tài khoản)
+        /// </summary>
+        public bool UpdateTenDangNhap(int maHS, string tenDangNhap)
+        {
+            return hocSinhDAO.CapNhatTenDangNhap(maHS, tenDangNhap); // ✅ Sửa tên method đúng với DAO
         }
 
         // Bạn có thể thêm các hàm BLL khác ở đây, ví dụ: tìm kiếm, lọc...

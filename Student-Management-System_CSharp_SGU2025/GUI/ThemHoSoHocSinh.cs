@@ -25,6 +25,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // Biến để lưu ID phụ huynh đã chọn
         private int selectedMaPhuHuynh = -1;
 
+        // ✅ Property để trả về học sinh vừa tạo
+        public HocSinhDTO NewHocSinh { get; private set; }
+
+        // ✅ Error Provider để hiển thị lỗi validation
+        private ErrorProvider errorProvider;
+
         public ThemHoSoHocSinh()
         {
             InitializeComponent();
@@ -40,10 +46,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             danhSachLop = new List<LopDTO>();
             danhSachHocKy = new List<HocKyDTO>();
 
+            // ✅ Khởi tạo Error Provider với icon X đỏ nhỏ
+            errorProvider = new ErrorProvider();
+            errorProvider.BlinkStyle = ErrorBlinkStyle.NeverBlink;
+            // Tạo icon X đỏ nhỏ hơn (16x16 thay vì 32x32 mặc định)
+            using (Bitmap bmp = new Bitmap(16, 16))
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.DrawIcon(SystemIcons.Error, new Rectangle(0, 0, 16, 16));
+                errorProvider.Icon = Icon.FromHandle(bmp.GetHicon());
+            }
+
             SetupTablePhuHuynh();
             LoadSampleDataPhuHuynh();
             LoadMasterPhuHuynhList(); // Tải danh sách phụ huynh gốc
             RefreshPhuHuynhTable("");
+            
+            // ✅ Thiết lập Tab Order
+            SetupTabOrder();
         }
 
         private void SetupTablePhuHuynh()
@@ -73,6 +93,42 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tablePhuHuynh.Columns["DiaChi"].FillWeight = 25; tablePhuHuynh.Columns["DiaChi"].MinimumWidth = 200;
 
             tablePhuHuynh.CellDoubleClick += TablePhuHuynh_CellDoubleClick;
+        }
+
+        /// <summary>
+        /// ✅ Thiết lập thứ tự Tab cho các control
+        /// </summary>
+        private void SetupTabOrder()
+        {
+            // Đặt TabStop = false cho txtPhuHuynhDuocChon
+            txtPhuHuynhDuocChon.TabStop = false;
+
+            // Thiết lập thứ tự Tab
+            int tabIndex = 0;
+            txtHovaTen.TabIndex = tabIndex++;
+            dateTimePickerNgaySinh.TabIndex = tabIndex++;
+            rbNam.TabIndex = tabIndex++;
+            rbNu.TabIndex = tabIndex++;
+            txtSoDienThoai.TabIndex = tabIndex++;
+            txtEmail.TabIndex = tabIndex++;
+            txtTimKiem.TabIndex = tabIndex++;
+            cbMoiQuanHe.TabIndex = tabIndex++;
+            btnThemHocSinh.TabIndex = tabIndex++;
+            btnHuy.TabIndex = tabIndex++;
+        }
+
+        /// <summary>
+        /// ✅ Xóa tất cả lỗi Error Provider
+        /// </summary>
+        private void ClearAllErrors()
+        {
+            errorProvider.SetError(txtHovaTen, "");
+            errorProvider.SetError(dateTimePickerNgaySinh, "");
+            errorProvider.SetError(txtSoDienThoai, "");
+            errorProvider.SetError(txtEmail, "");
+            errorProvider.SetError(txtPhuHuynhDuocChon, "");
+            errorProvider.SetError(cbMoiQuanHe, "");
+            errorProvider.SetError(groupBoxGioiTinh, ""); // ✅ Xóa lỗi GroupBox giới tính
         }
 
         /// <summary>
@@ -190,24 +246,100 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnThemHocSinh_Click_1(object sender, EventArgs e)
         {
-            if (this.selectedMaPhuHuynh <= 0) // Kiểm tra bằng ID đã lưu
+            // ✅ Xóa lỗi cũ trước khi validate
+            ClearAllErrors();
+
+            // ✅ Validate từng trường và hiển thị Error Provider
+            bool hasError = false;
+
+            // Kiểm tra Họ và Tên
+            if (string.IsNullOrWhiteSpace(txtHovaTen.Text))
             {
-                MessageBox.Show("Vui lòng chọn phụ huynh từ danh sách.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtTimKiem.Focus();
-                return;
+                errorProvider.SetError(txtHovaTen, "Vui lòng nhập họ và tên học sinh");
+                hasError = true;
             }
-            if (cbMoiQuanHe.SelectedIndex <= 0) // Giả sử Index 0 là "Chọn mối quan hệ"
+            else if (System.Text.RegularExpressions.Regex.IsMatch(txtHovaTen.Text, @"\d"))
             {
-                MessageBox.Show("Vui lòng chọn mối quan hệ.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbMoiQuanHe.Focus();
-                return;
-            }
-            if (rbNam.Checked == false && rbNu.Checked == false)
-            {
-                MessageBox.Show("Vui lòng chọn giới tính.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                errorProvider.SetError(txtHovaTen, "Họ và tên không được chứa số");
+                hasError = true;
             }
 
+            // Kiểm tra Ngày sinh (từ 16 tuổi trở lên)
+            if (dateTimePickerNgaySinh.Value >= DateTime.Now)
+            {
+                errorProvider.SetError(dateTimePickerNgaySinh, "Ngày sinh phải nhỏ hơn ngày hiện tại");
+                hasError = true;
+            }
+            else
+            {
+                // Tính tuổi
+                int age = DateTime.Now.Year - dateTimePickerNgaySinh.Value.Year;
+                if (dateTimePickerNgaySinh.Value.Date > DateTime.Now.AddYears(-age))
+                {
+                    age--;
+                }
+                
+                if (age < 16)
+                {
+                    errorProvider.SetError(dateTimePickerNgaySinh, "Học sinh phải từ 16 tuổi trở lên");
+                    hasError = true;
+                }
+            }
+
+            // Kiểm tra Số điện thoại (bắt buộc)
+            if (string.IsNullOrWhiteSpace(txtSoDienThoai.Text))
+            {
+                errorProvider.SetError(txtSoDienThoai, "Vui lòng nhập số điện thoại");
+                hasError = true;
+            }
+            else if (!System.Text.RegularExpressions.Regex.IsMatch(txtSoDienThoai.Text, @"^[0-9]{10,11}$"))
+            {
+                errorProvider.SetError(txtSoDienThoai, "Số điện thoại phải là 10-11 chữ số");
+                hasError = true;
+            }
+
+            // Kiểm tra Email (bắt buộc)
+            if (string.IsNullOrWhiteSpace(txtEmail.Text))
+            {
+                errorProvider.SetError(txtEmail, "Vui lòng nhập email");
+                hasError = true;
+            }
+            else if (!System.Text.RegularExpressions.Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                errorProvider.SetError(txtEmail, "Email không hợp lệ");
+                hasError = true;
+            }
+
+            // Kiểm tra Giới tính (hiển thị lỗi tại GroupBox)
+            if (!rbNam.Checked && !rbNu.Checked)
+            {
+                errorProvider.SetError(groupBoxGioiTinh, "Vui lòng chọn giới tính");
+                hasError = true;
+            }
+
+            // Kiểm tra Phụ huynh
+            if (this.selectedMaPhuHuynh <= 0)
+            {
+                errorProvider.SetError(txtPhuHuynhDuocChon, "Vui lòng chọn phụ huynh từ danh sách");
+                txtTimKiem.Focus();
+                hasError = true;
+            }
+
+            // Kiểm tra Mối quan hệ
+            if (cbMoiQuanHe.SelectedIndex <= 0 || cbMoiQuanHe.SelectedItem.ToString() == "Chọn mối quan hệ")
+            {
+                errorProvider.SetError(cbMoiQuanHe, "Vui lòng chọn mối quan hệ");
+                cbMoiQuanHe.Focus();
+                hasError = true;
+            }
+
+            // ✅ Nếu có lỗi, dừng lại và hiển thị thông báo tổng hợp
+            if (hasError)
+            {
+                MessageBox.Show("Vui lòng kiểm tra lại các trường đánh dấu đỏ.", "Dữ liệu không hợp lệ", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             // --- 2. Thu thập dữ liệu từ Form ---
             HocSinhDTO hs = new HocSinhDTO();
@@ -231,6 +363,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (newMaHocSinh > 0)
                 {
+                    // ✅ Lưu lại MaHS vào object để trả về
+                    hs.MaHS = newMaHocSinh;
+                    this.NewHocSinh = hs;
+
                     bool allSuccess = true;
                     string warningMessage = "";
 
