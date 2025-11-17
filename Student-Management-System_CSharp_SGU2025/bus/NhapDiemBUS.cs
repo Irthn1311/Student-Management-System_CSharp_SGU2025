@@ -303,18 +303,17 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         }
 
         /// <summary>
-        /// Lấy tất cả điểm số trong hệ thống
-        /// Dùng cho logic phân lớp tự động
+        /// Lấy danh sách lớp theo học kỳ
         /// </summary>
-        public List<DiemSoDTO> GetAllDiemSo()
+        public List<LopDTO> GetDanhSachLopTheoHocKy(int maHocKy)
         {
             try
             {
-                return diemSoDAO.GetAllDiemSo();
+                return lopDAO.GetDanhSachLopTheoHocKy(maHocKy);
             }
             catch (Exception ex)
             {
-                throw new Exception("Lỗi nghiệp vụ khi lấy tất cả điểm số: " + ex.Message);
+                throw new Exception("Lỗi nghiệp vụ khi lấy danh sách lớp theo học kỳ: " + ex.Message);
             }
         }
 

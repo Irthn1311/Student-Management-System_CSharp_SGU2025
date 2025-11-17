@@ -523,15 +523,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
-        /// <summary>
-        /// Cập nhật TenDangNhap cho học sinh (liên kết với NguoiDung).
-        /// </summary>
-        /// <param name="maHocSinh">Mã học sinh cần cập nhật.</param>
-        /// <param name="tenDangNhap">Tên đăng nhập mới.</param>
-        /// <returns>True nếu cập nhật thành công, False nếu thất bại.</returns>
-        public bool CapNhatTenDangNhap(int maHocSinh, string tenDangNhap)
+        public HocSinhDTO LayHocSinhTheoMa(int maHocSinh)
         {
-            string sql = "UPDATE HocSinh SET TenDangNhap = @tenDangNhap WHERE MaHocSinh = @maHS";
+            string sql = "SELECT * FROM HocSinh WHERE MaHocSinh = @maHS";
+
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 try
@@ -539,22 +534,28 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     conn.Open();
                     using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                     {
-                        cmd.Parameters.AddWithValue("@tenDangNhap", tenDangNhap);
                         cmd.Parameters.AddWithValue("@maHS", maHocSinh);
-                        int result = cmd.ExecuteNonQuery();
-                        return result > 0;
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new HocSinhDTO
+                                {
+                                    MaHS = reader.GetInt32("MaHocSinh"),
+                                    HoTen = reader.GetString("HoTen"),
+                                    // Thêm các field khác nếu cần
+                                };
+                            }
+                        }
                     }
-                }
-                catch (MySqlException ex)
-                {
-                    Console.WriteLine("Lỗi cập nhật TenDangNhap học sinh: " + ex.Message);
-                    return false;
                 }
                 finally
                 {
                     ConnectionDatabase.CloseConnection(conn);
                 }
             }
+            return null;
         }
 
         // --- Bạn có thể thêm các hàm tìm kiếm khác ở đây ---

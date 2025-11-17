@@ -518,6 +518,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return list;
         }
 
+
         /// <summary>
         /// Xóa tất cả phân lớp trong học kỳ cụ thể.
         /// </summary>

@@ -401,5 +401,60 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
+        public List<KhenThuongKyLuatDTO> LayDanhSachKyLuatDaDuyet(int maHocSinh, int maHocKy)
+        {
+            List<KhenThuongKyLuatDTO> ds = new List<KhenThuongKyLuatDTO>();
+
+            string sql = @"SELECT kt.* 
+                  FROM KhenThuongKyLuat kt
+                  JOIN PhanLop pl ON kt.MaHocSinh = pl.MaHocSinh
+                  WHERE kt.Loai = 'Kỷ luật' 
+                  AND kt.MaHocSinh = @maHS
+                  AND pl.MaHocKy = @maHK
+                  AND kt.TrangThaiDuyet = 'Đã duyệt'
+                  ORDER BY kt.NgayApDung DESC";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maHS", maHocSinh);
+                        cmd.Parameters.AddWithValue("@maHK", maHocKy);
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                ds.Add(new KhenThuongKyLuatDTO
+                                {
+                                    MaKTKL = reader.GetInt32("MaKTKL"),
+                                    MaHocSinh = reader.GetInt32("MaHocSinh"),
+                                    Loai = reader.GetString("Loai"),
+                                    NoiDung = reader.GetString("NoiDung"),
+                                    MucXuLy = reader.IsDBNull(reader.GetOrdinal("MucXuLy"))
+                                        ? null : reader.GetString("MucXuLy"),
+                                    NgayApDung = reader.GetDateTime("NgayApDung"),
+                                    TrangThaiDuyet = reader.GetString("TrangThaiDuyet")
+                                });
+                            }
+                        }
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi lấy danh sách kỷ luật đã duyệt: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return ds;
+        }
+
     }
 }
