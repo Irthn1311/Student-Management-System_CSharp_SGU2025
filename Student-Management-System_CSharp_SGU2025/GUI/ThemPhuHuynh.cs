@@ -15,6 +15,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     public partial class ThemPhuHuynh : Form
     {
         private PhuHuynhBLL phuHuynhBLL;
+        
+        // ✅ Property để trả về phụ huynh vừa tạo
+        public PhuHuynhDTO NewPhuHuynh { get; private set; }
+        
         public ThemPhuHuynh()
         {
             InitializeComponent();
@@ -45,6 +49,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // --- 2. Gọi BLL và kiểm tra kết quả ---
                 if (phuHuynhBLL.AddPhuHuynh(ph)) // Kiểm tra kết quả trả về
                 {
+                    // ✅ Lưu lại phụ huynh vừa tạo
+                    // Lưu ý: Vì AddPhuHuynh chỉ return bool, ta cần load lại từ DB
+                    // Cách tốt nhất: Sửa AddPhuHuynh return int (MaPhuHuynh)
+                    // Tạm thời: Lấy phụ huynh có SĐT/Email vừa thêm
+                    var allPH = phuHuynhBLL.GetAllPhuHuynh();
+                    this.NewPhuHuynh = allPH.FirstOrDefault(p => 
+                        p.SoDienThoai == ph.SoDienThoai && p.Email == ph.Email);
+                    
                     MessageBox.Show("Thêm phụ huynh thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information); // Thêm thông báo
                     this.DialogResult = DialogResult.OK; // Đặt kết quả thành công
                     this.Close(); // Đóng form

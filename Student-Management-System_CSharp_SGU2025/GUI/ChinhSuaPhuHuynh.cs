@@ -17,6 +17,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private PhuHuynhBLL phuHuynhBLL;
         private PhuHuynhDTO currentPhuHuynh;
         private int maPhuHuynhToEdit;
+        
+        // ✅ Property để trả về phụ huynh đã sửa
+        public PhuHuynhDTO UpdatedPhuHuynh { get; private set; }
+        
         public ChinhSuaPhuHuynh(int maPhuHuynh)
         {
             InitializeComponent();
@@ -82,6 +86,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // và kiểm tra trùng SĐT/Email (loại trừ chính mã PH này)
                 if (phuHuynhBLL.UpdatePhuHuynh(updatedPh))
                 {
+                    // ✅ Lưu lại phụ huynh đã cập nhật
+                    this.UpdatedPhuHuynh = updatedPh;
+                    
                     MessageBox.Show("Cập nhật thông tin phụ huynh thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.DialogResult = DialogResult.OK; // Đặt kết quả thành công
                     this.Close(); // Đóng form

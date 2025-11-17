@@ -181,5 +181,48 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 }
             }
         }
+
+        public List<MonHocDTO> GetAllMonHoc()
+        {
+            List<MonHocDTO> list = new List<MonHocDTO>();
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+                string query = @"
+    SELECT MaMonHoc, TenMonHoc, SoTiet
+    FROM MonHoc
+    ORDER BY TenMonHoc";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            MonHocDTO mh = new MonHocDTO();
+
+                            // GÁN TRỰC TIẾP VÀO FIELD thay vì property
+                            mh.maMon = Convert.ToInt32(reader["MaMonHoc"]);
+                            mh.tenMon = reader["TenMonHoc"].ToString();
+                            mh.soTiet = Convert.ToInt32(reader["SoTiet"]);
+
+                            list.Add(mh);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy danh sách môn học: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+            return list;
+        }
+
     }
 }

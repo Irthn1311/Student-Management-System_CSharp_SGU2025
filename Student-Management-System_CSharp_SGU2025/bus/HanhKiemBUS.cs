@@ -1,38 +1,35 @@
 ﻿using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using System;
 using System.Collections.Generic;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
-    internal class HanhKiemBUS
+    public class HanhKiemBUS
     {
         private HanhKiemDAO hanhKiemDAO = new HanhKiemDAO();
-        // Danh sách xếp loại hợp lệ theo yêu cầu
-        private readonly List<string> XepLoaiHopLe = new List<string> { "Tốt", "Khá", "TB", "Yếu" };
+        // Sửa "TB" thành "Trung bình"
+        private readonly List<string> XepLoaiHopLe = new List<string> { "Tốt", "Khá", "Trung bình", "Yếu" };
 
         // === 1. Hiển thị: Đọc Danh Sách Hạnh Kiểm (Đầy đủ) ===
-        public List<HanhKiem> DocDSHanhKiem()
+        public List<HanhKiemDTO> DocDSHanhKiem() // Sửa: HanhKiem -> HanhKiemDTO
         {
-            // Gọi hàm JOIN từ DAO để lấy danh sách đầy đủ (HK + Tên HS + Tên HK)
             return hanhKiemDAO.DocDSHanhKiemDayDu();
         }
 
         // === 2. CRUD + Validate: Thêm Hạnh Kiểm ===
-        public string ThemHanhKiem(HanhKiem hk)
+        public string ThemHanhKiem(HanhKiemDTO hk) // Sửa: HanhKiem -> HanhKiemDTO
         {
-            // Validation 1: Dữ liệu cơ bản
-            if (string.IsNullOrEmpty(hk.MaHocSinh) || hk.MaHocKy <= 0)
+            if (hk.MaHocSinh <= 0 || hk.MaHocKy <= 0)
             {
-                return "Mã học sinh và Mã học kỳ không được để trống.";
+                return "Mã học sinh và Mã học kỳ không được để trống/âm.";
             }
 
-            // Validation 2: Xếp loại hợp lệ
-            if (!XepLoaiHopLe.Contains(hk.XepLoai))
+            if (string.IsNullOrWhiteSpace(hk.XepLoai) || !XepLoaiHopLe.Contains(hk.XepLoai))
             {
-                return "Xếp loại phải là 'Tốt', 'Khá', 'TB', hoặc 'Yếu'.";
+                return "Xếp loại phải là 'Tốt', 'Khá', 'Trung bình', hoặc 'Yếu'.";
             }
 
-            // Logic nghiệp vụ: Kiểm tra xem hạnh kiểm này đã tồn tại chưa
             if (hanhKiemDAO.LayHanhKiemTheoKey(hk.MaHocSinh, hk.MaHocKy) != null)
             {
                 return "Hạnh kiểm cho học kỳ này đã tồn tại. Vui lòng dùng chức năng Sửa.";
@@ -46,17 +43,15 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         }
 
         // === 3. CRUD + Validate: Cập nhật Hạnh Kiểm ===
-        public string CapNhatHanhKiem(HanhKiem hk)
+        public string CapNhatHanhKiem(HanhKiemDTO hk) // Sửa: HanhKiem -> HanhKiemDTO
         {
-            // Validation 1: Key
-            if (string.IsNullOrEmpty(hk.MaHocSinh) || hk.MaHocKy <= 0)
+            if (hk.MaHocSinh <= 0 || hk.MaHocKy <= 0)
             {
                 return "Mã học sinh và Mã học kỳ không hợp lệ.";
             }
-            // Validation 2: Xếp loại hợp lệ
-            if (!XepLoaiHopLe.Contains(hk.XepLoai))
+            if (string.IsNullOrWhiteSpace(hk.XepLoai) || !XepLoaiHopLe.Contains(hk.XepLoai))
             {
-                return "Xếp loại phải là 'Tốt', 'Khá', 'TB', hoặc 'Yếu'.";
+                return "Xếp loại phải là 'Tốt', 'Khá', 'Trung bình', hoặc 'Yếu'.";
             }
 
             if (hanhKiemDAO.CapNhatHanhKiem(hk))
@@ -67,13 +62,43 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         }
 
         // === 4. CRUD: Xóa Hạnh Kiểm ===
-        public string XoaHanhKiem(string maHocSinh, int maHocKy)
+        public string XoaHanhKiem(int maHocSinh, int maHocKy) // Sửa: string -> int
         {
             if (hanhKiemDAO.XoaHanhKiem(maHocSinh, maHocKy))
             {
                 return "Xóa hạnh kiểm thành công.";
             }
             return "Xóa hạnh kiểm thất bại.";
+        }
+
+        // === 5. Lấy Hạnh Kiểm Theo Học Sinh và Học Kỳ ===
+        public HanhKiemDTO GetHanhKiemByStudent(int maHocSinh, int maHocKy) // Sửa: HanhKiem -> HanhKiemDTO
+        {
+            try
+            {
+                return hanhKiemDAO.LayHanhKiemTheoKey(maHocSinh, maHocKy); // Đã là int
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS GetHanhKiemByStudent: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả hạnh kiểm trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<HanhKiemDTO> GetAllHanhKiem()
+        {
+            try
+            {
+                return hanhKiemDAO.GetAllHanhKiem();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy tất cả hạnh kiểm: " + ex.Message);
+            }
         }
     }
 }

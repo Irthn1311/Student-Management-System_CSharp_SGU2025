@@ -66,8 +66,8 @@
     <Reference Include="DocumentFormat.OpenXml.Framework, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.Framework.3.1.1\lib\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus, Version=7.0.9.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.7.0.9\lib\net462\EPPlus.dll</HintPath>
+    <Reference Include="EPPlus, Version=8.2.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.8.2.1\lib\net462\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus.Interfaces, Version=8.1.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.Interfaces.8.1.0\lib\net462\EPPlus.Interfaces.dll</HintPath>
@@ -105,6 +105,7 @@
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.3.0.1\lib\netstandard2.0\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MySql.Data, Version=9.4.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.9.4.0\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
@@ -173,24 +174,35 @@
   <ItemGroup>
     <Compile Include="BUS\HocSinhBLL.cs" />
     <Compile Include="BUS\HocSinhPhuHuynhBLL.cs" />
+    <Compile Include="BUS\LoginBUS.cs" />
+    <Compile Include="bus\NguoiDungBLL.cs" />
+    <Compile Include="BUS\KhenThuongKyLuatBUS.cs" />
     <Compile Include="BUS\NhapDiemBUS.cs" />
     <Compile Include="BUS\PhanLopBLL.cs" />
+    <Compile Include="bus\PhanLopTuDongBLL.cs" />
     <Compile Include="BUS\PhuHuynhBLL.cs" />
     <Compile Include="BUS\ThemDiemBUS.cs" />
     <Compile Include="BUS\ThoiKhoaBieuBUS.cs" />
+    <Compile Include="BUS\XepLoaiBUS.cs" />
     <Compile Include="DAO\DiemSoDAO.cs" />
     <Compile Include="DAO\HocSinhDAO.cs" />
     <Compile Include="DAO\HocSinhPhuHuynhDAO.cs" />
+    <Compile Include="DAO\LoginDAO.cs" />
+    <Compile Include="DAO\KhenThuongKyLuatDAO.cs" />
     <Compile Include="DAO\LopHocDAO.cs" />
     <Compile Include="DAO\MonHocDAO.cs" />
     <Compile Include="DAO\NamHocDAO.cs" />
+    <Compile Include="dao\NguoiDungDAO.cs" />
     <Compile Include="DAO\NhapDiemDAO.cs" />
     <Compile Include="DAO\PhanLopDAO.cs" />
     <Compile Include="DAO\PhuHuynhDAO.cs" />
     <Compile Include="DAO\ThoiKhoaBieuDAO.cs" />
+    <Compile Include="DAO\XepLoaiDAO.cs" />
     <Compile Include="DTO\ChiTietDiemDTO.cs" />
+    <Compile Include="DTO\KhenThuongKyLuatDTO.cs" />
     <Compile Include="DTO\DiemSoDTO.cs" />
     <Compile Include="DTO\HocSinhDTO.cs" />
+    <Compile Include="DTO\NguoiDungDTO.cs" />
     <Compile Include="BUS\GiaoVienBUS.cs" />
     <Compile Include="BUS\HanhKiemBUS.cs" />
     <Compile Include="BUS\HocKyBUS.cs" />
@@ -215,6 +227,7 @@
     <Compile Include="DTO\PhanCongGiangDayDTO.cs" />
     <Compile Include="DTO\ThoiKhoaBieuDTO.cs" />
     <Compile Include="DTO\ThongKeDTO.cs" />
+    <Compile Include="DTO\XepLoaiDTO.cs" />
     <Compile Include="GUI\CaiDat\CaiDat.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -239,11 +252,35 @@
     <Compile Include="GUI\ChinhSuaPhuHuynh.Designer.cs">
       <DependentUpon>ChinhSuaPhuHuynh.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\DangNhap\FrmDoiMatKhau.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\DangNhap\FrmDoiMatKhau.Designer.cs">
+      <DependentUpon>FrmDoiMatKhau.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DangNhap\FrmXacThucOTP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\DangNhap\FrmXacThucOTP.Designer.cs">
+      <DependentUpon>FrmXacThucOTP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DangNhap\FrmLienHeIT.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\DangNhap\FrmLienHeIT.Designer.cs">
+      <DependentUpon>FrmLienHeIT.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\DanhGia\DanhGia.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\DanhGia\DanhGia.Designer.cs">
       <DependentUpon>DanhGia.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\DanhGia\ThemDanhGia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\DanhGia\ThemDanhGia.Designer.cs">
+      <DependentUpon>ThemDanhGia.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Dashboard\ucDashboard.cs">
       <SubType>UserControl</SubType>
@@ -311,6 +348,9 @@
     <Compile Include="GUI\RecentActivityItem.Designer.cs">
       <DependentUpon>RecentActivityItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ScrollableMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GUI\TaiKhoan\frmAddPhanQuyen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -325,9 +365,6 @@
     </Compile>
     <Compile Include="GUI\HanhKiem\HanhKiem.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GUI\HanhKiem\HanhKiem.Designer.cs">
-      <DependentUpon>HanhKiem.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\TaiKhoan\RoleItem.cs">
       <SubType>UserControl</SubType>
@@ -543,6 +580,11 @@
     <Compile Include="Scheduling\SchedulingService.cs" />
     <Compile Include="Services\AssignmentAutoService.cs" />
     <Compile Include="Services\AssignmentPersistService.cs" />
+<<<<<<< HEAD
+=======
+    <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\OTPManager.cs" />
+>>>>>>> b49d785ecf625a511697c6a1bde2d8591023870e
     <Compile Include="Services\SemesterHelper.cs" />
     <EmbeddedResource Include="GUI\CaiDat\CaiDat.resx">
       <DependentUpon>CaiDat.cs</DependentUpon>
@@ -556,8 +598,20 @@
     <EmbeddedResource Include="GUI\ChinhSuaPhuHuynh.resx">
       <DependentUpon>ChinhSuaPhuHuynh.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\DangNhap\FrmDoiMatKhau.resx">
+      <DependentUpon>FrmDoiMatKhau.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\DangNhap\FrmXacThucOTP.resx">
+      <DependentUpon>FrmXacThucOTP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\DangNhap\FrmLienHeIT.resx">
+      <DependentUpon>FrmLienHeIT.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\DanhGia\DanhGia.resx">
       <DependentUpon>DanhGia.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\DanhGia\ThemDanhGia.resx">
+      <DependentUpon>ThemDanhGia.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Dashboard\ucDashboard.resx">
       <DependentUpon>ucDashboard.cs</DependentUpon>

@@ -4,7 +4,7 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using Student_Management_System_CSharp_SGU2025.Scheduling;
 using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
-using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
+//using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {

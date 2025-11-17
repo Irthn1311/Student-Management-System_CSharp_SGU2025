@@ -338,6 +338,54 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return null; // Không tìm thấy
         }
 
+        /// <summary>
+        /// Tìm phụ huynh theo số điện thoại (trả về null nếu không tìm thấy)
+        /// </summary>
+        /// <param name="sdt">Số điện thoại cần tìm</param>
+        /// <returns>PhuHuynhDTO hoặc null</returns>
+        public PhuHuynhDTO TimPhuHuynhTheoSoDienThoai(string sdt)
+        {
+            if (string.IsNullOrWhiteSpace(sdt)) return null;
+
+            string sql = "SELECT * FROM PhuHuynh WHERE SoDienThoai = @sdt LIMIT 1";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@sdt", sdt.Trim());
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                PhuHuynhDTO ph = new PhuHuynhDTO(
+                                    reader.GetInt32("MaPhuHuynh"),
+                                    reader.GetString("HoTen"),
+                                    reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? null : reader.GetString("SoDienThoai"),
+                                    reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString("Email"),
+                                    reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? null : reader.GetString("DiaChi")
+                                );
+                                return ph;
+                            }
+                        }
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi tìm phụ huynh theo SĐT: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+
+            return null;
+        }
+
         // --- Bạn có thể thêm các hàm tìm kiếm/lấy dữ liệu khác ở đây ---
         // Ví dụ: Lấy danh sách phụ huynh của một học sinh (cần JOIN)
         // public List<PhuHuynhDTO> LayPhuHuynhCuaHocSinh(int maHocSinh) { ... }
