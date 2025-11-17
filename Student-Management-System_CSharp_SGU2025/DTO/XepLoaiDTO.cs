@@ -5,6 +5,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
     public class XepLoaiDTO
     {
         public int MaHocSinh { get; set; }
+        public int MaHocKy { get; set; }
         public string HoTen { get; set; }
         public string TenLop { get; set; }
         public float? DiemTB { get; set; }

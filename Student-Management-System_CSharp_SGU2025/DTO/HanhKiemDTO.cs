@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
-    internal class HanhKiemDTO
+    public class HanhKiemDTO
     {
         // Fields (Thuộc tính cơ bản)
         private int maHocSinh;

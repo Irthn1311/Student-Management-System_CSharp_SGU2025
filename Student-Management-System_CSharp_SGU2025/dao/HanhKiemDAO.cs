@@ -155,5 +155,56 @@
                 return ds;
             }
 
+            /// <summary>
+            /// Lấy hạnh kiểm theo khóa (MaHocSinh, MaHocKy) - Alias cho LayHanhKiem
+            /// </summary>
+            public HanhKiemDTO LayHanhKiemTheoKey(int maHocSinh, int maHocKy)
+            {
+                return LayHanhKiem(maHocSinh, maHocKy);
+            }
+
+            /// <summary>
+            /// Lấy tất cả hạnh kiểm trong hệ thống
+            /// </summary>
+            public List<HanhKiemDTO> GetAllHanhKiem()
+            {
+                List<HanhKiemDTO> ds = new List<HanhKiemDTO>();
+                string sql = "SELECT MaHocSinh, MaHocKy, XepLoai, NhanXet FROM HanhKiem";
+
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    try
+                    {
+                        conn.Open();
+                        using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                        {
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    ds.Add(new HanhKiemDTO
+                                    {
+                                        MaHocSinh = reader.GetInt32("MaHocSinh"),
+                                        MaHocKy = reader.GetInt32("MaHocKy"),
+                                        XepLoai = reader.GetString("XepLoai"),
+                                        NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet")
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Lỗi lấy tất cả hạnh kiểm: " + ex.Message);
+                        throw;
+                    }
+                    finally
+                    {
+                        ConnectionDatabase.CloseConnection(conn);
+                    }
+                }
+                return ds;
+            }
+
         }
     }

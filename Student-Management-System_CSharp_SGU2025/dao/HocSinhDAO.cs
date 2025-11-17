@@ -558,6 +558,38 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return null;
         }
 
+        /// <summary>
+        /// Cập nhật tên đăng nhập cho học sinh
+        /// </summary>
+        public bool CapNhatTenDangNhap(int maHocSinh, string tenDangNhap)
+        {
+            string sql = "UPDATE HocSinh SET TenDangNhap = @tenDangNhap WHERE MaHocSinh = @maHS";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@tenDangNhap", tenDangNhap);
+                        cmd.Parameters.AddWithValue("@maHS", maHocSinh);
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi cập nhật tên đăng nhập: " + ex.Message);
+                    return false;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+        }
+
         // --- Bạn có thể thêm các hàm tìm kiếm khác ở đây ---
         // Ví dụ: Tìm theo tên, tìm theo lớp (cần JOIN), ...
         // public List<HocSinhDTO> TimHocSinhTheoTen(string ten) { ... }

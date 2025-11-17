@@ -767,5 +767,6 @@
         private Guna.UI2.WinForms.Guna2Button btnTrangSau;
         private Guna.UI2.WinForms.Guna2Button btnTrangTruoc;
         private System.Windows.Forms.Label lblTrangHienTai;
+        private Guna.UI2.WinForms.Guna2ComboBox cbHocKyNamHoc;
     }
 }

@@ -3,6 +3,7 @@ using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
@@ -99,6 +100,61 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             }
 
             return dsXepLoai;
+        }
+
+        /// <summary>
+        /// Lấy tất cả xếp loại trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<XepLoaiDTO> GetAllXepLoai()
+        {
+            try
+            {
+                // Lấy tất cả học kỳ và lấy xếp loại cho từng học kỳ
+                List<XepLoaiDTO> allXepLoai = new List<XepLoaiDTO>();
+                HocKyDAO hocKyDAO = new HocKyDAO();
+                List<HocKyDTO> allHocKy = hocKyDAO.GetAllHocKy();
+
+                foreach (var hk in allHocKy)
+                {
+                    List<XepLoaiDTO> xepLoaiTheoHocKy = xepLoaiDAO.GetDanhSachXepLoai(hk.MaHocKy, null);
+                    // Thêm MaHocKy vào mỗi item
+                    foreach (var item in xepLoaiTheoHocKy)
+                    {
+                        item.MaHocKy = hk.MaHocKy;
+                    }
+                    allXepLoai.AddRange(xepLoaiTheoHocKy);
+                }
+
+                return allXepLoai;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy tất cả xếp loại: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Lấy xếp loại của một học sinh theo học kỳ
+        /// </summary>
+        public XepLoaiDTO GetXepLoaiByStudent(int maHocSinh, int maHocKy)
+        {
+            try
+            {
+                List<XepLoaiDTO> dsXepLoai = xepLoaiDAO.GetDanhSachXepLoai(maHocKy, null);
+                XepLoaiDTO xepLoai = dsXepLoai.FirstOrDefault(x => x.MaHocSinh == maHocSinh);
+                
+                if (xepLoai != null)
+                {
+                    xepLoai.MaHocKy = maHocKy;
+                }
+
+                return xepLoai;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi nghiệp vụ khi lấy xếp loại học sinh {maHocSinh} học kỳ {maHocKy}: " + ex.Message);
+            }
         }
     }
 }

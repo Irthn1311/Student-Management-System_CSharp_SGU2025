@@ -8,12 +8,10 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
     internal class HocKyBUS
     {
         private HocKyDAO hocKyDAO;
-        private NamHocDAO namHocDAO;
 
         public HocKyBUS()
         {
             hocKyDAO = new HocKyDAO();
-            namHocDAO = new NamHocDAO();
         }
 
         public bool ThemHocKy(HocKyDTO hocKy)
@@ -145,7 +143,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             try
             {
-                return namHocDAO.LayNamHocTheoMa(maNamHoc);
+                return hocKyDAO.LayNamHocTheoMa(maNamHoc);
             }
             catch (Exception ex)
             {
@@ -165,7 +163,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     NgayBD = ngayBD,
                     NgayKT = ngayKT
                 };
-                return namHocDAO.themNamHoc(namHoc);
+                return hocKyDAO.ThemNamHoc(namHoc);
             }
             catch (Exception ex)
             {

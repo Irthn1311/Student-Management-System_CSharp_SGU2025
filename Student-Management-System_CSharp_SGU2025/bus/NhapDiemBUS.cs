@@ -317,5 +317,21 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             }
         }
 
+        /// <summary>
+        /// Lấy tất cả điểm số trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<DiemSoDTO> GetAllDiemSo()
+        {
+            try
+            {
+                return diemSoDAO.GetAllDiemSo();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy tất cả điểm số: " + ex.Message);
+            }
+        }
+
     }
 }
