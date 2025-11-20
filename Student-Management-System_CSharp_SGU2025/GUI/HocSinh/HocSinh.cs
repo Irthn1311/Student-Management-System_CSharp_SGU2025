@@ -23,7 +23,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
     {
 
         private bool isShowingHocSinh = true;
-        private bool isLoadingData = false; // Flag để kiểm soát việc lọc khi load
+        private bool isLoadingData = false;
 
         private HocSinhBLL hocSinhBLL;
         private PhuHuynhBLL phuHuynhBLL;
@@ -31,7 +31,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private LopHocBUS lopHocBUS;
         private PhanLopBLL phanLopBLL;
         private HocKyBUS hocKyBUS;
-        private NguoiDungBLL nguoiDungBLL; // ✅ Thêm BLL để tạo tài khoản
+        private NguoiDungBLL nguoiDungBLL; 
 
         // ✅ Chuyển sang BindingList để tự động cập nhật DataGridView
         private BindingList<HocSinhDTO> bindingListHocSinh;
@@ -63,7 +63,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             lopHocBUS = new LopHocBUS();
             phanLopBLL = new PhanLopBLL();
             hocKyBUS = new HocKyBUS();
-            nguoiDungBLL = new NguoiDungBLL(); // ✅ Khởi tạo BLL tài khoản
+            nguoiDungBLL = new NguoiDungBLL(); 
 
             // ✅ Khởi tạo BindingList
             bindingListHocSinh = new BindingList<HocSinhDTO>();
@@ -1076,11 +1076,70 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         int maHS;
                         if (int.TryParse(idValueStr, out maHS))
                         {
+                            // ======= BỔ SUNG: THÔNG BÁO TRẠNG THÁI TÀI KHOẢN TRƯỚC =======
+                            string accountStatusMsg = null;
+                            try
+                            {
+                                // Tìm TenDangNhap của học sinh vừa xóa (nếu còn trong danh sách cũ)
+                                string tenDangNhap = null;
+                                var hsOld = bindingListHocSinh.FirstOrDefault(hs => hs.MaHS == maHS) ?? danhSachHocSinhFull.FirstOrDefault(hs => hs.MaHS == maHS);
+                                if (hsOld != null && !string.IsNullOrWhiteSpace(hsOld.TenDangNhap))
+                                {
+                                    tenDangNhap = hsOld.TenDangNhap;
+                                }
+                                if (string.IsNullOrWhiteSpace(tenDangNhap))
+                                {
+                                    try
+                                    {
+                                        var hsDto = hocSinhBLL.GetHocSinhById(maHS);
+                                        if (hsDto != null && !string.IsNullOrWhiteSpace(hsDto.TenDangNhap))
+                                            tenDangNhap = hsDto.TenDangNhap;
+                                    }
+                                    catch { }
+                                }
+                                if (!string.IsNullOrWhiteSpace(tenDangNhap))
+                                {
+                                    // Lấy thông tin tài khoản
+                                    var tk = nguoiDungBLL.GetNguoiDungByTenDangNhap(tenDangNhap);
+                                    if (tk != null)
+                                    {
+                                        if (tk.TrangThai != "Tạm khóa")
+                                        {
+                                            // Cập nhật trạng thái sang "Tạm khóa"
+                                            bool updateStatus = nguoiDungBLL.UpdateTrangThai(tenDangNhap, "Tạm khóa");
+                                            if (updateStatus)
+                                            {
+                                                accountStatusMsg = $"Đã chuyển trạng thái tài khoản '{tenDangNhap}' sang 'Tạm khóa'!";
+                                            }
+                                            else
+                                            {
+                                                accountStatusMsg = $"KHÔNG thể chuyển trạng thái tài khoản '{tenDangNhap}' sang 'Tạm khóa'!\nVui lòng kiểm tra lại dữ liệu hoặc liên hệ quản trị viên.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            accountStatusMsg = $"Tài khoản '{tenDangNhap}' đã ở trạng thái 'Tạm khóa'.";
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception exTk)
+                            {
+                                accountStatusMsg = $"[WARNING] Không thể cập nhật trạng thái tài khoản học sinh khi xóa: {exTk.Message}";
+                            }
+                            // ======= END BỔ SUNG =======
+
                             bool deleteQuanHeSuccess = hocSinhPhuHuynhBLL.DeleteQuanHeByHocSinh(maHS); // Xóa QH trước
                             bool deleteHSSuccess = hocSinhBLL.DeleteHocSinh(maHS); // Xóa HS sau
 
                             if (deleteHSSuccess) // Chỉ cần kiểm tra xóa HS thành công
                             {
+                                // Hiển thị thông báo trạng thái tài khoản (nếu có)
+                                if (!string.IsNullOrWhiteSpace(accountStatusMsg))
+                                {
+                                    MessageBox.Show(accountStatusMsg, "Cập nhật tài khoản", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }
+
                                 // ✅ Xóa khỏi BindingList và Full list thay vì reload
                                 var hsToRemove = bindingListHocSinh.FirstOrDefault(hs => hs.MaHS == maHS);
                                 if (hsToRemove != null)
@@ -1099,7 +1158,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
                                 LoadSampleDataMoiQuanHe(); // Nạp lại bảng MQH
                                 SetupHeaderAndStats();      // Cập nhật lại các thẻ thống kê
-                                
+
                                 MessageBox.Show("Đã xóa học sinh và các mối quan hệ liên quan.");
                             }
                             else
@@ -1645,52 +1704,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void btnNhapExcel_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog())
-            {
-                ofd.Title = "Chọn file Excel để nhập dữ liệu";
-                ofd.Filter = "Excel Files|*.xlsx;*.xls";
-                ofd.FilterIndex = 1;
-
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-
-                        ImportAllDataFromExcel(ofd.FileName);
-                        
-                        // Reload lại dữ liệu
-                        LoadSampleDataHocSinh();
-                        LoadSampleDataPhuHuynh();
-                        LoadSampleDataMoiQuanHe();
-                        SetupHeaderAndStats();
-                        
-                        // ✅ Scroll xuống cuối để hiển thị học sinh mới
-                        if (tableHocSinh.Rows.Count > 0)
-                        {
-                            tableHocSinh.FirstDisplayedScrollingRowIndex = Math.Max(0, tableHocSinh.Rows.Count - 1);
-                            tableHocSinh.Rows[tableHocSinh.Rows.Count - 1].Selected = true;
-                        }
-                        
-                        MessageBox.Show(
-                            "✅ Nhập dữ liệu từ Excel thành công!\n\n" +
-                            "📌 TỰ ĐỘNG TẠO TÀI KHOẢN: \n" +
-                            "- Hệ thống đã tự động tạo tài khoản cho các học sinh mới\n" +
-                            "- Tên đăng nhập: hs001, hs002, hs003...\n" +
-                            "- Mật khẩu mặc định: 123456\n" +
-                            "- Học sinh nên đổi mật khẩu sau lần đăng nhập đầu tiên\n\n" +
-                            "💡 Danh sách đã tự động cuộn xuống cuối để hiển thị học sinh mới nhất!",
-                            "Nhập Excel thành công", 
-                            MessageBoxButtons.OK, 
-                            MessageBoxIcon.Information
-                        );
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"❌ Lỗi khi nhập Excel: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
+            
         }
 
         /// <summary>
@@ -1728,13 +1742,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private void ImportHocSinhFromWorksheet(ExcelWorksheet ws)
         {
             int rowCount = ws.Dimension?.Rows ?? 0;
-            if (rowCount < 2) return; // Không có dữ liệu (chỉ có header)
-
-            int successCount = 0;
             int errorCount = 0;
+            int successCount = 0;
             StringBuilder errors = new StringBuilder();
-
-            // Bắt đầu từ dòng 2 (dòng 1 là header)
             for (int row = 2; row <= rowCount; row++)
             {
                 try
@@ -1747,6 +1757,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     string email = ws.Cells[row, 6].Text.Trim(); // Cột F - ✅ ĐỌC EMAIL
                     string trangThai = ws.Cells[row, 7].Text.Trim(); // Cột G
 
+                    // Nếu tất cả các ô đều rỗng thì bỏ qua dòng này (không báo lỗi)
+                    if (string.IsNullOrWhiteSpace(hoTen)
+                        && string.IsNullOrWhiteSpace(ngaySinhStr)
+                        && string.IsNullOrWhiteSpace(gioiTinh)
+                        && string.IsNullOrWhiteSpace(sdtHS)
+                        && string.IsNullOrWhiteSpace(email)
+                        && string.IsNullOrWhiteSpace(trangThai))
+                    {
+                        continue;
+                    }
+
                     // Kiểm tra dữ liệu bắt buộc
                     if (string.IsNullOrWhiteSpace(hoTen))
                     {
@@ -1755,29 +1776,44 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         continue;
                     }
 
-                    // ✅ Parse ngày sinh với nhiều format khác nhau
-                    DateTime ngaySinh = DateTime.MinValue; // ✅ Khởi tạo giá trị mặc định
+                    // ✅ Parse ngày sinh với nhiều format khác nhau hoặc dạng số serial Excel
+                    DateTime ngaySinh = DateTime.MinValue;
                     bool parsedDate = false;
-                    
-                    // Thử các format phổ biến
-                    string[] dateFormats = { 
-                        "dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "d-M-yyyy",
-                        "yyyy-MM-dd", "dd/MM/yy", "d/M/yy"
-                    };
-                    
-                    foreach (string format in dateFormats)
+                    // Nếu ô là số (Excel lưu ngày tháng dạng serial)
+                    var cellNgaySinh = ws.Cells[row, 3];
+                    if (cellNgaySinh.Value != null && double.TryParse(cellNgaySinh.Value.ToString(), out double serialValue))
                     {
-                        if (DateTime.TryParseExact(ngaySinhStr, format, 
-                            System.Globalization.CultureInfo.InvariantCulture, 
-                            System.Globalization.DateTimeStyles.None, out ngaySinh))
+                        try
                         {
+                            ngaySinh = DateTime.FromOADate(serialValue);
                             parsedDate = true;
-                            break;
+                        }
+                        catch { /* Nếu lỗi thì thử tiếp các cách khác */ }
+                    }
+                    if (!parsedDate)
+                    {
+                        // Thử các format phổ biến
+                        string[] dateFormats = {
+                            "dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "d-M-yyyy",
+                            "yyyy-MM-dd", "dd/MM/yy", "d/M/yy"
+                        };
+                        foreach (string format in dateFormats)
+                        {
+                            if (DateTime.TryParseExact(ngaySinhStr, format,
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                System.Globalization.DateTimeStyles.None, out ngaySinh))
+                            {
+                                parsedDate = true;
+                                break;
+                            }
                         }
                     }
-                    
-                    // Nếu không parse được bằng format cụ thể, thử parse tự động
-                    if (!parsedDate && !DateTime.TryParse(ngaySinhStr, out ngaySinh))
+                    // Nếu vẫn chưa parse được, thử parse tự động
+                    if (!parsedDate && DateTime.TryParse(ngaySinhStr, out ngaySinh))
+                    {
+                        parsedDate = true;
+                    }
+                    if (!parsedDate)
                     {
                         errors.AppendLine($"Dòng {row}: Ngày sinh không hợp lệ ({ngaySinhStr})");
                         errorCount++;
@@ -1790,75 +1826,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         HoTen = hoTen,
                         NgaySinh = ngaySinh,
                         GioiTinh = gioiTinh,
-                        SdtHS = sdtHS, // ✅ Lấy từ Excel
-                        Email = email, // ✅ Lấy từ Excel
+                        SdtHS = sdtHS,
+                        Email = email,
                         TrangThai = string.IsNullOrWhiteSpace(trangThai) ? "Đang học" : trangThai,
-                        TenDangNhap = null // ✅ QUAN TRỌNG: Để NULL vì chưa có tài khoản
+                        TenDangNhap = null
                     };
 
                     int newMaHS = hocSinhBLL.AddHocSinh(hs);
                     if (newMaHS > 0)
                     {
-                        // Cập nhật MaHS vào đối tượng và thêm vào danh sách in-memory để dùng cho bước Mối Quan Hệ
                         hs.MaHS = newMaHS;
-                        // Nếu TenDangNhap đã được cập nhật sau khi tạo account, sẽ cập nhật phía dưới
                         danhSachHocSinhFull.Add(hs);
-                        // ✅ TỰ ĐỘNG TẠO TÀI KHOẢN (hoặc kiểm tra nếu đã tồn tại)
-                        try
+                        string username = $"HS{newMaHS:D3}";
+                        if (!nguoiDungBLL.CheckTenDangNhapExists(username))
                         {
-                            string username = nguoiDungBLL.GenerateUsernameFromMaHS(newMaHS); // hs001, hs002...
-                            
-                            // ✅ Kiểm tra tài khoản đã tồn tại chưa
-                            if (nguoiDungBLL.CheckTenDangNhapExists(username))
+                            var nguoiDung = new NguoiDungDTO
                             {
-                                // Tài khoản đã tồn tại - chỉ cần cập nhật TenDangNhap trong bảng HocSinh
-                                Console.WriteLine($"[INFO] Tài khoản '{username}' đã tồn tại, sử dụng lại cho học sinh {hoTen}");
-                                hocSinhBLL.UpdateTenDangNhap(newMaHS, username);
-                                
-                                // Cập nhật trong in-memory
-                                var added = danhSachHocSinhFull.FirstOrDefault(x => x.MaHS == newMaHS);
-                                if (added != null)
-                                {
-                                    added.TenDangNhap = username;
-                                }
-                            }
-                            else
-                            {
-                                // Tài khoản chưa tồn tại - tạo mới
-                                string defaultPassword = "123456"; // Mật khẩu mặc định
-
-                                NguoiDungDTO nguoiDung = new NguoiDungDTO
-                                {
-                                    TenDangNhap = username,
-                                    MatKhau = defaultPassword, // Sẽ tự động hash trong BLL
-                                    VaiTro = "HocSinh"
-                                };
-
-                                bool taoTaiKhoanOK = nguoiDungBLL.AddNguoiDungNoCheck(nguoiDung);
-                                if (taoTaiKhoanOK)
-                                {
-                                    // Cập nhật TenDangNhap trong bảng HocSinh
-                                    hocSinhBLL.UpdateTenDangNhap(newMaHS, username);
-                                    // Cập nhật trong in-memory danhSachHocSinhFull nếu có
-                                    var added = danhSachHocSinhFull.FirstOrDefault(x => x.MaHS == newMaHS);
-                                    if (added != null)
-                                    {
-                                        added.TenDangNhap = username;
-                                    }
-                                    Console.WriteLine($"[SUCCESS] Đã tạo tài khoản '{username}' cho học sinh {hoTen}");
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"[WARNING] Không thể tạo tài khoản cho học sinh {hoTen} (MaHS: {newMaHS})");
-                                }
-                            }
+                                TenDangNhap = username,
+                                MatKhau = "123456",
+                                VaiTro = "HocSinh"
+                            };
+                            nguoiDungBLL.AddNguoiDungNoCheck(nguoiDung);
                         }
-                        catch (Exception exAccount)
-                        {
-                            Console.WriteLine($"[ERROR] Lỗi tạo tài khoản cho HS {hoTen}: {exAccount.Message}");
-                            // Không báo lỗi ra ngoài, vì học sinh đã được thêm thành công
-                        }
-                        
                         successCount++;
                     }
                     else
@@ -1901,19 +1890,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             if (rowCount < 2) return;
 
             int successCount = 0;
+            int skippedCount = 0;
             int errorCount = 0;
-            int skippedCount = 0; // ✅ Đếm số phụ huynh bỏ qua (đã tồn tại)
-            StringBuilder errors = new StringBuilder();
+            var errors = new StringBuilder();
 
             for (int row = 2; row <= rowCount; row++)
             {
                 try
                 {
-                    // Đọc dữ liệu từ các cột (bỏ qua cột Mã PH vì auto increment)
-                    string hoTen = ws.Cells[row, 2].Text.Trim(); // Cột B
-                    string sdt = ws.Cells[row, 3].Text.Trim(); // Cột C
-                    string email = ws.Cells[row, 4].Text.Trim(); // Cột D
-                    string diaChi = ws.Cells[row, 5].Text.Trim(); // Cột E
+                    // Mapping đúng: Họ và Tên = cột 2 (B), SĐT = cột 3 (C), Email = cột 4 (D), Địa chỉ = cột 5 (E)
+                    string hoTen = ws.Cells[row, 2].Text.Trim();
+                    string sdt = ws.Cells[row, 3].Text.Trim();
+                    string email = ws.Cells[row, 4].Text.Trim();
+                    string diaChi = ws.Cells[row, 5].Text.Trim();
+
+                    // Bỏ qua dòng trống hoàn toàn
+                    if (string.IsNullOrWhiteSpace(hoTen)
+                        && string.IsNullOrWhiteSpace(sdt)
+                        && string.IsNullOrWhiteSpace(email)
+                        && string.IsNullOrWhiteSpace(diaChi))
+                    {
+                        continue;
+                    }
 
                     if (string.IsNullOrWhiteSpace(hoTen))
                     {
@@ -1941,7 +1939,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     {
                         // ✅ Đã tồn tại: bỏ qua (không tính là thành công hay lỗi)
                         skippedCount++;
-                        Console.WriteLine($"[SKIP] Phụ huynh '{hoTen}' (SĐT: {sdt}) đã tồn tại (MaPH: {existing.MaPhuHuynh}), bỏ qua");
                         // Đảm bảo danh sách in-memory có bản ghi này
                         if (!danhSachPhuHuynhFull.Any(p => p.MaPhuHuynh == existing.MaPhuHuynh))
                         {
@@ -1968,7 +1965,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         }
                         catch (ArgumentException vex)
                         {
-                            // Trả về lỗi validation như trùng SĐT/Email
                             errors.AppendLine($"Dòng {row}: {vex.Message}");
                             errorCount++;
                         }
@@ -1986,22 +1982,27 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 }
             }
 
+            // Thông báo kết quả chỉ 1 lần ở cuối hàm
             if (errorCount > 0)
             {
-                MessageBox.Show($"Nhập Phụ Huynh:\n- Thêm mới: {successCount}\n- Bỏ qua (đã tồn tại): {skippedCount}\n- Lỗi: {errorCount}\n\nChi tiết lỗi:\n{errors}", 
+                MessageBox.Show($"Nhập Phụ Huynh:\n- Thêm mới: {successCount}\n- Bỏ qua (đã tồn tại): {skippedCount}\n- Lỗi: {errorCount}\n\nChi tiết lỗi:\n{errors}",
                     "Kết quả nhập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else if (successCount > 0)
             {
-                string msg = $"✅ Nhập Phụ Huynh thành công!\n- Thêm mới: {successCount}";
+                string msg = $"✅ Nhập Phụ Huynh thành công!\n- Đã thêm mới: {successCount} phụ huynh.";
                 if (skippedCount > 0)
-                    msg += $"\n- Bỏ qua (đã tồn tại): {skippedCount}";
+                    msg += skippedCount == 1
+                        ? "\n- 1 phụ huynh trong file đã tồn tại nên không thêm lại."
+                        : $"\n- {skippedCount} phụ huynh trong file đã tồn tại nên không thêm lại.";
                 MessageBox.Show(msg, "Kết quả nhập", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (skippedCount > 0)
             {
-                MessageBox.Show($"ℹ️ Tất cả {skippedCount} phụ huynh đã tồn tại trong hệ thống.\nKhông có dữ liệu mới được thêm.", 
-                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                string msg = skippedCount == 1
+                    ? "Phụ huynh này đã tồn tại trong hệ thống. Không có dữ liệu mới được thêm."
+                    : $"Tất cả {skippedCount} phụ huynh trong file đã tồn tại trong hệ thống. Không có dữ liệu mới được thêm.";
+                MessageBox.Show(msg, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -2015,25 +2016,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             if (rowCount < 2) return;
 
             int successCount = 0;
+            int skippedCount = 0;
             int errorCount = 0;
-            int skippedCount = 0; // ✅ Đếm số mối quan hệ bỏ qua (đã tồn tại)
-            StringBuilder errors = new StringBuilder();
-            StringBuilder warnings = new StringBuilder(); // ✅ Cảnh báo trùng tên
+            var errors = new StringBuilder();
+            var warnings = new StringBuilder();
 
-            // ✅ DEBUG: In ra số lượng học sinh và phụ huynh hiện có
-            Console.WriteLine($"[DEBUG] ImportMoiQuanHe: danhSachHocSinhFull.Count = {danhSachHocSinhFull.Count}");
-            Console.WriteLine($"[DEBUG] ImportMoiQuanHe: danhSachPhuHuynhFull.Count = {danhSachPhuHuynhFull.Count}");
-            
             for (int row = 2; row <= rowCount; row++)
             {
                 try
                 {
-                    // ✅ ĐỌC TÊN (đơn giản cho người dùng)
                     string tenHS = ws.Cells[row, 1].Text.Trim();
                     string tenPH = ws.Cells[row, 2].Text.Trim();
                     string moiQuanHe = ws.Cells[row, 3].Text.Trim();
 
-                    Console.WriteLine($"[DEBUG] Dòng {row}: Tìm HS='{tenHS}', PH='{tenPH}'");
+                    // Bỏ qua dòng trống hoàn toàn
+                    if (string.IsNullOrWhiteSpace(tenHS)
+                        && string.IsNullOrWhiteSpace(tenPH)
+                        && string.IsNullOrWhiteSpace(moiQuanHe))
+                    {
+                        continue;
+                    }
 
                     // Validate mối quan hệ hợp lệ
                     if (moiQuanHe != "Cha" && moiQuanHe != "Mẹ" && moiQuanHe != "Ông" && 
@@ -2061,7 +2063,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     else if (danhSachHSTrung.Count == 1)
                     {
                         hs = danhSachHSTrung[0];
-                        Console.WriteLine($"[DEBUG] Tìm thấy HS: '{hs.HoTen}' (MaHS: {hs.MaHS})");
                     }
                     else
                     {
@@ -2070,7 +2071,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         string danhSachHS = string.Join("\n  ", danhSachHSTrung.Select(h => 
                             $"- MaHS {h.MaHS} (Ngày sinh: {h.NgaySinh:dd/MM/yyyy}, SĐT: {h.SdtHS})"));
                         warnings.AppendLine($"⚠️ Dòng {row}: Có {danhSachHSTrung.Count} học sinh tên '{tenHS}':\n  {danhSachHS}\n  → Đã chọn MaHS {hs.MaHS}");
-                        Console.WriteLine($"[WARNING] Trùng {danhSachHSTrung.Count} HS tên '{tenHS}', chọn MaHS {hs.MaHS}");
                     }
 
                     // Xử lý phụ huynh
@@ -2083,7 +2083,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     else if (danhSachPHTrung.Count == 1)
                     {
                         ph = danhSachPHTrung[0];
-                        Console.WriteLine($"[DEBUG] Tìm thấy PH: '{ph.HoTen}' (MaPH: {ph.MaPhuHuynh})");
                     }
                     else
                     {
@@ -2092,20 +2091,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         string danhSachPH = string.Join("\n  ", danhSachPHTrung.Select(p => 
                             $"- MaPH {p.MaPhuHuynh} (SĐT: {p.SoDienThoai}, Email: {p.Email})"));
                         warnings.AppendLine($"⚠️ Dòng {row}: Có {danhSachPHTrung.Count} phụ huynh tên '{tenPH}':\n  {danhSachPH}\n  → Đã chọn MaPH {ph.MaPhuHuynh}");
-                        Console.WriteLine($"[WARNING] Trùng {danhSachPHTrung.Count} PH tên '{tenPH}', chọn MaPH {ph.MaPhuHuynh}");
                     }
 
                     // Thêm mối quan hệ
                     bool success = hocSinhPhuHuynhBLL.AddQuanHe(hs.MaHS, ph.MaPhuHuynh, moiQuanHe);
                     if (success)
                     {
-                        Console.WriteLine($"[SUCCESS] Đã thêm mối quan hệ: HS {hs.MaHS} - PH {ph.MaPhuHuynh} ({moiQuanHe})");
                         successCount++;
                     }
                     else
                     {
-                        // ✅ Mối quan hệ đã tồn tại - bỏ qua
-                        Console.WriteLine($"[SKIP] Mối quan hệ giữa HS {hs.MaHS} và PH {ph.MaPhuHuynh} đã tồn tại, bỏ qua");
                         skippedCount++;
                     }
                 }
@@ -2118,7 +2113,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
             // ✅ Hiển thị kết quả với cảnh báo trùng tên (nếu có)
             StringBuilder result = new StringBuilder();
-            
             if (errorCount > 0)
             {
                 result.AppendLine($"Nhập Mối Quan Hệ:");
@@ -2128,7 +2122,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 result.AppendLine();
                 result.AppendLine("Chi tiết lỗi:");
                 result.Append(errors);
-                
                 if (warnings.Length > 0)
                 {
                     result.AppendLine();
@@ -2136,17 +2129,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     result.AppendLine("⚠️ CẢNH BÁO TRÙNG TÊN:");
                     result.Append(warnings);
                 }
-                
                 MessageBox.Show(result.ToString(), "Kết quả nhập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else if (successCount > 0 || skippedCount > 0)
             {
-                result.AppendLine($"✅ Nhập Mối Quan Hệ hoàn tất!");
+                result.AppendLine($"✅ Nhập Mối Quan Hệ:");
                 if (successCount > 0)
                     result.AppendLine($"- Thêm mới: {successCount}");
                 if (skippedCount > 0)
                     result.AppendLine($"- Bỏ qua (đã tồn tại): {skippedCount}");
-                
                 if (warnings.Length > 0)
                 {
                     result.AppendLine();
@@ -2155,7 +2146,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     result.Append(warnings);
                     result.AppendLine();
                     result.AppendLine("💡 Vui lòng kiểm tra lại trong database để đảm bảo đúng người!");
-                    
                     MessageBox.Show(result.ToString(), "Kết quả nhập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
@@ -2313,29 +2303,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             }
         }
 
-        // ✅ Sự kiện nút "Trang trước" (Hàm đúng theo Designer)
-        private void btnTrangTruoc_Click_1(object sender, EventArgs e)
-        {
-            if (isShowingHocSinh)
-            {
-                // Phân trang Học Sinh
-                if (currentPageHocSinh > 1)
-                {
-                    currentPageHocSinh--;
-                    LoadPagedDataHocSinh();
-                }
-            }
-            else
-            {
-                // Phân trang Phụ Huynh
-                if (currentPagePhuHuynh > 1)
-                {
-                    currentPagePhuHuynh--;
-                    LoadPagedDataPhuHuynh();
-                }
-            }
-        }
-
         // ✅ Sự kiện nút "Trang sau" (Hàm đúng theo Designer)
         private void btnTrangSau_Click_1(object sender, EventArgs e)
         {
@@ -2361,7 +2328,78 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             }
         }
 
+        // Sự kiện nút "Trang trước" (phân trang lùi)
+        private void btnTrangTruoc_Click_1(object sender, EventArgs e)
+        {
+            if (isShowingHocSinh)
+            {
+                if (currentPageHocSinh > 1)
+                {
+                    currentPageHocSinh--;
+                    LoadPagedDataHocSinh();
+                }
+            }
+            else
+            {
+                if (currentPagePhuHuynh > 1)
+                {
+                    currentPagePhuHuynh--;
+                    LoadPagedDataPhuHuynh();
+                }
+            }
+        }
+
         #endregion
+
+        private void btnNhapExcel_Click_1(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Chọn file Excel để nhập dữ liệu";
+                ofd.Filter = "Excel Files|*.xlsx;*.xls";
+                ofd.FilterIndex = 1;
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+                        ImportAllDataFromExcel(ofd.FileName);
+
+                        // Reload lại dữ liệu
+                        LoadSampleDataHocSinh();
+                        LoadSampleDataPhuHuynh();
+                        LoadSampleDataMoiQuanHe();
+                        SetupHeaderAndStats();
+
+                        // ✅ Scroll xuống cuối để hiển thị học sinh mới
+                        if (tableHocSinh.Rows.Count > 0)
+                        {
+                            tableHocSinh.FirstDisplayedScrollingRowIndex = Math.Max(0, tableHocSinh.Rows.Count - 1);
+                            tableHocSinh.Rows[tableHocSinh.Rows.Count - 1].Selected = true;
+                        }
+
+                        MessageBox.Show(
+                            "✅ Nhập dữ liệu từ Excel thành công!\n\n" +
+                            "📌 TỰ ĐỘNG TẠO TÀI KHOẢN: \n" +
+                            "- Hệ thống đã tự động tạo tài khoản cho các học sinh mới\n" +
+                            "- Tên đăng nhập: hs001, hs002, hs003...\n" +
+                            "- Mật khẩu mặc định: 123456\n" +
+                            "- Học sinh nên đổi mật khẩu sau lần đăng nhập đầu tiên\n\n" +
+                            "💡 Danh sách đã tự động cuộn xuống cuối để hiển thị học sinh mới nhất!",
+                            "Nhập Excel thành công",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ Lỗi khi nhập Excel: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
     }
 }
 

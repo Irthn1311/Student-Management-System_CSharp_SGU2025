@@ -125,7 +125,7 @@
             this.label3.Location = new System.Drawing.Point(164, 120);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(156, 31);
+            this.label3.Size = new System.Drawing.Size(166, 31);
             this.label3.TabIndex = 3;
             this.label3.Text = "THPT TTPT\r\n";
             this.label3.Click += new System.EventHandler(this.label3_Click_1);
@@ -355,6 +355,7 @@
             this.txtTenDangNhap.SelectedText = "";
             this.txtTenDangNhap.Size = new System.Drawing.Size(341, 36);
             this.txtTenDangNhap.TabIndex = 6;
+            this.txtTenDangNhap.TextChanged += new System.EventHandler(this.txtTenDangNhap_TextChanged);
             // 
             // FrmDangNhap
             // 
@@ -379,7 +380,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
-            this.MinimizeBox = true;
             this.Name = "FrmDangNhap";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Đăng nhập - THPT TTPT";

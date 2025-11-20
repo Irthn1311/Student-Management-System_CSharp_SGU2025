@@ -459,5 +459,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     MessageBoxIcon.Error);
             }
         }
+
+        private void txtTenDangNhap_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
