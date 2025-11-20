@@ -290,5 +290,41 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 }
             }
         }
+
+        /// <summary>
+        /// Cập nhật trạng thái tài khoản người dùng
+        /// </summary>
+        public bool UpdateTrangThai(string tenDangNhap, string trangThai)
+        {
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = "UPDATE NguoiDung SET TrangThai = @TrangThai WHERE TenDangNhap = @TenDangNhap";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TrangThai", trangThai);
+                    cmd.Parameters.AddWithValue("@TenDangNhap", tenDangNhap);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] NguoiDungDAO.UpdateTrangThai: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                if (conn != null && conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
     }
 }
