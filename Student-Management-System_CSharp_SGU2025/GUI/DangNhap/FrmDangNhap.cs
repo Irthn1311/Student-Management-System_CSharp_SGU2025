@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Student_Management_System_CSharp_SGU2025.BUS; // Thêm để sử dụng LoginBUS
+using Student_Management_System_CSharp_SGU2025.Services; // Thêm để sử dụng EmailService và OTPManager
+using Student_Management_System_CSharp_SGU2025.GUI.DangNhap; // Thêm để sử dụng FrmXacThucOTP
 using Student_Management_System_CSharp_SGU2025.BUS; // Thêm để sử dụng LoginBUS
 using Student_Management_System_CSharp_SGU2025.Services; // Thêm để sử dụng EmailService và OTPManager
 using Student_Management_System_CSharp_SGU2025.GUI.DangNhap; // Thêm để sử dụng FrmXacThucOTP
@@ -19,9 +23,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private LoginBUS loginBUS;
         private HocSinhBLL hocSinhBLL;
 
+        private LoginBUS loginBUS;
+        private HocSinhBLL hocSinhBLL;
+
         public FrmDangNhap()
         {
             InitializeComponent();
+            loginBUS = new LoginBUS(); // Khởi tạo LoginBUS
+            hocSinhBLL = new HocSinhBLL(); // Khởi tạo HocSinhBLL
             loginBUS = new LoginBUS(); // Khởi tạo LoginBUS
             hocSinhBLL = new HocSinhBLL(); // Khởi tạo HocSinhBLL
         }
@@ -49,6 +58,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             
             // Cho phép nhấn Enter để đăng nhập
             this.AcceptButton = btnDangNhap;
+            // Cài đặt ban đầu khi form load
+            txtMatKhau.PasswordChar = '●'; // Ẩn mật khẩu
+            txtTenDangNhap.Focus(); // Focus vào ô tên đăng nhập
+            
+            // Cho phép nhấn Enter để đăng nhập
+            this.AcceptButton = btnDangNhap;
         }
 
         private void lbTenDangNhap_Click(object sender, EventArgs e)
@@ -58,6 +73,82 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnDangNhap_Click(object sender, EventArgs e)
         {
+            try
+            {
+                // Lấy thông tin từ textbox
+                string tenDangNhap = txtTenDangNhap.Text.Trim();
+                string matKhau = txtMatKhau.Text.Trim();
+
+                // Kiểm tra rỗng
+                if (string.IsNullOrWhiteSpace(tenDangNhap))
+                {
+                    MessageBox.Show("Vui lòng nhập tên đăng nhập!", 
+                        "Thông báo", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Warning);
+                    txtTenDangNhap.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(matKhau))
+                {
+                    MessageBox.Show("Vui lòng nhập mật khẩu!", 
+                        "Thông báo", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Warning);
+                    txtMatKhau.Focus();
+                    return;
+                }
+
+                // Kiểm tra đăng nhập qua LoginBUS
+                bool ketQua = loginBUS.KiemTraDangNhap(tenDangNhap, matKhau);
+
+                if (ketQua)
+                {
+                    // Đăng nhập thành công
+                    MessageBox.Show($"Đăng nhập thành công!\nChào mừng: {tenDangNhap}", 
+                        "Thành công", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Information);
+
+                    // Ẩn form đăng nhập
+                    this.Hide();
+
+                    // Mở MainForm
+                    MainForm mainForm = new MainForm();
+                    mainForm.FormClosed += (s, args) => this.Close(); // Đóng form đăng nhập khi MainForm đóng
+                    mainForm.Show();
+                }
+                else
+                {
+                    // Đăng nhập thất bại
+                    MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng!\nHoặc tài khoản đã bị khóa.", 
+                        "Đăng nhập thất bại", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Error);
+
+                    // Xóa mật khẩu và focus vào ô mật khẩu
+                    txtMatKhau.Clear();
+                    txtMatKhau.Focus();
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                // Lỗi validation từ BUS
+                MessageBox.Show(ex.Message, 
+                    "Lỗi", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                // Lỗi hệ thống
+                MessageBox.Show($"Đã xảy ra lỗi khi đăng nhập:\n{ex.Message}", 
+                    "Lỗi hệ thống", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
+                Console.WriteLine("Lỗi đăng nhập: " + ex.Message);
+            }
             try
             {
                 // Lấy thông tin từ textbox

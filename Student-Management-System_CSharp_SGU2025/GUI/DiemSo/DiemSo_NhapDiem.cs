@@ -166,12 +166,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             statCardDaNhap.lbCardValue.ForeColor = Color.FromArgb(22, 163, 74);
             statCardDaNhap.lbCardNote.ForeColor = Color.FromArgb(220, 38, 38);
 
-            // Load các ComboBox
-            LoadComboBoxLop();
-            LoadComboBoxMonHoc();
             LoadComboBoxHocKy();
             LoadComboBoxHocKyBD();
-            LoadComboBoxLopBD();
+            //LoadComboBoxLop();
+            LoadComboBoxMonHoc();
+            //LoadComboBoxLopBD();
             tableXemBangDiem.CellClick += tableXemBangDiem_CellClick;
             txtSearch.TextChanged += txtSearch_TextChanged;
             txtSearch.KeyPress += txtSearch_KeyPress;
@@ -503,7 +502,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                List<LopDTO> danhSachLop = nhapDiemBUS.GetDanhSachLop();
+                if (!selectedMaHocKy.HasValue)
+                {
+                    cbLop.DataSource = null;
+                    cbLop.Items.Clear();
+                    cbLop.Items.Add(new ComboBoxItem { Text = "-- Chọn học kỳ trước --", Value = -1 });
+                    cbLop.SelectedIndex = 0;
+                    return;
+                }
+
+                // Lấy danh sách lớp đã được phân lớp trong học kỳ này
+                List<LopDTO> danhSachLop = nhapDiemBUS.GetDanhSachLopTheoHocKy(selectedMaHocKy.Value);
 
                 cbLop.DataSource = null;
                 cbLop.Items.Clear();
@@ -512,7 +521,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 cbLop.Items.Add(new ComboBoxItem
                 {
                     Text = "Tất cả lớp",
-                    Value = -1 // Giá trị đặc biệt để nhận biết "Tất cả"
+                    Value = -1
                 });
 
                 foreach (var lop in danhSachLop)
@@ -531,7 +540,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 if (cbLop.Items.Count > 0)
                 {
                     cbLop.SelectedIndex = 0;
-                    selectedMaLop = -1; // Tất cả
+                    selectedMaLop = -1;
                 }
             }
             catch (Exception ex)
@@ -653,15 +662,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         /// </summary>
         private void cbHocKyNamHoc_SelectedIndexChanged(object sender, EventArgs e)
         {
-           
-
             if (isLoadingData) return;
 
             if (cbHocKyNamHoc.SelectedItem is ComboBoxItem item)
             {
                 selectedMaHocKy = (int)item.Value;
-                ApplyFilter();
+
+                // Load lại danh sách lớp theo học kỳ mới
+                LoadComboBoxLop();
+
+                // Load thống kê và dữ liệu
                 LoadThongKe(selectedMaHocKy);
+                ApplyFilter();
             }
         }
 
@@ -696,6 +708,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 {
                     cbLopBD.DataSource = null;
                     cbLopBD.Items.Clear();
+                    cbLopBD.Items.Add(new ComboBoxItem { Text = "-- Chọn học kỳ trước --", Value = -1 });
+                    cbLopBD.SelectedIndex = 0;
                     return;
                 }
 

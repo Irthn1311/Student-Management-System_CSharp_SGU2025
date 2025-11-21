@@ -1,9 +1,11 @@
-﻿using MySql.Data.MySqlClient;
-using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
-using Student_Management_System_CSharp_SGU2025.DTO;
-using System;
-using System.Collections.Generic;
-using System.Data;
+﻿    // HanhKiemDAO.cs
+    using MySql.Data.MySqlClient;
+    using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
+    using Student_Management_System_CSharp_SGU2025.DTO;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
@@ -193,4 +195,3 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return danhSachHanhKiem;
         }
     }
-}

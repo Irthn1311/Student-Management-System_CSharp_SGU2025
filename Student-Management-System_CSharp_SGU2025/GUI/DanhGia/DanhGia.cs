@@ -605,14 +605,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     tbKhenThuong.Rows[tbKhenThuong.Rows.Count - 1].Tag = kt.MaKTKL;
                 }
+
+                cbLop.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tải dữ liệu khen thưởng: " + ex.Message, "Lỗi",
+                MessageBox.Show("Lỗi khi tải danh sách lớp: " + ex.Message, "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            
         }
 
+        
 
         private void LoadKyLuatDataWithFilter()
         {
@@ -638,14 +642,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     tbKyLuat.Rows[tbKyLuat.Rows.Count - 1].Tag = kl.MaKTKL;
                 }
+
+                cbLop.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tải dữ liệu kỷ luật: " + ex.Message, "Lỗi",
+                MessageBox.Show("Lỗi khi tải danh sách lớp: " + ex.Message, "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            
         }
-
 
         // Áp dụng filter
         private void ApplyFilter()
@@ -815,6 +821,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     if (result.Success)
                     {
                         ApplyFilter();
+
+                        // ⭐ TỰ ĐỘNG CẬP NHẬT HẠNH KIỂM SAU KHI DUYỆT KỶ LUẬT
+                        if (!tbKhenThuong.Visible) // Chỉ khi đang ở tab Kỷ luật
+                        {
+                            CapNhatHanhKiemSauKhiDuyetKyLuat(maKTKL);
+                        }
                     }
 
                     MessageBox.Show(result.Message, result.Success ? "Thông báo" : "Lỗi",
@@ -826,6 +838,72 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 MessageBox.Show("Lỗi khi duyệt đánh giá: " + ex.Message, "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Tự động cập nhật hạnh kiểm sau khi duyệt kỷ luật
+        /// </summary>
+        private void CapNhatHanhKiemSauKhiDuyetKyLuat(int maKTKL)
+        {
+            try
+            {
+                // Lấy thông tin kỷ luật vừa duyệt
+                KhenThuongKyLuatDTO kyLuat = ktklDAO.LayTheoMa(maKTKL);
+                if (kyLuat == null) return;
+
+                int maHocSinh = kyLuat.MaHocSinh;
+
+                // Lấy tất cả học kỳ mà học sinh này có phân lớp
+                PhanLopDAO phanLopDAO = new PhanLopDAO();
+                var dsPhanLop = phanLopDAO.LayTatCaPhanLop()
+                    .Where(pl => pl.maHocSinh == maHocSinh)
+                    .Select(pl => pl.maHocKy)
+                    .Distinct()
+                    .ToList();
+
+                if (dsPhanLop.Count == 0) return;
+
+                // Tính lại hạnh kiểm cho từng học kỳ
+                HanhKiemBUS hanhKiemBUS = new HanhKiemBUS();
+                HanhKiemDAO hanhKiemDAO = new HanhKiemDAO();
+                int soCapNhat = 0;
+
+                foreach (int maHocKy in dsPhanLop)
+                {
+                    // Tính hạnh kiểm mới
+                    string hanhKiemMoi = hanhKiemBUS.TinhHanhKiemTuDong(maHocSinh, maHocKy);
+
+                    if (!string.IsNullOrEmpty(hanhKiemMoi))
+                    {
+                        // Lấy hạnh kiểm hiện tại (nếu có)
+                        HanhKiemDTO hkHienTai = hanhKiemDAO.LayHanhKiem(maHocSinh, maHocKy);
+                        string nhanXet = hkHienTai?.NhanXet ?? "";
+
+                        // Lưu hạnh kiểm mới
+                        HanhKiemDTO hkMoi = new HanhKiemDTO
+                        {
+                            MaHocSinh = maHocSinh,
+                            MaHocKy = maHocKy,
+                            XepLoai = hanhKiemMoi,
+                            NhanXet = nhanXet
+                        };
+
+                        if (hanhKiemDAO.LuuHanhKiem(hkMoi))
+                        {
+                            soCapNhat++;
+                        }
+                    }
+                }
+
+                if (soCapNhat > 0)
+                {
+                    Console.WriteLine($"✅ Đã tự động cập nhật hạnh kiểm cho {soCapNhat} học kỳ của học sinh #{maHocSinh}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠️ Lỗi khi tự động cập nhật hạnh kiểm: {ex.Message}");
             }
         }
 

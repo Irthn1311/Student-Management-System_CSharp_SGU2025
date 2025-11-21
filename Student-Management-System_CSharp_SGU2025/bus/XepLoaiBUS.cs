@@ -1,333 +1,250 @@
+// XepLoaiBUS.cs
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
     public class XepLoaiBUS
     {
         private XepLoaiDAO xepLoaiDAO;
+        private HanhKiemDAO hanhKiemDAO;
 
         public XepLoaiBUS()
         {
             xepLoaiDAO = new XepLoaiDAO();
+            hanhKiemDAO = new HanhKiemDAO();
         }
 
         /// <summary>
-        /// Lấy xếp loại của học sinh trong học kỳ
+        /// Tính xếp loại tổng kết dựa trên học lực và hạnh kiểm
+        /// Quy tắc: Bậc nào thấp hơn sẽ kéo bậc còn lại xuống
+        /// </summary>
+        public string TinhXepLoaiTongKet(string hocLuc, string hanhKiem)
+        {
+            if (string.IsNullOrEmpty(hocLuc) || string.IsNullOrEmpty(hanhKiem))
+            {
+                return "";
+            }
+
+            // Định nghĩa thứ tự ưu tiên (số càng nhỏ càng cao)
+            Dictionary<string, int> thuTu = new Dictionary<string, int>
+            {
+                { "Giỏi", 1 },
+                { "Tốt", 1 },
+                { "Khá", 2 },
+                { "Trung bình", 3 },
+                { "Trung Bình", 3 },
+                { "Yếu", 4 },
+                { "Kém", 5 }
+            };
+
+            // Lấy bậc của học lực và hạnh kiểm
+            int bacHocLuc = thuTu.ContainsKey(hocLuc) ? thuTu[hocLuc] : 999;
+            int bacHanhKiem = thuTu.ContainsKey(hanhKiem) ? thuTu[hanhKiem] : 999;
+
+            // Lấy bậc thấp hơn (số lớn hơn)
+            int bacThapNhat = Math.Max(bacHocLuc, bacHanhKiem);
+
+            // Chuyển đổi bậc thành xếp loại
+            switch (bacThapNhat)
+            {
+                case 1:
+                    return "Giỏi";
+                case 2:
+                    return "Khá";
+                case 3:
+                    return "Trung bình";
+                case 4:
+                    return "Yếu";
+                case 5:
+                    return "Kém";
+                default:
+                    return "";
+            }
+        }
+
+        /// <summary>
+        /// Lưu xếp loại tổng kết vào database
+        /// </summary>
+        public bool LuuXepLoai(int maHocSinh, int maHocKy, string xepLoai, string ghiChu = "")
+        {
+            return xepLoaiDAO.LuuXepLoai(maHocSinh, maHocKy, xepLoai, ghiChu);
+        }
+
+        /// <summary>
+        /// Lấy danh sách xếp loại kèm hạnh kiểm
+        /// </summary>
+        public List<XepLoaiDTO> LayDanhSachXepLoaiDayDu(int maHocKy, int? maLop = null)
+        {
+            // Lấy danh sách học lực
+            List<XepLoaiDTO> dsXepLoai = xepLoaiDAO.GetDanhSachXepLoai(maHocKy, maLop);
+
+            // Bổ sung thông tin hạnh kiểm và xếp loại tổng kết
+            foreach (var item in dsXepLoai)
+            {
+                // Lấy hạnh kiểm
+                HanhKiemDTO hk = hanhKiemDAO.LayHanhKiem(item.MaHocSinh, maHocKy);
+                if (hk != null)
+                {
+                    item.HanhKiem = hk.XepLoai;
+                }
+
+                // Tính xếp loại tổng kết
+                if (!string.IsNullOrEmpty(item.HocLuc) && !string.IsNullOrEmpty(item.HanhKiem))
+                {
+                    item.XepLoaiTongKet = TinhXepLoaiTongKet(item.HocLuc, item.HanhKiem);
+                }
+            }
+
+            return dsXepLoai;
+        }
+
+        /// <summary>
+        /// Lấy tất cả xếp loại trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<XepLoaiDTO> GetAllXepLoai()
+        {
+            try
+            {
+                // Lấy tất cả học kỳ và lấy xếp loại cho từng học kỳ
+                List<XepLoaiDTO> allXepLoai = new List<XepLoaiDTO>();
+                HocKyDAO hocKyDAO = new HocKyDAO();
+                List<HocKyDTO> allHocKy = hocKyDAO.GetAllHocKy();
+
+                foreach (var hk in allHocKy)
+                {
+                    List<XepLoaiDTO> xepLoaiTheoHocKy = xepLoaiDAO.GetDanhSachXepLoai(hk.MaHocKy, null);
+                    // Thêm MaHocKy vào mỗi item
+                    foreach (var item in xepLoaiTheoHocKy)
+                    {
+                        item.MaHocKy = hk.MaHocKy;
+                    }
+                    allXepLoai.AddRange(xepLoaiTheoHocKy);
+                }
+
+                return allXepLoai;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy tất cả xếp loại: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Lấy xếp loại của một học sinh theo học kỳ
         /// </summary>
         public XepLoaiDTO GetXepLoaiByStudent(int maHocSinh, int maHocKy)
         {
             try
             {
-                if (maHocSinh <= 0)
-                    throw new ArgumentException("Mã học sinh không hợp lệ");
-                if (maHocKy <= 0)
-                    throw new ArgumentException("Mã học kỳ không hợp lệ");
-
-                return xepLoaiDAO.GetXepLoaiByHocSinhVaHocKy(maHocSinh, maHocKy);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi BUS GetXepLoaiByStudent: {ex.Message}");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Lấy tất cả xếp loại của học sinh
-        /// </summary>
-        public List<XepLoaiDTO> GetAllXepLoaiByHocSinh(int maHocSinh)
-        {
-            try
-            {
-                if (maHocSinh <= 0)
-                    throw new ArgumentException("Mã học sinh không hợp lệ");
-
-                return xepLoaiDAO.GetAllXepLoaiByHocSinh(maHocSinh);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi BUS GetAllXepLoaiByHocSinh: {ex.Message}");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Lấy tất cả xếp loại trong học kỳ
-        /// </summary>
-        public List<XepLoaiDTO> GetAllXepLoaiByHocKy(int maHocKy)
-        {
-            try
-            {
-                if (maHocKy <= 0)
-                    throw new ArgumentException("Mã học kỳ không hợp lệ");
-
-                return xepLoaiDAO.GetAllXepLoaiByHocKy(maHocKy);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi BUS GetAllXepLoaiByHocKy: {ex.Message}");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Thêm hoặc cập nhật xếp loại
-        /// </summary>
-        public bool AddOrUpdateXepLoai(XepLoaiDTO xepLoai)
-        {
-            try
-            {
-                // Validate
-                if (!ValidateXepLoai(xepLoai))
-                    return false;
-
-                // Kiểm tra đã tồn tại chưa
-                bool exists = xepLoaiDAO.KiemTraTonTai(xepLoai.MaHocSinh, xepLoai.MaHocKy);
-
-                if (exists)
+                List<XepLoaiDTO> dsXepLoai = xepLoaiDAO.GetDanhSachXepLoai(maHocKy, null);
+                XepLoaiDTO xepLoai = dsXepLoai.FirstOrDefault(x => x.MaHocSinh == maHocSinh);
+                
+                if (xepLoai != null)
                 {
-                    return xepLoaiDAO.UpdateXepLoai(xepLoai);
-                }
-                else
-                {
-                    return xepLoaiDAO.InsertXepLoai(xepLoai);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi BUS AddOrUpdateXepLoai: {ex.Message}");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Xóa xếp loại
-        /// </summary>
-        public bool DeleteXepLoai(int maHocSinh, int maHocKy)
-        {
-            try
-            {
-                if (maHocSinh <= 0)
-                    throw new ArgumentException("Mã học sinh không hợp lệ");
-                if (maHocKy <= 0)
-                    throw new ArgumentException("Mã học kỳ không hợp lệ");
-
-                return xepLoaiDAO.DeleteXepLoai(maHocSinh, maHocKy);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi BUS DeleteXepLoai: {ex.Message}");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Validate dữ liệu xếp loại
-        /// </summary>
-        private bool ValidateXepLoai(XepLoaiDTO xepLoai)
-        {
-            if (xepLoai == null)
-            {
-                throw new ArgumentException("Dữ liệu xếp loại không hợp lệ");
-            }
-
-            if (xepLoai.MaHocSinh <= 0)
-            {
-                throw new ArgumentException("Mã học sinh không hợp lệ");
-            }
-
-            if (xepLoai.MaHocKy <= 0)
-            {
-                throw new ArgumentException("Mã học kỳ không hợp lệ");
-            }
-
-            if (string.IsNullOrWhiteSpace(xepLoai.HocLuc))
-            {
-                throw new ArgumentException("Học lực không được để trống");
-            }
-
-            if (!xepLoai.IsValidHocLuc())
-            {
-                throw new ArgumentException("Học lực không hợp lệ. Chỉ được phép: Giỏi, Khá, Trung bình, Yếu, Kém");
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Tính xếp loại tự động dựa trên điểm trung bình
-        /// </summary>
-        public string TinhXepLoaiTuDong(float diemTrungBinh)
-        {
-            if (diemTrungBinh >= 8.0f)
-                return "Giỏi";
-            else if (diemTrungBinh >= 6.5f)
-                return "Khá";
-            else if (diemTrungBinh >= 5.0f)
-                return "Trung bình";
-            else if (diemTrungBinh >= 3.5f)
-                return "Yếu";
-            else
-                return "Kém";
-        }
-
-        /// <summary>
-        /// Tính và lưu xếp loại tự động cho học sinh trong học kỳ
-        /// TODO: Cần sử dụng NhapDiemDAO thay vì DiemSoDAO
-        /// </summary>
-        public bool TinhVaLuuXepLoaiTuDong(int maHocSinh, int maHocKy)
-        {
-            throw new NotImplementedException("Chức năng này cần được cập nhật để sử dụng NhapDiemDAO");
-            /*
-            try
-            {
-                // Lấy tất cả điểm của học sinh trong học kỳ
-                List<DiemSoDTO> danhSachDiem = diemSoDAO.LayDiemTheoHocSinhVaHocKy(maHocSinh, maHocKy);
-
-                if (danhSachDiem == null || danhSachDiem.Count == 0)
-                {
-                    throw new Exception("Học sinh chưa có điểm để xếp loại");
+                    xepLoai.MaHocKy = maHocKy;
                 }
 
-                // Tính điểm trung bình tất cả các môn
-                float tongDiem = 0;
-                int soMon = 0;
-                foreach (var diem in danhSachDiem)
+                return xepLoai;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi nghiệp vụ khi lấy xếp loại học sinh {maHocSinh} học kỳ {maHocKy}: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Lấy thống kê xếp loại tổng kết theo học kỳ và lớp
+        /// Kết hợp cả học lực và hạnh kiểm để ra xếp loại tổng kết
+        /// </summary>
+        public Dictionary<string, int> ThongKeXepLoaiTongKet(int maHocKy, int? maLop = null)
+        {
+            Dictionary<string, int> thongKe = new Dictionary<string, int>
+    {
+        { "Giỏi", 0 },
+        { "Khá", 0 },
+        { "Trung bình", 0 },
+        { "Yếu", 0 },
+        { "Kém", 0 }
+    };
+
+            try
+            {
+                // Lấy danh sách xếp loại đầy đủ (có cả học lực và hạnh kiểm)
+                List<XepLoaiDTO> dsXepLoai = LayDanhSachXepLoaiDayDu(maHocKy, maLop);
+
+                foreach (var item in dsXepLoai)
                 {
-                    if (diem.DiemTrungBinh.HasValue)
+                    // Chỉ thống kê những học sinh có xếp loại tổng kết
+                    if (!string.IsNullOrEmpty(item.XepLoaiTongKet) && thongKe.ContainsKey(item.XepLoaiTongKet))
                     {
-                        tongDiem += diem.DiemTrungBinh.Value;
-                        soMon++;
+                        thongKe[item.XepLoaiTongKet]++;
                     }
                 }
-
-                if (soMon == 0)
-                {
-                    throw new Exception("Chưa có điểm trung bình của các môn");
-                }
-
-                float diemTrungBinhChung = tongDiem / soMon;
-
-                // Tính xếp loại
-                string hocLuc = TinhXepLoaiTuDong(diemTrungBinhChung);
-
-                // Tạo DTO và lưu
-                XepLoaiDTO xepLoai = new XepLoaiDTO
-                {
-                    MaHocSinh = maHocSinh,
-                    MaHocKy = maHocKy,
-                    HocLuc = hocLuc,
-                    GhiChu = $"ĐTB: {diemTrungBinhChung:F2} - Tự động tính toán"
-                };
-
-                return AddOrUpdateXepLoai(xepLoai);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi BUS TinhVaLuuXepLoaiTuDong: {ex.Message}");
-                throw;
+                throw new Exception("Lỗi khi thống kê xếp loại tổng kết: " + ex.Message);
             }
-            */
-        }
 
+            return thongKe;
+        }
         /// <summary>
-        /// Tính xếp loại tự động cho tất cả học sinh trong học kỳ
-        /// TODO: Cần sử dụng NhapDiemDAO thay vì DiemSoDAO
+        /// Thống kê xếp loại tổng kết theo khối và học kỳ
+        /// Kết hợp cả học lực và hạnh kiểm để tính xếp loại tổng kết
         /// </summary>
-        public int TinhXepLoaiTuDongChoHocKy(int maHocKy)
+        public Dictionary<string, int> ThongKeXepLoaiTongKetTheoKhoi(int maHocKy, int maKhoi)
         {
-            throw new NotImplementedException("Chức năng này cần được cập nhật để sử dụng NhapDiemDAO");
-            /*
+            Dictionary<string, int> thongKe = new Dictionary<string, int>
+    {
+        { "Giỏi", 0 },
+        { "Khá", 0 },
+        { "Trung bình", 0 },
+        { "Yếu", 0 },
+        { "Kém", 0 }
+    };
+
             try
             {
-                // Lấy danh sách tất cả học sinh có điểm trong học kỳ
-                List<DiemSoDTO> danhSachDiem = diemSoDAO.LayTatCaDiemTheoHocKy(maHocKy);
+                // Lấy danh sách học sinh có học lực theo khối
+                List<XepLoaiDTO> dsXepLoai = xepLoaiDAO.GetDanhSachXepLoaiTheoKhoi(maHocKy, maKhoi);
 
-                if (danhSachDiem == null || danhSachDiem.Count == 0)
+                // Với mỗi học sinh, lấy hạnh kiểm và tính xếp loại tổng kết
+                foreach (var item in dsXepLoai)
                 {
-                    throw new Exception("Không có dữ liệu điểm trong học kỳ này");
-                }
+                    // Lấy hạnh kiểm
+                    HanhKiemDTO hk = hanhKiemDAO.LayHanhKiem(item.MaHocSinh, maHocKy);
 
-                // Nhóm theo học sinh
-                Dictionary<int, List<DiemSoDTO>> diemTheoHocSinh = new Dictionary<int, List<DiemSoDTO>>();
-                foreach (var diem in danhSachDiem)
-                {
-                    if (!diemTheoHocSinh.ContainsKey(diem.MaHocSinh))
+                    // Chỉ tính xếp loại nếu có đầy đủ cả học lực và hạnh kiểm
+                    if (!string.IsNullOrEmpty(item.HocLuc) && hk != null && !string.IsNullOrEmpty(hk.XepLoai))
                     {
-                        diemTheoHocSinh[diem.MaHocSinh] = new List<DiemSoDTO>();
-                    }
-                    diemTheoHocSinh[diem.MaHocSinh].Add(diem);
-                }
+                        string xepLoaiTongKet = TinhXepLoaiTongKet(item.HocLuc, hk.XepLoai);
 
-                // Tính xếp loại cho từng học sinh
-                int soHocSinhDaXepLoai = 0;
-                foreach (var kvp in diemTheoHocSinh)
-                {
-                    int maHocSinh = kvp.Key;
-                    List<DiemSoDTO> diemCuaHocSinh = kvp.Value;
-
-                    // Tính điểm trung bình
-                    float tongDiem = 0;
-                    int soMon = 0;
-                    foreach (var diem in diemCuaHocSinh)
-                    {
-                        if (diem.DiemTrungBinh.HasValue)
+                        if (!string.IsNullOrEmpty(xepLoaiTongKet) && thongKe.ContainsKey(xepLoaiTongKet))
                         {
-                            tongDiem += diem.DiemTrungBinh.Value;
-                            soMon++;
-                        }
-                    }
-
-                    if (soMon > 0)
-                    {
-                        float diemTrungBinhChung = tongDiem / soMon;
-                        string hocLuc = TinhXepLoaiTuDong(diemTrungBinhChung);
-
-                        XepLoaiDTO xepLoai = new XepLoaiDTO
-                        {
-                            MaHocSinh = maHocSinh,
-                            MaHocKy = maHocKy,
-                            HocLuc = hocLuc,
-                            GhiChu = $"ĐTB: {diemTrungBinhChung:F2} - Tự động tính toán hàng loạt"
-                        };
-
-                        if (AddOrUpdateXepLoai(xepLoai))
-                        {
-                            soHocSinhDaXepLoai++;
+                            thongKe[xepLoaiTongKet]++;
                         }
                     }
                 }
-
-                return soHocSinhDaXepLoai;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi BUS TinhXepLoaiTuDongChoHocKy: {ex.Message}");
-                throw;
+                throw new Exception("Lỗi khi thống kê xếp loại tổng kết theo khối: " + ex.Message);
             }
-            */
+
+            return thongKe;
         }
 
         /// <summary>
-        /// Lấy thống kê xếp loại theo học kỳ
+        /// Đếm tổng số học sinh theo khối và học kỳ (bao gồm cả chưa có xếp loại)
         /// </summary>
-        public Dictionary<string, int> GetThongKeXepLoai(int maHocKy)
+        public int DemTongSoHocSinhTheoKhoi(int maHocKy, int maKhoi)
         {
-            try
-            {
-                if (maHocKy <= 0)
-                    throw new ArgumentException("Mã học kỳ không hợp lệ");
-
-                return xepLoaiDAO.GetThongKeXepLoaiByHocKy(maHocKy);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi BUS GetThongKeXepLoai: {ex.Message}");
-                throw;
-            }
+            return xepLoaiDAO.DemTongSoHocSinhTheoKhoi(maHocKy, maKhoi);
         }
 
         /// <summary>

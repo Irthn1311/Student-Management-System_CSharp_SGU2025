@@ -16,6 +16,7 @@ using OfficeOpenXml.Style; // Cần cho định dạng (tô màu, in đậm)
 using Student_Management_System_CSharp_SGU2025.BUS; 
 using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.DAO; // ✅ Thêm để sử dụng NguoiDungDAO (nếu cần)
+using Student_Management_System_CSharp_SGU2025.DAO; // ✅ Thêm để sử dụng NguoiDungDAO (nếu cần)
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 {
@@ -51,6 +52,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private int currentPagePhuHuynh = 1; // Trang hiện tại
         private int pageSizePhuHuynh = 50; // Số dòng mỗi trang
         private List<PhuHuynhDTO> danhSachPhuHuynhFiltered; // Danh sách sau khi tìm kiếm/lọc
+
+        // ✅ PHÂN TRANG - Biến quản lý
+        private int currentPageHocSinh = 1; // Trang hiện tại
+        private int pageSizeHocSinh = 50; // Số dòng mỗi trang
+        private List<HocSinhDTO> danhSachHocSinhFiltered; // Danh sách sau khi tìm kiếm/lọc
+
+        // ✅ PHÂN TRANG PHỤ HUYNH - Biến quản lý
+        private int currentPagePhuHuynh = 1; // Trang hiện tại
+        private int pageSizePhuHuynh = 50; // Số dòng mỗi trang
+        private List<PhuHuynhDTO> danhSachPhuHuynhFiltered; // Danh sách sau khi tìm kiếm/lọc
         
 
         public HocSinh()
@@ -72,6 +83,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             danhSachHocSinhFull = new List<HocSinhDTO>();
             danhSachPhuHuynhFull = new List<PhuHuynhDTO>();
             danhSachMoiQuanHe = new List<(int hocSinh, int phuHuynh, string moiQuanHe)>();
+            danhSachHocSinhFiltered = new List<HocSinhDTO>(); // ✅ Khởi tạo danh sách filtered
+            danhSachPhuHuynhFiltered = new List<PhuHuynhDTO>(); // ✅ Khởi tạo danh sách filtered phụ huynh
             danhSachHocSinhFiltered = new List<HocSinhDTO>(); // ✅ Khởi tạo danh sách filtered
             danhSachPhuHuynhFiltered = new List<PhuHuynhDTO>(); // ✅ Khởi tạo danh sách filtered phụ huynh
 
@@ -101,6 +114,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
             // --- Nạp dữ liệu mẫu ---
             LoadSampleDataHocSinh(); // ✅ Load trực tiếp, không cần FilterAndLoadHocSinh nữa
+            LoadSampleDataHocSinh(); // ✅ Load trực tiếp, không cần FilterAndLoadHocSinh nữa
             LoadSampleDataPhuHuynh();
             LoadSampleDataMoiQuanHe(); 
 
@@ -108,6 +122,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             SetupHeaderAndStats();
             
             isLoadingData = false; // Kết thúc load dữ liệu
+            
+            // ✅ Force update label sau khi load xong (fix bug hiển thị 500 lần đầu)
+            ForceUpdatePaginationLabel();
             
             // ✅ Force update label sau khi load xong (fix bug hiển thị 500 lần đầu)
             ForceUpdatePaginationLabel();
@@ -136,6 +153,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 {
                     txtTimKiem.PlaceholderText = "Tìm học sinh ...";
                 }
+                
+                // ✅ Đổi placeholder TextBox
+                if (txtTimKiem != null)
+                {
+                    txtTimKiem.PlaceholderText = "Tìm học sinh ...";
+                }
             }
             else
             {
@@ -146,6 +169,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 btnPhuHuynh.Text = "Học Sinh";
                 headerQuanLiHocSinh.lbHeader.Text = "Thông tin Phụ huynh"; 
                 headerQuanLiHocSinh.lbGhiChu.Text = "Trang chủ / Phụ huynh";
+                
+                // ✅ Đổi placeholder TextBox
+                if (txtTimKiem != null)
+                {
+                    txtTimKiem.PlaceholderText = "Tìm phụ huynh ...";
+                }
                 
                 // ✅ Đổi placeholder TextBox
                 if (txtTimKiem != null)
@@ -223,10 +252,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             ApplyBaseTableStyle(tableHocSinh); // Áp dụng style chung
 
             // --- Thêm cột mới (THÊM CỘT SDTHS VÀ EMAIL) ---
+            // --- Thêm cột mới (THÊM CỘT SDTHS VÀ EMAIL) ---
             tableHocSinh.Columns.Add("MaHS", "Mã HS");
             tableHocSinh.Columns.Add("HoTen", "Họ và tên");
             tableHocSinh.Columns.Add("NgaySinh", "Ngày sinh");
             tableHocSinh.Columns.Add("GioiTinh", "Giới tính");
+            tableHocSinh.Columns.Add("SDTHS", "SĐT"); // ✅ Thêm cột SĐT
+            tableHocSinh.Columns.Add("Email", "Email"); // ✅ Thêm cột Email
             tableHocSinh.Columns.Add("SDTHS", "SĐT"); // ✅ Thêm cột SĐT
             tableHocSinh.Columns.Add("Email", "Email"); // ✅ Thêm cột Email
             tableHocSinh.Columns.Add("TrangThai", "Trạng thái");
@@ -236,11 +268,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             ApplyColumnAlignmentAndWrapping(tableHocSinh);
             tableHocSinh.Columns["HoTen"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tableHocSinh.Columns["Email"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            tableHocSinh.Columns["Email"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
             // --- Tùy chỉnh kích thước ---
             tableHocSinh.Columns["MaHS"].FillWeight = 8; tableHocSinh.Columns["MaHS"].MinimumWidth = 50;
+            tableHocSinh.Columns["MaHS"].FillWeight = 8; tableHocSinh.Columns["MaHS"].MinimumWidth = 50;
             tableHocSinh.Columns["HoTen"].FillWeight = 25; tableHocSinh.Columns["HoTen"].MinimumWidth = 150;
             tableHocSinh.Columns["NgaySinh"].FillWeight = 12; tableHocSinh.Columns["NgaySinh"].MinimumWidth = 100;
+            tableHocSinh.Columns["GioiTinh"].FillWeight = 10; tableHocSinh.Columns["GioiTinh"].MinimumWidth = 70;
+            tableHocSinh.Columns["SDTHS"].FillWeight = 12; tableHocSinh.Columns["SDTHS"].MinimumWidth = 100;
+            tableHocSinh.Columns["Email"].FillWeight = 18; tableHocSinh.Columns["Email"].MinimumWidth = 120;
+            tableHocSinh.Columns["TrangThai"].FillWeight = 12; tableHocSinh.Columns["TrangThai"].MinimumWidth = 90;
             tableHocSinh.Columns["GioiTinh"].FillWeight = 10; tableHocSinh.Columns["GioiTinh"].MinimumWidth = 70;
             tableHocSinh.Columns["SDTHS"].FillWeight = 12; tableHocSinh.Columns["SDTHS"].MinimumWidth = 100;
             tableHocSinh.Columns["Email"].FillWeight = 18; tableHocSinh.Columns["Email"].MinimumWidth = 120;
@@ -282,8 +320,48 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             try
             {
                 tableHocSinh.Rows.Clear();
+            
+            // ✅ Load tất cả từ DB
+            danhSachHocSinhFull = hocSinhBLL.GetAllHocSinh();
+            
+            // ✅ QUAN TRỌNG: Tạo list mới hoàn toàn để tránh reference cũ
+            danhSachHocSinhFiltered = danhSachHocSinhFull.ToList();
+            
+            // Debug: Kiểm tra số lượng
+            Console.WriteLine($"[DEBUG] LoadSampleDataHocSinh: Full={danhSachHocSinhFull.Count}, Filtered={danhSachHocSinhFiltered.Count}");
+            
+            currentPageHocSinh = 1; // Reset về trang 1
+            LoadPagedDataHocSinh(); // ✅ Load trang đầu tiên
+        }
+
+        // ✅ HÀM MỚI: Load dữ liệu theo trang
+        private void LoadPagedDataHocSinh()
+        {
+            try
+            {
+                tableHocSinh.Rows.Clear();
                 bindingListHocSinh.Clear();
 
+                // Tính toán phân trang
+                int totalRecords = danhSachHocSinhFiltered.Count;
+                int totalPages = (int)Math.Ceiling((double)totalRecords / pageSizeHocSinh);
+                
+                // Debug: Kiểm tra số lượng
+                Console.WriteLine($"[DEBUG] LoadPagedDataHocSinh: totalRecords={totalRecords}, totalPages={totalPages}, currentPage={currentPageHocSinh}");
+                
+                // Đảm bảo currentPage hợp lệ
+                if (currentPageHocSinh < 1) currentPageHocSinh = 1;
+                if (currentPageHocSinh > totalPages && totalPages > 0) currentPageHocSinh = totalPages;
+
+                // Lấy dữ liệu của trang hiện tại
+                var pagedData = danhSachHocSinhFiltered
+                    .Skip((currentPageHocSinh - 1) * pageSizeHocSinh)
+                    .Take(pageSizeHocSinh)
+                    .ToList();
+
+                // Thêm vào bảng
+                foreach (HocSinhDTO hs in pagedData)
+                {
                 // Tính toán phân trang
                 int totalRecords = danhSachHocSinhFiltered.Count;
                 int totalPages = (int)Math.Ceiling((double)totalRecords / pageSizeHocSinh);
@@ -447,7 +525,153 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 if (lblTrangHienTai != null)
                 {
                     lblTrangHienTai.Text = $"Trang {currentPage}/{totalPages} ({totalRecords} {entityName})";
+                    tableHocSinh.Rows.Add(
+                        hs.MaHS, 
+                        hs.HoTen, 
+                        hs.NgaySinh.ToString("dd/MM/yyyy"), 
+                        hs.GioiTinh,
+                        hs.SdtHS ?? "", // ✅ Hiển thị SĐT
+                        hs.Email ?? "", // ✅ Hiển thị Email
+                        hs.TrangThai, 
+                        ""
+                    );
                 }
+
+                // ✅ Cập nhật label phân trang (tìm control theo tên)
+                UpdatePaginationLabel(totalPages, totalRecords);
+                
+                // ✅ Enable/Disable nút
+                UpdatePaginationButtons(totalPages);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải dữ liệu học sinh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ✅ Cập nhật label hiển thị trang
+        private void UpdatePaginationLabel(int totalPages, int totalRecords)
+        {
+            // ✅ Xác định đang ở view nào và lấy current page tương ứng
+            int currentPage = isShowingHocSinh ? currentPageHocSinh : currentPagePhuHuynh;
+            string entityName = isShowingHocSinh ? "học sinh" : "phụ huynh";
+            
+            // Tìm label theo tên (giả sử bạn đặt tên là lblTrangHienTai hoặc tương tự)
+            // Nếu không tìm thấy, tạm thời set text của control có chứa "Trang"
+            foreach (Control ctrl in this.Controls)
+            {
+                if (ctrl is Label && (ctrl.Name.Contains("Trang") || ctrl.Name.Contains("lblPaging")))
+                {
+                    if (totalPages == 0)
+                        ctrl.Text = $"Trang 0/0 (0 {entityName})";
+                    else
+                        ctrl.Text = $"Trang {currentPage}/{totalPages} ({totalRecords} {entityName})";
+                    return;
+                }
+            }
+            
+            // Fallback: Tìm trong Panel hoặc GroupBox nếu label nằm trong đó
+            FindAndUpdateLabel(this, totalPages, totalRecords, currentPage, entityName);
+        }
+
+        // ✅ Hàm đệ quy tìm label trong container
+        private void FindAndUpdateLabel(Control parent, int totalPages, int totalRecords, int currentPage, string entityName)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                if (ctrl is Label && (ctrl.Name.ToLower().Contains("trang") || ctrl.Text.Contains("Trang")))
+                {
+                    if (totalPages == 0)
+                        ctrl.Text = $"Trang 0/0 (0 {entityName})";
+                    else
+                        ctrl.Text = $"Trang {currentPage}/{totalPages} ({totalRecords} {entityName})";
+                    return;
+                }
+                
+                // Tìm trong container con
+                if (ctrl.HasChildren)
+                {
+                    FindAndUpdateLabel(ctrl, totalPages, totalRecords, currentPage, entityName);
+                }
+            }
+        }
+
+        // ✅ Enable/Disable nút phân trang
+        private void UpdatePaginationButtons(int totalPages)
+        {
+            // ✅ Xác định đang ở view nào và lấy current page tương ứng
+            int currentPage = isShowingHocSinh ? currentPageHocSinh : currentPagePhuHuynh;
+            
+            // Tìm nút Trang Trước (tên có thể là btnTrangTruoc, btnPrevious, etc.)
+            foreach (Control ctrl in this.Controls)
+            {
+                if (ctrl is Button || ctrl.Name.Contains("Button"))
+                {
+                    if (ctrl.Name.ToLower().Contains("truoc") || ctrl.Name.ToLower().Contains("prev") || ctrl.Text.Contains("◄"))
+                    {
+                        ctrl.Enabled = (currentPage > 1);
+                    }
+                    else if (ctrl.Name.ToLower().Contains("sau") || ctrl.Name.ToLower().Contains("next") || ctrl.Text.Contains("►"))
+                    {
+                        ctrl.Enabled = (currentPage < totalPages);
+                    }
+                }
+            }
+            
+            // Tìm trong Panel hoặc GroupBox
+            FindAndUpdateButtons(this, totalPages, currentPage);
+        }
+
+        // ✅ Hàm đệ quy tìm button trong container
+        private void FindAndUpdateButtons(Control parent, int totalPages, int currentPage)
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                if (ctrl is Button || ctrl.GetType().Name.Contains("Button"))
+                {
+                    string ctrlNameLower = ctrl.Name.ToLower();
+                    string ctrlTextLower = ctrl.Text.ToLower();
+                    
+                    if (ctrlNameLower.Contains("truoc") || ctrlNameLower.Contains("prev") || 
+                        ctrlTextLower.Contains("◄") || ctrlTextLower.Contains("trước"))
+                    {
+                        ctrl.Enabled = (currentPage > 1);
+                    }
+                    else if (ctrlNameLower.Contains("sau") || ctrlNameLower.Contains("next") || 
+                             ctrlTextLower.Contains("►") || ctrlTextLower.Contains("sau"))
+                    {
+                        ctrl.Enabled = (currentPage < totalPages);
+                    }
+                }
+                
+                if (ctrl.HasChildren)
+                {
+                    FindAndUpdateButtons(ctrl, totalPages, currentPage);
+                }
+            }
+        }
+
+        // ✅ Force update label trực tiếp bằng tên (fix bug lần đầu load)
+        private void ForceUpdatePaginationLabel()
+        {
+            try
+            {
+                // Tính toán thông tin hiện tại
+                int totalRecords = isShowingHocSinh ? danhSachHocSinhFiltered.Count : danhSachPhuHuynhFiltered.Count;
+                int pageSize = isShowingHocSinh ? pageSizeHocSinh : pageSizePhuHuynh;
+                int currentPage = isShowingHocSinh ? currentPageHocSinh : currentPagePhuHuynh;
+                int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+                string entityName = isShowingHocSinh ? "học sinh" : "phụ huynh";
+                
+                // Update label bằng tên trực tiếp
+                if (lblTrangHienTai != null)
+                {
+                    lblTrangHienTai.Text = $"Trang {currentPage}/{totalPages} ({totalRecords} {entityName})";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] ForceUpdatePaginationLabel: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -566,12 +790,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             tablePhuHuynh.Columns["Sdt"].FillWeight = 12; tablePhuHuynh.Columns["Sdt"].MinimumWidth = 80;
             tablePhuHuynh.Columns["Email"].FillWeight = 18; tablePhuHuynh.Columns["Email"].MinimumWidth = 100;
             tablePhuHuynh.Columns["DiaChi"].FillWeight = 25; tablePhuHuynh.Columns["DiaChi"].MinimumWidth = 150;
+            tablePhuHuynh.Columns["Email"].FillWeight = 18; tablePhuHuynh.Columns["Email"].MinimumWidth = 100;
+            tablePhuHuynh.Columns["DiaChi"].FillWeight = 25; tablePhuHuynh.Columns["DiaChi"].MinimumWidth = 150;
             tablePhuHuynh.Columns["ThaoTacPH"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            tablePhuHuynh.Columns["ThaoTacPH"].Width = 80; 
             tablePhuHuynh.Columns["ThaoTacPH"].Width = 80; 
 
             // --- Gắn sự kiện ---
             tablePhuHuynh.CellPainting += tablePhuHuynh_CellPainting;
             tablePhuHuynh.CellClick += tablePhuHuynh_CellClick;
+            tablePhuHuynh.SelectionChanged -= tablePhuHuynh_SelectionChanged;
             tablePhuHuynh.SelectionChanged -= tablePhuHuynh_SelectionChanged;
             tablePhuHuynh.SelectionChanged += tablePhuHuynh_SelectionChanged;
         }
@@ -579,6 +807,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private void LoadSampleDataPhuHuynh()
         {
             tablePhuHuynh.Rows.Clear();
+            danhSachPhuHuynhFull = phuHuynhBLL.GetAllPhuHuynh(); // ✅ Load tất cả từ DB
+            danhSachPhuHuynhFiltered = new List<PhuHuynhDTO>(danhSachPhuHuynhFull); // ✅ Copy sang filtered list
             danhSachPhuHuynhFull = phuHuynhBLL.GetAllPhuHuynh(); // ✅ Load tất cả từ DB
             danhSachPhuHuynhFiltered = new List<PhuHuynhDTO>(danhSachPhuHuynhFull); // ✅ Copy sang filtered list
             
@@ -593,7 +823,49 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             {
                 tablePhuHuynh.Rows.Clear();
                 bindingListPhuHuynh.Clear();
+            currentPagePhuHuynh = 1; // Reset về trang 1
+            LoadPagedDataPhuHuynh(); // ✅ Load trang đầu tiên
+        }
 
+        // ✅ HÀM MỚI: Load dữ liệu Phụ Huynh theo trang
+        private void LoadPagedDataPhuHuynh()
+        {
+            try
+            {
+                tablePhuHuynh.Rows.Clear();
+                bindingListPhuHuynh.Clear();
+
+                // Tính toán phân trang
+                int totalRecords = danhSachPhuHuynhFiltered.Count;
+                int totalPages = (int)Math.Ceiling((double)totalRecords / pageSizePhuHuynh);
+                
+                // Đảm bảo currentPage hợp lệ
+                if (currentPagePhuHuynh < 1) currentPagePhuHuynh = 1;
+                if (currentPagePhuHuynh > totalPages && totalPages > 0) currentPagePhuHuynh = totalPages;
+
+                // Lấy dữ liệu của trang hiện tại
+                var pagedData = danhSachPhuHuynhFiltered
+                    .Skip((currentPagePhuHuynh - 1) * pageSizePhuHuynh)
+                    .Take(pageSizePhuHuynh)
+                    .ToList();
+
+                // Thêm vào bảng
+                foreach (PhuHuynhDTO ph in pagedData)
+                {
+                    bindingListPhuHuynh.Add(ph);
+                    tablePhuHuynh.Rows.Add(ph.MaPhuHuynh, ph.HoTen, ph.SoDienThoai, 
+                                          ph.Email, ph.DiaChi, "");
+                }
+
+                // ✅ Cập nhật label phân trang
+                UpdatePaginationLabel(totalPages, totalRecords);
+                
+                // ✅ Enable/Disable nút
+                UpdatePaginationButtons(totalPages);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải dữ liệu phụ huynh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 // Tính toán phân trang
                 int totalRecords = danhSachPhuHuynhFiltered.Count;
                 int totalPages = (int)Math.Ceiling((double)totalRecords / pageSizePhuHuynh);
@@ -1003,10 +1275,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                                 }
 
                                 // ✅ Cập nhật dòng trong bảng thay vì reload (THÊM CỘT SDTHS VÀ EMAIL)
+                                // ✅ Cập nhật dòng trong bảng thay vì reload (THÊM CỘT SDTHS VÀ EMAIL)
                                 dgv.Rows[rowIndex].SetValues(
                                     updatedHS.MaHS, 
                                     updatedHS.HoTen, 
                                     updatedHS.NgaySinh.ToString("dd/MM/yyyy"), 
+                                    updatedHS.GioiTinh,
+                                    updatedHS.SdtHS ?? "", // ✅ SĐT
+                                    updatedHS.Email ?? "", // ✅ Email
                                     updatedHS.GioiTinh,
                                     updatedHS.SdtHS ?? "", // ✅ SĐT
                                     updatedHS.Email ?? "", // ✅ Email
@@ -1318,7 +1594,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         danhSachHocSinhFull.Add(newHS);
 
                         // ✅ Thêm dòng mới vào bảng thay vì load lại toàn bộ (BỎ CỘT LỚP)
+                        // ✅ Thêm dòng mới vào bảng thay vì load lại toàn bộ (BỎ CỘT LỚP)
                         tableHocSinh.Rows.Add(newHS.MaHS, newHS.HoTen, newHS.NgaySinh.ToString("dd/MM/yyyy"), 
+                                             newHS.GioiTinh, newHS.TrangThai, "");
                                              newHS.GioiTinh, newHS.TrangThai, "");
                     }
 
@@ -1347,7 +1625,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 txtTimKiem.Clear();
             }
             
+            
+            // ✅ Xóa text tìm kiếm khi chuyển view
+            if (txtTimKiem != null)
+            {
+                txtTimKiem.Clear();
+            }
+            
             UpdateView(); // Cập nhật lại giao diện
+            
+            // ✅ Cập nhật lại label phân trang cho view hiện tại
+            if (isShowingHocSinh)
+            {
+                // Reset về filtered list đầy đủ khi chuyển view
+                danhSachHocSinhFiltered = danhSachHocSinhFull.ToList();
+                currentPageHocSinh = 1;
+                LoadPagedDataHocSinh();
+            }
+            else
+            {
+                // Reset về filtered list đầy đủ khi chuyển view
+                danhSachPhuHuynhFiltered = danhSachPhuHuynhFull.ToList();
+                currentPagePhuHuynh = 1;
+                LoadPagedDataPhuHuynh();
+            }
             
             // ✅ Cập nhật lại label phân trang cho view hiện tại
             if (isShowingHocSinh)
@@ -1405,6 +1706,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         /// <summary>
         /// ✅ Hàm chính để tạo file Excel và xuất TẤT CẢ dữ liệu (không phải chỉ 50 dòng trên giao diện).
+        /// ✅ Hàm chính để tạo file Excel và xuất TẤT CẢ dữ liệu (không phải chỉ 50 dòng trên giao diện).
         /// </summary>
         private void ExportAllDataToExcel(string filePath)
         {
@@ -1418,10 +1720,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
                 // ✅ 1. Xuất TẤT CẢ Học Sinh từ danhSachHocSinhFull
                 ExportHocSinhToWorksheet(package, "HocSinh");
+                // ✅ 1. Xuất TẤT CẢ Học Sinh từ danhSachHocSinhFull
+                ExportHocSinhToWorksheet(package, "HocSinh");
 
                 // ✅ 2. Xuất TẤT CẢ Phụ Huynh từ danhSachPhuHuynhFull
                 ExportPhuHuynhToWorksheet(package, "PhuHuynh");
+                // ✅ 2. Xuất TẤT CẢ Phụ Huynh từ danhSachPhuHuynhFull
+                ExportPhuHuynhToWorksheet(package, "PhuHuynh");
 
+                // ✅ 3. Xuất TẤT CẢ Mối Quan Hệ từ danhSachMoiQuanHe
+                ExportMoiQuanHeToWorksheet(package, "MoiQuanHe");
                 // ✅ 3. Xuất TẤT CẢ Mối Quan Hệ từ danhSachMoiQuanHe
                 ExportMoiQuanHeToWorksheet(package, "MoiQuanHe");
 
@@ -1432,9 +1740,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         /// <summary>
         /// ✅ Xuất TẤT CẢ Học Sinh từ danhSachHocSinhFull (không phải từ DataGridView)
+        /// ✅ Xuất TẤT CẢ Học Sinh từ danhSachHocSinhFull (không phải từ DataGridView)
         /// </summary>
         private void ExportHocSinhToWorksheet(ExcelPackage package, string sheetName)
+        private void ExportHocSinhToWorksheet(ExcelPackage package, string sheetName)
         {
+            var ws = package.Workbook.Worksheets.Add(sheetName);
             var ws = package.Workbook.Worksheets.Add(sheetName);
 
             // --- 1. Thêm tiêu đề (Header) ---
@@ -1454,8 +1765,192 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 range.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(79, 129, 189));
                 range.Style.Font.Color.SetColor(Color.White);
                 range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            // --- 1. Thêm tiêu đề (Header) ---
+            ws.Cells[1, 1].Value = "Mã HS";
+            ws.Cells[1, 2].Value = "Họ và tên";
+            ws.Cells[1, 3].Value = "Ngày sinh";
+            ws.Cells[1, 4].Value = "Giới tính";
+            ws.Cells[1, 5].Value = "SĐT"; // ✅ Thêm cột SĐT
+            ws.Cells[1, 6].Value = "Email"; // ✅ Thêm cột Email
+            ws.Cells[1, 7].Value = "Trạng thái";
+
+            // Định dạng Header
+            using (var range = ws.Cells[1, 1, 1, 7]) // ✅ Đổi từ 1,5 thành 1,7
+            {
+                range.Style.Font.Bold = true;
+                range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                range.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(79, 129, 189));
+                range.Style.Font.Color.SetColor(Color.White);
+                range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             }
 
+            // --- 2. Xuất TẤT CẢ dữ liệu từ danhSachHocSinhFull ---
+            int row = 2;
+            foreach (var hs in danhSachHocSinhFull)
+            {
+                ws.Cells[row, 1].Value = hs.MaHS;
+                ws.Cells[row, 2].Value = hs.HoTen;
+                ws.Cells[row, 3].Value = hs.NgaySinh.ToString("dd/MM/yyyy");
+                ws.Cells[row, 4].Value = hs.GioiTinh;
+                ws.Cells[row, 5].Value = hs.SdtHS ?? ""; // ✅ Xuất SĐT
+                ws.Cells[row, 6].Value = hs.Email ?? ""; // ✅ Xuất Email
+                ws.Cells[row, 7].Value = hs.TrangThai;
+
+                // Định dạng màu cho Giới tính
+                if (hs.GioiTinh == "Nam")
+                    ws.Cells[row, 4].Style.Font.Color.SetColor(Color.FromArgb(29, 78, 216));
+                else if (hs.GioiTinh == "Nữ")
+                    ws.Cells[row, 4].Style.Font.Color.SetColor(Color.FromArgb(190, 24, 93));
+
+                // Định dạng màu cho Trạng thái
+                if (hs.TrangThai == "Đang học")
+                    ws.Cells[row, 7].Style.Font.Color.SetColor(Color.FromArgb(22, 101, 52)); // ✅ Đổi từ row,5 thành row,7
+                else
+                    ws.Cells[row, 7].Style.Font.Color.SetColor(Color.FromArgb(153, 27, 27)); // ✅ Đổi từ row,5 thành row,7
+
+                row++;
+            }
+
+            // --- 3. Tự động điều chỉnh độ rộng cột ---
+            ws.Column(1).Width = 10;  // Mã HS
+            ws.Column(2).Width = 30;  // Họ và tên
+            ws.Column(3).Width = 15;  // Ngày sinh
+            ws.Column(4).Width = 12;  // Giới tính
+            ws.Column(5).Width = 15;  // SĐT
+            ws.Column(6).Width = 25;  // Email
+            ws.Column(7).Width = 15;  // Trạng thái
+
+            // --- 4. Thêm viền cho toàn bộ dữ liệu ---
+            if (row > 2)
+            {
+                using (var range = ws.Cells[1, 1, row - 1, 7]) // ✅ Đổi từ row-1,5 thành row-1,7
+                {
+                    range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                }
+            }
+        }
+
+        /// <summary>
+        /// ✅ Xuất TẤT CẢ Phụ Huynh từ danhSachPhuHuynhFull (không phải từ DataGridView)
+        /// </summary>
+        private void ExportPhuHuynhToWorksheet(ExcelPackage package, string sheetName)
+        {
+            var ws = package.Workbook.Worksheets.Add(sheetName);
+
+            // --- 1. Thêm tiêu đề (Header) ---
+            ws.Cells[1, 1].Value = "Mã PH";
+            ws.Cells[1, 2].Value = "Họ và Tên";
+            ws.Cells[1, 3].Value = "SĐT";
+            ws.Cells[1, 4].Value = "Email";
+            ws.Cells[1, 5].Value = "Địa chỉ";
+
+            // Định dạng Header
+            using (var range = ws.Cells[1, 1, 1, 5])
+            {
+                range.Style.Font.Bold = true;
+                range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                range.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(79, 129, 189));
+                range.Style.Font.Color.SetColor(Color.White);
+                range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            }
+
+            // --- 2. Xuất TẤT CẢ dữ liệu từ danhSachPhuHuynhFull ---
+            int row = 2;
+            foreach (var ph in danhSachPhuHuynhFull)
+            {
+                ws.Cells[row, 1].Value = ph.MaPhuHuynh;
+                ws.Cells[row, 2].Value = ph.HoTen;
+                ws.Cells[row, 3].Value = ph.SoDienThoai;
+                ws.Cells[row, 4].Value = ph.Email;
+                ws.Cells[row, 5].Value = ph.DiaChi;
+                row++;
+            }
+
+            // --- 3. Tự động điều chỉnh độ rộng cột ---
+            ws.Column(1).Width = 10;  // Mã PH
+            ws.Column(2).Width = 30;  // Họ và tên
+            ws.Column(3).Width = 15;  // SĐT
+            ws.Column(4).Width = 30;  // Email
+            ws.Column(5).Width = 40;  // Địa chỉ
+
+            // --- 4. Thêm viền cho toàn bộ dữ liệu ---
+            if (row > 2)
+            {
+                using (var range = ws.Cells[1, 1, row - 1, 5])
+                {
+                    range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                }
+            }
+        }
+
+        /// <summary>
+        /// ✅ Xuất TẤT CẢ Mối Quan Hệ từ danhSachMoiQuanHe (không phải từ DataGridView)
+        /// </summary>
+        private void ExportMoiQuanHeToWorksheet(ExcelPackage package, string sheetName)
+        {
+            var ws = package.Workbook.Worksheets.Add(sheetName);
+
+            // --- 1. Thêm tiêu đề (Header) ---
+            ws.Cells[1, 1].Value = "Học Sinh";
+            ws.Cells[1, 2].Value = "Phụ Huynh";
+            ws.Cells[1, 3].Value = "Mối quan hệ";
+
+            // Định dạng Header
+            using (var range = ws.Cells[1, 1, 1, 3])
+            {
+                range.Style.Font.Bold = true;
+                range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                range.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(79, 129, 189));
+                range.Style.Font.Color.SetColor(Color.White);
+                range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            }
+
+            // --- 2. Xuất TẤT CẢ dữ liệu từ danhSachMoiQuanHe ---
+            int row = 2;
+            foreach (var item in danhSachMoiQuanHe)
+            {
+                // ✅ XUẤT TÊN (đơn giản cho người dùng)
+                var hocSinh = danhSachHocSinhFull.FirstOrDefault(hs => hs.MaHS == item.hocSinh);
+                var phuHuynh = danhSachPhuHuynhFull.FirstOrDefault(ph => ph.MaPhuHuynh == item.phuHuynh);
+                
+                string tenHS = hocSinh != null ? hocSinh.HoTen : $"[HS {item.hocSinh}]";
+                string tenPH = phuHuynh != null ? phuHuynh.HoTen : $"[PH {item.phuHuynh}]";
+                
+                ws.Cells[row, 1].Value = tenHS;
+                ws.Cells[row, 2].Value = tenPH;
+                ws.Cells[row, 3].Value = item.moiQuanHe;
+                row++;
+            }
+
+            // --- 3. Tự động điều chỉnh độ rộng cột ---
+            ws.Column(1).Width = 30;  // Học Sinh
+            ws.Column(2).Width = 30;  // Phụ Huynh
+            ws.Column(3).Width = 18;  // Mối quan hệ
+
+            // --- 4. Thêm viền cho toàn bộ dữ liệu ---
+            if (row > 2)
+            {
+                using (var range = ws.Cells[1, 1, row - 1, 3])
+                {
+                    range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                }
+            }
+        }
+
+        
+        private void ExportDataGridViewToWorksheet(ExcelPackage package, DataGridView dgv, string sheetName)
+        {
+            // ❌ HÀM NÀY KHÔNG DÙNG NỮA - Đã thay bằng ExportHocSinhToWorksheet, ExportPhuHuynhToWorksheet, ExportMoiQuanHeToWorksheet
+            // để xuất TẤT CẢ dữ liệu từ danh sách Full thay vì chỉ 50 dòng từ DataGridView
             // --- 2. Xuất TẤT CẢ dữ liệu từ danhSachHocSinhFull ---
             int row = 2;
             foreach (var hs in danhSachHocSinhFull)
@@ -1656,17 +2151,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         }
 
         // ✅ KHÔNG CẦN NỮA - BỎ COMBOBOX
+        // ✅ KHÔNG CẦN NỮA - BỎ COMBOBOX
         private void cbHocKyNamHoc_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Không làm gì - ComboBox đã bị loại bỏ
             // Không làm gì - ComboBox đã bị loại bỏ
         }
 
         // ✅ KHÔNG CẦN NỮA - BỎ COMBOBOX
+        // ✅ KHÔNG CẦN NỮA - BỎ COMBOBOX
         private void cbLop_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Không làm gì - ComboBox đã bị loại bỏ
+            // Không làm gì - ComboBox đã bị loại bỏ
         }
 
+        // ✅ KHÔNG CẦN NỮA - BỎ HÀM LỌC
         // ✅ KHÔNG CẦN NỮA - BỎ HÀM LỌC
         private void FilterAndLoadHocSinh()
         {

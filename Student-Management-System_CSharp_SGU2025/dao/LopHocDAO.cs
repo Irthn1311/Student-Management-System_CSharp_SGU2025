@@ -299,6 +299,59 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return ds;
         }
 
+        /// <summary>
+        /// Lấy danh sách lớp đã được phân lớp trong học kỳ cụ thể
+        /// </summary>
+        public List<LopDTO> GetDanhSachLopTheoHocKy(int maHocKy)
+        {
+            List<LopDTO> list = new List<LopDTO>();
+            MySqlConnection conn = null;
+
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+            SELECT DISTINCT l.MaLop, l.TenLop, l.MaKhoi, l.SiSo, l.MaGiaoVienChuNhiem
+            FROM LopHoc l
+            INNER JOIN PhanLop pl ON l.MaLop = pl.MaLop
+            WHERE pl.MaHocKy = @MaHocKy
+            ORDER BY l.TenLop";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            LopDTO lop = new LopDTO
+                            {
+                                MaLop = Convert.ToInt32(reader["MaLop"]),
+                                TenLop = reader["TenLop"].ToString(),
+                                MaKhoi = Convert.ToInt32(reader["MaKhoi"]),
+                                SiSo = Convert.ToInt32(reader["SiSo"]),
+                                MaGVCN = reader["MaGiaoVienChuNhiem"]?.ToString()
+                            };
+                            list.Add(lop);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy danh sách lớp theo học kỳ: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+
+            return list;
+        }
+
     }
 }
 

@@ -561,8 +561,9 @@ WHERE h.MaHocSinh BETWEEN 85 AND 1008;
 -- =====================================================================
 -- PHẦN 7: NGƯỜI DÙNG VÀ PHÂN QUYỀN
 -- =====================================================================
+-- LƯU Ý: Tài khoản học sinh đã được tạo ở PHẦN 5B, không tạo lại ở đây
 
--- Người dùng hệ thống
+-- Người dùng hệ thống (chỉ Admin và Giáo viên)
 INSERT INTO NguoiDung (TenDangNhap, MatKhau, TrangThai) VALUES
 -- Admin
 ('admin', '12345678', 'Hoạt động'),
@@ -590,56 +591,12 @@ INSERT INTO NguoiDung (TenDangNhap, MatKhau, TrangThai) VALUES
 ('GV061', '12345678', 'Hoạt động'), ('GV062', '12345678', 'Hoạt động'), ('GV063', '12345678', 'Hoạt động'),
 ('GV064', '12345678', 'Hoạt động'), ('GV065', '12345678', 'Hoạt động'), ('GV066', '12345678', 'Hoạt động'),
 ('GV067', '12345678', 'Hoạt động'), ('GV068', '12345678', 'Hoạt động'), ('GV069', '12345678', 'Hoạt động'),
-('GV070', '12345678', 'Hoạt động'),
--- Học sinh (42 tài khoản mẫu)
-('HS001', '12345678', 'Hoạt động'), ('HS002', '12345678', 'Hoạt động'), ('HS003', '12345678', 'Hoạt động'),
-('HS004', '12345678', 'Hoạt động'), ('HS005', '12345678', 'Hoạt động'), ('HS006', '12345678', 'Hoạt động'),
-('HS007', '12345678', 'Hoạt động'), ('HS008', '12345678', 'Hoạt động'), ('HS009', '12345678', 'Hoạt động'),
-('HS010', '12345678', 'Hoạt động'), ('HS011', '12345678', 'Hoạt động'), ('HS012', '12345678', 'Hoạt động'),
-('HS013', '12345678', 'Hoạt động'), ('HS014', '12345678', 'Hoạt động'), ('HS015', '12345678', 'Hoạt động'),
-('HS016', '12345678', 'Hoạt động'), ('HS017', '12345678', 'Hoạt động'), ('HS018', '12345678', 'Hoạt động'),
-('HS019', '12345678', 'Hoạt động'), ('HS020', '12345678', 'Hoạt động'), ('HS021', '12345678', 'Hoạt động'),
-('HS022', '12345678', 'Hoạt động'), ('HS023', '12345678', 'Hoạt động'), ('HS024', '12345678', 'Hoạt động'),
-('HS025', '12345678', 'Hoạt động'), ('HS026', '12345678', 'Hoạt động'), ('HS027', '12345678', 'Hoạt động'),
-('HS028', '12345678', 'Hoạt động'), ('HS029', '12345678', 'Hoạt động'), ('HS030', '12345678', 'Hoạt động'),
-('HS031', '12345678', 'Hoạt động'), ('HS032', '12345678', 'Hoạt động'), ('HS033', '12345678', 'Hoạt động'),
-('HS034', '12345678', 'Hoạt động'), ('HS035', '12345678', 'Hoạt động'), ('HS036', '12345678', 'Hoạt động'),
-('HS037', '12345678', 'Hoạt động'), ('HS038', '12345678', 'Hoạt động'), ('HS039', '12345678', 'Hoạt động'),
-('HS040', '12345678', 'Hoạt động'), ('HS041', '12345678', 'Hoạt động'), ('HS042', '12345678', 'Hoạt động'),
+('GV070', '12345678', 'Hoạt động');
 
--- Học sinh lớp 10A2 (42 tài khoản)
-('HS043', '12345678', 'Hoạt động'), ('HS044', '12345678', 'Hoạt động'), ('HS045', '12345678', 'Hoạt động'),
-('HS046', '12345678', 'Hoạt động'), ('HS047', '12345678', 'Hoạt động'), ('HS048', '12345678', 'Hoạt động'),
-('HS049', '12345678', 'Hoạt động'), ('HS050', '12345678', 'Hoạt động'), ('HS051', '12345678', 'Hoạt động'),
-('HS052', '12345678', 'Hoạt động'), ('HS053', '12345678', 'Hoạt động'), ('HS054', '12345678', 'Hoạt động'),
-('HS055', '12345678', 'Hoạt động'), ('HS056', '12345678', 'Hoạt động'), ('HS057', '12345678', 'Hoạt động'),
-('HS058', '12345678', 'Hoạt động'), ('HS059', '12345678', 'Hoạt động'), ('HS060', '12345678', 'Hoạt động'),
-('HS061', '12345678', 'Hoạt động'), ('HS062', '12345678', 'Hoạt động'), ('HS063', '12345678', 'Hoạt động'),
-('HS064', '12345678', 'Hoạt động'), ('HS065', '12345678', 'Hoạt động'), ('HS066', '12345678', 'Hoạt động'),
-('HS067', '12345678', 'Hoạt động'), ('HS068', '12345678', 'Hoạt động'), ('HS069', '12345678', 'Hoạt động'),
-('HS070', '12345678', 'Hoạt động'), ('HS071', '12345678', 'Hoạt động'), ('HS072', '12345678', 'Hoạt động'),
-('HS073', '12345678', 'Hoạt động'), ('HS074', '12345678', 'Hoạt động'), ('HS075', '12345678', 'Hoạt động'),
-('HS076', '12345678', 'Hoạt động'), ('HS077', '12345678', 'Hoạt động'), ('HS078', '12345678', 'Hoạt động'),
-('HS079', '12345678', 'Hoạt động'), ('HS080', '12345678', 'Hoạt động'), ('HS081', '12345678', 'Hoạt động'),
-('HS082', '12345678', 'Hoạt động'), ('HS083', '12345678', 'Hoạt động'), ('HS084', '12345678', 'Hoạt động'),
+SELECT 'Admin and teacher accounts created (71 accounts)' AS Status;
 
--- Học sinh 85-1008 (tạo tự động)
-('HS085', '12345678', 'Hoạt động'), ('HS086', '12345678', 'Hoạt động'), ('HS087', '12345678', 'Hoạt động'), ('HS088', '12345678', 'Hoạt động'), ('HS089', '12345678', 'Hoạt động'),
-('HS090', '12345678', 'Hoạt động'), ('HS091', '12345678', 'Hoạt động'), ('HS092', '12345678', 'Hoạt động'), ('HS093', '12345678', 'Hoạt động'), ('HS094', '12345678', 'Hoạt động'),
-('HS095', '12345678', 'Hoạt động'), ('HS096', '12345678', 'Hoạt động'), ('HS097', '12345678', 'Hoạt động'), ('HS098', '12345678', 'Hoạt động'), ('HS099', '12345678', 'Hoạt động'),
-('HS100', '12345678', 'Hoạt động');
-
--- Tạo tự động tài khoản học sinh còn lại (100-1008)
-INSERT INTO NguoiDung (TenDangNhap, MatKhau, TrangThai)
-SELECT 
-    CONCAT('HS', LPAD(100 + t.n + r.n * 42, 6, '0')) as TenDangNhap,
-    '12345678' as MatKhau,
-    'Hoạt động' as TrangThai
-FROM (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30 UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40 UNION SELECT 41) t
-CROSS JOIN (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21) r
-LIMIT 909;
-
--- Phân quyền người dùng
+-- Phân quyền người dùng (chỉ Admin và Giáo viên)
+-- LƯU Ý: Phân quyền học sinh đã được thực hiện ở PHẦN 5B
 INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro) VALUES
 -- Admin
 ('admin', 'admin'),
@@ -657,43 +614,9 @@ INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro) VALUES
 ('GV051', 'teacher'), ('GV052', 'teacher'), ('GV053', 'teacher'), ('GV054', 'teacher'), ('GV055', 'teacher'),
 ('GV056', 'teacher'), ('GV057', 'teacher'), ('GV058', 'teacher'), ('GV059', 'teacher'), ('GV060', 'teacher'),
 ('GV061', 'teacher'), ('GV062', 'teacher'), ('GV063', 'teacher'), ('GV064', 'teacher'), ('GV065', 'teacher'),
-('GV066', 'teacher'), ('GV067', 'teacher'), ('GV068', 'teacher'), ('GV069', 'teacher'), ('GV070', 'teacher'),
--- Học sinh
-('HS001', 'student'), ('HS002', 'student'), ('HS003', 'student'), ('HS004', 'student'), ('HS005', 'student'),
-('HS006', 'student'), ('HS007', 'student'), ('HS008', 'student'), ('HS009', 'student'), ('HS010', 'student'),
-('HS011', 'student'), ('HS012', 'student'), ('HS013', 'student'), ('HS014', 'student'), ('HS015', 'student'),
-('HS016', 'student'), ('HS017', 'student'), ('HS018', 'student'), ('HS019', 'student'), ('HS020', 'student'),
-('HS021', 'student'), ('HS022', 'student'), ('HS023', 'student'), ('HS024', 'student'), ('HS025', 'student'),
-('HS026', 'student'), ('HS027', 'student'), ('HS028', 'student'), ('HS029', 'student'), ('HS030', 'student'),
-('HS031', 'student'), ('HS032', 'student'), ('HS033', 'student'), ('HS034', 'student'), ('HS035', 'student'),
-('HS036', 'student'), ('HS037', 'student'), ('HS038', 'student'), ('HS039', 'student'), ('HS040', 'student'),
-('HS041', 'student'), ('HS042', 'student'),
+('GV066', 'teacher'), ('GV067', 'teacher'), ('GV068', 'teacher'), ('GV069', 'teacher'), ('GV070', 'teacher');
 
--- Học sinh lớp 10A2
-('HS043', 'student'), ('HS044', 'student'), ('HS045', 'student'), ('HS046', 'student'), ('HS047', 'student'),
-('HS048', 'student'), ('HS049', 'student'), ('HS050', 'student'), ('HS051', 'student'), ('HS052', 'student'),
-('HS053', 'student'), ('HS054', 'student'), ('HS055', 'student'), ('HS056', 'student'), ('HS057', 'student'),
-('HS058', 'student'), ('HS059', 'student'), ('HS060', 'student'), ('HS061', 'student'), ('HS062', 'student'),
-('HS063', 'student'), ('HS064', 'student'), ('HS065', 'student'), ('HS066', 'student'), ('HS067', 'student'),
-('HS068', 'student'), ('HS069', 'student'), ('HS070', 'student'), ('HS071', 'student'), ('HS072', 'student'),
-('HS073', 'student'), ('HS074', 'student'), ('HS075', 'student'), ('HS076', 'student'), ('HS077', 'student'),
-('HS078', 'student'), ('HS079', 'student'), ('HS080', 'student'), ('HS081', 'student'), ('HS082', 'student'),
-('HS083', 'student'), ('HS084', 'student'),
-
--- Học sinh 85-1008 (tạo tự động)
-('HS085', 'student'), ('HS086', 'student'), ('HS087', 'student'), ('HS088', 'student'), ('HS089', 'student'),
-('HS090', 'student'), ('HS091', 'student'), ('HS092', 'student'), ('HS093', 'student'), ('HS094', 'student'),
-('HS095', 'student'), ('HS096', 'student'), ('HS097', 'student'), ('HS098', 'student'), ('HS099', 'student'),
-('HS100', 'student');
-
--- Phân quyền cho học sinh 101-1008
-INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro)
-SELECT 
-    CONCAT('HS', LPAD(100 + t.n + r.n * 42, 6, '0')) as TenDangNhap,
-    'student' as MaVaiTro
-FROM (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30 UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40 UNION SELECT 41) t
-CROSS JOIN (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21) r
-LIMIT 909;
+SELECT 'Admin and teacher roles assigned (71 roles)' AS Status;
 
 -- =====================================================================
 -- PHẦN 8: CHUYÊN MÔN GIÁO VIÊN VÀ PHÂN CÔNG GIẢNG DẠY
