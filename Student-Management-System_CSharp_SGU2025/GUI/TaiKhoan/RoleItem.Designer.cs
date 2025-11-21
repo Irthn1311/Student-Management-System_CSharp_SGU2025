@@ -52,6 +52,7 @@
             this.guna2Panel1.Name = "guna2Panel1";
             this.guna2Panel1.Size = new System.Drawing.Size(823, 77);
             this.guna2Panel1.TabIndex = 0;
+            this.guna2Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.guna2Panel1_Paint);
             // 
             // btnEditRole
             // 
@@ -88,26 +89,24 @@
             // 
             // lblRoleDescription
             // 
-            this.lblRoleDescription.AutoSize = false;
             this.lblRoleDescription.BackColor = System.Drawing.Color.Transparent;
             this.lblRoleDescription.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRoleDescription.ForeColor = System.Drawing.Color.DimGray;
             this.lblRoleDescription.Location = new System.Drawing.Point(21, 42);
             this.lblRoleDescription.Margin = new System.Windows.Forms.Padding(2);
             this.lblRoleDescription.Name = "lblRoleDescription";
-            this.lblRoleDescription.Size = new System.Drawing.Size(94, 23);
+            this.lblRoleDescription.Size = new System.Drawing.Size(85, 21);
             this.lblRoleDescription.TabIndex = 5;
             this.lblRoleDescription.Text = "Role Describe";
             // 
             // lblRoleName
             // 
-            this.lblRoleName.AutoSize = false;
             this.lblRoleName.BackColor = System.Drawing.Color.Transparent;
             this.lblRoleName.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRoleName.Location = new System.Drawing.Point(20, 11);
             this.lblRoleName.Margin = new System.Windows.Forms.Padding(2);
             this.lblRoleName.Name = "lblRoleName";
-            this.lblRoleName.Size = new System.Drawing.Size(108, 27);
+            this.lblRoleName.Size = new System.Drawing.Size(99, 27);
             this.lblRoleName.TabIndex = 4;
             this.lblRoleName.Text = "Role Name";
             // 
@@ -118,11 +117,12 @@
             this.BackColor = System.Drawing.Color.Transparent;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.guna2Panel1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "RoleItem";
             this.Size = new System.Drawing.Size(823, 77);
             this.Load += new System.EventHandler(this.RoleItem_Load);
             this.guna2Panel1.ResumeLayout(false);
+            this.guna2Panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }

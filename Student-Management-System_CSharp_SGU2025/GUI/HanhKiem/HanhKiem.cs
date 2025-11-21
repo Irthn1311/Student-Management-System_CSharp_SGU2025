@@ -516,14 +516,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     if (row.IsNewRow) continue;
                     tongHS++;
 
-                    string xepLoai = row.Cells[4].Value?.ToString();
-                    switch (xepLoai)
-                    {
-                        case "Tốt": soTot++; break;
-                        case "Khá": soKha++; break;
-                        case "Trung Bình": soTrungBinh++; break;
-                        case "Yếu": soYeu++; break;
-                    }
+                    string xepLoai = row.Cells[4].Value?.ToString()?.Trim(); // ⭐ THÊM .Trim()
+
+                    if (string.IsNullOrEmpty(xepLoai)) continue; // ⭐ THÊM kiểm tra null
+
+                    // ⭐ SỬ DỤNG StringComparison.OrdinalIgnoreCase để so sánh không phân biệt hoa thường
+                    if (xepLoai.Equals("Tốt", StringComparison.OrdinalIgnoreCase))
+                        soTot++;
+                    else if (xepLoai.Equals("Khá", StringComparison.OrdinalIgnoreCase))
+                        soKha++;
+                    else if (xepLoai.Equals("Trung Bình", StringComparison.OrdinalIgnoreCase) ||
+                             xepLoai.Equals("Trung binh", StringComparison.OrdinalIgnoreCase)) 
+                        soTrungBinh++;
+                    else if (xepLoai.Equals("Yếu", StringComparison.OrdinalIgnoreCase))
+                        soYeu++;
                 }
 
                 // Đếm tổng số học sinh trong học kỳ (bao gồm cả chưa xếp loại)

@@ -172,7 +172,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="bus\HanhKiemDTO.cs" />
     <Compile Include="bus\HocSinhBLL.cs" />
     <Compile Include="bus\HocSinhPhuHuynhBLL.cs" />
     <Compile Include="bus\LoginBUS.cs" />
@@ -559,6 +558,18 @@
     <Compile Include="GUI\ThongKeCard.Designer.cs">
       <DependentUpon>ThongKeCard.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\XepLoai\CardTheoKhoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\XepLoai\CardTheoKhoi.Designer.cs">
+      <DependentUpon>CardTheoKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\XepLoai\ThongKeXepLoai.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\XepLoai\ThongKeXepLoai.Designer.cs">
+      <DependentUpon>ThongKeXepLoai.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\XepLoai\ucXepLoai.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -733,6 +744,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThongKeCard.resx">
       <DependentUpon>ThongKeCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\XepLoai\CardTheoKhoi.resx">
+      <DependentUpon>CardTheoKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\XepLoai\ThongKeXepLoai.resx">
+      <DependentUpon>ThongKeXepLoai.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\XepLoai\ucXepLoai.resx">
       <DependentUpon>ucXepLoai.cs</DependentUpon>
