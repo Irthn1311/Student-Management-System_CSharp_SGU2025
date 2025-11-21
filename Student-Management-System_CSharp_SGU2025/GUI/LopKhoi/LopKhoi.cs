@@ -16,7 +16,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private GiaoVienBUS giaoVienBUS;
         private NamHocBUS namHocBUS;
         private List<LopDTO> danhSachLopGoc;
-        private Dictionary<int, string> danhSachLopVoiNamHoc; // Lưu MaLop -> TenNamHoc
+        private List<NamHocDTO> danhSachNamHoc;
+        private bool dangNapNamHoc;
         private string namHocHienTai; // Lưu năm học đang được chọn
         private List<GiaoVienDTO> danhSachGiaoVien; // Danh sách giáo viên cho filter
 
@@ -27,8 +28,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             giaoVienBUS = new GiaoVienBUS();
             namHocBUS = new NamHocBUS();
             danhSachLopGoc = new List<LopDTO>();
-            danhSachLopVoiNamHoc = new Dictionary<int, string>();
             danhSachGiaoVien = new List<GiaoVienDTO>();
+            danhSachNamHoc = new List<NamHocDTO>();
 
             // Gắn sự kiện
             this.Load += LopKhoi_Load;
@@ -126,7 +127,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns.Add("Khoi", "Khối");
             dgvLop.Columns.Add("SiSo", "Sĩ số");
             dgvLop.Columns.Add("GVCN", "Giáo viên CN");
-            dgvLop.Columns.Add("NamHoc", "Năm học"); // ✅ Thêm cột năm học
             dgvLop.Columns.Add("XemChiTiet", "Chi tiết"); // ✅ Thêm cột xem chi tiết
             dgvLop.Columns.Add("ThaoTac", "Thao tác");
 
@@ -143,8 +143,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns["Khoi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvLop.Columns["SiSo"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvLop.Columns["GVCN"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvLop.Columns["NamHoc"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvLop.Columns["NamHoc"].Width = 150; // Đặt độ rộng cố định cho cột năm học
 
             dgvLop.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
             dgvLop.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 102, 204);
@@ -170,25 +168,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Lấy lớp theo năm học đã chọn (nếu có)
                 if (string.IsNullOrEmpty(namHocHienTai))
                 {
-                    // Lấy tất cả lớp kèm năm học
-                    danhSachLopVoiNamHoc = lopHocBUS.DocDSLopVoiNamHoc();
-                    // Lấy danh sách lớp từ DB
                     danhSachLopGoc = lopHocBUS.DocDSLop();
                 }
                 else
                 {
-                    // Lấy lớp theo năm học cụ thể
                     danhSachLopGoc = lopHocBUS.DocDSLopTheoNamHoc(namHocHienTai);
-                    danhSachLopVoiNamHoc = new Dictionary<int, string>();
-                    // Lấy tên năm học
-                    List<NamHocDTO> dsNamHoc = namHocBUS.DocDSNamHoc();
-                    NamHocDTO namHoc = dsNamHoc?.FirstOrDefault(nh => nh.MaNamHoc == namHocHienTai);
-                    string tenNamHoc = namHoc?.TenNamHoc ?? "";
-                    foreach (var lop in danhSachLopGoc)
-                    {
-                        danhSachLopVoiNamHoc[lop.maLop] = tenNamHoc;
-                    }
                 }
+
+                // Đảm bảo luôn có list (không null)
+                if (danhSachLopGoc == null)
+                {
+                    danhSachLopGoc = new List<LopDTO>();
+                }
+
                 // Áp dụng filter sau khi load
                 ApDungFilter();
                 CapNhatThongKeKhoi();
@@ -196,6 +188,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi nạp dữ liệu lớp học: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                
+                // Khởi tạo danh sách rỗng để tránh null                
+                danhSachLopGoc = new List<LopDTO>();
+                HienThiDanhSachLop(danhSachLopGoc);
             }
         }
 
@@ -206,21 +202,43 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 if (cbNamHoc == null) return;
 
-                cbNamHoc.Items.Clear();
-                cbNamHoc.Items.Add("Tất cả năm học"); // Option để xem tất cả lớp
+                dangNapNamHoc = true;
 
-                List<NamHocDTO> dsNamHoc = namHocBUS.DocDSNamHoc();
-                if (dsNamHoc != null && dsNamHoc.Count > 0)
+                cbNamHoc.Items.Clear();
+                cbNamHoc.DisplayMember = "Text";
+                cbNamHoc.ValueMember = "Value";
+                cbNamHoc.Items.Add(new NamHocComboItem("Tất cả năm học", null)); // Option để xem tất cả lớp
+
+                danhSachNamHoc = namHocBUS.DocDSNamHoc() ?? new List<NamHocDTO>();
+                var danhSachSapXep = danhSachNamHoc.OrderByDescending(n => n.NgayBD).ToList();
+
+                foreach (NamHocDTO nh in danhSachSapXep)
                 {
-                    foreach (NamHocDTO nh in dsNamHoc.OrderByDescending(n => n.NgayBD))
+                    cbNamHoc.Items.Add(new NamHocComboItem(nh.TenNamHoc, nh.MaNamHoc));
+                }
+
+                int indexMacDinh = 0;
+                NamHocDTO namHocHienThoi = danhSachSapXep
+                    .FirstOrDefault(nh => nh.NgayBD.Date <= DateTime.Today && nh.NgayKT.Date >= DateTime.Today);
+
+                if (namHocHienThoi != null)
+                {
+                    for (int i = 1; i < cbNamHoc.Items.Count; i++)
                     {
-                        cbNamHoc.Items.Add(nh.TenNamHoc);
+                        if (((NamHocComboItem)cbNamHoc.Items[i]).Value == namHocHienThoi.MaNamHoc)
+                        {
+                            indexMacDinh = i;
+                            break;
+                        }
                     }
                 }
 
-                cbNamHoc.SelectedIndex = 0; // Chọn "Tất cả năm học" mặc định
-                namHocHienTai = null;
-                
+                cbNamHoc.SelectedIndex = indexMacDinh;
+                var item = cbNamHoc.SelectedItem as NamHocComboItem;
+                namHocHienTai = item?.Value;
+
+                dangNapNamHoc = false;
+
                 // Load dữ liệu sau khi load combobox
                 LoadData();
             }
@@ -303,24 +321,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                if (cbNamHoc == null || cbNamHoc.SelectedItem == null) return;
+                // Bỏ qua khi đang nạp dữ liệu vào ComboBox
+                if (dangNapNamHoc) return;
 
-                string selectedText = cbNamHoc.SelectedItem.ToString();
-                
-                if (selectedText == "Tất cả năm học")
-                {
-                    namHocHienTai = null;
-                }
-                else
-                {
-                    // Lấy mã năm học từ tên năm học
-                    List<NamHocDTO> dsNamHoc = namHocBUS.DocDSNamHoc();
-                    NamHocDTO namHoc = dsNamHoc?.FirstOrDefault(nh => nh.TenNamHoc == selectedText);
-                    namHocHienTai = namHoc?.MaNamHoc;
-                }
+                // Kiểm tra ComboBox và item đã chọn
+                if (cbNamHoc == null || cbNamHoc.SelectedIndex < 0) return;
 
-                // Reload dữ liệu
+                // Lấy item đã chọn
+                var selectedItem = cbNamHoc.SelectedItem as NamHocComboItem;
+                if (selectedItem == null) return;
+
+                // Cập nhật năm học hiện tại
+                namHocHienTai = selectedItem.Value;
+
+                // Reload dữ liệu lớp học theo năm học đã chọn
                 LoadData();
+
+                // Cập nhật thống kê
+                CapNhatThongKeKhoi();
             }
             catch (Exception ex)
             {
@@ -366,15 +384,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (cbNamHoc != null && cbNamHoc.Items.Count > 0)
                 {
-                    // Tìm và chọn "Tất cả năm học"
-                    for (int i = 0; i < cbNamHoc.Items.Count; i++)
-                    {
-                        if (cbNamHoc.Items[i].ToString().Contains("Tất cả"))
-                        {
-                            cbNamHoc.SelectedIndex = i;
-                            break;
-                        }
-                    }
+                    cbNamHoc.SelectedIndex = 0; // "Tất cả năm học"
                 }
 
                 if (cbGiaoVien != null && cbGiaoVien.Items.Count > 0)
@@ -395,23 +405,40 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
+        private class NamHocComboItem
+        {
+            public NamHocComboItem(string text, string value)
+            {
+                Text = text;
+                Value = value;
+            }
+
+            public string Text { get; }
+            public string Value { get; }
+
+            public override string ToString() => Text;
+        }
+
         // ✅ ÁP DỤNG TẤT CẢ FILTER VÀ TÌM KIẾM
         private void ApDungFilter()
         {
             try
             {
-                // Đảm bảo dữ liệu đã được load
-                if (danhSachLopGoc == null || danhSachLopGoc.Count == 0)
+                // QUAN TRỌNG: Không gọi LoadData() ở đây để tránh vòng lặp vô hạn
+                if (danhSachLopGoc == null)
                 {
-                    LoadData();
+                    danhSachLopGoc = new List<LopDTO>();
+                }
+
+                // Nếu danh sách rỗng, chỉ hiển thị rỗng
+                if (danhSachLopGoc.Count == 0)
+                {
+                    HienThiDanhSachLop(new List<LopDTO>());
                     return;
                 }
 
                 // Lấy dữ liệu gốc
                 List<LopDTO> danhSachLoc = new List<LopDTO>(danhSachLopGoc);
-
-                // Filter theo năm học (đã được xử lý trong LoadData)
-                // Không cần filter lại ở đây vì đã được lọc trong LoadData
 
                 // Filter theo khối
                 string selectedKhoi = guna2ComboBox1?.SelectedItem?.ToString();
@@ -453,29 +480,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     }
                 }
 
-                // Filter theo tình trạng lớp (hiện tại chưa có trường TrangThai trong LopDTO, tạm thời bỏ qua)
-                // Có thể thêm sau khi có trường TrangThai trong LopDTO
-                // string selectedTrangThai = cbTrangThai?.SelectedItem?.ToString();
-                // if (!string.IsNullOrEmpty(selectedTrangThai) && selectedTrangThai != "Tất cả")
-                // {
-                //     // Logic filter theo tình trạng (cần thêm trường TrangThai vào LopDTO)
-                // }
-
-                // Tìm kiếm theo text (tìm kiếm nâng cao)
+                // Tìm kiếm theo text
                 string searchText = txtSearch?.Text?.Trim()?.ToLower();
                 if (!string.IsNullOrEmpty(searchText))
                 {
                     danhSachLoc = danhSachLoc.Where(lop =>
                     {
-                        // Tìm theo mã lớp
                         if (lop.maLop.ToString().Contains(searchText))
                             return true;
 
-                        // Tìm theo tên lớp
                         if (lop.tenLop.ToLower().Contains(searchText))
                             return true;
 
-                        // Tìm theo giáo viên chủ nhiệm
                         if (!string.IsNullOrEmpty(lop.maGVCN))
                         {
                             try
@@ -529,12 +545,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     }
                 }
 
-                // Lấy năm học của lớp
-                string tenNamHoc = danhSachLopVoiNamHoc.ContainsKey(lop.maLop) 
-                    ? danhSachLopVoiNamHoc[lop.maLop] 
-                    : (string.IsNullOrEmpty(namHocHienTai) ? "N/A" : "");
-
-                dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", lop.siSo, tenGVCN, tenNamHoc, "Xem");
+                dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", lop.siSo, tenGVCN, "Xem", "");
             }
         }
 

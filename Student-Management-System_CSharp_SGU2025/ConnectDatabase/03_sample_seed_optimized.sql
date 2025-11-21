@@ -378,18 +378,18 @@ SELECT
             END)
             >
             (CASE
-                WHEN hk.HocLuc = 'Giỏi' THEN 1
-                WHEN hk.HocLuc = 'Khá' THEN 2
-                WHEN hk.HocLuc = 'Trung bình' THEN 3
-                WHEN hk.HocLuc = 'Yếu' THEN 4
+                WHEN hk.XepLoai = 'Giỏi' THEN 1
+                WHEN hk.XepLoai = 'Khá' THEN 2
+                WHEN hk.XepLoai = 'Trung bình' THEN 3
+                WHEN hk.XepLoai = 'Yếu' THEN 4
                 ELSE 5
             END)
         THEN
             CASE
-                WHEN hk.HocLuc = 'Giỏi' THEN 'Giỏi'
-                WHEN hk.HocLuc = 'Khá' THEN 'Khá'
-                WHEN hk.HocLuc = 'Trung bình' THEN 'Trung bình'
-                WHEN hk.HocLuc = 'Yếu' THEN 'Yếu'
+                WHEN hk.XepLoai = 'Giỏi' THEN 'Giỏi'
+                WHEN hk.XepLoai = 'Khá' THEN 'Khá'
+                WHEN hk.XepLoai = 'Trung bình' THEN 'Trung bình'
+                WHEN hk.XepLoai = 'Yếu' THEN 'Yếu'
                 ELSE 'Kém'
             END
         ELSE

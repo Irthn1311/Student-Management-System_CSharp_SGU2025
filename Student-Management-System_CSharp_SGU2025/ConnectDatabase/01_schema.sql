@@ -1,6 +1,8 @@
 CREATE DATABASE IF NOT EXISTS QuanLyHocSinh;
 USE QuanLyHocSinh;
 
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- Bảng tạm (không có foreign key)
 DROP TABLE IF EXISTS TKB_Temp;
 DROP TABLE IF EXISTS PhanCong_Temp;
@@ -36,6 +38,8 @@ DROP TABLE IF EXISTS NamHoc;
 DROP TABLE IF EXISTS NguoiDung;
 DROP TABLE IF EXISTS ChucNang;
 DROP TABLE IF EXISTS VaiTro;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 
 -- =====================================================================

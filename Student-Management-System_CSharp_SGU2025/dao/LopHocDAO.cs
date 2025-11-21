@@ -31,7 +31,23 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public List<LopDTO> DocDSLop()
         {
             List<LopDTO> ds = new List<LopDTO>();
-            string query = "SELECT MaLop, TenLop, MaKhoi,SiSo, MaGiaoVienChuNhiem FROM LopHoc";
+            string query = @"
+                SELECT 
+                    l.MaLop, 
+                    l.TenLop, 
+                    l.MaKhoi,
+                    l.SiSo, 
+                    l.MaGiaoVienChuNhiem,
+                    nh.TenNamHoc
+                FROM LopHoc l
+                LEFT JOIN (
+                    SELECT pl.MaLop, MAX(pl.MaHocKy) AS MaHocKyMoiNhat
+                    FROM PhanLop pl
+                    GROUP BY pl.MaLop
+                ) latest ON l.MaLop = latest.MaLop
+                LEFT JOIN HocKy hk ON latest.MaHocKyMoiNhat = hk.MaHocKy
+                LEFT JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc
+                ORDER BY l.MaLop";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -45,8 +61,9 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             lop.maLop = reader.GetInt32("MaLop");
                             lop.tenLop = reader.GetString("TenLop");
                             lop.maKhoi = reader.GetInt32("MaKhoi");
-                            lop.siSo=reader.GetInt32("SiSo");
-                            lop.maGVCN = reader.GetString("MaGiaoVienChuNhiem");
+                            lop.siSo = reader.GetInt32("SiSo");
+                            lop.maGVCN = reader.IsDBNull(reader.GetOrdinal("MaGiaoVienChuNhiem")) ? null : reader.GetString("MaGiaoVienChuNhiem");
+                            lop.TenNamHoc = reader.IsDBNull(reader.GetOrdinal("TenNamHoc")) ? null : reader.GetString("TenNamHoc");
                             ds.Add(lop);
                         }
                     }
@@ -59,7 +76,18 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public LopDTO LayLopTheoId(int maLop)
         {
             LopDTO lop = null;
-            string query = "SELECT MaLop, TenLop, MaKhoi, SiSo, MaGiaoVienChuNhiem FROM LopHoc WHERE MaLop = @Ma_Lop";
+            string query = @"
+                SELECT 
+                    l.MaLop, l.TenLop, l.MaKhoi, l.SiSo, l.MaGiaoVienChuNhiem, nh.TenNamHoc
+                FROM LopHoc l
+                LEFT JOIN (
+                    SELECT pl.MaLop, MAX(pl.MaHocKy) AS MaHocKyMoiNhat
+                    FROM PhanLop pl
+                    GROUP BY pl.MaLop
+                ) latest ON l.MaLop = latest.MaLop
+                LEFT JOIN HocKy hk ON latest.MaHocKyMoiNhat = hk.MaHocKy
+                LEFT JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc
+                WHERE l.MaLop = @Ma_Lop";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -76,6 +104,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             lop.maKhoi = reader.GetInt32("MaKhoi");
                             lop.siSo = reader.GetInt32("SiSo");
                             lop.maGVCN = reader.IsDBNull(reader.GetOrdinal("MaGiaoVienChuNhiem")) ? null : reader.GetString("MaGiaoVienChuNhiem");
+                            lop.TenNamHoc = reader.IsDBNull(reader.GetOrdinal("TenNamHoc")) ? null : reader.GetString("TenNamHoc");
                         }
                     }
                 }
@@ -87,7 +116,18 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public LopDTO LayLopTheoTen(string tenLop)
         {
             LopDTO lop = null;
-            string query = "SELECT MaLop, TenLop, MaKhoi, SiSo, MaGiaoVienChuNhiem FROM LopHoc WHERE TenLop = @Ten_Lop";
+            string query = @"
+                SELECT 
+                    l.MaLop, l.TenLop, l.MaKhoi, l.SiSo, l.MaGiaoVienChuNhiem, nh.TenNamHoc
+                FROM LopHoc l
+                LEFT JOIN (
+                    SELECT pl.MaLop, MAX(pl.MaHocKy) AS MaHocKyMoiNhat
+                    FROM PhanLop pl
+                    GROUP BY pl.MaLop
+                ) latest ON l.MaLop = latest.MaLop
+                LEFT JOIN HocKy hk ON latest.MaHocKyMoiNhat = hk.MaHocKy
+                LEFT JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc
+                WHERE l.TenLop = @Ten_Lop";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -104,6 +144,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             lop.maKhoi = reader.GetInt32("MaKhoi");
                             lop.siSo = reader.GetInt32("SiSo");
                             lop.maGVCN = reader.IsDBNull(reader.GetOrdinal("MaGiaoVienChuNhiem")) ? null : reader.GetString("MaGiaoVienChuNhiem");
+                            lop.TenNamHoc = reader.IsDBNull(reader.GetOrdinal("TenNamHoc")) ? null : reader.GetString("TenNamHoc");
                         }
                     }
                 }
@@ -358,19 +399,33 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public List<LopDTO> DocDSLopTheoNamHoc(string maNamHoc)
         {
             List<LopDTO> ds = new List<LopDTO>();
+            
+            // Kiểm tra tham số đầu vào
+            if (string.IsNullOrWhiteSpace(maNamHoc))
+            {
+                return ds; // Trả về danh sách rỗng thay vì null
+            }
+            
             string query = @"
-                SELECT DISTINCT l.MaLop, l.TenLop, l.MaKhoi, l.SiSo, l.MaGiaoVienChuNhiem, hk.MaNamHoc
+                SELECT DISTINCT 
+                    l.MaLop, l.TenLop, l.MaKhoi, l.SiSo, l.MaGiaoVienChuNhiem, nh.TenNamHoc
                 FROM LopHoc l
                 INNER JOIN PhanLop pl ON l.MaLop = pl.MaLop
                 INNER JOIN HocKy hk ON pl.MaHocKy = hk.MaHocKy
+                INNER JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc
                 WHERE hk.MaNamHoc = @MaNamHoc
                 ORDER BY l.TenLop";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                
+            MySqlConnection conn = null;
+            try
             {
+                conn = ConnectionDatabase.GetConnection();
                 conn.Open();
+                
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
+                    
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -380,13 +435,26 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             lop.tenLop = reader.GetString("TenLop");
                             lop.maKhoi = reader.GetInt32("MaKhoi");
                             lop.siSo = reader.GetInt32("SiSo");
-                            lop.maGVCN = reader.IsDBNull(reader.GetOrdinal("MaGiaoVienChuNhiem")) ? null : reader.GetString("MaGiaoVienChuNhiem");
-                            // Lưu mã năm học tạm thời (không có trong DTO, sẽ dùng cách khác)
+                            lop.maGVCN = reader.IsDBNull(reader.GetOrdinal("MaGiaoVienChuNhiem")) 
+                                ? null 
+                                : reader.GetString("MaGiaoVienChuNhiem");
+                            lop.TenNamHoc = reader.GetString("TenNamHoc");
                             ds.Add(lop);
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                // Log lỗi để debug
+                System.Diagnostics.Debug.WriteLine($"Lỗi DocDSLopTheoNamHoc: {ex.Message}");
+                throw new Exception($"Lỗi khi lấy danh sách lớp theo năm học '{maNamHoc}': {ex.Message}", ex);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+            
             return ds;
         }
 
@@ -397,32 +465,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public Dictionary<int, string> DocDSLopVoiNamHoc()
         {
             Dictionary<int, string> result = new Dictionary<int, string>();
-            string query = @"
-                SELECT DISTINCT l.MaLop, nh.TenNamHoc
-                FROM LopHoc l
-                INNER JOIN PhanLop pl ON l.MaLop = pl.MaLop
-                INNER JOIN HocKy hk ON pl.MaHocKy = hk.MaHocKy
-                INNER JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc
-                ORDER BY nh.NgayBatDau DESC, l.MaLop";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            foreach (var lop in DocDSLop())
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                if (!result.ContainsKey(lop.maLop))
                 {
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            int maLop = reader.GetInt32("MaLop");
-                            string tenNamHoc = reader.GetString("TenNamHoc");
-                            
-                            // Nếu lớp chưa có trong dictionary, thêm vào (giữ năm học mới nhất)
-                            if (!result.ContainsKey(maLop))
-                            {
-                                result[maLop] = tenNamHoc;
-                            }
-                        }
-                    }
+                    result[lop.maLop] = lop.TenNamHoc ?? "N/A";
                 }
             }
             return result;
