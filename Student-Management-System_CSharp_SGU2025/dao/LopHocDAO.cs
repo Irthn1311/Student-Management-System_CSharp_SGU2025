@@ -59,7 +59,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public LopDTO LayLopTheoId(int maLop)
         {
             LopDTO lop = null;
-            string query = "SELECT MaLop, TenLop, MaKhoi,SiSo, MaGiaoVienChuNhiem FROM LopHoc WHERE MaLop = @Ma_Lop";
+            string query = "SELECT MaLop, TenLop, MaKhoi, SiSo, MaGiaoVienChuNhiem FROM LopHoc WHERE MaLop = @Ma_Lop";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -75,7 +75,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             lop.tenLop = reader.GetString("TenLop");
                             lop.maKhoi = reader.GetInt32("MaKhoi");
                             lop.siSo = reader.GetInt32("SiSo");
-                            lop.maGVCN = reader.GetString("MaGiaoVienChuNhiem");
+                            lop.maGVCN = reader.IsDBNull(reader.GetOrdinal("MaGiaoVienChuNhiem")) ? null : reader.GetString("MaGiaoVienChuNhiem");
                         }
                     }
                 }
@@ -87,13 +87,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public LopDTO LayLopTheoTen(string tenLop)
         {
             LopDTO lop = null;
-            string query = "SELECT MaLop, TenLop, MaKhoi,SiSo, MaGiaoVienChuNhiem FROM LopHoc WHERE TenLop = @Ten_Lop";
+            string query = "SELECT MaLop, TenLop, MaKhoi, SiSo, MaGiaoVienChuNhiem FROM LopHoc WHERE TenLop = @Ten_Lop";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Ten_Lop",tenLop);
+                    cmd.Parameters.AddWithValue("@Ten_Lop", tenLop);
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
@@ -103,7 +103,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             lop.tenLop = reader.GetString("TenLop");
                             lop.maKhoi = reader.GetInt32("MaKhoi");
                             lop.siSo = reader.GetInt32("SiSo");
-                            lop.maGVCN = reader.GetString("MaGiaoVienChuNhiem");
+                            lop.maGVCN = reader.IsDBNull(reader.GetOrdinal("MaGiaoVienChuNhiem")) ? null : reader.GetString("MaGiaoVienChuNhiem");
                         }
                     }
                 }
@@ -113,7 +113,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         //  Cập nhật lớp học
         public bool CapNhatLop(LopDTO lop)
         {
-            string query = "UPDATE LopHoc SET TenLop = @Ten_Lop, MaKhoi = @Ma_Khoi,SiSo=@SiSo MaGiaoVienChuNhiem = @GVCN WHERE MaLop = @Ma_Lop";
+            string query = "UPDATE LopHoc SET TenLop = @Ten_Lop, MaKhoi = @Ma_Khoi, SiSo = @SiSo, MaGiaoVienChuNhiem = @GVCN WHERE MaLop = @Ma_Lop";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -350,6 +350,162 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
 
             return list;
+        }
+
+        /// <summary>
+        /// Lấy danh sách lớp theo năm học (thông qua HocKy) - kèm thông tin năm học
+        /// </summary>
+        public List<LopDTO> DocDSLopTheoNamHoc(string maNamHoc)
+        {
+            List<LopDTO> ds = new List<LopDTO>();
+            string query = @"
+                SELECT DISTINCT l.MaLop, l.TenLop, l.MaKhoi, l.SiSo, l.MaGiaoVienChuNhiem, hk.MaNamHoc
+                FROM LopHoc l
+                INNER JOIN PhanLop pl ON l.MaLop = pl.MaLop
+                INNER JOIN HocKy hk ON pl.MaHocKy = hk.MaHocKy
+                WHERE hk.MaNamHoc = @MaNamHoc
+                ORDER BY l.TenLop";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            LopDTO lop = new LopDTO();
+                            lop.maLop = reader.GetInt32("MaLop");
+                            lop.tenLop = reader.GetString("TenLop");
+                            lop.maKhoi = reader.GetInt32("MaKhoi");
+                            lop.siSo = reader.GetInt32("SiSo");
+                            lop.maGVCN = reader.IsDBNull(reader.GetOrdinal("MaGiaoVienChuNhiem")) ? null : reader.GetString("MaGiaoVienChuNhiem");
+                            // Lưu mã năm học tạm thời (không có trong DTO, sẽ dùng cách khác)
+                            ds.Add(lop);
+                        }
+                    }
+                }
+            }
+            return ds;
+        }
+
+        /// <summary>
+        /// Lấy danh sách lớp kèm năm học (cho hiển thị "Tất cả năm học")
+        /// Trả về Dictionary với MaLop làm key để tránh vấn đề so sánh object
+        /// </summary>
+        public Dictionary<int, string> DocDSLopVoiNamHoc()
+        {
+            Dictionary<int, string> result = new Dictionary<int, string>();
+            string query = @"
+                SELECT DISTINCT l.MaLop, nh.TenNamHoc
+                FROM LopHoc l
+                INNER JOIN PhanLop pl ON l.MaLop = pl.MaLop
+                INNER JOIN HocKy hk ON pl.MaHocKy = hk.MaHocKy
+                INNER JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc
+                ORDER BY nh.NgayBatDau DESC, l.MaLop";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int maLop = reader.GetInt32("MaLop");
+                            string tenNamHoc = reader.GetString("TenNamHoc");
+                            
+                            // Nếu lớp chưa có trong dictionary, thêm vào (giữ năm học mới nhất)
+                            if (!result.ContainsKey(maLop))
+                            {
+                                result[maLop] = tenNamHoc;
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Sao chép danh sách lớp từ năm học này sang năm học khác
+        /// Tạo lớp mới với cùng tên, khối, sĩ số, GVCN cho năm học mới
+        /// </summary>
+        public bool SaoChepLopTuNamHoc(string maNamHocNguon, string maNamHocDich)
+        {
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (MySqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // Lấy danh sách lớp từ năm học nguồn (thông qua HocKy)
+                        string querySelect = @"
+                            SELECT DISTINCT l.TenLop, l.MaKhoi, l.SiSo, l.MaGiaoVienChuNhiem
+                            FROM LopHoc l
+                            INNER JOIN PhanLop pl ON l.MaLop = pl.MaLop
+                            INNER JOIN HocKy hk ON pl.MaHocKy = hk.MaHocKy
+                            WHERE hk.MaNamHoc = @MaNamHocNguon
+                            ORDER BY l.TenLop";
+                        
+                        List<LopDTO> dsLopNguon = new List<LopDTO>();
+
+                        using (MySqlCommand cmdSelect = new MySqlCommand(querySelect, conn, transaction))
+                        {
+                            cmdSelect.Parameters.AddWithValue("@MaNamHocNguon", maNamHocNguon);
+                            using (MySqlDataReader reader = cmdSelect.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    LopDTO lop = new LopDTO();
+                                    lop.tenLop = reader.GetString("TenLop");
+                                    lop.maKhoi = reader.GetInt32("MaKhoi");
+                                    lop.siSo = reader.GetInt32("SiSo");
+                                    lop.maGVCN = reader.IsDBNull(reader.GetOrdinal("MaGiaoVienChuNhiem")) ? null : reader.GetString("MaGiaoVienChuNhiem");
+                                    dsLopNguon.Add(lop);
+                                }
+                            }
+                        }
+
+                        // Chèn các lớp mới (không có MaNamHoc vì không có trong schema)
+                        string queryInsert = "INSERT INTO LopHoc (TenLop, MaKhoi, SiSo, MaGiaoVienChuNhiem) VALUES (@TenLop, @MaKhoi, @SiSo, @MaGVCN)";
+                        
+                        foreach (LopDTO lop in dsLopNguon)
+                        {
+                            // Kiểm tra xem lớp đã tồn tại chưa (theo tên)
+                            string queryCheck = "SELECT COUNT(*) FROM LopHoc WHERE TenLop = @TenLop";
+                            using (MySqlCommand cmdCheck = new MySqlCommand(queryCheck, conn, transaction))
+                            {
+                                cmdCheck.Parameters.AddWithValue("@TenLop", lop.tenLop);
+                                int count = Convert.ToInt32(cmdCheck.ExecuteScalar());
+                                
+                                // Chỉ thêm nếu chưa tồn tại
+                                if (count == 0)
+                                {
+                                    using (MySqlCommand cmdInsert = new MySqlCommand(queryInsert, conn, transaction))
+                                    {
+                                        cmdInsert.Parameters.AddWithValue("@TenLop", lop.tenLop);
+                                        cmdInsert.Parameters.AddWithValue("@MaKhoi", lop.maKhoi);
+                                        cmdInsert.Parameters.AddWithValue("@SiSo", lop.siSo);
+                                        cmdInsert.Parameters.AddWithValue("@MaGVCN", (object)lop.maGVCN ?? DBNull.Value);
+                                        cmdInsert.ExecuteNonQuery();
+                                    }
+                                }
+                            }
+                        }
+
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
         }
 
     }

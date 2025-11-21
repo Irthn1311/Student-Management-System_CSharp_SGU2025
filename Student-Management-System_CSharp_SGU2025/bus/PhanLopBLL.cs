@@ -115,14 +115,16 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         }
 
         /// <summary>
-        /// Chuyển học sinh từ lớp này sang lớp khác trong cùng học kỳ.
+        /// Chuyển học sinh từ lớp này sang lớp khác trong cùng học kỳ và lưu lịch sử.
         /// </summary>
         /// <param name="maHocSinh">Mã học sinh.</param>
         /// <param name="maLopCu">Mã lớp cũ.</param>
         /// <param name="maLopMoi">Mã lớp mới.</param>
         /// <param name="maHocKy">Mã học kỳ.</param>
+        /// <param name="lyDo">Lý do chuyển lớp (tùy chọn).</param>
+        /// <param name="nguoiThucHien">Người thực hiện (tùy chọn).</param>
         /// <returns>True nếu thành công.</returns>
-        public bool ChuyenLop(int maHocSinh, int maLopCu, int maLopMoi, int maHocKy)
+        public bool ChuyenLop(int maHocSinh, int maLopCu, int maLopMoi, int maHocKy, string lyDo = null, string nguoiThucHien = null)
         {
             // --- Validation ---
             if (maHocSinh <= 0 || maLopCu <= 0 || maLopMoi <= 0 || maHocKy <= 0)
