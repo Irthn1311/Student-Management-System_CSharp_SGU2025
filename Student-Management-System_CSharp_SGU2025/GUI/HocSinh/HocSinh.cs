@@ -1704,7 +1704,52 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void btnNhapExcel_Click(object sender, EventArgs e)
         {
-            
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Chọn file Excel để nhập dữ liệu";
+                ofd.Filter = "Excel Files|*.xlsx;*.xls";
+                ofd.FilterIndex = 1;
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+                        ImportAllDataFromExcel(ofd.FileName);
+
+                        // Reload lại dữ liệu
+                        LoadSampleDataHocSinh();
+                        LoadSampleDataPhuHuynh();
+                        LoadSampleDataMoiQuanHe();
+                        SetupHeaderAndStats();
+
+                        // ✅ Scroll xuống cuối để hiển thị học sinh mới
+                        if (tableHocSinh.Rows.Count > 0)
+                        {
+                            tableHocSinh.FirstDisplayedScrollingRowIndex = Math.Max(0, tableHocSinh.Rows.Count - 1);
+                            tableHocSinh.Rows[tableHocSinh.Rows.Count - 1].Selected = true;
+                        }
+
+                        MessageBox.Show(
+                            "✅ Nhập dữ liệu từ Excel thành công!\n\n" +
+                            "📌 TỰ ĐỘNG TẠO TÀI KHOẢN: \n" +
+                            "- Hệ thống đã tự động tạo tài khoản cho các học sinh mới\n" +
+                            "- Tên đăng nhập: hs001, hs002, hs003...\n" +
+                            "- Mật khẩu mặc định: 123456\n" +
+                            "- Học sinh nên đổi mật khẩu sau lần đăng nhập đầu tiên\n\n" +
+                            "💡 Danh sách đã tự động cuộn xuống cuối để hiển thị học sinh mới nhất!",
+                            "Nhập Excel thành công",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ Lỗi khi nhập Excel: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -2353,52 +2398,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void btnNhapExcel_Click_1(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog())
-            {
-                ofd.Title = "Chọn file Excel để nhập dữ liệu";
-                ofd.Filter = "Excel Files|*.xlsx;*.xls";
-                ofd.FilterIndex = 1;
-
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-
-                        ImportAllDataFromExcel(ofd.FileName);
-
-                        // Reload lại dữ liệu
-                        LoadSampleDataHocSinh();
-                        LoadSampleDataPhuHuynh();
-                        LoadSampleDataMoiQuanHe();
-                        SetupHeaderAndStats();
-
-                        // ✅ Scroll xuống cuối để hiển thị học sinh mới
-                        if (tableHocSinh.Rows.Count > 0)
-                        {
-                            tableHocSinh.FirstDisplayedScrollingRowIndex = Math.Max(0, tableHocSinh.Rows.Count - 1);
-                            tableHocSinh.Rows[tableHocSinh.Rows.Count - 1].Selected = true;
-                        }
-
-                        MessageBox.Show(
-                            "✅ Nhập dữ liệu từ Excel thành công!\n\n" +
-                            "📌 TỰ ĐỘNG TẠO TÀI KHOẢN: \n" +
-                            "- Hệ thống đã tự động tạo tài khoản cho các học sinh mới\n" +
-                            "- Tên đăng nhập: hs001, hs002, hs003...\n" +
-                            "- Mật khẩu mặc định: 123456\n" +
-                            "- Học sinh nên đổi mật khẩu sau lần đăng nhập đầu tiên\n\n" +
-                            "💡 Danh sách đã tự động cuộn xuống cuối để hiển thị học sinh mới nhất!",
-                            "Nhập Excel thành công",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information
-                        );
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"❌ Lỗi khi nhập Excel: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
+            
         }
     }
 }
