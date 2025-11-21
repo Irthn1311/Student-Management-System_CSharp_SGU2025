@@ -461,6 +461,7 @@
             this.btnNhapExcel.Size = new System.Drawing.Size(190, 103);
             this.btnNhapExcel.TabIndex = 22;
             this.btnNhapExcel.Text = "Nhập Excel";
+            this.btnNhapExcel.Click += new System.EventHandler(this.btnNhapExcel_Click_1);
             // 
             // cbHocKyNamHoc
             // 
