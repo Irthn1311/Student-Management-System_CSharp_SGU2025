@@ -1,197 +1,210 @@
-﻿    // HanhKiemDAO.cs
-    using MySql.Data.MySqlClient;
-    using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
-    using Student_Management_System_CSharp_SGU2025.DTO;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
+﻿// HanhKiemDAO.cs
+using MySql.Data.MySqlClient;
+using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
+using Student_Management_System_CSharp_SGU2025.DTO;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
-    public class HanhKiemDAO
+    internal class HanhKiemDAO
     {
-        // === 1. Thêm Hạnh Kiểm (CRUD) ===
-        public bool ThemHanhKiem(HanhKiemDTO hk) // Dùng DTO
+        /// <summary>
+        /// Lấy hoặc tính hạnh kiểm cho một học sinh trong học kỳ
+        /// </summary>
+        public HanhKiemDTO LayHanhKiem(int maHocSinh, int maHocKy)
         {
-            string query = @"INSERT INTO HanhKiem (MaHocSinh, MaHocKy, XepLoai, NhanXet) 
-                             VALUES (@MaHS, @MaHK, @XL, @NX)";
+            string sql = "SELECT MaHocSinh, MaHocKy, XepLoai, NhanXet FROM HanhKiem WHERE MaHocSinh = @maHS AND MaHocKy = @maHK";
+
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                try
                 {
-                    cmd.Parameters.AddWithValue("@MaHS", hk.MaHocSinh); // Đã là int
-                    cmd.Parameters.AddWithValue("@MaHK", hk.MaHocKy);
-                    cmd.Parameters.AddWithValue("@XL", hk.XepLoai);
-                    cmd.Parameters.AddWithValue("@NX", hk.NhanXet);
-                    return cmd.ExecuteNonQuery() > 0;
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maHS", maHocSinh);
+                        cmd.Parameters.AddWithValue("@maHK", maHocKy);
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new HanhKiemDTO
+                                {
+                                    MaHocSinh = reader.GetInt32("MaHocSinh"),
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    XepLoai = reader.GetString("XepLoai"),
+                                    NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet")
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Lỗi lấy hạnh kiểm: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Lưu hoặc cập nhật hạnh kiểm
+        /// </summary>
+        public bool LuuHanhKiem(HanhKiemDTO hk)
+        {
+            string sql = @"INSERT INTO HanhKiem (MaHocSinh, MaHocKy, XepLoai, NhanXet) 
+                              VALUES (@maHS, @maHK, @xepLoai, @nhanXet)
+                              ON DUPLICATE KEY UPDATE 
+                              XepLoai = @xepLoai, 
+                              NhanXet = @nhanXet";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maHS", hk.MaHocSinh);
+                        cmd.Parameters.AddWithValue("@maHK", hk.MaHocKy);
+                        cmd.Parameters.AddWithValue("@xepLoai", hk.XepLoai);
+                        cmd.Parameters.AddWithValue("@nhanXet", (object)hk.NhanXet ?? DBNull.Value);
+
+                        int result = cmd.ExecuteNonQuery();
+                        return result > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Lỗi lưu hạnh kiểm: " + ex.Message);
+                    return false;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
                 }
             }
         }
 
-        // === 2. Đọc Danh Sách Hạnh Kiểm ĐẦY ĐỦ ===
-        public List<HanhKiemDTO> DocDSHanhKiemDayDu() // Dùng DTO
+        /// <summary>
+        /// Lấy danh sách hạnh kiểm theo học kỳ và lớp (Trả về BindingList)
+        /// </summary>
+        public BindingList<HanhKiemDTO> LayDanhSachHanhKiemBindingList(int maHocKy, int? maLop = null)
         {
-            List<HanhKiemDTO> ds = new List<HanhKiemDTO>();
-            string query = @"
-                SELECT 
-                    HK.*, HS.HoTen AS HoTenHocSinh, KY.TenHocKy, KY.MaNamHoc 
-                FROM HanhKiem HK
-                JOIN HocSinh HS ON HK.MaHocSinh = HS.MaHocSinh
-                JOIN HocKy KY ON HK.MaHocKy = KY.MaHocKy
-                ORDER BY HS.MaHocSinh, KY.MaHocKy";
+            BindingList<HanhKiemDTO> ds = new BindingList<HanhKiemDTO>();
+
+            string sql = @"SELECT DISTINCT hk.MaHocSinh, hk.MaHocKy, hk.XepLoai, hk.NhanXet
+                      FROM HanhKiem hk
+                      INNER JOIN PhanLop pl ON hk.MaHocSinh = pl.MaHocSinh AND hk.MaHocKy = pl.MaHocKy
+                      WHERE hk.MaHocKy = @maHK
+                      AND hk.XepLoai IS NOT NULL 
+                      AND hk.XepLoai != ''";
+
+            if (maLop.HasValue && maLop.Value > 0)
+            {
+                sql += " AND pl.MaLop = @maLop";
+            }
 
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                try
                 {
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                     {
-                        while (reader.Read())
+                        cmd.Parameters.AddWithValue("@maHK", maHocKy);
+                        if (maLop.HasValue && maLop.Value > 0)
                         {
-                            HanhKiemDTO hk = new HanhKiemDTO();
-                            hk.MaHocSinh = reader.GetInt32("MaHocSinh"); // Sửa: Đọc là int
-                            hk.MaHocKy = reader.GetInt32("MaHocKy");
-                            hk.XepLoai = reader.GetString("XepLoai");
-                            hk.NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet");
-                            ds.Add(hk);
+                            cmd.Parameters.AddWithValue("@maLop", maLop.Value);
+                        }
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                ds.Add(new HanhKiemDTO
+                                {
+                                    MaHocSinh = reader.GetInt32("MaHocSinh"),
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    XepLoai = reader.GetString("XepLoai"),
+                                    NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet")
+                                });
+                            }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Lỗi lấy danh sách hạnh kiểm: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
                 }
             }
             return ds;
         }
 
-        // === 3. Cập nhật Hạnh Kiểm (CRUD) ===
-        public bool CapNhatHanhKiem(HanhKiemDTO hk) // Dùng DTO
+        /// <summary>
+        /// Lấy hạnh kiểm theo khóa (MaHocSinh, MaHocKy) - Alias cho LayHanhKiem
+        /// </summary>
+        public HanhKiemDTO LayHanhKiemTheoKey(int maHocSinh, int maHocKy)
         {
-            string query = @"UPDATE HanhKiem SET XepLoai=@XL, NhanXet=@NX 
-                             WHERE MaHocSinh=@MaHS AND MaHocKy=@MaHK";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@MaHS", hk.MaHocSinh); // Đã là int
-                    cmd.Parameters.AddWithValue("@MaHK", hk.MaHocKy);
-                    cmd.Parameters.AddWithValue("@XL", hk.XepLoai);
-                    cmd.Parameters.AddWithValue("@NX", hk.NhanXet);
-                    return cmd.ExecuteNonQuery() > 0;
-                }
-            }
-        }
-
-        // === 4. Xóa Hạnh Kiểm (CRUD) ===
-        public bool XoaHanhKiem(int maHocSinh, int maHocKy) // Sửa: string -> int
-        {
-            string query = "DELETE FROM HanhKiem WHERE MaHocSinh = @MaHS AND MaHocKy=@MaHK";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@MaHS", maHocSinh); // Đã là int
-                    cmd.Parameters.AddWithValue("@MaHK", maHocKy);
-                    return cmd.ExecuteNonQuery() > 0;
-                }
-            }
-        }
-
-        // === 5. Lấy Hạnh Kiểm theo Key (Quan trọng) ===
-        public HanhKiemDTO LayHanhKiemTheoKey(int maHocSinh, int maHocKy) // Sửa: string -> int
-        {
-            HanhKiemDTO hanhKiem = null;
-            string query = "SELECT MaHocSinh, MaHocKy, XepLoai, NhanXet FROM HanhKiem WHERE MaHocSinh = @MaHS AND MaHocKy = @MaHK";
-
-            MySqlConnection conn = null;
-            try
-            {
-                conn = ConnectionDatabase.GetConnection();
-                if (conn == null)
-                {
-                    Console.WriteLine("Lỗi LayHanhKiemTheoKey: Không thể tạo connection");
-                    return null;
-                }
-
-                if (conn.State != System.Data.ConnectionState.Open)
-                {
-                    conn.Open();
-                }
-
-                MySqlCommand cmd = new MySqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@MaHS", maHocSinh); // Đã là int
-                cmd.Parameters.AddWithValue("@MaHK", maHocKy);
-
-                MySqlDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
-                {
-                    hanhKiem = new HanhKiemDTO
-                    {
-                        MaHocSinh = reader.GetInt32("MaHocSinh"), // Sửa: Đọc là int
-                        MaHocKy = Convert.ToInt32(reader["MaHocKy"]),
-                        XepLoai = reader["XepLoai"].ToString(),
-                        NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet")
-                    };
-                }
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Lỗi LayHanhKiemTheoKey: {ex.Message}");
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    ConnectionDatabase.CloseConnection(conn);
-                }
-            }
-            return hanhKiem;
+            return LayHanhKiem(maHocSinh, maHocKy);
         }
 
         /// <summary>
         /// Lấy tất cả hạnh kiểm trong hệ thống
-        /// Dùng cho logic phân lớp tự động
         /// </summary>
         public List<HanhKiemDTO> GetAllHanhKiem()
         {
-            List<HanhKiemDTO> danhSachHanhKiem = new List<HanhKiemDTO>();
-            MySqlConnection conn = null;
-            try
+            List<HanhKiemDTO> ds = new List<HanhKiemDTO>();
+            string sql = "SELECT MaHocSinh, MaHocKy, XepLoai, NhanXet FROM HanhKiem";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
-                conn = ConnectionDatabase.GetConnection();
-                conn.Open();
-                string query = "SELECT MaHocSinh, MaHocKy, XepLoai, NhanXet FROM HanhKiem";
-                
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                try
                 {
-                    while (reader.Read())
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                     {
-                        HanhKiemDTO hk = new HanhKiemDTO
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            MaHocSinh = reader.GetInt32("MaHocSinh"),
-                            MaHocKy = Convert.ToInt32(reader["MaHocKy"]),
-                            XepLoai = reader["XepLoai"].ToString(),
-                            NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet")
-                        };
-                        danhSachHanhKiem.Add(hk);
+                            while (reader.Read())
+                            {
+                                ds.Add(new HanhKiemDTO
+                                {
+                                    MaHocSinh = reader.GetInt32("MaHocSinh"),
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    XepLoai = reader.GetString("XepLoai"),
+                                    NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet")
+                                });
+                            }
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi khi lấy tất cả hạnh kiểm: " + ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Lỗi lấy tất cả hạnh kiểm: " + ex.Message);
+                    throw;
+                }
+                finally
                 {
                     ConnectionDatabase.CloseConnection(conn);
                 }
             }
-            return danhSachHanhKiem;
+            return ds;
         }
+
     }
+}

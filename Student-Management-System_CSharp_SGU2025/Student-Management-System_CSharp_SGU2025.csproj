@@ -271,24 +271,6 @@
     <Compile Include="GUI\DangNhap\FrmLienHeIT.Designer.cs">
       <DependentUpon>FrmLienHeIT.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\DangNhap\FrmDoiMatKhau.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\DangNhap\FrmDoiMatKhau.Designer.cs">
-      <DependentUpon>FrmDoiMatKhau.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\DangNhap\FrmXacThucOTP.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\DangNhap\FrmXacThucOTP.Designer.cs">
-      <DependentUpon>FrmXacThucOTP.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\DangNhap\FrmLienHeIT.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\DangNhap\FrmLienHeIT.Designer.cs">
-      <DependentUpon>FrmLienHeIT.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\DanhGia\DanhGia.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -630,15 +612,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ChinhSuaPhuHuynh.resx">
       <DependentUpon>ChinhSuaPhuHuynh.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\DangNhap\FrmDoiMatKhau.resx">
-      <DependentUpon>FrmDoiMatKhau.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\DangNhap\FrmXacThucOTP.resx">
-      <DependentUpon>FrmXacThucOTP.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\DangNhap\FrmLienHeIT.resx">
-      <DependentUpon>FrmLienHeIT.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\DangNhap\FrmDoiMatKhau.resx">
       <DependentUpon>FrmDoiMatKhau.cs</DependentUpon>
