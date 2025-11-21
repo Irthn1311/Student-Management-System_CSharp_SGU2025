@@ -32,14 +32,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         ("Học sinh", "Xem điểm, thời khóa biểu")
     };
 
-            // Nếu bạn có sẵn 4 RoleItem (roleItem1...roleItem4)
-            var items = new[] { roleItem1, roleItem2, roleItem3, roleItem4 };
+            //    // Nếu bạn có sẵn 4 RoleItem (roleItem1...roleItem4)
+            //    var items = new[] { roleItem1, roleItem2, roleItem3, roleItem4 };
 
-            for (int i = 0; i < roles.Count; i++)
-            {
-                items[i].RoleName = roles[i].Name;
-                items[i].RoleDescription = roles[i].Description;
-            }
+            //    for (int i = 0; i < roles.Count; i++)
+            //    {
+            //        items[i].RoleName = roles[i].Name;
+            //        items[i].RoleDescription = roles[i].Description;
+            //    }
         }
 
 

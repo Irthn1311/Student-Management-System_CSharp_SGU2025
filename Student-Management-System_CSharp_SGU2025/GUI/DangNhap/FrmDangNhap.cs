@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Student_Management_System_CSharp_SGU2025.BUS; // Thêm để sử dụng LoginBUS
+using Student_Management_System_CSharp_SGU2025.Services; // Thêm để sử dụng EmailService và OTPManager
+using Student_Management_System_CSharp_SGU2025.GUI.DangNhap; // Thêm để sử dụng FrmXacThucOTP
 using Student_Management_System_CSharp_SGU2025.BUS; // Thêm để sử dụng LoginBUS
 using Student_Management_System_CSharp_SGU2025.Services; // Thêm để sử dụng EmailService và OTPManager
 using Student_Management_System_CSharp_SGU2025.GUI.DangNhap; // Thêm để sử dụng FrmXacThucOTP
@@ -22,6 +26,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         public FrmDangNhap()
         {
             InitializeComponent();
+            loginBUS = new LoginBUS(); // Khởi tạo LoginBUS
+            hocSinhBLL = new HocSinhBLL(); // Khởi tạo HocSinhBLL
             loginBUS = new LoginBUS(); // Khởi tạo LoginBUS
             hocSinhBLL = new HocSinhBLL(); // Khởi tạo HocSinhBLL
         }
@@ -43,6 +49,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void FrmDangNhap_Load(object sender, EventArgs e)
         {
+            // Cài đặt ban đầu khi form load
+            txtMatKhau.PasswordChar = '●'; // Ẩn mật khẩu
+            txtTenDangNhap.Focus(); // Focus vào ô tên đăng nhập
+            
+            // Cho phép nhấn Enter để đăng nhập
+            this.AcceptButton = btnDangNhap;
             // Cài đặt ban đầu khi form load
             txtMatKhau.PasswordChar = '●'; // Ẩn mật khẩu
             txtTenDangNhap.Focus(); // Focus vào ô tên đăng nhập
@@ -134,6 +146,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     MessageBoxIcon.Error);
                 Console.WriteLine("Lỗi đăng nhập: " + ex.Message);
             }
+            
         }
 
         private void lbChaoMung2_Click(object sender, EventArgs e)
@@ -458,6 +471,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+        }
+
+        private void txtTenDangNhap_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

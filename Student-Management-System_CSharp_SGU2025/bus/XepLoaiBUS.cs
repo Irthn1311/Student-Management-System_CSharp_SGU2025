@@ -143,7 +143,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             {
                 List<XepLoaiDTO> dsXepLoai = xepLoaiDAO.GetDanhSachXepLoai(maHocKy, null);
                 XepLoaiDTO xepLoai = dsXepLoai.FirstOrDefault(x => x.MaHocSinh == maHocSinh);
-                
+
                 if (xepLoai != null)
                 {
                     xepLoai.MaHocKy = maHocKy;
@@ -155,6 +155,96 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             {
                 throw new Exception($"Lỗi nghiệp vụ khi lấy xếp loại học sinh {maHocSinh} học kỳ {maHocKy}: " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Lấy thống kê xếp loại tổng kết theo học kỳ và lớp
+        /// Kết hợp cả học lực và hạnh kiểm để ra xếp loại tổng kết
+        /// </summary>
+        public Dictionary<string, int> ThongKeXepLoaiTongKet(int maHocKy, int? maLop = null)
+        {
+            Dictionary<string, int> thongKe = new Dictionary<string, int>
+    {
+        { "Giỏi", 0 },
+        { "Khá", 0 },
+        { "Trung bình", 0 },
+        { "Yếu", 0 },
+        { "Kém", 0 }
+    };
+
+            try
+            {
+                // Lấy danh sách xếp loại đầy đủ (có cả học lực và hạnh kiểm)
+                List<XepLoaiDTO> dsXepLoai = LayDanhSachXepLoaiDayDu(maHocKy, maLop);
+
+                foreach (var item in dsXepLoai)
+                {
+                    // Chỉ thống kê những học sinh có xếp loại tổng kết
+                    if (!string.IsNullOrEmpty(item.XepLoaiTongKet) && thongKe.ContainsKey(item.XepLoaiTongKet))
+                    {
+                        thongKe[item.XepLoaiTongKet]++;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi thống kê xếp loại tổng kết: " + ex.Message);
+            }
+
+            return thongKe;
+        }
+        /// <summary>
+        /// Thống kê xếp loại tổng kết theo khối và học kỳ
+        /// Kết hợp cả học lực và hạnh kiểm để tính xếp loại tổng kết
+        /// </summary>
+        public Dictionary<string, int> ThongKeXepLoaiTongKetTheoKhoi(int maHocKy, int maKhoi)
+        {
+            Dictionary<string, int> thongKe = new Dictionary<string, int>
+    {
+        { "Giỏi", 0 },
+        { "Khá", 0 },
+        { "Trung bình", 0 },
+        { "Yếu", 0 },
+        { "Kém", 0 }
+    };
+
+            try
+            {
+                // Lấy danh sách học sinh có học lực theo khối
+                List<XepLoaiDTO> dsXepLoai = xepLoaiDAO.GetDanhSachXepLoaiTheoKhoi(maHocKy, maKhoi);
+
+                // Với mỗi học sinh, lấy hạnh kiểm và tính xếp loại tổng kết
+                foreach (var item in dsXepLoai)
+                {
+                    // Lấy hạnh kiểm
+                    HanhKiemDTO hk = hanhKiemDAO.LayHanhKiem(item.MaHocSinh, maHocKy);
+
+                    // Chỉ tính xếp loại nếu có đầy đủ cả học lực và hạnh kiểm
+                    if (!string.IsNullOrEmpty(item.HocLuc) && hk != null && !string.IsNullOrEmpty(hk.XepLoai))
+                    {
+                        string xepLoaiTongKet = TinhXepLoaiTongKet(item.HocLuc, hk.XepLoai);
+
+                        if (!string.IsNullOrEmpty(xepLoaiTongKet) && thongKe.ContainsKey(xepLoaiTongKet))
+                        {
+                            thongKe[xepLoaiTongKet]++;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi thống kê xếp loại tổng kết theo khối: " + ex.Message);
+            }
+
+            return thongKe;
+        }
+
+        /// <summary>
+        /// Đếm tổng số học sinh theo khối và học kỳ (bao gồm cả chưa có xếp loại)
+        /// </summary>
+        public int DemTongSoHocSinhTheoKhoi(int maHocKy, int maKhoi)
+        {
+            return xepLoaiDAO.DemTongSoHocSinhTheoKhoi(maHocKy, maKhoi);
         }
     }
 }
