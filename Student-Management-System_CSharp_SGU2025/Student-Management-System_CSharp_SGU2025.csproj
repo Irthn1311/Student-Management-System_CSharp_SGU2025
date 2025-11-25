@@ -105,6 +105,10 @@
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.2.0.0\lib\net462\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <HintPath>..\packages\ExcelPackage.1.0.0\lib\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MySql.Data, Version=9.4.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
@@ -942,6 +946,8 @@
     <Content Include="ConnectDatabase\01_schema.sql" />
     <Content Include="ConnectDatabase\02_unique_indexes.sql" />
     <Content Include="ConnectDatabase\03_sample_seed.sql" />
+    <Content Include="ConnectDatabase\03_sample_seed_optimized.sql" />
+    <Content Include="ConnectDatabase\04_data_hk2_for_test.sql" />
     <Content Include="ConnectDatabase\DB_UniqueIndexes.sql" />
     <Content Include="ConnectDatabase\QuanLyHocSinh.sql" />
     <Content Include="GUI\Images\3que.png" />
