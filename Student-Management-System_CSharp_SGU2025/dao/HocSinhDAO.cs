@@ -464,11 +464,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                     reader.GetString("TrangThai")
                                 );
 
-                                //// ✅ Đọc thêm TenDangNhap từ database
-                                //if (!reader.IsDBNull(reader.GetOrdinal("TenDangNhap")))
-                                //{
-                                //    hs.TenDangNhap = reader.GetString("TenDangNhap");
-                                //}
+                                // ✅ Đọc thêm TenDangNhap từ database
+                                if (!reader.IsDBNull(reader.GetOrdinal("TenDangNhap")))
+                                {
+                                    hs.TenDangNhap = reader.GetString("TenDangNhap");
+                                }
 
                                 return hs;
                             }
