@@ -177,9 +177,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BUS\HocSinhBLL.cs" />
-    <Compile Include="BUS\HocSinhPhuHuynhBLL.cs" />
-    <Compile Include="BUS\LoginBUS.cs" />
+    <Compile Include="bus\HocSinhBLL.cs" />
+    <Compile Include="bus\HocSinhPhuHuynhBLL.cs" />
+    <Compile Include="bus\LoginBUS.cs" />
     <Compile Include="bus\NguoiDungBLL.cs" />
     <Compile Include="BUS\KhenThuongKyLuatBUS.cs" />
     <Compile Include="BUS\NhapDiemBUS.cs" />
