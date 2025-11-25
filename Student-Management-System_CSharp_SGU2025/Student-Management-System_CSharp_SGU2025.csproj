@@ -110,6 +110,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MySql.Data, Version=9.4.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.9.4.0\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
@@ -176,45 +177,44 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="bus\HanhKiemDTO.cs" />
-    <Compile Include="bus\HocSinhBLL.cs" />
-    <Compile Include="bus\HocSinhPhuHuynhBLL.cs" />
-    <Compile Include="bus\LoginBUS.cs" />
+    <Compile Include="BUS\HocSinhBLL.cs" />
+    <Compile Include="BUS\HocSinhPhuHuynhBLL.cs" />
+    <Compile Include="BUS\LoginBUS.cs" />
     <Compile Include="bus\NguoiDungBLL.cs" />
-    <Compile Include="bus\KhenThuongKyLuatBUS.cs" />
-    <Compile Include="bus\NhapDiemBUS.cs" />
-    <Compile Include="bus\PhanLopBLL.cs" />
+    <Compile Include="BUS\KhenThuongKyLuatBUS.cs" />
+    <Compile Include="BUS\NhapDiemBUS.cs" />
+    <Compile Include="BUS\PhanLopBLL.cs" />
     <Compile Include="bus\PhanLopTuDongBLL.cs" />
-    <Compile Include="bus\PhuHuynhBLL.cs" />
-    <Compile Include="bus\ThemDiemBUS.cs" />
-    <Compile Include="bus\ThoiKhoaBieuBUS.cs" />
-    <Compile Include="bus\XepLoaiBUS.cs" />
-    <Compile Include="dao\DiemSoDAO.cs" />
-    <Compile Include="dao\HocSinhDAO.cs" />
-    <Compile Include="dao\HocSinhPhuHuynhDAO.cs" />
-    <Compile Include="dao\LoginDAO.cs" />
-    <Compile Include="dao\KhenThuongKyLuatDAO.cs" />
-    <Compile Include="dao\LopHocDAO.cs" />
-    <Compile Include="dao\MonHocDAO.cs" />
-    <Compile Include="dao\NamHocDAO.cs" />
+    <Compile Include="BUS\PhuHuynhBLL.cs" />
+    <Compile Include="BUS\ThemDiemBUS.cs" />
+    <Compile Include="BUS\ThoiKhoaBieuBUS.cs" />
+    <Compile Include="BUS\XepLoaiBUS.cs" />
+    <Compile Include="DAO\DiemSoDAO.cs" />
+    <Compile Include="DAO\HocSinhDAO.cs" />
+    <Compile Include="DAO\HocSinhPhuHuynhDAO.cs" />
+    <Compile Include="DAO\LoginDAO.cs" />
+    <Compile Include="DAO\KhenThuongKyLuatDAO.cs" />
+    <Compile Include="DAO\LopHocDAO.cs" />
+    <Compile Include="DAO\MonHocDAO.cs" />
+    <Compile Include="DAO\NamHocDAO.cs" />
     <Compile Include="dao\NguoiDungDAO.cs" />
-    <Compile Include="dao\NhapDiemDAO.cs" />
-    <Compile Include="dao\PhanLopDAO.cs" />
-    <Compile Include="dao\PhuHuynhDAO.cs" />
-    <Compile Include="dao\ThoiKhoaBieuDAO.cs" />
-    <Compile Include="dao\XepLoaiDAO.cs" />
+    <Compile Include="DAO\NhapDiemDAO.cs" />
+    <Compile Include="DAO\PhanLopDAO.cs" />
+    <Compile Include="DAO\PhuHuynhDAO.cs" />
+    <Compile Include="DAO\ThoiKhoaBieuDAO.cs" />
+    <Compile Include="DAO\XepLoaiDAO.cs" />
     <Compile Include="DTO\ChiTietDiemDTO.cs" />
     <Compile Include="DTO\KhenThuongKyLuatDTO.cs" />
     <Compile Include="DTO\DiemSoDTO.cs" />
     <Compile Include="DTO\HocSinhDTO.cs" />
     <Compile Include="DTO\NguoiDungDTO.cs" />
-    <Compile Include="bus\GiaoVienBUS.cs" />
-    <Compile Include="bus\HanhKiemBUS.cs" />
-    <Compile Include="bus\HocKyBUS.cs" />
-    <Compile Include="bus\LopHocBUS.cs" />
-    <Compile Include="bus\MonHocBUS.cs" />
-    <Compile Include="bus\NamHocBUS.cs" />
-    <Compile Include="bus\PhanCongGiangDayBUS.cs" />
+    <Compile Include="BUS\GiaoVienBUS.cs" />
+    <Compile Include="BUS\HanhKiemBUS.cs" />
+    <Compile Include="BUS\HocKyBUS.cs" />
+    <Compile Include="BUS\LopHocBUS.cs" />
+    <Compile Include="BUS\MonHocBUS.cs" />
+    <Compile Include="BUS\NamHocBUS.cs" />
+    <Compile Include="BUS\PhanCongGiangDayBUS.cs" />
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
     <Compile Include="dao\GiaoVienDAO.cs" />
     <Compile Include="dao\HanhKiemDAO.cs" />
@@ -352,6 +352,9 @@
     </Compile>
     <Compile Include="GUI\RecentActivityItem.Designer.cs">
       <DependentUpon>RecentActivityItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ScrollableMessageBox.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\ScrollableMessageBox.cs">
       <SubType>Form</SubType>
@@ -563,6 +566,18 @@
     <Compile Include="GUI\ThongKeCard.Designer.cs">
       <DependentUpon>ThongKeCard.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\XepLoai\CardTheoKhoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\XepLoai\CardTheoKhoi.Designer.cs">
+      <DependentUpon>CardTheoKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\XepLoai\ThongKeXepLoai.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\XepLoai\ThongKeXepLoai.Designer.cs">
+      <DependentUpon>ThongKeXepLoai.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\XepLoai\ucXepLoai.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -585,6 +600,8 @@
     <Compile Include="Scheduling\SchedulingService.cs" />
     <Compile Include="Services\AssignmentAutoService.cs" />
     <Compile Include="Services\AssignmentPersistService.cs" />
+    <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\OTPManager.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\OTPManager.cs" />
     <Compile Include="Services\SemesterHelper.cs" />
@@ -737,6 +754,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThongKeCard.resx">
       <DependentUpon>ThongKeCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\XepLoai\CardTheoKhoi.resx">
+      <DependentUpon>CardTheoKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\XepLoai\ThongKeXepLoai.resx">
+      <DependentUpon>ThongKeXepLoai.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\XepLoai\ucXepLoai.resx">
       <DependentUpon>ucXepLoai.cs</DependentUpon>

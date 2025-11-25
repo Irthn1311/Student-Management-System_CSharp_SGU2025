@@ -13,7 +13,7 @@ using System.IO; // Cần cho FileInfo
 using OfficeOpenXml; // Thư viện EPPlus
 using OfficeOpenXml.Style; // Cần cho định dạng (tô màu, in đậm)
 
-using Student_Management_System_CSharp_SGU2025.BUS; 
+using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.DAO; // ✅ Thêm để sử dụng NguoiDungDAO (nếu cần)
 
@@ -31,12 +31,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private LopHocBUS lopHocBUS;
         private PhanLopBLL phanLopBLL;
         private HocKyBUS hocKyBUS;
-        private NguoiDungBLL nguoiDungBLL; 
+        private NguoiDungBLL nguoiDungBLL;
 
         // ✅ Chuyển sang BindingList để tự động cập nhật DataGridView
         private BindingList<HocSinhDTO> bindingListHocSinh;
         private BindingList<PhuHuynhDTO> bindingListPhuHuynh;
-        
+
         // Danh sách tổng (để lọc)
         private List<HocSinhDTO> danhSachHocSinhFull;
         private List<PhuHuynhDTO> danhSachPhuHuynhFull;
@@ -51,7 +51,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private int currentPagePhuHuynh = 1; // Trang hiện tại
         private int pageSizePhuHuynh = 50; // Số dòng mỗi trang
         private List<PhuHuynhDTO> danhSachPhuHuynhFiltered; // Danh sách sau khi tìm kiếm/lọc
-        
+
 
         public HocSinh()
         {
@@ -63,12 +63,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             lopHocBUS = new LopHocBUS();
             phanLopBLL = new PhanLopBLL();
             hocKyBUS = new HocKyBUS();
-            nguoiDungBLL = new NguoiDungBLL(); 
+            nguoiDungBLL = new NguoiDungBLL();
 
             // ✅ Khởi tạo BindingList
             bindingListHocSinh = new BindingList<HocSinhDTO>();
             bindingListPhuHuynh = new BindingList<PhuHuynhDTO>();
-            
+
             danhSachHocSinhFull = new List<HocSinhDTO>();
             danhSachPhuHuynhFull = new List<PhuHuynhDTO>();
             danhSachMoiQuanHe = new List<(int hocSinh, int phuHuynh, string moiQuanHe)>();
@@ -90,25 +90,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private void HocSinh_Load_1(object sender, EventArgs e)
         {
             isLoadingData = true; // Bắt đầu load dữ liệu
-            
+
             // --- Thiết lập giao diện ban đầu ---
             SetInitialView();
 
             // --- Cấu hình các bảng ---
             SetupTableHocSinh();
             SetupTablePhuHuynh();
-            SetupTableMoiQuanHe(); 
+            SetupTableMoiQuanHe();
 
             // --- Nạp dữ liệu mẫu ---
             LoadSampleDataHocSinh(); // ✅ Load trực tiếp, không cần FilterAndLoadHocSinh nữa
             LoadSampleDataPhuHuynh();
-            LoadSampleDataMoiQuanHe(); 
+            LoadSampleDataMoiQuanHe();
 
             // --- Cấu hình Header và Thẻ Thống kê ---
             SetupHeaderAndStats();
-            
+
             isLoadingData = false; // Kết thúc load dữ liệu
-            
+
             // ✅ Force update label sau khi load xong (fix bug hiển thị 500 lần đầu)
             ForceUpdatePaginationLabel();
         }
@@ -128,9 +128,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 tablePhuHuynh.Visible = false;
                 btnThemPhuHuynh.Visible = false;
                 btnPhuHuynh.Text = "Phụ Huynh";
-                headerQuanLiHocSinh.lbHeader.Text = "Hồ sơ Học sinh"; 
+                headerQuanLiHocSinh.lbHeader.Text = "Hồ sơ Học sinh";
                 headerQuanLiHocSinh.lbGhiChu.Text = "Trang chủ / Hồ sơ học sinh";
-                
+
                 // ✅ Đổi placeholder TextBox
                 if (txtTimKiem != null)
                 {
@@ -144,16 +144,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 tablePhuHuynh.Visible = true;
                 btnThemPhuHuynh.Visible = true;
                 btnPhuHuynh.Text = "Học Sinh";
-                headerQuanLiHocSinh.lbHeader.Text = "Thông tin Phụ huynh"; 
+                headerQuanLiHocSinh.lbHeader.Text = "Thông tin Phụ huynh";
                 headerQuanLiHocSinh.lbGhiChu.Text = "Trang chủ / Phụ huynh";
-                
+
                 // ✅ Đổi placeholder TextBox
                 if (txtTimKiem != null)
                 {
                     txtTimKiem.PlaceholderText = "Tìm phụ huynh ...";
                 }
             }
-            
+
             // Reset bảng Mối Quan Hệ về hiển thị tất cả khi chuyển view
             LoadSampleDataMoiQuanHe();
         }
@@ -178,7 +178,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             {
                 // Quan trọng: Phải ép kiểu (double) để phép chia ra số thập phân
                 phanTramNam = Math.Round(((double)tongHocSinhNam / tongHocSinh) * 100, 1); // Làm tròn 1 chữ số thập phân
-                phanTramNu = 100.0 - phanTramNam;                                                                                        
+                phanTramNu = 100.0 - phanTramNam;
             }
 
             // --- Cập nhật các thẻ thống kê ---
@@ -201,7 +201,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
             statCardDangHoc.lbCardTitle.Text = "Đang học";
             statCardDangHoc.lbCardValue.Text = tongHocSinhDangHoc.ToString("N0");
-            
+
             statCardDangHoc.lbCardNote.Text = $"{tongHocSinhNghiHoc} nghỉ học";
 
             // --- Gán màu sắc (giữ nguyên) ---
@@ -262,16 +262,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private void LoadSampleDataHocSinh()
         {
             tableHocSinh.Rows.Clear();
-            
+
             // ✅ Load tất cả từ DB
             danhSachHocSinhFull = hocSinhBLL.GetAllHocSinh();
-            
+
             // ✅ QUAN TRỌNG: Tạo list mới hoàn toàn để tránh reference cũ
             danhSachHocSinhFiltered = danhSachHocSinhFull.ToList();
-            
+
             // Debug: Kiểm tra số lượng
             Console.WriteLine($"[DEBUG] LoadSampleDataHocSinh: Full={danhSachHocSinhFull.Count}, Filtered={danhSachHocSinhFiltered.Count}");
-            
+
             currentPageHocSinh = 1; // Reset về trang 1
             LoadPagedDataHocSinh(); // ✅ Load trang đầu tiên
         }
@@ -287,10 +287,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 // Tính toán phân trang
                 int totalRecords = danhSachHocSinhFiltered.Count;
                 int totalPages = (int)Math.Ceiling((double)totalRecords / pageSizeHocSinh);
-                
+
                 // Debug: Kiểm tra số lượng
                 Console.WriteLine($"[DEBUG] LoadPagedDataHocSinh: totalRecords={totalRecords}, totalPages={totalPages}, currentPage={currentPageHocSinh}");
-                
+
                 // Đảm bảo currentPage hợp lệ
                 if (currentPageHocSinh < 1) currentPageHocSinh = 1;
                 if (currentPageHocSinh > totalPages && totalPages > 0) currentPageHocSinh = totalPages;
@@ -306,20 +306,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 {
                     bindingListHocSinh.Add(hs);
                     tableHocSinh.Rows.Add(
-                        hs.MaHS, 
-                        hs.HoTen, 
-                        hs.NgaySinh.ToString("dd/MM/yyyy"), 
+                        hs.MaHS,
+                        hs.HoTen,
+                        hs.NgaySinh.ToString("dd/MM/yyyy"),
                         hs.GioiTinh,
                         hs.SdtHS ?? "", // ✅ Hiển thị SĐT
                         hs.Email ?? "", // ✅ Hiển thị Email
-                        hs.TrangThai, 
+                        hs.TrangThai,
                         ""
                     );
                 }
 
                 // ✅ Cập nhật label phân trang (tìm control theo tên)
                 UpdatePaginationLabel(totalPages, totalRecords);
-                
+
                 // ✅ Enable/Disable nút
                 UpdatePaginationButtons(totalPages);
             }
@@ -335,7 +335,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             // ✅ Xác định đang ở view nào và lấy current page tương ứng
             int currentPage = isShowingHocSinh ? currentPageHocSinh : currentPagePhuHuynh;
             string entityName = isShowingHocSinh ? "học sinh" : "phụ huynh";
-            
+
             // Tìm label theo tên (giả sử bạn đặt tên là lblTrangHienTai hoặc tương tự)
             // Nếu không tìm thấy, tạm thời set text của control có chứa "Trang"
             foreach (Control ctrl in this.Controls)
@@ -349,7 +349,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     return;
                 }
             }
-            
+
             // Fallback: Tìm trong Panel hoặc GroupBox nếu label nằm trong đó
             FindAndUpdateLabel(this, totalPages, totalRecords, currentPage, entityName);
         }
@@ -367,7 +367,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         ctrl.Text = $"Trang {currentPage}/{totalPages} ({totalRecords} {entityName})";
                     return;
                 }
-                
+
                 // Tìm trong container con
                 if (ctrl.HasChildren)
                 {
@@ -381,7 +381,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         {
             // ✅ Xác định đang ở view nào và lấy current page tương ứng
             int currentPage = isShowingHocSinh ? currentPageHocSinh : currentPagePhuHuynh;
-            
+
             // Tìm nút Trang Trước (tên có thể là btnTrangTruoc, btnPrevious, etc.)
             foreach (Control ctrl in this.Controls)
             {
@@ -397,7 +397,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     }
                 }
             }
-            
+
             // Tìm trong Panel hoặc GroupBox
             FindAndUpdateButtons(this, totalPages, currentPage);
         }
@@ -411,19 +411,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 {
                     string ctrlNameLower = ctrl.Name.ToLower();
                     string ctrlTextLower = ctrl.Text.ToLower();
-                    
-                    if (ctrlNameLower.Contains("truoc") || ctrlNameLower.Contains("prev") || 
+
+                    if (ctrlNameLower.Contains("truoc") || ctrlNameLower.Contains("prev") ||
                         ctrlTextLower.Contains("◄") || ctrlTextLower.Contains("trước"))
                     {
                         ctrl.Enabled = (currentPage > 1);
                     }
-                    else if (ctrlNameLower.Contains("sau") || ctrlNameLower.Contains("next") || 
+                    else if (ctrlNameLower.Contains("sau") || ctrlNameLower.Contains("next") ||
                              ctrlTextLower.Contains("►") || ctrlTextLower.Contains("sau"))
                     {
                         ctrl.Enabled = (currentPage < totalPages);
                     }
                 }
-                
+
                 if (ctrl.HasChildren)
                 {
                     FindAndUpdateButtons(ctrl, totalPages, currentPage);
@@ -442,7 +442,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 int currentPage = isShowingHocSinh ? currentPageHocSinh : currentPagePhuHuynh;
                 int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
                 string entityName = isShowingHocSinh ? "học sinh" : "phụ huynh";
-                
+
                 // Update label bằng tên trực tiếp
                 if (lblTrangHienTai != null)
                 {
@@ -513,7 +513,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         {
             // Không xử lý khi đang load dữ liệu ban đầu
             if (isLoadingData) return;
-            
+
             if (tableHocSinh.SelectedRows.Count > 0)
             {
                 var selectedRow = tableHocSinh.SelectedRows[0];
@@ -548,11 +548,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
             // --- Thêm cột mới ---
             tablePhuHuynh.Columns.Add("MaPH", "Mã PH");
-            tablePhuHuynh.Columns.Add("HoTenPH", "Họ và Tên"); 
+            tablePhuHuynh.Columns.Add("HoTenPH", "Họ và Tên");
             tablePhuHuynh.Columns.Add("Sdt", "SĐT");
             tablePhuHuynh.Columns.Add("Email", "Email");
             tablePhuHuynh.Columns.Add("DiaChi", "Địa chỉ");
-            tablePhuHuynh.Columns.Add("ThaoTacPH", "Thao tác"); 
+            tablePhuHuynh.Columns.Add("ThaoTacPH", "Thao tác");
 
             // --- Căn chỉnh cột ---
             ApplyColumnAlignmentAndWrapping(tablePhuHuynh);
@@ -567,7 +567,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             tablePhuHuynh.Columns["Email"].FillWeight = 18; tablePhuHuynh.Columns["Email"].MinimumWidth = 100;
             tablePhuHuynh.Columns["DiaChi"].FillWeight = 25; tablePhuHuynh.Columns["DiaChi"].MinimumWidth = 150;
             tablePhuHuynh.Columns["ThaoTacPH"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            tablePhuHuynh.Columns["ThaoTacPH"].Width = 80; 
+            tablePhuHuynh.Columns["ThaoTacPH"].Width = 80;
 
             // --- Gắn sự kiện ---
             tablePhuHuynh.CellPainting += tablePhuHuynh_CellPainting;
@@ -581,7 +581,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             tablePhuHuynh.Rows.Clear();
             danhSachPhuHuynhFull = phuHuynhBLL.GetAllPhuHuynh(); // ✅ Load tất cả từ DB
             danhSachPhuHuynhFiltered = new List<PhuHuynhDTO>(danhSachPhuHuynhFull); // ✅ Copy sang filtered list
-            
+
             currentPagePhuHuynh = 1; // Reset về trang 1
             LoadPagedDataPhuHuynh(); // ✅ Load trang đầu tiên
         }
@@ -597,7 +597,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 // Tính toán phân trang
                 int totalRecords = danhSachPhuHuynhFiltered.Count;
                 int totalPages = (int)Math.Ceiling((double)totalRecords / pageSizePhuHuynh);
-                
+
                 // Đảm bảo currentPage hợp lệ
                 if (currentPagePhuHuynh < 1) currentPagePhuHuynh = 1;
                 if (currentPagePhuHuynh > totalPages && totalPages > 0) currentPagePhuHuynh = totalPages;
@@ -612,13 +612,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 foreach (PhuHuynhDTO ph in pagedData)
                 {
                     bindingListPhuHuynh.Add(ph);
-                    tablePhuHuynh.Rows.Add(ph.MaPhuHuynh, ph.HoTen, ph.SoDienThoai, 
+                    tablePhuHuynh.Rows.Add(ph.MaPhuHuynh, ph.HoTen, ph.SoDienThoai,
                                           ph.Email, ph.DiaChi, "");
                 }
 
                 // ✅ Cập nhật label phân trang
                 UpdatePaginationLabel(totalPages, totalRecords);
-                
+
                 // ✅ Enable/Disable nút
                 UpdatePaginationButtons(totalPages);
             }
@@ -668,7 +668,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         {
             // Không xử lý khi đang load dữ liệu ban đầu
             if (isLoadingData) return;
-            
+
             if (tablePhuHuynh.SelectedRows.Count > 0)
             {
                 var selectedRow = tablePhuHuynh.SelectedRows[0];
@@ -740,27 +740,27 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         }
 
         // Lọc bảng Mối Quan Hệ theo Học Sinh được chọn
-                /// <summary>
-                /// Kiểm tra học sinh đã có mối quan hệ cùng loại chưa
-                /// </summary>
-                private bool DaTonTaiMoiQuanHeCungLoai(int maHocSinh, string loaiQuanHe)
-                {
-                    danhSachMoiQuanHe = hocSinhPhuHuynhBLL.GetAllQuanHe();
-                    return danhSachMoiQuanHe.Any(x => x.hocSinh == maHocSinh && x.moiQuanHe.Trim().ToLower() == loaiQuanHe.Trim().ToLower());
-                }
+        /// <summary>
+        /// Kiểm tra học sinh đã có mối quan hệ cùng loại chưa
+        /// </summary>
+        private bool DaTonTaiMoiQuanHeCungLoai(int maHocSinh, string loaiQuanHe)
+        {
+            danhSachMoiQuanHe = hocSinhPhuHuynhBLL.GetAllQuanHe();
+            return danhSachMoiQuanHe.Any(x => x.hocSinh == maHocSinh && x.moiQuanHe.Trim().ToLower() == loaiQuanHe.Trim().ToLower());
+        }
 
-                /// <summary>
-                /// Hàm thêm mối quan hệ, chỉ cho phép mỗi loại 1 lần trên mỗi học sinh
-                /// </summary>
-                private bool ThemMoiQuanHeKhongTrung(int maHocSinh, int maPhuHuynh, string loaiQuanHe)
-                {
-                    if (DaTonTaiMoiQuanHeCungLoai(maHocSinh, loaiQuanHe))
-                    {
-                        MessageBox.Show($"Học sinh này đã có mối quan hệ '{loaiQuanHe}'. Không thể thêm trùng!", "Trùng mối quan hệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return false;
-                    }
-                    return hocSinhPhuHuynhBLL.AddQuanHe(maHocSinh, maPhuHuynh, loaiQuanHe);
-                }
+        /// <summary>
+        /// Hàm thêm mối quan hệ, chỉ cho phép mỗi loại 1 lần trên mỗi học sinh
+        /// </summary>
+        private bool ThemMoiQuanHeKhongTrung(int maHocSinh, int maPhuHuynh, string loaiQuanHe)
+        {
+            if (DaTonTaiMoiQuanHeCungLoai(maHocSinh, loaiQuanHe))
+            {
+                MessageBox.Show($"Học sinh này đã có mối quan hệ '{loaiQuanHe}'. Không thể thêm trùng!", "Trùng mối quan hệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            return hocSinhPhuHuynhBLL.AddQuanHe(maHocSinh, maPhuHuynh, loaiQuanHe);
+        }
         private void LoadMoiQuanHeByHocSinh(int maHocSinh)
         {
             tableMoiQuanHe.Rows.Clear();
@@ -1004,13 +1004,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
                                 // ✅ Cập nhật dòng trong bảng thay vì reload (THÊM CỘT SDTHS VÀ EMAIL)
                                 dgv.Rows[rowIndex].SetValues(
-                                    updatedHS.MaHS, 
-                                    updatedHS.HoTen, 
-                                    updatedHS.NgaySinh.ToString("dd/MM/yyyy"), 
+                                    updatedHS.MaHS,
+                                    updatedHS.HoTen,
+                                    updatedHS.NgaySinh.ToString("dd/MM/yyyy"),
                                     updatedHS.GioiTinh,
                                     updatedHS.SdtHS ?? "", // ✅ SĐT
                                     updatedHS.Email ?? "", // ✅ Email
-                                    updatedHS.TrangThai, 
+                                    updatedHS.TrangThai,
                                     ""
                                 );
                             }
@@ -1051,17 +1051,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
                                 // ✅ Cập nhật dòng trong bảng thay vì reload
                                 dgv.Rows[rowIndex].SetValues(
-                                    updatedPH.MaPhuHuynh, 
-                                    updatedPH.HoTen, 
-                                    updatedPH.SoDienThoai, 
-                                    updatedPH.Email, 
-                                    updatedPH.DiaChi, 
+                                    updatedPH.MaPhuHuynh,
+                                    updatedPH.HoTen,
+                                    updatedPH.SoDienThoai,
+                                    updatedPH.Email,
+                                    updatedPH.DiaChi,
                                     ""
                                 );
                             }
                         }
                     }
-                    
+
                 }
                 else { MessageBox.Show("Mã không hợp lệ để sửa."); }
             }
@@ -1200,7 +1200,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
                                 LoadSampleDataMoiQuanHe(); // Nạp lại bảng MQH
                                 SetupHeaderAndStats();      // Cập nhật lại các thẻ thống kê
-                                
+
                                 MessageBox.Show("Đã xóa phụ huynh và các mối quan hệ liên quan.");
                             }
                             else
@@ -1211,7 +1211,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         else { MessageBox.Show("Mã phụ huynh không hợp lệ."); }
                     }
                 }
-                
+
             }
         }
 
@@ -1244,12 +1244,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             if (e.Value.ToString() == "Đang học")
             {
                 e.CellStyle.ForeColor = Color.FromArgb(22, 101, 52); // Đậm hơn
-              
+
             }
             else // Nghỉ học hoặc trạng thái khác
             {
                 e.CellStyle.ForeColor = Color.FromArgb(153, 27, 27); // Đậm hơn
-              
+
             }
         }
 
@@ -1298,7 +1298,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         {
             // 1. Tạo và hiển thị form Thêm
             ThemHoSoHocSinh frm = new ThemHoSoHocSinh();
-            frm.StartPosition = FormStartPosition.CenterScreen; 
+            frm.StartPosition = FormStartPosition.CenterScreen;
 
             // 2. Hiển thị form dưới dạng Dialog và chờ kết quả
             DialogResult result = frm.ShowDialog();
@@ -1318,16 +1318,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         danhSachHocSinhFull.Add(newHS);
 
                         // ✅ Thêm dòng mới vào bảng thay vì load lại toàn bộ (BỎ CỘT LỚP)
-                        tableHocSinh.Rows.Add(newHS.MaHS, newHS.HoTen, newHS.NgaySinh.ToString("dd/MM/yyyy"), 
+                        tableHocSinh.Rows.Add(newHS.MaHS, newHS.HoTen, newHS.NgaySinh.ToString("dd/MM/yyyy"),
                                              newHS.GioiTinh, newHS.TrangThai, "");
                     }
 
                     // Load lại bảng Mối quan hệ
                     LoadSampleDataMoiQuanHe();
-                                                
+
                     // Cập nhật lại các thẻ thống kê
                     SetupHeaderAndStats();
-                    
+
                     MessageBox.Show("Dữ liệu đã được cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -1340,15 +1340,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         private void btnPhuHuynh_Click(object sender, EventArgs e)
         {
             isShowingHocSinh = !isShowingHocSinh; // Đảo trạng thái
-            
+
             // ✅ Xóa text tìm kiếm khi chuyển view
             if (txtTimKiem != null)
             {
                 txtTimKiem.Clear();
             }
-            
+
             UpdateView(); // Cập nhật lại giao diện
-            
+
             // ✅ Cập nhật lại label phân trang cho view hiện tại
             if (isShowingHocSinh)
             {
@@ -1390,10 +1390,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         danhSachPhuHuynhFull.Add(newPH);
 
                         // ✅ Thêm dòng mới vào bảng thay vì load lại toàn bộ
-                        tablePhuHuynh.Rows.Add(newPH.MaPhuHuynh, newPH.HoTen, newPH.SoDienThoai, 
+                        tablePhuHuynh.Rows.Add(newPH.MaPhuHuynh, newPH.HoTen, newPH.SoDienThoai,
                                               newPH.Email, newPH.DiaChi, "");
                     }
-                  
+
                     MessageBox.Show("Dữ liệu đã được cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -1590,10 +1590,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 // ✅ XUẤT TÊN (đơn giản cho người dùng)
                 var hocSinh = danhSachHocSinhFull.FirstOrDefault(hs => hs.MaHS == item.hocSinh);
                 var phuHuynh = danhSachPhuHuynhFull.FirstOrDefault(ph => ph.MaPhuHuynh == item.phuHuynh);
-                
+
                 string tenHS = hocSinh != null ? hocSinh.HoTen : $"[HS {item.hocSinh}]";
                 string tenPH = phuHuynh != null ? phuHuynh.HoTen : $"[PH {item.phuHuynh}]";
-                
+
                 ws.Cells[row, 1].Value = tenHS;
                 ws.Cells[row, 2].Value = tenPH;
                 ws.Cells[row, 3].Value = item.moiQuanHe;
@@ -1618,7 +1618,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             }
         }
 
-        
+
         private void ExportDataGridViewToWorksheet(ExcelPackage package, DataGridView dgv, string sheetName)
         {
             // ❌ HÀM NÀY KHÔNG DÙNG NỮA - Đã thay bằng ExportHocSinhToWorksheet, ExportPhuHuynhToWorksheet, ExportMoiQuanHeToWorksheet
@@ -1704,7 +1704,52 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void btnNhapExcel_Click(object sender, EventArgs e)
         {
-            
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Chọn file Excel để nhập dữ liệu";
+                ofd.Filter = "Excel Files|*.xlsx;*.xls";
+                ofd.FilterIndex = 1;
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+                        ImportAllDataFromExcel(ofd.FileName);
+
+                        // Reload lại dữ liệu
+                        LoadSampleDataHocSinh();
+                        LoadSampleDataPhuHuynh();
+                        LoadSampleDataMoiQuanHe();
+                        SetupHeaderAndStats();
+
+                        // ✅ Scroll xuống cuối để hiển thị học sinh mới
+                        if (tableHocSinh.Rows.Count > 0)
+                        {
+                            tableHocSinh.FirstDisplayedScrollingRowIndex = Math.Max(0, tableHocSinh.Rows.Count - 1);
+                            tableHocSinh.Rows[tableHocSinh.Rows.Count - 1].Selected = true;
+                        }
+
+                        MessageBox.Show(
+                            "✅ Nhập dữ liệu từ Excel thành công!\n\n" +
+                            "📌 TỰ ĐỘNG TẠO TÀI KHOẢN: \n" +
+                            "- Hệ thống đã tự động tạo tài khoản cho các học sinh mới\n" +
+                            "- Tên đăng nhập: hs001, hs002, hs003...\n" +
+                            "- Mật khẩu mặc định: 123456\n" +
+                            "- Học sinh nên đổi mật khẩu sau lần đăng nhập đầu tiên\n\n" +
+                            "💡 Danh sách đã tự động cuộn xuống cuối để hiển thị học sinh mới nhất!",
+                            "Nhập Excel thành công",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ Lỗi khi nhập Excel: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -1866,17 +1911,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             // Hiển thị kết quả
             if (errorCount > 0)
             {
-                MessageBox.Show($"Nhập Học Sinh:\n- Thêm mới: {successCount}\n- Lỗi: {errorCount}\n\nChi tiết lỗi:\n{errors}", 
+                MessageBox.Show($"Nhập Học Sinh:\n- Thêm mới: {successCount}\n- Lỗi: {errorCount}\n\nChi tiết lỗi:\n{errors}",
                     "Kết quả nhập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else if (successCount > 0)
             {
-                MessageBox.Show($"✅ Nhập Học Sinh thành công!\n- Đã thêm mới: {successCount} học sinh", 
+                MessageBox.Show($"✅ Nhập Học Sinh thành công!\n- Đã thêm mới: {successCount} học sinh",
                     "Kết quả nhập", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                MessageBox.Show("ℹ️ Không có học sinh mới nào được thêm vào.", 
+                MessageBox.Show("ℹ️ Không có học sinh mới nào được thêm vào.",
                     "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -2038,7 +2083,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     }
 
                     // Validate mối quan hệ hợp lệ
-                    if (moiQuanHe != "Cha" && moiQuanHe != "Mẹ" && moiQuanHe != "Ông" && 
+                    if (moiQuanHe != "Cha" && moiQuanHe != "Mẹ" && moiQuanHe != "Ông" &&
                         moiQuanHe != "Bà" && moiQuanHe != "Người giám hộ")
                     {
                         errors.AppendLine($"Dòng {row}: Mối quan hệ không hợp lệ ({moiQuanHe}). Chỉ chấp nhận: Cha, Mẹ, Ông, Bà, Người giám hộ");
@@ -2068,7 +2113,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     {
                         // ⚠️ TRÙNG TÊN - Lấy người đầu tiên + cảnh báo
                         hs = danhSachHSTrung[0];
-                        string danhSachHS = string.Join("\n  ", danhSachHSTrung.Select(h => 
+                        string danhSachHS = string.Join("\n  ", danhSachHSTrung.Select(h =>
                             $"- MaHS {h.MaHS} (Ngày sinh: {h.NgaySinh:dd/MM/yyyy}, SĐT: {h.SdtHS})"));
                         warnings.AppendLine($"⚠️ Dòng {row}: Có {danhSachHSTrung.Count} học sinh tên '{tenHS}':\n  {danhSachHS}\n  → Đã chọn MaHS {hs.MaHS}");
                     }
@@ -2088,7 +2133,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     {
                         // ⚠️ TRÙNG TÊN - Lấy người đầu tiên + cảnh báo
                         ph = danhSachPHTrung[0];
-                        string danhSachPH = string.Join("\n  ", danhSachPHTrung.Select(p => 
+                        string danhSachPH = string.Join("\n  ", danhSachPHTrung.Select(p =>
                             $"- MaPH {p.MaPhuHuynh} (SĐT: {p.SoDienThoai}, Email: {p.Email})"));
                         warnings.AppendLine($"⚠️ Dòng {row}: Có {danhSachPHTrung.Count} phụ huynh tên '{tenPH}':\n  {danhSachPH}\n  → Đã chọn MaPH {ph.MaPhuHuynh}");
                     }
@@ -2163,7 +2208,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         {
             // ⚠️ COMMENT LẠI ĐỂ DÙNG NÚT TÌM THAY VÌ TÌM REALTIME
             // Nếu muốn tìm kiếm realtime (không cần nhấn nút), uncomment phần này:
-            
+
             /*
             string keyword = txtTimKiem.Text.Trim().ToLower();
             
@@ -2196,7 +2241,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             {
                 // ✅ Lấy từ khóa từ TextBox
                 string keyword = txtTimKiem.Text.Trim().ToLower();
-                
+
                 if (isShowingHocSinh)
                 {
                     // ===== TÌM KIẾM HỌC SINH =====
@@ -2213,12 +2258,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     else
                     {
                         danhSachHocSinhFiltered = danhSachHocSinhFull
-                            .Where(hs => 
+                            .Where(hs =>
                                 hs.MaHS.ToString().Contains(keyword) ||
                                 hs.HoTen.ToLower().Contains(keyword)
                             )
                             .ToList();
-                        
+
                         if (danhSachHocSinhFiltered.Count == 0)
                         {
                             MessageBox.Show(
@@ -2239,7 +2284,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                             );
                         }
                     }
-                    
+
                     currentPageHocSinh = 1;
                     LoadPagedDataHocSinh();
                 }
@@ -2259,14 +2304,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     else
                     {
                         danhSachPhuHuynhFiltered = danhSachPhuHuynhFull
-                            .Where(ph => 
+                            .Where(ph =>
                                 ph.MaPhuHuynh.ToString().Contains(keyword) ||
                                 ph.HoTen.ToLower().Contains(keyword) ||
                                 ph.SoDienThoai.Contains(keyword) ||
                                 (ph.Email != null && ph.Email.ToLower().Contains(keyword))
                             )
                             .ToList();
-                        
+
                         if (danhSachPhuHuynhFiltered.Count == 0)
                         {
                             MessageBox.Show(
@@ -2287,7 +2332,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                             );
                         }
                     }
-                    
+
                     currentPagePhuHuynh = 1;
                     LoadPagedDataPhuHuynh();
                 }
@@ -2353,54 +2398,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void btnNhapExcel_Click_1(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog())
-            {
-                ofd.Title = "Chọn file Excel để nhập dữ liệu";
-                ofd.Filter = "Excel Files|*.xlsx;*.xls";
-                ofd.FilterIndex = 1;
-
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-
-                        ImportAllDataFromExcel(ofd.FileName);
-
-                        // Reload lại dữ liệu
-                        LoadSampleDataHocSinh();
-                        LoadSampleDataPhuHuynh();
-                        LoadSampleDataMoiQuanHe();
-                        SetupHeaderAndStats();
-
-                        // ✅ Scroll xuống cuối để hiển thị học sinh mới
-                        if (tableHocSinh.Rows.Count > 0)
-                        {
-                            tableHocSinh.FirstDisplayedScrollingRowIndex = Math.Max(0, tableHocSinh.Rows.Count - 1);
-                            tableHocSinh.Rows[tableHocSinh.Rows.Count - 1].Selected = true;
-                        }
-
-                        MessageBox.Show(
-                            "✅ Nhập dữ liệu từ Excel thành công!\n\n" +
-                            "📌 TỰ ĐỘNG TẠO TÀI KHOẢN: \n" +
-                            "- Hệ thống đã tự động tạo tài khoản cho các học sinh mới\n" +
-                            "- Tên đăng nhập: hs001, hs002, hs003...\n" +
-                            "- Mật khẩu mặc định: 123456\n" +
-                            "- Học sinh nên đổi mật khẩu sau lần đăng nhập đầu tiên\n\n" +
-                            "💡 Danh sách đã tự động cuộn xuống cuối để hiển thị học sinh mới nhất!",
-                            "Nhập Excel thành công",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information
-                        );
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"❌ Lỗi khi nhập Excel: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
+            
         }
     }
 }
-
-

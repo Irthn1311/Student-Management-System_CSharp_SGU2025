@@ -277,5 +277,278 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
+        /// <summary>
+        /// Thống kê xếp loại tổng kết theo khối và học kỳ
+        /// Chỉ đếm những học sinh có đầy đủ xếp loại (có cả học lực và hạnh kiểm)
+        /// </summary>
+        public Dictionary<string, int> ThongKeXepLoaiTongKetTheoKhoi(int maHocKy, int maKhoi)
+        {
+            Dictionary<string, int> thongKe = new Dictionary<string, int>
+    {
+        { "Giỏi", 0 },
+        { "Khá", 0 },
+        { "Trung bình", 0 },
+        { "Yếu", 0 },
+        { "Kém", 0 }
+    };
+
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                // Query lấy danh sách học sinh theo khối có đầy đủ điểm
+                string query = @"
+            SELECT 
+                hs.MaHocSinh,
+                -- Điểm trung bình chung
+                CASE 
+                    WHEN COUNT(DISTINCT ds.MaMonHoc) = 13 
+                         AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = 13
+                    THEN AVG(ds.DiemTrungBinh)
+                    ELSE NULL
+                END as DiemTB,
+                -- Điểm Toán
+                MAX(CASE WHEN mh.TenMonHoc = 'Toán' THEN ds.DiemTrungBinh END) as DiemToan,
+                -- Điểm Ngữ Văn
+                MAX(CASE WHEN mh.TenMonHoc = 'Ngữ Văn' THEN ds.DiemTrungBinh END) as DiemVan,
+                -- Điểm Tiếng Anh
+                MAX(CASE WHEN mh.TenMonHoc = 'Tiếng Anh' THEN ds.DiemTrungBinh END) as DiemAnh,
+                -- Điểm thấp nhất
+                MIN(ds.DiemTrungBinh) as DiemThapNhat
+            FROM HocSinh hs
+            INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh 
+                AND pl.MaHocKy = @MaHocKy
+            INNER JOIN LopHoc l ON pl.MaLop = l.MaLop
+                AND l.MaKhoi = @MaKhoi
+            LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
+                AND ds.MaHocKy = @MaHocKy
+            LEFT JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
+            WHERE hs.TrangThai = 'Đang học'
+            GROUP BY hs.MaHocSinh
+            HAVING DiemTB IS NOT NULL";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+                    cmd.Parameters.AddWithValue("@MaKhoi", maKhoi);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            float? diemTB = reader["DiemTB"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemTB"]) : (float?)null;
+                            float? diemToan = reader["DiemToan"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemToan"]) : (float?)null;
+                            float? diemVan = reader["DiemVan"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemVan"]) : (float?)null;
+                            float? diemAnh = reader["DiemAnh"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemAnh"]) : (float?)null;
+                            float? diemThapNhat = reader["DiemThapNhat"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemThapNhat"]) : (float?)null;
+
+                            // Tính học lực
+                            string hocLuc = TinhHocLuc(diemTB, diemToan, diemVan, diemAnh, diemThapNhat);
+
+                            if (!string.IsNullOrEmpty(hocLuc) && thongKe.ContainsKey(hocLuc))
+                            {
+                                thongKe[hocLuc]++;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi thống kê xếp loại theo khối: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+            return thongKe;
+        }
+
+        /// <summary>
+        /// Đếm tổng số học sinh theo khối và học kỳ (bao gồm cả học sinh chưa có xếp loại)
+        /// </summary>
+        public int DemTongSoHocSinhTheoKhoi(int maHocKy, int maKhoi)
+        {
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+            SELECT COUNT(DISTINCT hs.MaHocSinh) as SoLuong
+            FROM HocSinh hs
+            INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh 
+                AND pl.MaHocKy = @MaHocKy
+            INNER JOIN LopHoc l ON pl.MaLop = l.MaLop
+                AND l.MaKhoi = @MaKhoi
+            WHERE hs.TrangThai = 'Đang học'";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+                    cmd.Parameters.AddWithValue("@MaKhoi", maKhoi);
+
+                    object result = cmd.ExecuteScalar();
+                    return result != null ? Convert.ToInt32(result) : 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi đếm số học sinh theo khối: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách học sinh có đầy đủ học lực theo khối
+        /// Để tính xếp loại tổng kết (kết hợp với hạnh kiểm)
+        /// </summary>
+        public List<XepLoaiDTO> GetDanhSachXepLoaiTheoKhoi(int maHocKy, int maKhoi)
+        {
+            List<XepLoaiDTO> list = new List<XepLoaiDTO>();
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+            SELECT 
+                hs.MaHocSinh,
+                hs.HoTen,
+                l.TenLop,
+                -- Điểm trung bình chung (chỉ tính nếu có đủ 13 môn)
+                CASE 
+                    WHEN COUNT(DISTINCT ds.MaMonHoc) = 13 
+                         AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = 13
+                    THEN AVG(ds.DiemTrungBinh)
+                    ELSE NULL
+                END as DiemTB,
+                -- Điểm Toán
+                MAX(CASE WHEN mh.TenMonHoc = 'Toán' THEN ds.DiemTrungBinh END) as DiemToan,
+                -- Điểm Ngữ Văn
+                MAX(CASE WHEN mh.TenMonHoc = 'Ngữ Văn' THEN ds.DiemTrungBinh END) as DiemVan,
+                -- Điểm Tiếng Anh
+                MAX(CASE WHEN mh.TenMonHoc = 'Tiếng Anh' THEN ds.DiemTrungBinh END) as DiemAnh,
+                -- Điểm thấp nhất
+                MIN(ds.DiemTrungBinh) as DiemThapNhat
+            FROM HocSinh hs
+            INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh 
+                AND pl.MaHocKy = @MaHocKy
+            INNER JOIN LopHoc l ON pl.MaLop = l.MaLop
+                AND l.MaKhoi = @MaKhoi
+            LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
+                AND ds.MaHocKy = @MaHocKy
+            LEFT JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
+            WHERE hs.TrangThai = 'Đang học'
+            GROUP BY hs.MaHocSinh, hs.HoTen, l.TenLop
+            HAVING DiemTB IS NOT NULL
+            ORDER BY l.TenLop, hs.HoTen";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+                    cmd.Parameters.AddWithValue("@MaKhoi", maKhoi);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            float? diemTB = reader["DiemTB"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemTB"]) : (float?)null;
+                            float? diemToan = reader["DiemToan"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemToan"]) : (float?)null;
+                            float? diemVan = reader["DiemVan"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemVan"]) : (float?)null;
+                            float? diemAnh = reader["DiemAnh"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemAnh"]) : (float?)null;
+                            float? diemThapNhat = reader["DiemThapNhat"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemThapNhat"]) : (float?)null;
+
+                            // Tính học lực
+                            string hocLuc = TinhHocLuc(diemTB, diemToan, diemVan, diemAnh, diemThapNhat);
+
+                            XepLoaiDTO dto = new XepLoaiDTO
+                            {
+                                MaHocSinh = Convert.ToInt32(reader["MaHocSinh"]),
+                                HoTen = reader["HoTen"].ToString(),
+                                TenLop = reader["TenLop"].ToString(),
+                                DiemTB = diemTB,
+                                HocLuc = hocLuc,
+                                DiemToan = diemToan,
+                                DiemVan = diemVan,
+                                DiemAnh = diemAnh,
+                                DiemThapNhat = diemThapNhat
+                            };
+                            list.Add(dto);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy danh sách xếp loại theo khối: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// Lấy tất cả xếp loại trong hệ thống
+        /// Dùng cho logic phân lớp tự động
+        /// </summary>
+        public List<XepLoaiDTO> GetAllXepLoai()
+        {
+            List<XepLoaiDTO> danhSachXepLoai = new List<XepLoaiDTO>();
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+                string query = "SELECT MaHocSinh, MaHocKy, HocLuc, GhiChu FROM XepLoai";
+                
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        XepLoaiDTO xl = new XepLoaiDTO
+                        {
+                            MaHocSinh = reader.GetInt32("MaHocSinh"),
+                            MaHocKy = reader.GetInt32("MaHocKy"),
+                            HocLuc = reader.IsDBNull(reader.GetOrdinal("HocLuc")) ? "" : reader.GetString("HocLuc"),
+                            GhiChu = reader.IsDBNull(reader.GetOrdinal("GhiChu")) ? "" : reader.GetString("GhiChu")
+                        };
+                        danhSachXepLoai.Add(xl);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy tất cả xếp loại: " + ex.Message);
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return danhSachXepLoai;
+        }
     }
 }

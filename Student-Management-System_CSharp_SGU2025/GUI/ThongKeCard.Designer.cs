@@ -46,7 +46,7 @@
             this.pnlThongKe.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlThongKe.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.pnlThongKe.Location = new System.Drawing.Point(0, 0);
-            this.pnlThongKe.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlThongKe.Margin = new System.Windows.Forms.Padding(2);
             this.pnlThongKe.Name = "pnlThongKe";
             this.pnlThongKe.ShadowDecoration.BorderRadius = 10;
             this.pnlThongKe.ShadowDecoration.Color = System.Drawing.Color.Gray;
@@ -62,7 +62,7 @@
             this.lblNote.Font = new System.Drawing.Font("Segoe UI Light", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNote.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.lblNote.Location = new System.Drawing.Point(24, 80);
-            this.lblNote.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lblNote.Margin = new System.Windows.Forms.Padding(2);
             this.lblNote.Name = "lblNote";
             this.lblNote.Size = new System.Drawing.Size(160, 32);
             this.lblNote.TabIndex = 2;
@@ -76,7 +76,7 @@
             this.lblNumber.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNumber.ForeColor = System.Drawing.Color.White;
             this.lblNumber.Location = new System.Drawing.Point(24, 43);
-            this.lblNumber.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lblNumber.Margin = new System.Windows.Forms.Padding(2);
             this.lblNumber.Name = "lblNumber";
             this.lblNumber.Size = new System.Drawing.Size(160, 31);
             this.lblNumber.TabIndex = 1;
@@ -90,7 +90,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTieuDe.ForeColor = System.Drawing.Color.White;
             this.lblTieuDe.Location = new System.Drawing.Point(24, 16);
-            this.lblTieuDe.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lblTieuDe.Margin = new System.Windows.Forms.Padding(2);
             this.lblTieuDe.Name = "lblTieuDe";
             this.lblTieuDe.Size = new System.Drawing.Size(160, 22);
             this.lblTieuDe.TabIndex = 0;
@@ -103,7 +103,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.pnlThongKe);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ThongKeCard";
             this.Size = new System.Drawing.Size(198, 115);
             this.pnlThongKe.ResumeLayout(false);
