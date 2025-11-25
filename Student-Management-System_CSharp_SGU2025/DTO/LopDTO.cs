@@ -14,6 +14,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         public int maKhoi;
         public int siSo;
         public string maGVCN;
+        public string TenNamHoc { get; set; }
         public LopDTO() { }
         public LopDTO(int maLop, string tenLop, int maKhoi, int siSo, string maGVCN)
         {

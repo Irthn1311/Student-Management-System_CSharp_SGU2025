@@ -111,6 +111,7 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MySql.Data, Version=9.4.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.9.4.0\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
@@ -464,6 +465,18 @@
     <Compile Include="GUI\LopKhoi\LopKhoi.Designer.cs">
       <DependentUpon>LopKhoi.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\LopKhoi\ChiTietLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\ChiTietLop.Designer.cs">
+      <DependentUpon>ChiTietLop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\FormChuyenLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\FormChuyenLop.Designer.cs">
+      <DependentUpon>FormChuyenLop.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\MonHoc\FrmMonHoc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -729,6 +742,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\LopKhoi\LopKhoi.resx">
       <DependentUpon>LopKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\LopKhoi\ChiTietLop.resx">
+      <DependentUpon>ChiTietLop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\LopKhoi\FormChuyenLop.resx">
+      <DependentUpon>FormChuyenLop.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\MonHoc\FrmMonHoc.resx">
       <DependentUpon>FrmMonHoc.cs</DependentUpon>
