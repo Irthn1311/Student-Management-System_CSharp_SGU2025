@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblLogName = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.lblLogRole = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.tenDangNhap = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2PictureBox4 = new Guna.UI2.WinForms.Guna2PictureBox();
             this.btnNotifications = new Guna.UI2.WinForms.Guna2Button();
@@ -42,7 +42,7 @@
             // 
             // pnlHeader
             // 
-            this.pnlHeader.Controls.Add(this.lblLogName);
+            this.pnlHeader.Controls.Add(this.lblLogRole);
             this.pnlHeader.Controls.Add(this.tenDangNhap);
             this.pnlHeader.Controls.Add(this.guna2PictureBox4);
             this.pnlHeader.Controls.Add(this.btnNotifications);
@@ -55,29 +55,28 @@
             this.pnlHeader.Padding = new System.Windows.Forms.Padding(27, 18, 27, 18);
             this.pnlHeader.Size = new System.Drawing.Size(1184, 81);
             this.pnlHeader.TabIndex = 1;
+            this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint_1);
             // 
-            // lblLogName
+            // lblLogRole
             // 
-            this.lblLogName.AutoSize = false;
-            this.lblLogName.BackColor = System.Drawing.Color.Transparent;
-            this.lblLogName.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLogName.ForeColor = System.Drawing.Color.DimGray;
-            this.lblLogName.Location = new System.Drawing.Point(1027, 53);
-            this.lblLogName.Margin = new System.Windows.Forms.Padding(2);
-            this.lblLogName.Name = "lblLogName";
-            this.lblLogName.Size = new System.Drawing.Size(67, 16);
-            this.lblLogName.TabIndex = 10;
-            this.lblLogName.Text = "Login name";
+            this.lblLogRole.BackColor = System.Drawing.Color.Transparent;
+            this.lblLogRole.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLogRole.ForeColor = System.Drawing.Color.DimGray;
+            this.lblLogRole.Location = new System.Drawing.Point(1027, 53);
+            this.lblLogRole.Margin = new System.Windows.Forms.Padding(2);
+            this.lblLogRole.Name = "lblLogRole";
+            this.lblLogRole.Size = new System.Drawing.Size(58, 17);
+            this.lblLogRole.TabIndex = 10;
+            this.lblLogRole.Text = "Login role";
             // 
             // tenDangNhap
             // 
-            this.tenDangNhap.AutoSize = false;
             this.tenDangNhap.BackColor = System.Drawing.Color.Transparent;
             this.tenDangNhap.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tenDangNhap.Location = new System.Drawing.Point(1027, 26);
             this.tenDangNhap.Margin = new System.Windows.Forms.Padding(2);
             this.tenDangNhap.Name = "tenDangNhap";
-            this.tenDangNhap.Size = new System.Drawing.Size(128, 23);
+            this.tenDangNhap.Size = new System.Drawing.Size(117, 23);
             this.tenDangNhap.TabIndex = 8;
             this.tenDangNhap.Text = "Tên đăng nhập";
             // 
@@ -167,6 +166,7 @@
             this.Controls.Add(this.pnlHeader);
             this.Name = "ucHeader";
             this.Size = new System.Drawing.Size(1184, 81);
+            this.Load += new System.EventHandler(this.ucHeader_Load);
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox4)).EndInit();
@@ -181,7 +181,7 @@
         private Guna.UI2.WinForms.Guna2TextBox txtSearch;
         private System.Windows.Forms.Label lblBreadcrumb;
         private System.Windows.Forms.Label lblTitle;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblLogName;
+        private Guna.UI2.WinForms.Guna2HtmlLabel lblLogRole;
         private Guna.UI2.WinForms.Guna2HtmlLabel tenDangNhap;
         private Guna.UI2.WinForms.Guna2PictureBox guna2PictureBox4;
     }

@@ -28,7 +28,15 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmd.Parameters.AddWithValue("@trangThai", trangThai);
 
                         long count = (long)cmd.ExecuteScalar();
-                        return count > 0;
+
+                        // ✅ Nếu đăng nhập thành công, cập nhật thời gian đăng nhập cuối
+                        if (count > 0)
+                        {
+                            CapNhatThoiGianDangNhap(tenDangNhap, conn);
+                            return true;
+                        }
+
+                        return false;
                     }
                 }
                 catch (MySqlException ex)
@@ -64,7 +72,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             (string tenDangNhap, string matKhau, string trangThai) nguoiDung =
                             (
                                 reader.GetString("TenDangNhap"),
-                                reader.GetString("MatKhau"), // Cảnh báo bảo mật: Không nên lấy mật khẩu
+                                reader.GetString("MatKhau"),
                                 reader.GetString("TrangThai")
                             );
                             dsNguoiDung.Add(nguoiDung);
@@ -311,5 +319,59 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
             return dsNguoiDung;
         }
+
+
+        /// <summary>
+        /// ✅ Cập nhật thời gian đăng nhập cuối (private helper method)
+        /// </summary>
+        private void CapNhatThoiGianDangNhap(string tenDangNhap, MySqlConnection conn)
+        {
+            try
+            {
+                string sql = "UPDATE NguoiDung SET LanDangNhapCuoi = NOW() WHERE TenDangNhap = @tenDangNhap";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@tenDangNhap", tenDangNhap);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (MySqlException ex)
+            {
+                Console.WriteLine("Lỗi khi cập nhật thời gian đăng nhập: " + ex.Message);
+                // Không throw exception để không ảnh hưởng đến quá trình đăng nhập
+            }
+        }
+
+        /// <summary>
+        /// ✅ Cập nhật thời gian đăng nhập cuối (public method - dùng cho các trường hợp đặc biệt)
+        /// </summary>
+        public bool UpdateLanDangNhapCuoi(string tenDangNhap)
+        {
+            string sql = "UPDATE NguoiDung SET LanDangNhapCuoi = NOW() WHERE TenDangNhap = @tenDangNhap";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@tenDangNhap", tenDangNhap);
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        return rowsAffected > 0;
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi cập nhật thời gian đăng nhập: " + ex.Message);
+                    return false;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+        }
+
     }
 }

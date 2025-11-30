@@ -100,6 +100,7 @@
             this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picLogo.TabIndex = 1;
             this.picLogo.TabStop = false;
+            this.picLogo.Click += new System.EventHandler(this.picLogo_Click);
             // 
             // lblAppName
             // 
@@ -325,6 +326,7 @@
             this.btnDiemSo.Text = "Điểm số";
             this.btnDiemSo.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnDiemSo.TextOffset = new System.Drawing.Point(20, 0);
+            this.btnDiemSo.Click += new System.EventHandler(this.btnDiemSo_Click);
             // 
             // btnHanhKiem
             // 

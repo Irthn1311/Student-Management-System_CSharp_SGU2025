@@ -1,19 +1,19 @@
-﻿using Guna.UI2.WinForms;
+﻿using ClosedXML.Excel;
+using Guna.UI2.WinForms;
+using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
-using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using System.IO;
-using ClosedXML.Excel;
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class DanhGia : UserControl
@@ -32,6 +32,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void UserControl1_Load(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLDANHGIA, "Quản lý đánh giá"))
+            {
+                this.Enabled = false;
+                return;
+            }
             SetupKhenThuongTable();
             SetupKyLuatTable();
 
@@ -75,6 +80,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             LoadLopComboBox();
             txtSearch.TextChanged += txtSearch_TextChanged;
             ApplyFilter();
+
+            // ✅ Áp dụng phân quyền
+            PermissionHelper.ApplyPermissionDanhGia(
+                btnAddDanhGia,
+                btnDuyet, // btnDuyetDanhGia
+                tbKhenThuong,
+                tbKyLuat
+            );
 
         }
 
@@ -359,40 +372,52 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void TbKyLuat_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            // Chỉ vẽ khi là hàng dữ liệu và là cột "thaoTacKL"
             if (e.RowIndex >= 0 && e.ColumnIndex == tbKyLuat.Columns["thaoTacKL"].Index)
             {
-                e.PaintBackground(e.ClipBounds, true); // Vẽ nền ô trước
+                e.PaintBackground(e.ClipBounds, true);
 
-                // Lấy icon từ Resources (Đảm bảo tên file đúng)
+                // ✅ Lấy permission
+                dynamic permissions = tbKyLuat.Tag;
+                bool canUpdate = permissions?.CanUpdate ?? true;
+                bool canDelete = permissions?.CanDelete ?? true;
+
+                int iconSize = 18;
+                int spacing = 15;
+                int totalWidth = iconSize * 2 + spacing;
+                int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
+                int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
+
                 Image editIcon = Properties.Resources.repair;
                 Image deleteIcon = Properties.Resources.bin;
 
-                int iconSize = 18;   // Kích thước icon
-                int spacing = 15;    // <<-- Khoảng cách giữa 2 icon
-                int totalWidth = iconSize * 2 + spacing;
-
-                // Tính toán vị trí X bắt đầu để căn giữa cả 2 icon
-                int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
-                // Tính vị trí Y để căn giữa theo chiều dọc
-                int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
-
-                // Vị trí cụ thể cho từng icon
                 Rectangle editRect = new Rectangle(startX, y, iconSize, iconSize);
                 Rectangle deleteRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
 
-                // Vẽ icon lên ô
-                e.Graphics.DrawImage(editIcon, editRect);
-                e.Graphics.DrawImage(deleteIcon, deleteRect);
+                // ✅ Vẽ icon mờ nếu không có quyền
+                if (canUpdate)
+                {
+                    e.Graphics.DrawImage(editIcon, editRect);
+                }
+                else
+                {
+                    DrawGrayScaleImage(e.Graphics, editIcon, editRect);
+                }
 
-                e.Handled = true; // Báo rằng đã tự vẽ xong, DGV không cần vẽ text "" nữa
+                if (canDelete)
+                {
+                    e.Graphics.DrawImage(deleteIcon, deleteRect);
+                }
+                else
+                {
+                    DrawGrayScaleImage(e.Graphics, deleteIcon, deleteRect);
+                }
+
+                e.Handled = true;
             }
         }
 
         private void TbKyLuat_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-          
-
             if (e.RowIndex >= 0 && e.ColumnIndex == tbKyLuat.Columns["thaoTacKL"].Index)
             {
                 Rectangle cellBounds = tbKyLuat.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
@@ -413,7 +438,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (xClick >= startXInCell && xClick < editIconEndX)
                 {
-                    // Mở form sửa kỷ luật
+                    // ✅ Kiểm tra quyền
+                    if (!PermissionHelper.CheckDataGridIconPermission(tbKyLuat, "edit", "Quản lý đánh giá"))
+                        return;
+
                     ThemDanhGia frm = new ThemDanhGia(maKTKL);
                     frm.StartPosition = FormStartPosition.CenterScreen;
 
@@ -426,6 +454,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
                 else if (xClick >= deleteIconStartX && xClick < deleteIconEndX)
                 {
+                    // ✅ Kiểm tra quyền
+                    if (!PermissionHelper.CheckDataGridIconPermission(tbKyLuat, "delete", "Quản lý đánh giá"))
+                        return;
+
                     if (MessageBox.Show($"Bạn có chắc muốn xóa kỷ luật của {tenHS}?",
                         "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
@@ -453,6 +485,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 e.PaintBackground(e.ClipBounds, true);
                 e.PaintContent(e.ClipBounds);
 
+                // ✅ Lấy permission
+                dynamic permissions = tbKhenThuong.Tag;
+                bool canUpdate = permissions?.CanUpdate ?? true;
+                bool canDelete = permissions?.CanDelete ?? true;
+
                 int iconSize = 18;
                 int padding = 4;
 
@@ -463,8 +500,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 Image editIcon = Properties.Resources.repair;
                 Image deleteIcon = Properties.Resources.bin;
 
-                e.Graphics.DrawImage(editIcon, new Rectangle(xEdit, y, iconSize, iconSize));
-                e.Graphics.DrawImage(deleteIcon, new Rectangle(xDelete, y, iconSize, iconSize));
+                // ✅ Vẽ icon mờ nếu không có quyền
+                if (canUpdate)
+                {
+                    e.Graphics.DrawImage(editIcon, new Rectangle(xEdit, y, iconSize, iconSize));
+                }
+                else
+                {
+                    DrawGrayScaleImage(e.Graphics, editIcon, new Rectangle(xEdit, y, iconSize, iconSize));
+                }
+
+                if (canDelete)
+                {
+                    e.Graphics.DrawImage(deleteIcon, new Rectangle(xDelete, y, iconSize, iconSize));
+                }
+                else
+                {
+                    DrawGrayScaleImage(e.Graphics, deleteIcon, new Rectangle(xDelete, y, iconSize, iconSize));
+                }
 
                 e.Handled = true;
             }
@@ -472,8 +525,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void TbKhenThuong_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-           
-
             if (e.RowIndex >= 0 && e.ColumnIndex == tbKhenThuong.Columns["thaoTac"].Index)
             {
                 var cell = tbKhenThuong.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
@@ -489,7 +540,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (x < editRight)
                 {
-                    // Mở form sửa khen thưởng
+                    // ✅ Kiểm tra quyền
+                    if (!PermissionHelper.CheckDataGridIconPermission(tbKhenThuong, "edit", "Quản lý đánh giá"))
+                        return;
+
                     ThemDanhGia frm = new ThemDanhGia(maKTKL);
                     frm.StartPosition = FormStartPosition.CenterScreen;
 
@@ -502,6 +556,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
                 else if (x > deleteLeft && x < deleteLeft + iconSize)
                 {
+                    // ✅ Kiểm tra quyền
+                    if (!PermissionHelper.CheckDataGridIconPermission(tbKhenThuong, "delete", "Quản lý đánh giá"))
+                        return;
+
                     if (MessageBox.Show($"Bạn có chắc muốn xóa khen thưởng của {tenHS}?",
                         "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
@@ -741,16 +799,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnAddKhen_Click(object sender, EventArgs e)
         {
+            // ✅ Kiểm tra quyền thêm
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLDANHGIA, "Quản lý đánh giá"))
+                return;
+
             ThemDanhGia frm = new ThemDanhGia();
             frm.StartPosition = FormStartPosition.CenterScreen;
 
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                //// Reload cả 2 bảng để đảm bảo dữ liệu luôn đồng bộ
-                //LoadKhenThuongData();
-                //LoadKyLuatData();
                 ApplyFilter();
-
             }
 
         }
@@ -792,6 +850,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void guna2Button1_Click_1(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckUpdatePermission(PermissionHelper.QLDANHGIA, "Quản lý đánh giá"))
+                return;
             try
             {
                 DataGridView currentTable = tbKhenThuong.Visible ? tbKhenThuong : tbKyLuat;
@@ -1084,5 +1144,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void DrawGrayScaleImage(Graphics graphics, Image image, Rectangle rect)
+        {
+            var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
+      new float[][] {
+            new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+            new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+            new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+            new float[] {0, 0, 0, 0.3f, 0},
+            new float[] {0, 0, 0, 0, 1}
+      });
+
+            // ✅ CHỈ ImageAttributes mới dùng using (vì implement IDisposable)
+            using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+            {
+                attributes.SetColorMatrix(grayScaleMatrix);
+                graphics.DrawImage(image, rect, 0, 0, image.Width, image.Height,
+                    GraphicsUnit.Pixel, attributes);
+            }
+        }
+
     }
 }

@@ -92,6 +92,7 @@
             this.panelThongTin.Name = "panelThongTin";
             this.panelThongTin.Size = new System.Drawing.Size(1128, 180);
             this.panelThongTin.TabIndex = 0;
+            this.panelThongTin.Paint += new System.Windows.Forms.PaintEventHandler(this.panelThongTin_Paint);
             // 
             // cboLoaiMon
             // 
@@ -243,7 +244,6 @@
             this.panelButtons.Name = "panelButtons";
             this.panelButtons.Size = new System.Drawing.Size(1128, 50);
             this.panelButtons.TabIndex = 1;
-
             // 
             // btnHuy
             // 

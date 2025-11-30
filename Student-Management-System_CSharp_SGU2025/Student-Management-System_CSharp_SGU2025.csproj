@@ -180,13 +180,16 @@
     <Compile Include="bus\NhapDiemBUS.cs" />
     <Compile Include="bus\PhanLopBLL.cs" />
     <Compile Include="bus\PhanLopTuDongBLL.cs" />
+    <Compile Include="bus\PhanQuyenBUS.cs" />
     <Compile Include="bus\PhuHuynhBLL.cs" />
     <Compile Include="bus\ThemDiemBUS.cs" />
     <Compile Include="bus\ThoiKhoaBieuBUS.cs" />
+    <Compile Include="bus\CaiDatBUS.cs" />
     <Compile Include="bus\XepLoaiBUS.cs" />
     <Compile Include="dao\DiemSoDAO.cs" />
     <Compile Include="dao\HocSinhDAO.cs" />
     <Compile Include="dao\HocSinhPhuHuynhDAO.cs" />
+    <Compile Include="dao\HoSoNguoiDungDao.cs" />
     <Compile Include="dao\LoginDAO.cs" />
     <Compile Include="dao\KhenThuongKyLuatDAO.cs" />
     <Compile Include="dao\LopHocDAO.cs" />
@@ -195,10 +198,12 @@
     <Compile Include="dao\NguoiDungDAO.cs" />
     <Compile Include="dao\NhapDiemDAO.cs" />
     <Compile Include="dao\PhanLopDAO.cs" />
+    <Compile Include="dao\PhanQuyenDAO.cs" />
     <Compile Include="dao\PhuHuynhDAO.cs" />
     <Compile Include="dao\ThoiKhoaBieuDAO.cs" />
     <Compile Include="dao\XepLoaiDAO.cs" />
     <Compile Include="DTO\ChiTietDiemDTO.cs" />
+    <Compile Include="DTO\HoSoNguoiDungDTO.cs" />
     <Compile Include="DTO\KhenThuongKyLuatDTO.cs" />
     <Compile Include="DTO\DiemSoDTO.cs" />
     <Compile Include="DTO\HocSinhDTO.cs" />
@@ -227,6 +232,7 @@
     <Compile Include="DTO\PhanCongGiangDayDTO.cs" />
     <Compile Include="DTO\ThoiKhoaBieuDTO.cs" />
     <Compile Include="DTO\ThongKeDTO.cs" />
+    <Compile Include="DTO\VaiTroDTO.cs" />
     <Compile Include="DTO\XepLoaiDTO.cs" />
     <Compile Include="GUI\CaiDat\CaiDat.cs">
       <SubType>UserControl</SubType>
@@ -395,6 +401,12 @@
     </Compile>
     <Compile Include="GUI\TaiKhoan\FrmTaiKhoan.Designer.cs">
       <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\ThemTaiKhoan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\TaiKhoan\ThemTaiKhoan.Designer.cs">
+      <DependentUpon>ThemTaiKhoan.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\ThemHoSoHocSinh.cs">
       <SubType>Form</SubType>
@@ -595,6 +607,9 @@
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\OTPManager.cs" />
     <Compile Include="Services\SemesterHelper.cs" />
+    <Compile Include="Utils\PermissionHelper.cs" />
+    <Compile Include="Utils\SessionManager.cs" />
+    <Compile Include="Utils\ValidationHelper.cs" />
     <EmbeddedResource Include="GUI\CaiDat\CaiDat.resx">
       <DependentUpon>CaiDat.cs</DependentUpon>
     </EmbeddedResource>
@@ -698,6 +713,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\TaiKhoan\FrmTaiKhoan.resx">
       <DependentUpon>FrmTaiKhoan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\TaiKhoan\ThemTaiKhoan.resx">
+      <DependentUpon>ThemTaiKhoan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ThemHoSoHocSinh.resx">
       <DependentUpon>ThemHoSoHocSinh.cs</DependentUpon>

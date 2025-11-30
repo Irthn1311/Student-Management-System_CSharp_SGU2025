@@ -8,10 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class RoleItem : UserControl
     {
+
         public RoleItem()
         {
             InitializeComponent();
@@ -29,8 +31,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             set => lblRoleDescription.Text = value;
         }
 
-        public event EventHandler EditClicked;
         public event EventHandler DeleteClicked;
+        public event EventHandler ViewClicked;
 
         private void txtRoleName_Click(object sender, EventArgs e)
         {
@@ -50,8 +52,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnEditRole_Click(object sender, EventArgs e)
         {
-            EditClicked?.Invoke(this, e);
-
+            ViewClicked?.Invoke(this, e);
         }
 
         private void RoleItem_Load(object sender, EventArgs e)
@@ -63,5 +64,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
 
         }
+
+    
     }
 }

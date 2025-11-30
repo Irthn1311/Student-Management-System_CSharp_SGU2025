@@ -1,17 +1,18 @@
 ﻿using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.Utils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.ComponentModel;
-using System.Linq;
 
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
@@ -105,6 +106,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 cbHocKyNamHoc.SelectedIndex = 0;
                 // ⭐ SAU KHI SET SELECTEDINDEX, SỰ KIỆN SelectedIndexChanged SẼ TỰ GỌI LoadDuLieuHanhKiem()
             }
+
+            PermissionHelper.ApplyPermissionHanhKiem(btnXepHanhKiemTuDong, btnLuuHanhKiem);
 
         }
 
@@ -298,6 +301,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnLuuHanhKiem_Click(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckUpdatePermission(PermissionHelper.QLHANHKIEM, "Quản lý hạnh kiểm"))
+                return;
             try
             {
                 if (cbHocKyNamHoc.SelectedItem == null)
@@ -609,6 +614,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnXepHanhKiemTuDong_Click(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLHANHKIEM, "Quản lý hạnh kiểm"))
+                return;
             try
             {
                 if (cbHocKyNamHoc.SelectedItem == null)

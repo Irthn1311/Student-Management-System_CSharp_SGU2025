@@ -12,7 +12,8 @@ using Student_Management_System_CSharp_SGU2025.DTO;
 using System.Collections.Generic;
 using Student_Management_System_CSharp_SGU2025.GUI.DiemSo;
 using ClosedXML.Excel;
-using System.IO; 
+using System.IO;
+using Student_Management_System_CSharp_SGU2025.Utils;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
@@ -182,6 +183,43 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             isLoadingData = false;
             LoadThongKe();
             ApplyFilter();
+            ApplyPermissions();
+        }
+
+        /// <summary>
+        /// Áp dụng phân quyền cho form Điểm Số
+        /// </summary>
+        private void ApplyPermissions()
+        {
+            try
+            {
+                // ✅ Kiểm tra quyền truy cập (có ít nhất 1 quyền CREATE/UPDATE/DELETE)
+                if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLDIEM, "Quản lý điểm số"))
+                {
+                    // Nếu không có quyền truy cập, ẩn toàn bộ form
+                    this.Visible = false;
+                    return;
+                }
+
+                // ✅ Kiểm tra quyền thêm
+                bool canCreate = PermissionHelper.HasPermission(PermissionHelper.QLDIEM, PermissionHelper.CREATE);
+                btnThemDiem.Visible = canCreate;
+                btnThemDiem.Enabled = canCreate;
+
+                // ✅ Kiểm tra quyền sửa
+                bool canUpdate = PermissionHelper.HasPermission(PermissionHelper.QLDIEM, PermissionHelper.UPDATE);
+                btnSuaDiem.Visible = canUpdate;
+                btnSuaDiem.Enabled = canUpdate;
+
+                // Chức năng Điểm số không có quyền xóa, nên không cần kiểm tra DELETE
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi áp dụng phân quyền: {ex.Message}",
+                               "Lỗi",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -975,9 +1013,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnThemDiem_Click(object sender, EventArgs e)
         {
-            //ThemDiem frm = new ThemDiem();
-            //frm.StartPosition = FormStartPosition.CenterScreen;
-            //frm.ShowDialog();
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLDIEM, "Quản lý điểm số"))
+            {
+                return; // Không có quyền thì dừng lại
+            }
 
             ThemDiem frm = new ThemDiem();
             frm.StartPosition = FormStartPosition.CenterScreen;
@@ -995,7 +1034,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnSuaDiem_Click(object sender, EventArgs e)
         {
-           
+            if (!PermissionHelper.CheckUpdatePermission(PermissionHelper.QLDIEM, "Quản lý điểm số"))
+            {
+                return; // Không có quyền thì dừng lại
+            }
 
             if (selectedRowIndex < 0)
             {

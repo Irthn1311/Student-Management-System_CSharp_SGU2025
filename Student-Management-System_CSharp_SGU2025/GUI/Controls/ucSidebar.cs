@@ -121,5 +121,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
             }
         }
+
+        private void btnDiemSo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void picLogo_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

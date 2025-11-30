@@ -76,6 +76,118 @@ CREATE TABLE NguoiDungVaiTro (
     FOREIGN KEY (MaVaiTro) REFERENCES VaiTro(MaVaiTro)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Các chức năng phân quyền linh động và dữ liệu cần thêm vào
+
+CREATE TABLE ChucNangHanhDong (
+    MaChucNang VARCHAR(50),
+    HanhDong VARCHAR(20),   -- 'create', 'read', 'update', 'delete'
+    PRIMARY KEY (MaChucNang, HanhDong),
+    FOREIGN KEY (MaChucNang) REFERENCES ChucNang(MaChucNang)
+);
+
+CREATE TABLE VaiTroChucNangHanhDong (
+    MaVaiTro VARCHAR(10),
+    MaChucNang VARCHAR(50),
+    HanhDong VARCHAR(20),
+    PRIMARY KEY (MaVaiTro, MaChucNang, HanhDong),
+    FOREIGN KEY (MaVaiTro) REFERENCES VaiTro(MaVaiTro),
+    FOREIGN KEY (MaChucNang) REFERENCES ChucNang(MaChucNang)
+);
+
+CREATE TABLE HoSoNguoiDung (
+    MaHoSo INT PRIMARY KEY AUTO_INCREMENT,
+    TenDangNhap VARCHAR(20) UNIQUE,   -- liên kết với NguoiDung
+    HoTen NVARCHAR(100),
+    Email VARCHAR(100),
+    SoDienThoai VARCHAR(20),
+    NgaySinh DATE,
+    GioiTinh VARCHAR(10),
+    DiaChi NVARCHAR(255),
+    LoaiDoiTuong VARCHAR(20) -- 'hocsinh', 'phuhuynh', 'giaovien', 'nhanvien'
+);
+
+ALTER TABLE NguoiDung 
+ADD COLUMN LanDangNhapCuoi DATETIME NULL 
+COMMENT 'Thời gian đăng nhập gần nhất';
+
+
+INSERT INTO ChucNang (MaChucNang, TenChucNang, MoTa) VALUES
+('qldiem', 'Quản lý điểm số', 'Quản lý việc nhập, sửa và xem điểm của học sinh'),
+('qlhocsinh', 'Quản lý học sinh', 'Quản lý thông tin học sinh'),
+('qllophoc', 'Quản lý lớp học', 'Quản lý thông tin lớp học'),
+('qlgiaovien', 'Quản lý giáo viên', 'Quản lý thông tin giáo viên'),
+('qlmonhoc', 'Quản lý môn học', 'Quản lý danh mục môn học'),
+('qlphancong', 'Quản lý phân công', 'Quản lý phân công giảng dạy'),
+('qltkb', 'Quản lý thời khóa biểu', 'Quản lý thời khóa biểu'),
+('qlhanhkiem', 'Quản lý hạnh kiểm', 'Quản lý đánh giá hạnh kiểm'),
+('qlbaocao', 'Quản lý báo cáo', 'Xem và xuất các báo cáo'),
+('qltaikhoan', 'Quản lý tài khoản', 'Quản lý tài khoản người dùng'),
+('qlthongbao', 'Quản lý thông báo', 'Quản lý thông báo hệ thống'),
+('qlnamhoc', 'Quản lý năm học', 'Quản lý năm học và học kỳ'),
+('qlcaidat', 'Quản lý cài đặt', 'Cài đặt hệ thống'),
+('qldanhgia', 'Quản lý đánh giá', 'Quản lý khen thưởng và đánh giá'),
+('qlxeploai', 'Quản lý xếp loại', 'Xếp loại và tổng kết học sinh');
+
+INSERT IGNORE INTO ChucNangHanhDong (MaChucNang, HanhDong) VALUES
+('qlhocsinh', 'read'), ('qlhocsinh', 'create'), ('qlhocsinh', 'update'), ('qlhocsinh', 'delete'),
+('qllophoc', 'read'), ('qllophoc', 'create'), ('qllophoc', 'update'), ('qllophoc', 'delete'),
+('qlgiaovien', 'read'), ('qlgiaovien', 'create'), ('qlgiaovien', 'update'), ('qlgiaovien', 'delete'),
+('qlmonhoc', 'read'), ('qlmonhoc', 'create'), ('qlmonhoc', 'update'), ('qlmonhoc', 'delete'),
+('qlphancong', 'read'), ('qlphancong', 'create'), ('qlphancong', 'update'), ('qlphancong', 'delete'),
+('qltkb', 'read'), ('qltkb', 'create'), ('qltkb', 'update'), ('qltkb', 'delete'),
+('qlhanhkiem', 'read'), ('qlhanhkiem', 'create'), ('qlhanhkiem', 'update'), ('qlhanhkiem', 'delete'),
+('qlbaocao', 'read'),
+('qltaikhoan', 'read'), ('qltaikhoan', 'create'), ('qltaikhoan', 'update'), ('qltaikhoan', 'delete'),
+('qlthongbao', 'read'), ('qlthongbao', 'create'), ('qlthongbao', 'update'), ('qlthongbao', 'delete'),
+('qlnamhoc', 'read'), ('qlnamhoc', 'create'), ('qlnamhoc', 'update'), ('qlnamhoc', 'delete'),
+('qlcaidat', 'read'), ('qlcaidat', 'update'),
+('qldanhgia', 'read'), ('qldanhgia', 'create'), ('qldanhgia', 'update'), ('qldanhgia', 'delete'),
+('qlxeploai', 'read');
+
+INSERT IGNORE INTO ChucNangHanhDong (MaChucNang, HanhDong) VALUES
+('qldiem', 'read'),
+('qldiem', 'create'),
+('qldiem', 'update');
+
+INSERT IGNORE INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES 
+('admin', 'qldiem'),
+('admin', 'qlhocsinh'),
+('admin', 'qllophoc'),
+('admin', 'qlgiaovien'),
+('admin', 'qlmonhoc'),
+('admin', 'qlphancong'),
+('admin', 'qltkb'),
+('admin', 'qlhanhkiem'),
+('admin', 'qlbaocao'),
+('admin', 'qltaikhoan'),
+('admin', 'qlthongbao'),
+('admin', 'qlnamhoc'),
+('admin', 'qlcaidat'),
+('admin', 'qldanhgia'),
+('admin', 'qlxeploai');
+
+INSERT IGNORE INTO VaiTroChucNangHanhDong (MaVaiTro, MaChucNang, HanhDong) VALUES
+('admin', 'qldiem', 'read'),
+('admin', 'qldiem', 'create'),
+('admin', 'qldiem', 'update');
+
+INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro) VALUES ('admin', 'admin')
+ON DUPLICATE KEY UPDATE MaVaiTro = VALUES(MaVaiTro);
+
+INSERT INTO VaiTroChucNangHanhDong (MaVaiTro, MaChucNang, HanhDong)
+SELECT 
+    'admin' AS MaVaiTro,
+    c.MaChucNang,
+    h.HanhDong
+FROM ChucNang c
+CROSS JOIN (
+    SELECT 'create' AS HanhDong
+    UNION ALL SELECT 'read'
+    UNION ALL SELECT 'update'
+    UNION ALL SELECT 'delete'
+) h
+WHERE c.MaChucNang <> 'qlcaidat';
+
 -- =====================================================================
 -- PHẦN 2: CÁC BẢNG DANH MỤC VÀ THÔNG TIN CỐT LÕI
 -- =====================================================================

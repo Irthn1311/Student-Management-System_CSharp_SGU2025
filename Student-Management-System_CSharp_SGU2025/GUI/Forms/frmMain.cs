@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Student_Management_System_CSharp_SGU2025.GUI.Dashboard;
+using Student_Management_System_CSharp_SGU2025.GUI.HocSinh;
+using Student_Management_System_CSharp_SGU2025.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,8 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Student_Management_System_CSharp_SGU2025.GUI.Dashboard;
-using Student_Management_System_CSharp_SGU2025.GUI.HocSinh;
 
 // Đảm bảo bạn đã thêm các using cho các UserControl của mình, ví dụ:
 // using Student_Management_System_CSharp_SGU2025.GUI.userControl; 
@@ -27,8 +28,29 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             InitializeComponent();
             InitializeNavigation();
+            UpdateHeaderUserInfo();
+            //ApplySidebarPermissions(); // Áp dụng phân quyền cho sidebar
             // Đặt trang mặc định là Dashboard khi form khởi chạy
             ShowDashboard();
+        }
+
+        /// <summary>
+        /// ✅ Cập nhật thông tin người dùng trên header
+        /// </summary>
+        private void UpdateHeaderUserInfo()
+        {
+            try
+            {
+                if (ucHeader1 != null)
+                {
+                    ucHeader1.UpdateUserInfo();
+                    Console.WriteLine("[INFO] Header user info updated");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Lỗi khi cập nhật header: {ex.Message}");
+            }
         }
 
         private void InitializeNavigation()
@@ -148,6 +170,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ShowXepLoai()
         {
+            if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLXEPLOAI))
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý xếp loại'!",
+                               "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             // Dispose current user control if exists
             DisposeCurrentUserControl();
 
@@ -194,6 +222,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ShowHanhKiem()
         {
+            if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLHANHKIEM))
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý hạnh kiểm'!",
+                               "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             // Dispose current user control if exists
             DisposeCurrentUserControl();
 
@@ -216,6 +250,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ShowHocSinh()
         {
+            if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLHOCSINH))
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý học sinh'!",
+                               "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             // Dispose current user control if exists
             DisposeCurrentUserControl();
 
@@ -238,6 +278,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ShowDiemSo()
         {
+            if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLDIEM))
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý điểm'!",
+                               "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             // Dispose current user control if exists
             DisposeCurrentUserControl();
 
@@ -260,6 +307,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ShowLopKhoi()
         {
+            if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLLOPHOC))
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý lớp học'!",
+                               "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             // Dispose current user control if exists
             DisposeCurrentUserControl();
 
@@ -282,7 +335,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ShowFrmMonHoc()
         {
-            // Dispose current user control if exists
+            if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLMONHOC))
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý môn học'!",
+                               "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            // Dispose current user control if existsà
             DisposeCurrentUserControl();
 
             // Create and show FrmMonHoc
@@ -333,6 +392,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ShowTaiKhoan()
         {
+            // ✅ THÊM: Kiểm tra quyền truy cập trước khi load form
+            if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLTAIKHOAN))
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý tài khoản'!",
+                               "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             ucHeader1.UpdateHeader("Tài khoản", "Trang chủ / Tài khoản");
             LoadControlToPanel<FrmTaiKhoan>();
         }
@@ -345,12 +412,27 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ShowDanhGia()
         {
+            if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLDANHGIA))
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý đánh giá'!",
+                               "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             ucHeader1.UpdateHeader("Đánh giá", "Trang chủ / Đánh giá");
             LoadControlToPanel<DanhGia>();
         }
 
         private void ShowThoiKhoaBieu()
         {
+            // ✅ THÊM: Kiểm tra quyền truy cập trước khi load form
+            if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLTKB))
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý thời khóa biểu'!",
+                               "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             ucHeader1.UpdateHeader("Thời khóa biểu", "Trang chủ / Thời khóa biểu");
             LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu.ThoiKhoaBieu>();
         }
@@ -366,6 +448,154 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ucHeader1.UpdateHeader("Năm học", "Trang chủ / Năm học");
             LoadControlToPanel<Student_Management_System_CSharp_SGU2025.GUI.NamHoc.ucNamHoc>();
         }
+
+        /// <summary>
+        /// Áp dụng phân quyền cho các nút trên sidebar
+        /// </summary>
+        private void ApplySidebarPermissions()
+        {
+            try
+            {
+                // Ẩn/hiện các nút dựa trên quyền truy cập chức năng của người dùng
+
+                // Quản lý điểm số
+                if (ucSidebar1.DiemSoButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLDIEM);
+                    ucSidebar1.DiemSoButton.Visible = hasAccess;
+                    ucSidebar1.DiemSoButton.Enabled = hasAccess;
+                }
+
+                // Quản lý học sinh
+                if (ucSidebar1.HocSinhButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLHOCSINH);
+                    ucSidebar1.HocSinhButton.Visible = hasAccess;
+                    ucSidebar1.HocSinhButton.Enabled = hasAccess;
+                }
+
+                // Quản lý lớp học
+                if (ucSidebar1.LopHocButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLLOPHOC);
+                    ucSidebar1.LopHocButton.Visible = hasAccess;
+                    ucSidebar1.LopHocButton.Enabled = hasAccess;
+                }
+
+                // Quản lý giáo viên
+                if (ucSidebar1.GiaoVienButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLGIAOVIEN);
+                    ucSidebar1.GiaoVienButton.Visible = hasAccess;
+                    ucSidebar1.GiaoVienButton.Enabled = hasAccess;
+                }
+
+                // Quản lý môn học
+                if (ucSidebar1.MonHocButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLMONHOC);
+                    ucSidebar1.MonHocButton.Visible = hasAccess;
+                    ucSidebar1.MonHocButton.Enabled = hasAccess;
+                }
+
+                // Quản lý phân công
+                if (ucSidebar1.PhanCongButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLPHANCONG);
+                    ucSidebar1.PhanCongButton.Visible = hasAccess;
+                    ucSidebar1.PhanCongButton.Enabled = hasAccess;
+                }
+
+                // Quản lý thời khóa biểu
+                if (ucSidebar1.ThoiKhoaBieuButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLTKB);
+                    ucSidebar1.ThoiKhoaBieuButton.Visible = hasAccess;
+                    ucSidebar1.ThoiKhoaBieuButton.Enabled = hasAccess;
+                }
+
+                // Quản lý hạnh kiểm
+                if (ucSidebar1.HanhKiemButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLHANHKIEM);
+                    ucSidebar1.HanhKiemButton.Visible = hasAccess;
+                    ucSidebar1.HanhKiemButton.Enabled = hasAccess;
+                }
+
+                // Quản lý báo cáo
+                if (ucSidebar1.BaoCaoButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLBAOCAO);
+                    ucSidebar1.BaoCaoButton.Visible = hasAccess;
+                    ucSidebar1.BaoCaoButton.Enabled = hasAccess;
+                }
+
+                // Quản lý tài khoản
+                if (ucSidebar1.TaiKhoanButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLTAIKHOAN);
+                    ucSidebar1.TaiKhoanButton.Visible = hasAccess;
+                    ucSidebar1.TaiKhoanButton.Enabled = hasAccess;
+                }
+
+                // Quản lý thông báo
+                if (ucSidebar1.ThongBaoButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLTHONGBAO);
+                    ucSidebar1.ThongBaoButton.Visible = hasAccess;
+                    ucSidebar1.ThongBaoButton.Enabled = hasAccess;
+                }
+
+                // Quản lý năm học
+                if (ucSidebar1.NamHocButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLNAMHOC);
+                    ucSidebar1.NamHocButton.Visible = hasAccess;
+                    ucSidebar1.NamHocButton.Enabled = hasAccess;
+                }
+
+                // Quản lý cài đặt
+                if (ucSidebar1.CaiDatButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLCAIDAT);
+                    ucSidebar1.CaiDatButton.Visible = true;
+                    ucSidebar1.CaiDatButton.Enabled = true;
+                }
+
+                // Quản lý đánh giá
+                if (ucSidebar1.DanhGiaButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLDANHGIA);
+                    ucSidebar1.DanhGiaButton.Visible = hasAccess;
+                    ucSidebar1.DanhGiaButton.Enabled = hasAccess;
+                }
+
+                // Quản lý xếp loại
+                if (ucSidebar1.XepLoaiButton != null)
+                {
+                    bool hasAccess = PermissionHelper.HasAccessToFunction(PermissionHelper.QLXEPLOAI);
+                    ucSidebar1.XepLoaiButton.Visible = hasAccess;
+                    ucSidebar1.XepLoaiButton.Enabled = hasAccess;
+                }
+
+                // Bảng tin (Dashboard) - luôn hiển thị cho tất cả user
+                if (ucSidebar1.BangTinButton != null)
+                {
+                    ucSidebar1.BangTinButton.Visible = true;
+                    ucSidebar1.BangTinButton.Enabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi áp dụng phân quyền sidebar: {ex.Message}",
+                               "Lỗi",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error);
+            }
+        }
+
+
+
         private void ucSidebar1_Load(object sender, EventArgs e)
         {
 

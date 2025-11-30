@@ -2,6 +2,7 @@
 using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
+using Student_Management_System_CSharp_SGU2025.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,11 +31,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
         {
             try
             {
+                // ✅ KIỂM TRA QUYỀN TRUY CẬP
+                if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLNAMHOC, "Quản lý năm học"))
+                {
+                    this.Enabled = false;
+                    return;
+                }
                 SetupCardNH();
                 SetupTbNamHoc();
                 InitializeDefaultView();
                 SetupTbHocKy();
                 SetupCardHK();
+
+                // ✅ ÁP DỤNG PHÂN QUYỀN
+                PermissionHelper.ApplyPermissionNamHoc(
+                    btnAddNamHoc,
+                    btnAddHocKy,
+                    tbNamHoc,
+                    tbHocKy
+                );
             }
             catch (Exception ex)
             {
@@ -480,6 +495,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                 e.PaintBackground(e.ClipBounds, true);
                 e.PaintContent(e.ClipBounds);
 
+                // ✅ Lấy permission từ Tag
+                dynamic permissions = tbNamHoc.Tag;
+                bool canDelete = permissions?.CanDelete ?? true;
+
                 int iconSize = 22;
                 int iconEyeSize = 32;
                 int padding = 6;
@@ -494,8 +513,32 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                     Image editIcon = Image.FromFile(@"..\..\Images\icon_eye.png");
                     Image deleteIcon = Image.FromFile(@"..\..\Images\deleteicon.png");
 
+                    // ✅ Luôn vẽ icon Xem (không phụ thuộc permission)
                     e.Graphics.DrawImage(editIcon, new Rectangle(xEdit, y, iconEyeSize, iconEyeSize));
-                    e.Graphics.DrawImage(deleteIcon, new Rectangle(xDelete, yDelete, iconSize, iconSize));
+
+                    // ✅ Vẽ icon Xóa với độ mờ nếu không có quyền
+                    if (canDelete)
+                    {
+                        e.Graphics.DrawImage(deleteIcon, new Rectangle(xDelete, yDelete, iconSize, iconSize));
+                    }
+                    else
+                    {
+                        var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
+                            new float[][] {
+                        new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                        new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                        new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                        new float[] {0, 0, 0, 0.3f, 0},
+                        new float[] {0, 0, 0, 0, 1}
+                            });
+                        using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(grayScaleMatrix);
+                            e.Graphics.DrawImage(deleteIcon, new Rectangle(xDelete, yDelete, iconSize, iconSize),
+                                0, 0, deleteIcon.Width, deleteIcon.Height,
+                                GraphicsUnit.Pixel, attributes);
+                        }
+                    }
                 }
                 catch { }
 
@@ -528,6 +571,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                 }
                 else if (x > deleteLeft && x < deleteRight)
                 {
+                    // ✅ KIỂM TRA QUYỀN XÓA
+                    if (!PermissionHelper.CheckDeletePermission(PermissionHelper.QLNAMHOC, "Quản lý năm học"))
+                        return;
+
                     // XÓA NĂM HỌC
                     XoaNamHoc(maNamHoc, namHoc, e.RowIndex);
                 }
@@ -679,6 +726,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                 e.PaintBackground(e.ClipBounds, true);
                 e.PaintContent(e.ClipBounds);
 
+                // ✅ Lấy permission từ Tag
+                dynamic permissions = tbHocKy.Tag;
+                bool canDelete = permissions?.CanDelete ?? true;
+
                 int iconSizeHK = 22;
                 int iconEyeSizeHK = 32;
                 int paddingHK = 6;
@@ -693,8 +744,32 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                     Image editIconHK = Image.FromFile(@"..\..\Images\icon_eye.png");
                     Image deleteIconHK = Image.FromFile(@"..\..\Images\deleteicon.png");
 
+                    // Luôn vẽ icon Xem
                     e.Graphics.DrawImage(editIconHK, new Rectangle(xEditHK, yHK, iconEyeSizeHK, iconEyeSizeHK));
-                    e.Graphics.DrawImage(deleteIconHK, new Rectangle(xDeleteHK, yDeleteHK, iconSizeHK, iconSizeHK));
+
+                    // ✅ Vẽ icon Xóa với độ mờ nếu không có quyền
+                    if (canDelete)
+                    {
+                        e.Graphics.DrawImage(deleteIconHK, new Rectangle(xDeleteHK, yDeleteHK, iconSizeHK, iconSizeHK));
+                    }
+                    else
+                    {
+                        var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
+                            new float[][] {
+                        new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                        new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                        new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                        new float[] {0, 0, 0, 0.3f, 0},
+                        new float[] {0, 0, 0, 0, 1}
+                            });
+                        using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(grayScaleMatrix);
+                            e.Graphics.DrawImage(deleteIconHK, new Rectangle(xDeleteHK, yDeleteHK, iconSizeHK, iconSizeHK),
+                                0, 0, deleteIconHK.Width, deleteIconHK.Height,
+                                GraphicsUnit.Pixel, attributes);
+                        }
+                    }
                 }
                 catch { }
 
@@ -728,6 +803,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.NamHoc
                 }
                 else if (x > deleteLeftHK && x < deleteRightHK)
                 {
+                    // ✅ KIỂM TRA QUYỀN XÓA
+                    if (!PermissionHelper.CheckDeletePermission(PermissionHelper.QLNAMHOC, "Quản lý năm học"))
+                        return;
+
                     // XÓA HỌC KỲ
                     XoaHocKy(maHocKy, namHocHK, hocKyInfo, e.RowIndex);
                 }

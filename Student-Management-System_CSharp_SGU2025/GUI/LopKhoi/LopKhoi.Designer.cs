@@ -17,18 +17,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
-            this.statCardKhoi3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
-            this.statCardKhoi2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
-            this.statCardKhoi1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
             this.guna2ComboBox1 = new Guna.UI2.WinForms.Guna2ComboBox();
             this.dgvLop = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.btnThem = new Guna.UI2.WinForms.Guna2Button();
             this.MaLop = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TenLop = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Khoi = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SiSo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GVCN = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ThaoTac = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnThem = new Guna.UI2.WinForms.Guna2Button();
+            this.statCardKhoi3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
+            this.statCardKhoi2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
+            this.statCardKhoi1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
             this.guna2Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLop)).BeginInit();
             this.SuspendLayout();
@@ -48,39 +48,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.guna2Panel1.Size = new System.Drawing.Size(1168, 768);
             this.guna2Panel1.TabIndex = 0;
             this.guna2Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.guna2Panel1_Paint);
-            // 
-            // statCardKhoi3
-            // 
-            this.statCardKhoi3.BackColor = System.Drawing.Color.Transparent;
-            this.statCardKhoi3.BorderColor = System.Drawing.Color.White;
-            this.statCardKhoi3.Location = new System.Drawing.Point(792, 78);
-            this.statCardKhoi3.Name = "statCardKhoi3";
-            this.statCardKhoi3.PanelColor = System.Drawing.Color.White;
-            this.statCardKhoi3.Size = new System.Drawing.Size(358, 136);
-            this.statCardKhoi3.TabIndex = 5;
-            this.statCardKhoi3.TextColor = System.Drawing.SystemColors.ControlText;
-            // 
-            // statCardKhoi2
-            // 
-            this.statCardKhoi2.BackColor = System.Drawing.Color.Transparent;
-            this.statCardKhoi2.BorderColor = System.Drawing.Color.White;
-            this.statCardKhoi2.Location = new System.Drawing.Point(410, 78);
-            this.statCardKhoi2.Name = "statCardKhoi2";
-            this.statCardKhoi2.PanelColor = System.Drawing.Color.White;
-            this.statCardKhoi2.Size = new System.Drawing.Size(358, 136);
-            this.statCardKhoi2.TabIndex = 5;
-            this.statCardKhoi2.TextColor = System.Drawing.SystemColors.ControlText;
-            // 
-            // statCardKhoi1
-            // 
-            this.statCardKhoi1.BackColor = System.Drawing.Color.Transparent;
-            this.statCardKhoi1.BorderColor = System.Drawing.Color.White;
-            this.statCardKhoi1.Location = new System.Drawing.Point(25, 78);
-            this.statCardKhoi1.Name = "statCardKhoi1";
-            this.statCardKhoi1.PanelColor = System.Drawing.Color.White;
-            this.statCardKhoi1.Size = new System.Drawing.Size(358, 136);
-            this.statCardKhoi1.TabIndex = 5;
-            this.statCardKhoi1.TextColor = System.Drawing.SystemColors.ControlText;
             // 
             // guna2ComboBox1
             // 
@@ -171,21 +138,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.dgvLop.ThemeStyle.RowsStyle.Height = 22;
             this.dgvLop.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvLop.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            // 
-            // btnThem
-            // 
-            this.btnThem.BorderRadius = 10;
-            this.btnThem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
-            this.btnThem.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.btnThem.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.btnThem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus1;
-            this.btnThem.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThem.Location = new System.Drawing.Point(25, 18);
-            this.btnThem.Name = "btnThem";
-            this.btnThem.Size = new System.Drawing.Size(156, 40);
-            this.btnThem.TabIndex = 0;
-            this.btnThem.Text = "Thêm lớp học";
-            this.btnThem.Click += new System.EventHandler(this.guna2Button1_Click);
+            this.dgvLop.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvLop_CellContentClick);
             // 
             // MaLop
             // 
@@ -221,6 +174,54 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.ThaoTac.HeaderText = "Thao tác";
             this.ThaoTac.MinimumWidth = 6;
             this.ThaoTac.Name = "ThaoTac";
+            // 
+            // btnThem
+            // 
+            this.btnThem.BorderRadius = 10;
+            this.btnThem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.btnThem.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
+            this.btnThem.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.btnThem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus1;
+            this.btnThem.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnThem.Location = new System.Drawing.Point(25, 18);
+            this.btnThem.Name = "btnThem";
+            this.btnThem.Size = new System.Drawing.Size(156, 40);
+            this.btnThem.TabIndex = 0;
+            this.btnThem.Text = "Thêm lớp học";
+            this.btnThem.Click += new System.EventHandler(this.guna2Button1_Click);
+            // 
+            // statCardKhoi3
+            // 
+            this.statCardKhoi3.BackColor = System.Drawing.Color.Transparent;
+            this.statCardKhoi3.BorderColor = System.Drawing.Color.White;
+            this.statCardKhoi3.Location = new System.Drawing.Point(792, 78);
+            this.statCardKhoi3.Name = "statCardKhoi3";
+            this.statCardKhoi3.PanelColor = System.Drawing.Color.White;
+            this.statCardKhoi3.Size = new System.Drawing.Size(358, 136);
+            this.statCardKhoi3.TabIndex = 5;
+            this.statCardKhoi3.TextColor = System.Drawing.SystemColors.ControlText;
+            // 
+            // statCardKhoi2
+            // 
+            this.statCardKhoi2.BackColor = System.Drawing.Color.Transparent;
+            this.statCardKhoi2.BorderColor = System.Drawing.Color.White;
+            this.statCardKhoi2.Location = new System.Drawing.Point(410, 78);
+            this.statCardKhoi2.Name = "statCardKhoi2";
+            this.statCardKhoi2.PanelColor = System.Drawing.Color.White;
+            this.statCardKhoi2.Size = new System.Drawing.Size(358, 136);
+            this.statCardKhoi2.TabIndex = 5;
+            this.statCardKhoi2.TextColor = System.Drawing.SystemColors.ControlText;
+            // 
+            // statCardKhoi1
+            // 
+            this.statCardKhoi1.BackColor = System.Drawing.Color.Transparent;
+            this.statCardKhoi1.BorderColor = System.Drawing.Color.White;
+            this.statCardKhoi1.Location = new System.Drawing.Point(25, 78);
+            this.statCardKhoi1.Name = "statCardKhoi1";
+            this.statCardKhoi1.PanelColor = System.Drawing.Color.White;
+            this.statCardKhoi1.Size = new System.Drawing.Size(358, 136);
+            this.statCardKhoi1.TabIndex = 5;
+            this.statCardKhoi1.TextColor = System.Drawing.SystemColors.ControlText;
             // 
             // LopKhoi
             // 

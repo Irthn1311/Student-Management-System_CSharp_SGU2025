@@ -8,6 +8,7 @@ using Student_Management_System_CSharp_SGU2025.Scheduling;
 using System.Threading;
 using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.Utils;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
 {
@@ -33,6 +34,39 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
         private void ThoiKhoaBieu_Load(object sender, EventArgs e)
         {
             InitializeUI();
+            ApplyPermissions();
+        }
+
+        /// <summary>
+        /// ✅ Áp dụng phân quyền cho form
+        /// </summary>
+        private void ApplyPermissions()
+        {
+            try
+            {
+                // ✅ THÊM: Kiểm tra quyền truy cập chức năng TRƯỚC
+                if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLTKB))
+                {
+                    MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý thời khóa biểu'!",
+                                   "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                    // ✅ Vô hiệu hóa toàn bộ form
+                    this.Enabled = false;
+                    return;
+                }
+
+                // ✅ Nếu có quyền, áp dụng phân quyền chi tiết cho các button
+                PermissionHelper.ApplyPermissionThoiKhoaBieu(
+                    btnSapXepTuDong,
+                    btnLuuDiem,
+                    btnXoa
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi áp dụng phân quyền: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ThoiKhoaBieu_Load_1(object sender, EventArgs e)
@@ -164,9 +198,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                     lblTenThoiKhoaBieu.Text = "Thời khóa biểu";
                     cbLop.Enabled = false;
                     cbLop.SelectedIndex = 0;
+                    // ✅ Kiểm tra quyền trước khi enable/disable
                     btnSapXepTuDong.Enabled = false;
-                    btnLuuDiem.Enabled = false;
-                    btnXoa.Enabled = false;
+
+                    // Chỉ disable nếu có quyền (nếu không có quyền thì đã ẩn rồi)
+                    if (btnLuuDiem.Visible)
+                        btnLuuDiem.Enabled = false;
+                    if (btnXoa.Visible)
+                        btnXoa.Enabled = false;
+
                     return;
                 }
 
@@ -192,10 +232,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                 {
                     // ĐÃ có TKB → Enable cbLop để lọc theo lớp
                     cbLop.Enabled = true;
-                    btnSapXepTuDong.Enabled = true;
-                    btnSapXepTuDong.Text = "Tạo lại TKB";
-                    btnXoa.Enabled = true; // Có thể xóa TKB tạm
-                    
+
+                    // ✅ Kiểm tra quyền CREATE trước khi enable btnSapXepTuDong
+                    if (PermissionHelper.HasPermission(PermissionHelper.QLTKB, PermissionHelper.CREATE))
+                    {
+                        btnSapXepTuDong.Enabled = true;
+                        btnSapXepTuDong.Text = "Tạo lại TKB";
+                    }
+
+                    // ✅ Kiểm tra quyền DELETE trước khi enable btnXoa
+                    if (PermissionHelper.HasPermission(PermissionHelper.QLTKB, PermissionHelper.DELETE))
+                    {
+                        btnXoa.Enabled = true;
+                    }
+
                     lblTenThoiKhoaBieu.Text = $"✓ {tenHocKy} (Đã có TKB - Chọn lớp để xem)";
                     lblTenThoiKhoaBieu.ForeColor = Color.FromArgb(22, 163, 74);
                 }
@@ -204,14 +254,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                     // CHƯA có TKB → Disable cbLop, hiện thông báo
                     cbLop.Enabled = false;
                     cbLop.SelectedIndex = 0;
-                    btnSapXepTuDong.Enabled = true;
-                    btnSapXepTuDong.Text = "Sắp xếp tự động";
-                    btnLuuDiem.Enabled = false;
-                    btnXoa.Enabled = false;
+
+                    // ✅ Kiểm tra quyền CREATE trước khi enable btnSapXepTuDong
+                    if (PermissionHelper.HasPermission(PermissionHelper.QLTKB, PermissionHelper.CREATE))
+                    {
+                        btnSapXepTuDong.Enabled = true;
+                        btnSapXepTuDong.Text = "Sắp xếp tự động";
+                    }
+
+                    if (btnLuuDiem.Visible)
+                        btnLuuDiem.Enabled = false;
+                    if (btnXoa.Visible)
+                        btnXoa.Enabled = false;
 
                     lblTenThoiKhoaBieu.Text = $"⚠ {tenHocKy} (Chưa có TKB)";
                     lblTenThoiKhoaBieu.ForeColor = Color.FromArgb(234, 88, 12);
-                    
+
                     MessageBox.Show(
                         $"Học kỳ '{tenHocKy}' chưa có Thời khóa biểu.\n\n" +
                         $"📌 Vui lòng nhấn nút 'Sắp xếp tự động' để tạo TKB.",
@@ -340,14 +398,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
         /// </summary>
         private void btnGenerateAuto_Click(object sender, EventArgs e)
         {
+            // ✅ Kiểm tra quyền CREATE
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLTKB, "Thời khóa biểu"))
+                return;
+
             // Validate selection
             if (currentSemesterId == 0)
             {
-                MessageBox.Show("Vui lòng chọn Học kỳ trước!", 
+                MessageBox.Show("Vui lòng chọn Học kỳ trước!",
                     "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbHocKyNamHoc.Focus();
-                    return;
-                }
+                return;
+            }
 
             // Mở Form Preview để cấu hình
             try
@@ -360,12 +422,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                         hasTKBForSemester = true;
                         cbLop.Enabled = true;
                         btnSapXepTuDong.Text = "Tạo lại TKB";
-                        btnXoa.Enabled = true;
-                        
+
+                        // ✅ Chỉ enable nếu có quyền DELETE
+                        if (PermissionHelper.HasPermission(PermissionHelper.QLTKB, PermissionHelper.DELETE))
+                        {
+                            btnXoa.Enabled = true;
+                        }
+
                         var selectedHK = GetSelectedHocKy();
                         lblTenThoiKhoaBieu.Text = $"✓ {selectedHK?.TenHocKy} (Đã có TKB - Chọn lớp để xem)";
                         lblTenThoiKhoaBieu.ForeColor = Color.FromArgb(22, 163, 74);
-                        
+
                         MessageBox.Show(
                             "✅ Thời khóa biểu đã được tạo thành công!\n\n" +
                             "Bạn có thể chọn lớp từ dropdown để xem TKB chi tiết.",
@@ -377,7 +444,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi mở Form Preview: {ex.Message}", "Lỗi", 
+                MessageBox.Show($"Lỗi khi mở Form Preview: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -387,9 +454,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
         /// </summary>
         private void btnAccept_Click(object sender, EventArgs e)
         {
+            // ✅ Kiểm tra quyền CREATE (vì publish là hoàn tất việc tạo TKB)
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLTKB, "Thời khóa biểu"))
+                return;
+
             if (currentSemesterId == 0)
             {
-                MessageBox.Show("Vui lòng chọn Học kỳ!", "Thông báo", 
+                MessageBox.Show("Vui lòng chọn Học kỳ!", "Thông báo",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -408,13 +479,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                 Cursor.Current = Cursors.WaitCursor;
                 int semesterId = currentSemesterId;
                 int weekNo = 1;
-                
+
                 var service = new SchedulingService();
                 service.AcceptToOfficial(semesterId, weekNo);
-                
+
                 btnLuuDiem.Enabled = false;
                 btnXoa.Enabled = false;
-                
+
                 MessageBox.Show(
                     "✅ Đã lưu Thời khóa biểu chính thức!\n\n" +
                     "TKB đã được publish và có thể xem/in ấn.",
@@ -441,6 +512,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
         /// </summary>
         private void btnRollback_Click(object sender, EventArgs e)
         {
+            // ✅ Kiểm tra quyền DELETE
+            if (!PermissionHelper.CheckDeletePermission(PermissionHelper.QLTKB, "Thời khóa biểu"))
+                return;
+
             var confirm = MessageBox.Show(
                 "Bạn có chắc muốn xóa lịch tạm?\n\n" +
                 "⚠ Thao tác này sẽ xóa TKB đang preview. Bạn sẽ cần tạo lại.",
@@ -457,7 +532,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                 tableThoiKhoaBieu.Controls.Clear();
                 btnLuuDiem.Enabled = false;
                 btnXoa.Enabled = false;
-                
+
                 // Recheck if semester still has TKB
                 if (currentSemesterId > 0)
                 {
@@ -469,7 +544,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                         btnSapXepTuDong.Text = "Sắp xếp tự động";
                     }
                 }
-                
+
                 MessageBox.Show(
                     "🗑 Đã xóa lịch tạm thành công.",
                     "Thông báo",

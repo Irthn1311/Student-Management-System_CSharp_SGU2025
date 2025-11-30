@@ -499,6 +499,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             this.panelHeader.Padding = new System.Windows.Forms.Padding(28, 20, 28, 8);
             this.panelHeader.Size = new System.Drawing.Size(1069, 86);
             this.panelHeader.TabIndex = 0;
+            this.panelHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.panelHeader_Paint);
             // 
             // lblSubtitle
             // 
