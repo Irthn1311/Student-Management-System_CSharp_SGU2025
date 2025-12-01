@@ -143,7 +143,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             {
                 List<XepLoaiDTO> dsXepLoai = xepLoaiDAO.GetDanhSachXepLoai(maHocKy, null);
                 XepLoaiDTO xepLoai = dsXepLoai.FirstOrDefault(x => x.MaHocSinh == maHocSinh);
-                
+
                 if (xepLoai != null)
                 {
                     xepLoai.MaHocKy = maHocKy;

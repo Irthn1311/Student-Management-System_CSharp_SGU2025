@@ -62,6 +62,7 @@
             this.panelLeftDangNhap.Controls.Add(this.lbChaoMung1);
             this.panelLeftDangNhap.Controls.Add(this.logoChaoMung);
             this.panelLeftDangNhap.Location = new System.Drawing.Point(0, 0);
+            this.panelLeftDangNhap.Location = new System.Drawing.Point(0, 0);
             this.panelLeftDangNhap.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.panelLeftDangNhap.Name = "panelLeftDangNhap";
             this.panelLeftDangNhap.Size = new System.Drawing.Size(500, 624);
@@ -109,6 +110,7 @@
             this.label4.Font = new System.Drawing.Font("Times New Roman", 10.8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(234)))), ((int)(((byte)(254)))));
             this.label4.Location = new System.Drawing.Point(166, 156);
+            this.label4.Location = new System.Drawing.Point(166, 156);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(215, 17);
@@ -121,10 +123,12 @@
             this.label3.Font = new System.Drawing.Font("Times New Roman", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
             this.label3.Location = new System.Drawing.Point(164, 120);
+            this.label3.Location = new System.Drawing.Point(164, 120);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(166, 31);
             this.label3.TabIndex = 3;
+            this.label3.Text = "THPT TTPT\r\n";
             this.label3.Text = "THPT TTPT\r\n";
             this.label3.Click += new System.EventHandler(this.label3_Click_1);
             // 
@@ -148,6 +152,7 @@
             this.lbChaoMung1.Font = new System.Drawing.Font("Times New Roman", 21F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbChaoMung1.ForeColor = System.Drawing.Color.White;
             this.lbChaoMung1.Location = new System.Drawing.Point(86, 186);
+            this.lbChaoMung1.Location = new System.Drawing.Point(86, 186);
             this.lbChaoMung1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbChaoMung1.Name = "lbChaoMung1";
             this.lbChaoMung1.Size = new System.Drawing.Size(234, 64);
@@ -161,7 +166,9 @@
             this.logoChaoMung.BackgroundImage = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.school;
             this.logoChaoMung.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.logoChaoMung.Location = new System.Drawing.Point(83, 116);
+            this.logoChaoMung.Location = new System.Drawing.Point(83, 116);
             this.logoChaoMung.Name = "logoChaoMung";
+            this.logoChaoMung.Size = new System.Drawing.Size(76, 67);
             this.logoChaoMung.Size = new System.Drawing.Size(76, 67);
             this.logoChaoMung.TabIndex = 0;
             // 
@@ -199,6 +206,7 @@
             this.lbTenDangNhap.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbTenDangNhap.ForeColor = System.Drawing.Color.DimGray;
             this.lbTenDangNhap.Location = new System.Drawing.Point(600, 194);
+            this.lbTenDangNhap.Location = new System.Drawing.Point(600, 194);
             this.lbTenDangNhap.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbTenDangNhap.Name = "lbTenDangNhap";
             this.lbTenDangNhap.Size = new System.Drawing.Size(98, 19);
@@ -230,7 +238,10 @@
             this.btnDangNhap.ForeColor = System.Drawing.Color.White;
             this.btnDangNhap.Location = new System.Drawing.Point(603, 441);
             this.btnDangNhap.Margin = new System.Windows.Forms.Padding(2);
+            this.btnDangNhap.Location = new System.Drawing.Point(603, 441);
+            this.btnDangNhap.Margin = new System.Windows.Forms.Padding(2);
             this.btnDangNhap.Name = "btnDangNhap";
+            this.btnDangNhap.Size = new System.Drawing.Size(341, 46);
             this.btnDangNhap.Size = new System.Drawing.Size(341, 46);
             this.btnDangNhap.TabIndex = 9;
             this.btnDangNhap.Text = "Đăng nhập";
@@ -242,6 +253,7 @@
             this.linkLbQuenMatKhau.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLbQuenMatKhau.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
             this.linkLbQuenMatKhau.Location = new System.Drawing.Point(827, 419);
+            this.linkLbQuenMatKhau.Location = new System.Drawing.Point(827, 419);
             this.linkLbQuenMatKhau.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkLbQuenMatKhau.Name = "linkLbQuenMatKhau";
             this.linkLbQuenMatKhau.Size = new System.Drawing.Size(117, 17);
@@ -249,12 +261,14 @@
             this.linkLbQuenMatKhau.TabStop = true;
             this.linkLbQuenMatKhau.Text = "Quên mật khẩu ?";
             this.linkLbQuenMatKhau.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLbQuenMatKhau_LinkClicked);
+            this.linkLbQuenMatKhau.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLbQuenMatKhau_LinkClicked);
             // 
             // label8
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Times New Roman", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.DimGray;
+            this.label8.Location = new System.Drawing.Point(695, 495);
             this.label8.Location = new System.Drawing.Point(695, 495);
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
@@ -268,12 +282,14 @@
             this.linkLbLienHeIT.Font = new System.Drawing.Font("Times New Roman", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLbLienHeIT.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
             this.linkLbLienHeIT.Location = new System.Drawing.Point(784, 495);
+            this.linkLbLienHeIT.Location = new System.Drawing.Point(784, 495);
             this.linkLbLienHeIT.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkLbLienHeIT.Name = "linkLbLienHeIT";
             this.linkLbLienHeIT.Size = new System.Drawing.Size(66, 16);
             this.linkLbLienHeIT.TabIndex = 16;
             this.linkLbLienHeIT.TabStop = true;
             this.linkLbLienHeIT.Text = "Liên hệ IT";
+            this.linkLbLienHeIT.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLbLienHeIT_LinkClicked_1);
             this.linkLbLienHeIT.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLbLienHeIT_LinkClicked_1);
             // 
             // txtMatKhau
@@ -296,6 +312,7 @@
             this.txtMatKhau.PlaceholderText = "Nhập mật khẩu";
             this.txtMatKhau.SelectedText = "";
             this.txtMatKhau.Size = new System.Drawing.Size(341, 36);
+            this.txtMatKhau.Size = new System.Drawing.Size(341, 36);
             this.txtMatKhau.TabIndex = 8;
             // 
             // txtTenDangNhap
@@ -314,12 +331,17 @@
             this.txtTenDangNhap.IconLeftOffset = new System.Drawing.Point(10, 0);
             this.txtTenDangNhap.Location = new System.Drawing.Point(603, 217);
             this.txtTenDangNhap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtTenDangNhap.Location = new System.Drawing.Point(603, 217);
+            this.txtTenDangNhap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtTenDangNhap.Name = "txtTenDangNhap";
             this.txtTenDangNhap.PlaceholderText = "Nhập tên đăng nhập";
             this.txtTenDangNhap.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtTenDangNhap.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtTenDangNhap.SelectedText = "";
             this.txtTenDangNhap.Size = new System.Drawing.Size(341, 36);
+            this.txtTenDangNhap.Size = new System.Drawing.Size(341, 36);
             this.txtTenDangNhap.TabIndex = 6;
+            this.txtTenDangNhap.TextChanged += new System.EventHandler(this.txtTenDangNhap_TextChanged);
             // 
             // FrmDangNhap
             // 
@@ -343,6 +365,8 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "FrmDangNhap";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Đăng nhập - THPT TTPT";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Đăng nhập - THPT TTPT";
             this.Load += new System.EventHandler(this.FrmDangNhap_Load);

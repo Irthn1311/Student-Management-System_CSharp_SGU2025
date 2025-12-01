@@ -66,11 +66,11 @@
     <Reference Include="DocumentFormat.OpenXml.Framework, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.Framework.3.1.1\lib\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus, Version=8.2.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.8.2.1\lib\net462\EPPlus.dll</HintPath>
+    <Reference Include="EPPlus, Version=6.2.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.6.2.1\lib\net462\EPPlus.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus.Interfaces, Version=8.1.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.Interfaces.8.1.0\lib\net462\EPPlus.Interfaces.dll</HintPath>
+    <Reference Include="EPPlus.Interfaces, Version=6.1.1.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.Interfaces.6.1.1\lib\net462\EPPlus.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus.System.Drawing, Version=6.1.1.0, Culture=neutral, PublicKeyToken=2308d35469c9bac0, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.System.Drawing.6.1.1\lib\net462\EPPlus.System.Drawing.dll</HintPath>
@@ -102,9 +102,15 @@
     <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.3.0.1\lib\netstandard2.0\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.2.0.0\lib\net462\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <HintPath>..\packages\ExcelPackage.1.0.0\lib\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MySql.Data, Version=9.4.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.9.4.0\lib\net462\MySql.Data.dll</HintPath>
@@ -176,9 +182,9 @@
     <Compile Include="bus\HocSinhPhuHuynhBLL.cs" />
     <Compile Include="bus\LoginBUS.cs" />
     <Compile Include="bus\NguoiDungBLL.cs" />
-    <Compile Include="bus\KhenThuongKyLuatBUS.cs" />
-    <Compile Include="bus\NhapDiemBUS.cs" />
-    <Compile Include="bus\PhanLopBLL.cs" />
+    <Compile Include="BUS\KhenThuongKyLuatBUS.cs" />
+    <Compile Include="BUS\NhapDiemBUS.cs" />
+    <Compile Include="BUS\PhanLopBLL.cs" />
     <Compile Include="bus\PhanLopTuDongBLL.cs" />
     <Compile Include="bus\PhanQuyenBUS.cs" />
     <Compile Include="bus\PhuHuynhBLL.cs" />
@@ -208,13 +214,13 @@
     <Compile Include="DTO\DiemSoDTO.cs" />
     <Compile Include="DTO\HocSinhDTO.cs" />
     <Compile Include="DTO\NguoiDungDTO.cs" />
-    <Compile Include="bus\GiaoVienBUS.cs" />
-    <Compile Include="bus\HanhKiemBUS.cs" />
-    <Compile Include="bus\HocKyBUS.cs" />
-    <Compile Include="bus\LopHocBUS.cs" />
-    <Compile Include="bus\MonHocBUS.cs" />
-    <Compile Include="bus\NamHocBUS.cs" />
-    <Compile Include="bus\PhanCongGiangDayBUS.cs" />
+    <Compile Include="BUS\GiaoVienBUS.cs" />
+    <Compile Include="BUS\HanhKiemBUS.cs" />
+    <Compile Include="BUS\HocKyBUS.cs" />
+    <Compile Include="BUS\LopHocBUS.cs" />
+    <Compile Include="BUS\MonHocBUS.cs" />
+    <Compile Include="BUS\NamHocBUS.cs" />
+    <Compile Include="BUS\PhanCongGiangDayBUS.cs" />
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
     <Compile Include="dao\GiaoVienDAO.cs" />
     <Compile Include="dao\HanhKiemDAO.cs" />
@@ -357,6 +363,9 @@
     <Compile Include="GUI\ScrollableMessageBox.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GUI\ScrollableMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GUI\TaiKhoan\frmAddPhanQuyen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -467,6 +476,18 @@
     </Compile>
     <Compile Include="GUI\LopKhoi\LopKhoi.Designer.cs">
       <DependentUpon>LopKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\ChiTietLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\ChiTietLop.Designer.cs">
+      <DependentUpon>ChiTietLop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\FormChuyenLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\FormChuyenLop.Designer.cs">
+      <DependentUpon>FormChuyenLop.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\MonHoc\FrmMonHoc.cs">
       <SubType>UserControl</SubType>
@@ -606,6 +627,8 @@
     <Compile Include="Services\AssignmentPersistService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\OTPManager.cs" />
+    <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\OTPManager.cs" />
     <Compile Include="Services\SemesterHelper.cs" />
     <Compile Include="Utils\PermissionHelper.cs" />
     <Compile Include="Utils\SessionManager.cs" />
@@ -737,6 +760,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\LopKhoi\LopKhoi.resx">
       <DependentUpon>LopKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\LopKhoi\ChiTietLop.resx">
+      <DependentUpon>ChiTietLop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\LopKhoi\FormChuyenLop.resx">
+      <DependentUpon>FormChuyenLop.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\MonHoc\FrmMonHoc.resx">
       <DependentUpon>FrmMonHoc.cs</DependentUpon>
@@ -954,6 +983,8 @@
     <Content Include="ConnectDatabase\01_schema.sql" />
     <Content Include="ConnectDatabase\02_unique_indexes.sql" />
     <Content Include="ConnectDatabase\03_sample_seed.sql" />
+    <Content Include="ConnectDatabase\03_sample_seed_optimized.sql" />
+    <Content Include="ConnectDatabase\04_data_hk2_for_test.sql" />
     <Content Include="ConnectDatabase\DB_UniqueIndexes.sql" />
     <Content Include="ConnectDatabase\QuanLyHocSinh.sql" />
     <Content Include="GUI\Images\3que.png" />

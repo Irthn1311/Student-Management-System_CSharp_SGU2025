@@ -266,5 +266,71 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 return 0; // Trả về 0 nếu có lỗi
             }
         }
+
+        /// <summary>
+        /// Lấy danh sách lớp theo năm học (thông qua HocKy)
+        /// </summary>
+        public List<LopDTO> DocDSLopTheoNamHoc(string maNamHoc)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(maNamHoc))
+                {
+                    // Nếu không chọn năm học, trả về tất cả lớp
+                    return DocDSLop();
+                }
+                return lopDAO.DocDSLopTheoNamHoc(maNamHoc);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS DocDSLopTheoNamHoc: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách lớp kèm năm học (cho hiển thị "Tất cả năm học")
+        /// Trả về Dictionary với MaLop làm key
+        /// </summary>
+        public Dictionary<int, string> DocDSLopVoiNamHoc()
+        {
+            try
+            {
+                return lopDAO.DocDSLopVoiNamHoc();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS DocDSLopVoiNamHoc: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Sao chép danh sách lớp từ năm học này sang năm học khác
+        /// </summary>
+        public bool SaoChepLopTuNamHoc(string maNamHocNguon, string maNamHocDich)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(maNamHocNguon))
+                {
+                    throw new ArgumentException("Mã năm học nguồn không được để trống.");
+                }
+                if (string.IsNullOrWhiteSpace(maNamHocDich))
+                {
+                    throw new ArgumentException("Mã năm học đích không được để trống.");
+                }
+                if (maNamHocNguon == maNamHocDich)
+                {
+                    throw new ArgumentException("Năm học nguồn và năm học đích không được giống nhau.");
+                }
+                return lopDAO.SaoChepLopTuNamHoc(maNamHocNguon, maNamHocDich);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS SaoChepLopTuNamHoc: {ex.Message}");
+                throw;
+            }
+        }
     }
 }

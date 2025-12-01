@@ -96,6 +96,14 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         }
 
         /// <summary>
+        /// Cập nhật trạng thái tài khoản người dùng
+        /// </summary>
+        public bool UpdateTrangThai(string tenDangNhap, string trangThai)
+        {
+            return nguoiDungDAO.UpdateTrangThai(tenDangNhap, trangThai);
+        }
+
+        /// <summary>
         /// Hash mật khẩu bằng SHA256 (simple version - nên dùng BCrypt trong thực tế)
         /// </summary>
         private string HashPassword(string password)

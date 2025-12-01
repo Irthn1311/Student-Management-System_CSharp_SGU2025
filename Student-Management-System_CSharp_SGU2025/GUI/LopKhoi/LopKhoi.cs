@@ -16,14 +16,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     {
         private LopHocBUS lopHocBUS;
         private GiaoVienBUS giaoVienBUS;
+        private NamHocBUS namHocBUS;
         private List<LopDTO> danhSachLopGoc;
+        private List<NamHocDTO> danhSachNamHoc;
+        private bool dangNapNamHoc;
+        private string namHocHienTai; // Lưu năm học đang được chọn
+        private List<GiaoVienDTO> danhSachGiaoVien; // Danh sách giáo viên cho filter
 
         public LopKhoi()
         {
             InitializeComponent();
             lopHocBUS = new LopHocBUS();
             giaoVienBUS = new GiaoVienBUS();
+            namHocBUS = new NamHocBUS();
             danhSachLopGoc = new List<LopDTO>();
+            danhSachGiaoVien = new List<GiaoVienDTO>();
+            danhSachNamHoc = new List<NamHocDTO>();
 
             // Gắn sự kiện
             this.Load += LopKhoi_Load;
@@ -33,6 +41,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void LopKhoi_Load(object sender, EventArgs e)
         {
             if (dgvLop == null) return;
+
+            // --- Load danh sách năm học vào dropdown ---
+            LoadNamHocComboBox();
+            
+            // --- Load danh sách giáo viên cho filter ---
+            LoadGiaoVienComboBox();
+            
+            // --- Load danh sách sĩ số cho filter ---
+            LoadSiSoComboBox();
+            
+            // --- Khởi tạo filter trạng thái ---
+            LoadTrangThaiComboBox();
 
             // --- Cập nhật thống kê ---
             CapNhatThongKeKhoi();
@@ -110,11 +130,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.Columns.Add("Khoi", "Khối");
             dgvLop.Columns.Add("SiSo", "Sĩ số");
             dgvLop.Columns.Add("GVCN", "Giáo viên CN");
+            dgvLop.Columns.Add("XemChiTiet", "Chi tiết"); // ✅ Thêm cột xem chi tiết
             dgvLop.Columns.Add("ThaoTac", "Thao tác");
 
             dgvLop.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvLop.Columns["ThaoTac"].Width = 60;
             dgvLop.Columns["ThaoTac"].Resizable = DataGridViewTriState.False;
+            dgvLop.Columns["XemChiTiet"].Width = 80;
+            dgvLop.Columns["XemChiTiet"].Resizable = DataGridViewTriState.False;
 
             dgvLop.ColumnHeadersHeight = 50;
 
@@ -145,13 +168,354 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                danhSachLopGoc = lopHocBUS.DocDSLop(); // Lấy maLop tự động từ DB
-                HienThiDanhSachLop(danhSachLopGoc);
+                // Lấy lớp theo năm học đã chọn (nếu có)
+                if (string.IsNullOrEmpty(namHocHienTai))
+                {
+                    danhSachLopGoc = lopHocBUS.DocDSLop();
+                }
+                else
+                {
+                    danhSachLopGoc = lopHocBUS.DocDSLopTheoNamHoc(namHocHienTai);
+                }
+
+                // Đảm bảo luôn có list (không null)
+                if (danhSachLopGoc == null)
+                {
+                    danhSachLopGoc = new List<LopDTO>();
+                }
+
+                // Áp dụng filter sau khi load
+                ApDungFilter();
                 CapNhatThongKeKhoi();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi nạp dữ liệu lớp học: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                
+                // Khởi tạo danh sách rỗng để tránh null                
+                danhSachLopGoc = new List<LopDTO>();
+                HienThiDanhSachLop(danhSachLopGoc);
+            }
+        }
+
+        // ✅ LOAD DANH SÁCH NĂM HỌC VÀO COMBOBOX
+        private void LoadNamHocComboBox()
+        {
+            try
+            {
+                if (cbNamHoc == null) return;
+
+                dangNapNamHoc = true;
+
+                cbNamHoc.Items.Clear();
+                cbNamHoc.DisplayMember = "Text";
+                cbNamHoc.ValueMember = "Value";
+                cbNamHoc.Items.Add(new NamHocComboItem("Tất cả năm học", null)); // Option để xem tất cả lớp
+
+                danhSachNamHoc = namHocBUS.DocDSNamHoc() ?? new List<NamHocDTO>();
+                var danhSachSapXep = danhSachNamHoc.OrderByDescending(n => n.NgayBD).ToList();
+
+                foreach (NamHocDTO nh in danhSachSapXep)
+                {
+                    cbNamHoc.Items.Add(new NamHocComboItem(nh.TenNamHoc, nh.MaNamHoc));
+                }
+
+                int indexMacDinh = 0;
+                NamHocDTO namHocHienThoi = danhSachSapXep
+                    .FirstOrDefault(nh => nh.NgayBD.Date <= DateTime.Today && nh.NgayKT.Date >= DateTime.Today);
+
+                if (namHocHienThoi != null)
+                {
+                    for (int i = 1; i < cbNamHoc.Items.Count; i++)
+                    {
+                        if (((NamHocComboItem)cbNamHoc.Items[i]).Value == namHocHienThoi.MaNamHoc)
+                        {
+                            indexMacDinh = i;
+                            break;
+                        }
+                    }
+                }
+
+                cbNamHoc.SelectedIndex = indexMacDinh;
+                var item = cbNamHoc.SelectedItem as NamHocComboItem;
+                namHocHienTai = item?.Value;
+
+                dangNapNamHoc = false;
+
+                // Load dữ liệu sau khi load combobox
+                LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi nạp danh sách năm học: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ✅ LOAD DANH SÁCH GIÁO VIÊN CHO FILTER
+        private void LoadGiaoVienComboBox()
+        {
+            try
+            {
+                if (cbGiaoVien == null) return;
+
+                cbGiaoVien.Items.Clear();
+                cbGiaoVien.Items.Add("Tất cả GV");
+
+                danhSachGiaoVien = giaoVienBUS.DocDSGiaoVien();
+                if (danhSachGiaoVien != null && danhSachGiaoVien.Count > 0)
+                {
+                    foreach (GiaoVienDTO gv in danhSachGiaoVien.OrderBy(g => g.HoTen))
+                    {
+                        cbGiaoVien.Items.Add(gv.HoTen);
+                    }
+                }
+
+                cbGiaoVien.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi nạp danh sách giáo viên: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ✅ LOAD DANH SÁCH SĨ SỐ CHO FILTER
+        private void LoadSiSoComboBox()
+        {
+            try
+            {
+                if (cbSiSo == null) return;
+
+                cbSiSo.Items.Clear();
+                cbSiSo.Items.Add("Tất cả sĩ số");
+                cbSiSo.Items.Add("Dưới 30");
+                cbSiSo.Items.Add("30 - 40");
+                cbSiSo.Items.Add("41 - 50");
+                cbSiSo.Items.Add("Trên 50");
+
+                cbSiSo.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi nạp danh sách sĩ số: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ✅ KHỞI TẠO FILTER TRẠNG THÁI (tạm thời chưa sử dụng vì chưa có trường TrangThai trong LopDTO)
+        private void LoadTrangThaiComboBox()
+        {
+            try
+            {
+                if (cbTrangThai == null) return;
+                
+                // Đảm bảo selectedIndex = 0 (Tất cả)
+                if (cbTrangThai.Items.Count > 0)
+                {
+                    cbTrangThai.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi khởi tạo filter trạng thái: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ✅ XỬ LÝ KHI CHỌN NĂM HỌC
+        private void cbNamHoc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Bỏ qua khi đang nạp dữ liệu vào ComboBox
+                if (dangNapNamHoc) return;
+
+                // Kiểm tra ComboBox và item đã chọn
+                if (cbNamHoc == null || cbNamHoc.SelectedIndex < 0) return;
+
+                // Lấy item đã chọn
+                var selectedItem = cbNamHoc.SelectedItem as NamHocComboItem;
+                if (selectedItem == null) return;
+
+                // Cập nhật năm học hiện tại
+                namHocHienTai = selectedItem.Value;
+
+                // Reload dữ liệu lớp học theo năm học đã chọn
+                LoadData();
+
+                // Cập nhật thống kê
+                CapNhatThongKeKhoi();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lọc lớp theo năm học: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ✅ XỬ LÝ TÌM KIẾM
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            ApDungFilter();
+        }
+
+        // ✅ XỬ LÝ KHI CHỌN FILTER GIÁO VIÊN
+        private void cbGiaoVien_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ApDungFilter();
+        }
+
+        // ✅ XỬ LÝ KHI CHỌN FILTER SĨ SỐ
+        private void cbSiSo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ApDungFilter();
+        }
+
+        // ✅ XỬ LÝ KHI CHỌN FILTER TRẠNG THÁI
+        private void cbTrangThai_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ApDungFilter();
+        }
+
+        // ✅ XỬ LÝ NÚT BỎ CHỌN TẤT CẢ
+        private void btnResetFilter_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Reset tất cả filters về mặc định
+                if (txtSearch != null)
+                    txtSearch.Text = "";
+
+                if (guna2ComboBox1 != null)
+                    guna2ComboBox1.SelectedIndex = 0; // "Tất cả khối"
+
+                if (cbNamHoc != null && cbNamHoc.Items.Count > 0)
+                {
+                    cbNamHoc.SelectedIndex = 0; // "Tất cả năm học"
+                }
+
+                if (cbGiaoVien != null && cbGiaoVien.Items.Count > 0)
+                    cbGiaoVien.SelectedIndex = 0; // "Tất cả GV"
+
+                if (cbSiSo != null && cbSiSo.Items.Count > 0)
+                    cbSiSo.SelectedIndex = 0; // "Tất cả sĩ số"
+
+                if (cbTrangThai != null && cbTrangThai.Items.Count > 0)
+                    cbTrangThai.SelectedIndex = 0; // "Tất cả"
+
+                // Áp dụng filter sau khi reset
+                ApDungFilter();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi reset filter: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private class NamHocComboItem
+        {
+            public NamHocComboItem(string text, string value)
+            {
+                Text = text;
+                Value = value;
+            }
+
+            public string Text { get; }
+            public string Value { get; }
+
+            public override string ToString() => Text;
+        }
+
+        // ✅ ÁP DỤNG TẤT CẢ FILTER VÀ TÌM KIẾM
+        private void ApDungFilter()
+        {
+            try
+            {
+                // QUAN TRỌNG: Không gọi LoadData() ở đây để tránh vòng lặp vô hạn
+                if (danhSachLopGoc == null)
+                {
+                    danhSachLopGoc = new List<LopDTO>();
+                }
+
+                // Nếu danh sách rỗng, chỉ hiển thị rỗng
+                if (danhSachLopGoc.Count == 0)
+                {
+                    HienThiDanhSachLop(new List<LopDTO>());
+                    return;
+                }
+
+                // Lấy dữ liệu gốc
+                List<LopDTO> danhSachLoc = new List<LopDTO>(danhSachLopGoc);
+
+                // Filter theo khối
+                string selectedKhoi = guna2ComboBox1?.SelectedItem?.ToString();
+                if (!string.IsNullOrEmpty(selectedKhoi) && selectedKhoi != "Tất cả khối")
+                {
+                    int maKhoi = int.Parse(selectedKhoi.Replace("Khối ", ""));
+                    danhSachLoc = danhSachLoc.Where(l => l.maKhoi == maKhoi).ToList();
+                }
+
+                // Filter theo giáo viên chủ nhiệm
+                string selectedGV = cbGiaoVien?.SelectedItem?.ToString();
+                if (!string.IsNullOrEmpty(selectedGV) && selectedGV != "Tất cả GV")
+                {
+                    GiaoVienDTO gv = danhSachGiaoVien?.FirstOrDefault(g => g.HoTen == selectedGV);
+                    if (gv != null)
+                    {
+                        danhSachLoc = danhSachLoc.Where(l => l.maGVCN == gv.MaGiaoVien).ToList();
+                    }
+                }
+
+                // Filter theo sĩ số
+                string selectedSiSo = cbSiSo?.SelectedItem?.ToString();
+                if (!string.IsNullOrEmpty(selectedSiSo) && selectedSiSo != "Tất cả sĩ số")
+                {
+                    switch (selectedSiSo)
+                    {
+                        case "Dưới 30":
+                            danhSachLoc = danhSachLoc.Where(l => l.siSo < 30).ToList();
+                            break;
+                        case "30 - 40":
+                            danhSachLoc = danhSachLoc.Where(l => l.siSo >= 30 && l.siSo <= 40).ToList();
+                            break;
+                        case "41 - 50":
+                            danhSachLoc = danhSachLoc.Where(l => l.siSo >= 41 && l.siSo <= 50).ToList();
+                            break;
+                        case "Trên 50":
+                            danhSachLoc = danhSachLoc.Where(l => l.siSo > 50).ToList();
+                            break;
+                    }
+                }
+
+                // Tìm kiếm theo text
+                string searchText = txtSearch?.Text?.Trim()?.ToLower();
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    danhSachLoc = danhSachLoc.Where(lop =>
+                    {
+                        if (lop.maLop.ToString().Contains(searchText))
+                            return true;
+
+                        if (lop.tenLop.ToLower().Contains(searchText))
+                            return true;
+
+                        if (!string.IsNullOrEmpty(lop.maGVCN))
+                        {
+                            try
+                            {
+                                string tenGV = giaoVienBUS.LayTenGiaoVienTheoMa(lop.maGVCN);
+                                if (!string.IsNullOrEmpty(tenGV) && tenGV.ToLower().Contains(searchText))
+                                    return true;
+                            }
+                            catch { }
+                        }
+
+                        return false;
+                    }).ToList();
+                }
+
+                // Hiển thị kết quả
+                HienThiDanhSachLop(danhSachLoc);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi áp dụng filter: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -184,31 +548,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     }
                 }
 
-                dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", lop.siSo, tenGVCN);
+                dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", lop.siSo, tenGVCN, "Xem", "");
             }
         }
 
         private void LocTheoKhoi(int? maKhoi)
         {
-            try
+            // Chỉ cần set combobox, ApDungFilter sẽ xử lý
+            if (maKhoi == null)
             {
-                if (maKhoi == null)
-                {
-                    HienThiDanhSachLop(danhSachLopGoc);
-                }
-                else
-                {
-                    List<LopDTO> danhSachLoc = danhSachLopGoc
-                        .Where(lop => lop.maKhoi == maKhoi.Value)
-                        .ToList();
-
-                    HienThiDanhSachLop(danhSachLoc);
-                }
+                guna2ComboBox1.SelectedIndex = 0; // "Tất cả khối"
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Lỗi khi lọc dữ liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                guna2ComboBox1.SelectedIndex = maKhoi.Value - 9; // Khối 10 = index 1, Khối 11 = index 2, etc.
             }
+            ApDungFilter();
         }
 
         // ✅ CẬP NHẬT THỐNG KÊ KHỐI
@@ -309,10 +664,23 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             e.Handled = true;
         }
 
-        // ✅ XỬ LÝ CLICK ICON - SỬA VÀ XÓA (maLop không thay đổi khi sửa, lấy từ DB)
+        // ✅ XỬ LÝ CLICK ICON - SỬA, XÓA VÀ XEM CHI TIẾT
         private void dgvLop_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.ColumnIndex != dgvLop.Columns["ThaoTac"].Index)
+            if (e.RowIndex < 0) return;
+
+            int maLop = Convert.ToInt32(dgvLop.Rows[e.RowIndex].Cells["MaLop"].Value);
+            string tenLop = dgvLop.Rows[e.RowIndex].Cells["TenLop"].Value.ToString();
+
+            // Xử lý click vào cột "Xem chi tiết"
+            if (e.ColumnIndex == dgvLop.Columns["XemChiTiet"].Index)
+            {
+                XemChiTietLop(maLop);
+                return;
+            }
+
+            // Xử lý click vào cột "Thao tác"
+            if (e.ColumnIndex != dgvLop.Columns["ThaoTac"].Index)
                 return;
 
             Point clickPoint = dgvLop.PointToClient(Cursor.Position);
@@ -381,6 +749,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
+        // ✅ XEM CHI TIẾT LỚP
+        private void XemChiTietLop(int maLop)
+        {
+            try
+            {
+                // Tạo form chi tiết lớp
+                ChiTietLop frmChiTiet = new ChiTietLop(maLop);
+                frmChiTiet.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở chi tiết lớp: {ex.Message}", "Lỗi", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void statCardKhoi10_Load(object sender, EventArgs e)
         {
 
@@ -410,33 +794,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void guna2ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string selectedText = guna2ComboBox1.SelectedItem?.ToString();
-
-            if (string.IsNullOrEmpty(selectedText))
-                return;
-
-            switch (selectedText)
-            {
-                case "Tất cả khối":
-                    LocTheoKhoi(null);
-                    break;
-
-                case "Khối 10":
-                    LocTheoKhoi(10);
-                    break;
-
-                case "Khối 11":
-                    LocTheoKhoi(11);
-                    break;
-
-                case "Khối 12":
-                    LocTheoKhoi(12);
-                    break;
-
-                default:
-                    LocTheoKhoi(null);
-                    break;
-            }
+            ApDungFilter();
         }
 
         private void guna2Panel1_Paint(object sender, PaintEventArgs e)

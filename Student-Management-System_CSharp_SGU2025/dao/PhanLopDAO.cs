@@ -90,14 +90,16 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
 
         /// <summary>
-        /// Chuyển học sinh từ lớp này sang lớp khác trong cùng học kỳ.
+        /// Chuyển học sinh từ lớp này sang lớp khác trong cùng học kỳ và lưu lịch sử.
         /// </summary>
         /// <param name="maHocSinh">Mã học sinh.</param>
         /// <param name="maLopCu">Mã lớp cũ.</param>
         /// <param name="maLopMoi">Mã lớp mới.</param>
         /// <param name="maHocKy">Mã học kỳ.</param>
+        /// <param name="lyDo">Lý do chuyển lớp (tùy chọn).</param>
+        /// <param name="nguoiThucHien">Người thực hiện (tùy chọn).</param>
         /// <returns>True nếu chuyển thành công, False nếu thất bại.</returns>
-        public bool ChuyenLop(int maHocSinh, int maLopCu, int maLopMoi, int maHocKy)
+        public bool ChuyenLop(int maHocSinh, int maLopCu, int maLopMoi, int maHocKy, string lyDo = null, string nguoiThucHien = null)
         {
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
@@ -125,6 +127,28 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmdThem.Parameters.AddWithValue("@maLopMoi", maLopMoi);
                         cmdThem.Parameters.AddWithValue("@maHK", maHocKy);
                         cmdThem.ExecuteNonQuery();
+                    }
+
+                    // Lưu lịch sử chuyển lớp (nếu bảng tồn tại)
+                    try
+                    {
+                        string sqlLichSu = @"INSERT INTO LichSuChuyenLop (MaHocSinh, MaLopCu, MaLopMoi, MaHocKy, NgayChuyen, LyDo, NguoiThucHien) 
+                                            VALUES (@maHS, @maLopCu, @maLopMoi, @maHK, CURDATE(), @lyDo, @nguoiThucHien)";
+                        using (MySqlCommand cmdLichSu = new MySqlCommand(sqlLichSu, conn, transaction))
+                        {
+                            cmdLichSu.Parameters.AddWithValue("@maHS", maHocSinh);
+                            cmdLichSu.Parameters.AddWithValue("@maLopCu", maLopCu);
+                            cmdLichSu.Parameters.AddWithValue("@maLopMoi", maLopMoi);
+                            cmdLichSu.Parameters.AddWithValue("@maHK", maHocKy);
+                            cmdLichSu.Parameters.AddWithValue("@lyDo", string.IsNullOrEmpty(lyDo) ? (object)DBNull.Value : lyDo);
+                            cmdLichSu.Parameters.AddWithValue("@nguoiThucHien", string.IsNullOrEmpty(nguoiThucHien) ? (object)DBNull.Value : nguoiThucHien);
+                            cmdLichSu.ExecuteNonQuery();
+                        }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        // Bảng LichSuChuyenLop có thể chưa tồn tại, bỏ qua lỗi này
+                        Console.WriteLine("Lưu ý: Không thể lưu lịch sử chuyển lớp (bảng có thể chưa tồn tại): " + ex.Message);
                     }
 
                     transaction.Commit();
@@ -517,7 +541,6 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
             return list;
         }
-
 
         /// <summary>
         /// Xóa tất cả phân lớp trong học kỳ cụ thể.

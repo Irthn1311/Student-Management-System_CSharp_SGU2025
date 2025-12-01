@@ -16,6 +16,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ClosedXML.Excel;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
+using System.Diagnostics;
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     public partial class ucXepLoai : UserControl

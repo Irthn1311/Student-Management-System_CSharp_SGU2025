@@ -268,7 +268,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// Đếm tổng số tất cả học sinh có trạng thái "Đang học" từ database.
         /// </summary>
         /// <returns>Tổng số lượng học sinh có trạng thái "Đang học" tại trường</returns>
-        
+
         public int DemTongSoLuongHocSinhDangHoc()
         {
             int count = 0;
@@ -303,7 +303,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// </summary>
         /// <param name="hs">Đối tượng HocSinhDTO chứa thông tin cần thêm.</param>
         /// <returns>ID (MaHocSinh) của học sinh vừa thêm, hoặc -1 nếu thất bại.</returns>
-        public int ThemHocSinh(HocSinhDTO hs) 
+        public int ThemHocSinh(HocSinhDTO hs)
         {
             // Thêm "; SELECT LAST_INSERT_ID()" vào cuối câu lệnh INSERT
             string sql = "INSERT INTO HocSinh (HoTen, NgaySinh, GioiTinh, SDTHS, Email, TrangThai) VALUES (@hoTen, @ngaySinh, @gioiTinh, @sdtHS, @email, @trangThai); SELECT LAST_INSERT_ID();";
@@ -463,13 +463,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                     reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString("Email"),
                                     reader.GetString("TrangThai")
                                 );
-                                
+
                                 // ✅ Đọc thêm TenDangNhap từ database
                                 if (!reader.IsDBNull(reader.GetOrdinal("TenDangNhap")))
                                 {
                                     hs.TenDangNhap = reader.GetString("TenDangNhap");
                                 }
-                                
+
                                 return hs;
                             }
                         }

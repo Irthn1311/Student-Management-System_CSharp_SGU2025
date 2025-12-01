@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -23,6 +24,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         public FrmDangNhap()
         {
             InitializeComponent();
+            loginBUS = new LoginBUS(); // Khởi tạo LoginBUS
+            hocSinhBLL = new HocSinhBLL(); // Khởi tạo HocSinhBLL
             loginBUS = new LoginBUS(); // Khởi tạo LoginBUS
             hocSinhBLL = new HocSinhBLL(); // Khởi tạo HocSinhBLL
         }
@@ -182,6 +185,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     MessageBoxIcon.Error);
                 Console.WriteLine("Lỗi đăng nhập: " + ex.Message);
             }
+            
         }
 
 
