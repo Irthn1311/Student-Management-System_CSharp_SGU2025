@@ -73,7 +73,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.statCardKhoi3.Size = new System.Drawing.Size(358, 136);
             this.statCardKhoi3.TabIndex = 5;
             this.statCardKhoi3.TextColor = System.Drawing.SystemColors.ControlText;
-            this.statCardKhoi3.Load += new System.EventHandler(this.statCardKhoi3_Load);
+            //this.statCardKhoi3.Load += new System.EventHandler(this.statCardKhoi3_Load);
             // 
             // statCardKhoi2
             // 

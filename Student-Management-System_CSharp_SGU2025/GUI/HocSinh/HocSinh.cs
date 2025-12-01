@@ -2518,10 +2518,3 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
     }
 }
 
-
-        private void btnNhapExcel_Click_1(object sender, EventArgs e)
-        {
-            
-        }
-    }
-}

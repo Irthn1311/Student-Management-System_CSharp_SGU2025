@@ -691,8 +691,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             int totalWidth = iconSize * 2 + spacing;
             int startX = cellRect.Left + (cellRect.Width - totalWidth) / 2;
 
-            int maLop = Convert.ToInt32(dgvLop.Rows[e.RowIndex].Cells["MaLop"].Value);
-            string tenLop = dgvLop.Rows[e.RowIndex].Cells["TenLop"].Value.ToString();
 
             // ✅ CLICK ICON SỬA
             if (clickPoint.X >= startX && clickPoint.X <= startX + iconSize)

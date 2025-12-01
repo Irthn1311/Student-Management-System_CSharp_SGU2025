@@ -341,7 +341,7 @@
             this.txtTenDangNhap.Size = new System.Drawing.Size(341, 36);
             this.txtTenDangNhap.Size = new System.Drawing.Size(341, 36);
             this.txtTenDangNhap.TabIndex = 6;
-            this.txtTenDangNhap.TextChanged += new System.EventHandler(this.txtTenDangNhap_TextChanged);
+            //this.txtTenDangNhap.TextChanged += new System.EventHandler(this.txtTenDangNhap_TextChanged);
             // 
             // FrmDangNhap
             // 
