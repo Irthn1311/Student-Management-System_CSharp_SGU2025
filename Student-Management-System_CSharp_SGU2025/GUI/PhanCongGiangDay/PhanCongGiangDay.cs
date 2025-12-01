@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
+using Student_Management_System_CSharp_SGU2025.Utils;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Student_Management_System_CSharp_SGU2025.BUS;
-using Student_Management_System_CSharp_SGU2025.DTO;
-using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
 {
@@ -36,6 +37,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
                 LoadFilters();
                 LoadStatCards();
                 LoadData();
+
+                ApplyPermissions();
             }
             catch (Exception ex)
             {
@@ -521,6 +524,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
 
                 try
                 {
+                    // ✅ Lấy permission từ Tag
+                    dynamic permissions = dgvPhanCong.Tag;
+                    bool canDelete = permissions?.CanDelete ?? true;
+
                     Image editIcon = Properties.Resources.icon_eye;
                     Image deleteIcon = Properties.Resources.delete_icon;
 
@@ -533,8 +540,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
                     int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
                     int yEye = e.CellBounds.Top + (e.CellBounds.Height - iconEyeSize) / 2;
 
+                    // Vẽ icon eye (luôn hiển thị bình thường)
                     e.Graphics.DrawImage(editIcon, new Rectangle(xEdit, yEye, iconEyeSize, iconEyeSize));
-                    e.Graphics.DrawImage(deleteIcon, new Rectangle(xDelete, y, iconSize, iconSize));
+
+                    // ✅ Vẽ icon delete (tô xám nếu không có quyền)
+                    Rectangle deleteRect = new Rectangle(xDelete, y, iconSize, iconSize);
+                    if (canDelete)
+                    {
+                        e.Graphics.DrawImage(deleteIcon, deleteRect);
+                    }
+                    else
+                    {
+                        DrawGrayScaleImage(e.Graphics, deleteIcon, deleteRect);
+                    }
                 }
                 catch { }
 
@@ -560,12 +578,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
 
                 if (x < eyeRight)
                 {
-                    // XEM CHI TIẾT
+                    // XEM CHI TIẾT - không cần quyền
                     XemChiTietPhanCong(maPhanCong);
                 }
                 else if (x > deleteLeft)
                 {
-                    // XÓA PHÂN CÔNG
+                    // ✅ XÓA PHÂN CÔNG - kiểm tra quyền
+                    if (!PermissionHelper.CheckDataGridIconPermission(dgvPhanCong, "delete", "Phân công giảng dạy"))
+                        return;
+
                     XoaPhanCong(maPhanCong, tenGV, e.RowIndex);
                 }
             }
@@ -702,6 +723,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
         {
             try
             {
+                if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLPHANCONG, "Phân công giảng dạy"))
+                    return;
                 using (FrmThemPhanCongGiangDay frm = new FrmThemPhanCongGiangDay())
                 {
                     if (frm.ShowDialog() == DialogResult.OK)
@@ -724,6 +747,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
         {
             try
             {
+                if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLPHANCONG, "Phân công giảng dạy"))
+                    return;
                 // ✅ Gọi ShowDialog trực tiếp
                 using (var frm = new Student_Management_System_CSharp_SGU2025.GUI.PhanCong.frmAutoPhanCongPreview())
                 {
@@ -938,5 +963,60 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.statcardLHP
         {
 
         }
+
+        /// <summary>
+        /// ✅ Áp dụng phân quyền cho form Phân công giảng dạy
+        /// </summary>
+        private void ApplyPermissions()
+        {
+            try
+            {
+                // Kiểm tra quyền truy cập chức năng
+                if (!PermissionHelper.HasAccessToFunction(PermissionHelper.QLPHANCONG))
+                {
+                    MessageBox.Show(
+                        "Bạn không có quyền truy cập chức năng Quản lý phân công!",
+                        "Không có quyền",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    this.Enabled = false;
+                    return;
+                }
+
+                // Áp dụng phân quyền cho các button và DataGridView
+                PermissionHelper.ApplyPermissionPhanCong(
+                    btnPhanCongMoi,
+                    btnAutoPhanCong,
+                    dgvPhanCong
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠ Lỗi áp dụng phân quyền: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// ✅ Vẽ ảnh xám (sao chép từ DanhGia.cs)
+        /// </summary>
+        private void DrawGrayScaleImage(Graphics graphics, Image image, Rectangle rect)
+        {
+            var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
+                new float[][] {
+            new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+            new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+            new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+            new float[] {0, 0, 0, 0.3f, 0},
+            new float[] {0, 0, 0, 0, 1}
+                });
+
+            using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+            {
+                attributes.SetColorMatrix(grayScaleMatrix);
+                graphics.DrawImage(image, rect, 0, 0, image.Width, image.Height,
+                    GraphicsUnit.Pixel, attributes);
+            }
+        }
+
     }
 }

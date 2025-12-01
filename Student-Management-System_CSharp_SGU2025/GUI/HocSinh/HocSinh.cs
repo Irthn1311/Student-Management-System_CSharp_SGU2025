@@ -1,21 +1,21 @@
-﻿using System;
+﻿using OfficeOpenXml; // Thư viện EPPlus
+using OfficeOpenXml.Style; // Cần cho định dạng (tô màu, in đậm)
+using Student_Management_System_CSharp_SGU2025.BUS; 
+using Student_Management_System_CSharp_SGU2025.DAO; // ✅ Thêm để sử dụng NguoiDungDAO (nếu cần)
+using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO; // Cần cho FileInfo
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using System.IO; // Cần cho FileInfo
-using OfficeOpenXml; // Thư viện EPPlus
-using OfficeOpenXml.Style; // Cần cho định dạng (tô màu, in đậm)
-
-using Student_Management_System_CSharp_SGU2025.BUS;
-using Student_Management_System_CSharp_SGU2025.DTO;
-using Student_Management_System_CSharp_SGU2025.DAO; // ✅ Thêm để sử dụng NguoiDungDAO (nếu cần)
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 {
@@ -89,6 +89,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void HocSinh_Load_1(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLHOCSINH, "Quản lý học sinh"))
+            {
+                // Nếu không có quyền, disable toàn bộ form
+                this.Enabled = false;
+                return;
+            }
             isLoadingData = true; // Bắt đầu load dữ liệu
 
             // --- Thiết lập giao diện ban đầu ---
@@ -100,12 +106,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             SetupTableMoiQuanHe();
 
             // --- Nạp dữ liệu mẫu ---
-            LoadSampleDataHocSinh(); // ✅ Load trực tiếp, không cần FilterAndLoadHocSinh nữa
+            LoadSampleDataHocSinh(); 
             LoadSampleDataPhuHuynh();
             LoadSampleDataMoiQuanHe();
 
             // --- Cấu hình Header và Thẻ Thống kê ---
             SetupHeaderAndStats();
+
+            PermissionHelper.ApplyPermissionHocSinh(
+              btnThemHocSinh,
+              btnThemPhuHuynh,
+              tableHocSinh,
+              tablePhuHuynh
+  );
 
             isLoadingData = false; // Kết thúc load dữ liệu
 
@@ -455,15 +468,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             }
         }
 
-        // Vẽ icon cho bảng Học Sinh
+        // Vẽ icon cho bảng Học Sinh (VÔ HIỆU HÓA NẾU KHÔNG CÓ QUYỀN)
         private void tableHocSinh_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == tableHocSinh.Columns["ThaoTacHS"].Index)
             {
                 e.PaintBackground(e.ClipBounds, true);
 
-                Image editIcon = Properties.Resources.repair; // Đổi icon nếu cần
-                Image deleteIcon = Properties.Resources.bin; // Đổi icon nếu cần
+                // ✅ Lấy permission từ Tag
+                dynamic permissions = tableHocSinh.Tag;
+                bool canUpdate = permissions?.CanUpdate ?? true;
+                bool canDelete = permissions?.CanDelete ?? true;
+
+                Image editIcon = Properties.Resources.repair;
+                Image deleteIcon = Properties.Resources.bin;
 
                 int iconSize = 18;
                 int spacing = 15;
@@ -474,8 +492,56 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 Rectangle editRect = new Rectangle(startX, y, iconSize, iconSize);
                 Rectangle deleteRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
 
-                e.Graphics.DrawImage(editIcon, editRect);
-                e.Graphics.DrawImage(deleteIcon, deleteRect);
+                // ✅ Vẽ icon với độ mờ nếu không có quyền
+                if (canUpdate)
+                {
+                    e.Graphics.DrawImage(editIcon, editRect);
+                }
+                else
+                {
+                    // ✅ BỎ USING CHO ColorMatrix
+                    var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
+                        new float[][] {
+                    new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                    new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                    new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                    new float[] {0, 0, 0, 0.3f, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                        });
+                    {
+                        using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(grayScaleMatrix);
+                            e.Graphics.DrawImage(editIcon, editRect, 0, 0, editIcon.Width, editIcon.Height,
+                                GraphicsUnit.Pixel, attributes);
+                        }
+                    }
+                }
+
+                if (canDelete)
+                {
+                    e.Graphics.DrawImage(deleteIcon, deleteRect);
+                }
+                else
+                {
+                    // ✅ BỎ USING CHO ColorMatrix
+                    var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
+                        new float[][] {
+                    new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                    new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                    new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                    new float[] {0, 0, 0, 0.3f, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                        });
+                    {
+                        using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(grayScaleMatrix);
+                            e.Graphics.DrawImage(deleteIcon, deleteRect, 0, 0, deleteIcon.Width, deleteIcon.Height,
+                                GraphicsUnit.Pixel, attributes);
+                        }
+                    }
+                }
 
                 e.Handled = true;
             }
@@ -635,6 +701,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             {
                 e.PaintBackground(e.ClipBounds, true);
 
+                // ✅ Lấy permission từ Tag
+                dynamic permissions = tablePhuHuynh.Tag;
+                bool canUpdate = permissions?.CanUpdate ?? true;
+                bool canDelete = permissions?.CanDelete ?? true;
+
                 Image editIcon = Properties.Resources.repair;
                 Image deleteIcon = Properties.Resources.bin;
 
@@ -647,8 +718,56 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 Rectangle editRect = new Rectangle(startX, y, iconSize, iconSize);
                 Rectangle deleteRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
 
-                e.Graphics.DrawImage(editIcon, editRect);
-                e.Graphics.DrawImage(deleteIcon, deleteRect);
+                // ✅ Vẽ icon với độ mờ nếu không có quyền
+                if (canUpdate)
+                {
+                    e.Graphics.DrawImage(editIcon, editRect);
+                }
+                else
+                {
+                    // ✅ BỎ USING CHO ColorMatrix - chỉ dùng cho ImageAttributes
+                    var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
+                        new float[][] {
+                    new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                    new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                    new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                    new float[] {0, 0, 0, 0.3f, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                        });
+                    {
+                        using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(grayScaleMatrix);
+                            e.Graphics.DrawImage(editIcon, editRect, 0, 0, editIcon.Width, editIcon.Height,
+                                GraphicsUnit.Pixel, attributes);
+                        }
+                    }
+                }
+
+                if (canDelete)
+                {
+                    e.Graphics.DrawImage(deleteIcon, deleteRect);
+                }
+                else
+                {
+                    // ✅ BỎ USING CHO ColorMatrix - chỉ dùng cho ImageAttributes
+                    var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
+                        new float[][] {
+                    new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                    new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                    new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                    new float[] {0, 0, 0, 0.3f, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                        });
+                    {
+                        using (var attributes = new ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(grayScaleMatrix);
+                            e.Graphics.DrawImage(deleteIcon, deleteRect, 0, 0, deleteIcon.Width, deleteIcon.Height,
+                                GraphicsUnit.Pixel, attributes);
+                        }
+                    }
+                }
 
                 e.Handled = true;
             }
@@ -941,13 +1060,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         }
 
         // Hàm xử lý click icon chung
+        // Xử lý click icon chung (KIỂM TRA QUYỀN TRƯỚC KHI THỰC HIỆN)
         private void HandleIconClick(Guna.UI2.WinForms.Guna2DataGridView dgv, int rowIndex, string idColumnName)
         {
-            // Lấy ô thao tác dựa trên tên cột của từng bảng
             string thaoTacColName = "";
             if (dgv == tableHocSinh) thaoTacColName = "ThaoTacHS";
             else if (dgv == tablePhuHuynh) thaoTacColName = "ThaoTacPH";
-            else return; // Bảng không xác định
+            else return;
 
             Rectangle cellBounds = dgv.GetCellDisplayRectangle(dgv.Columns[thaoTacColName].Index, rowIndex, false);
             Point clickPosInCell = dgv.PointToClient(Cursor.Position);
@@ -962,31 +1081,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             int deleteIconStartX = startXInCell + iconSize + spacing;
             int deleteIconEndX = deleteIconStartX + iconSize;
 
-            // Lấy ID chính của dòng (HS hoặc PH)
             string idValueStr = dgv.Rows[rowIndex].Cells[idColumnName].Value?.ToString();
 
-            // Xử lý Click Sửa
+            // ✅ Click Sửa
             if (xClick >= startXInCell && xClick < editIconEndX)
             {
+                // Kiểm tra quyền
+                if (!PermissionHelper.CheckDataGridIconPermission(dgv, "edit", "Quản lý học sinh"))
+                    return;
+
                 int maToEdit;
                 if (int.TryParse(idValueStr, out maToEdit))
                 {
-                    if (dgv == tableHocSinh) // Nếu là bảng Học Sinh
+                    if (dgv == tableHocSinh)
                     {
-                        // Mở form Chỉnh sửa Học Sinh, truyền Mã HS vào constructor
                         ChinhSuaHocSinh frmEditHS = new ChinhSuaHocSinh(maToEdit);
-                        frmEditHS.StartPosition = FormStartPosition.CenterParent; // Hiện giữa form cha
+                        frmEditHS.StartPosition = FormStartPosition.CenterParent;
 
-                        // Hiển thị form và kiểm tra kết quả sau khi đóng
                         DialogResult result = frmEditHS.ShowDialog();
                         if (result == DialogResult.OK)
                         {
-                            // ✅ Lấy học sinh đã cập nhật từ form
                             HocSinhDTO updatedHS = frmEditHS.UpdatedHocSinh;
 
                             if (updatedHS != null)
                             {
-                                // ✅ Cập nhật trong BindingList
                                 var hsInList = bindingListHocSinh.FirstOrDefault(hs => hs.MaHS == maToEdit);
                                 if (hsInList != null)
                                 {
@@ -994,7 +1112,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                                     bindingListHocSinh[index] = updatedHS;
                                 }
 
-                                // ✅ Cập nhật trong Full list
                                 var hsInFullList = danhSachHocSinhFull.FirstOrDefault(hs => hs.MaHS == maToEdit);
                                 if (hsInFullList != null)
                                 {
@@ -1002,14 +1119,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                                     danhSachHocSinhFull[index] = updatedHS;
                                 }
 
-                                // ✅ Cập nhật dòng trong bảng thay vì reload (THÊM CỘT SDTHS VÀ EMAIL)
                                 dgv.Rows[rowIndex].SetValues(
                                     updatedHS.MaHS,
                                     updatedHS.HoTen,
                                     updatedHS.NgaySinh.ToString("dd/MM/yyyy"),
                                     updatedHS.GioiTinh,
-                                    updatedHS.SdtHS ?? "", // ✅ SĐT
-                                    updatedHS.Email ?? "", // ✅ Email
+                                    updatedHS.SdtHS ?? "",
+                                    updatedHS.Email ?? "",
                                     updatedHS.TrangThai,
                                     ""
                                 );
@@ -1019,21 +1135,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                             SetupHeaderAndStats();
                         }
                     }
-                    else if (dgv == tablePhuHuynh) // Nếu là bảng Phụ Huynh
+                    else if (dgv == tablePhuHuynh)
                     {
                         ChinhSuaPhuHuynh frmEditPH = new ChinhSuaPhuHuynh(maToEdit);
-                        frmEditPH.StartPosition = FormStartPosition.CenterParent; // Hiện giữa form cha
+                        frmEditPH.StartPosition = FormStartPosition.CenterParent;
 
-                        // Hiển thị form và kiểm tra kết quả sau khi đóng
                         DialogResult result = frmEditPH.ShowDialog();
                         if (result == DialogResult.OK)
                         {
-                            // ✅ Lấy phụ huynh đã cập nhật từ form
                             PhuHuynhDTO updatedPH = frmEditPH.UpdatedPhuHuynh;
 
                             if (updatedPH != null)
                             {
-                                // ✅ Cập nhật trong BindingList
                                 var phInList = bindingListPhuHuynh.FirstOrDefault(ph => ph.MaPhuHuynh == maToEdit);
                                 if (phInList != null)
                                 {
@@ -1041,7 +1154,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                                     bindingListPhuHuynh[index] = updatedPH;
                                 }
 
-                                // ✅ Cập nhật trong Full list
                                 var phInFullList = danhSachPhuHuynhFull.FirstOrDefault(ph => ph.MaPhuHuynh == maToEdit);
                                 if (phInFullList != null)
                                 {
@@ -1049,7 +1161,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                                     danhSachPhuHuynhFull[index] = updatedPH;
                                 }
 
-                                // ✅ Cập nhật dòng trong bảng thay vì reload
                                 dgv.Rows[rowIndex].SetValues(
                                     updatedPH.MaPhuHuynh,
                                     updatedPH.HoTen,
@@ -1061,14 +1172,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                             }
                         }
                     }
-
                 }
                 else { MessageBox.Show("Mã không hợp lệ để sửa."); }
             }
-            // Xử lý Click Xóa
+            // ✅ Click Xóa
             else if (xClick >= deleteIconStartX && xClick < deleteIconEndX)
             {
-                if (dgv == tableHocSinh) // Xóa Học Sinh
+                // Kiểm tra quyền
+                if (!PermissionHelper.CheckDataGridIconPermission(dgv, "delete", "Quản lý học sinh"))
+                    return;
+
+                if (dgv == tableHocSinh)
                 {
                     if (MessageBox.Show($"Bạn có chắc muốn xóa học sinh {idValueStr}?\nTất cả mối quan hệ phụ huynh liên quan cũng sẽ bị xóa.",
                                         "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
@@ -1132,7 +1246,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                             bool deleteQuanHeSuccess = hocSinhPhuHuynhBLL.DeleteQuanHeByHocSinh(maHS); // Xóa QH trước
                             bool deleteHSSuccess = hocSinhBLL.DeleteHocSinh(maHS); // Xóa HS sau
 
-                            if (deleteHSSuccess) // Chỉ cần kiểm tra xóa HS thành công
+                            if (deleteHSSuccess)
                             {
                                 // Hiển thị thông báo trạng thái tài khoản (nếu có)
                                 if (!string.IsNullOrWhiteSpace(accountStatusMsg))
@@ -1153,11 +1267,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                                     danhSachHocSinhFull.Remove(hsFullToRemove);
                                 }
 
-                                // ✅ Xóa dòng khỏi bảng thay vì reload
                                 tableHocSinh.Rows.RemoveAt(rowIndex);
 
-                                LoadSampleDataMoiQuanHe(); // Nạp lại bảng MQH
-                                SetupHeaderAndStats();      // Cập nhật lại các thẻ thống kê
+                                LoadSampleDataMoiQuanHe();
+                                SetupHeaderAndStats();
 
                                 MessageBox.Show("Đã xóa học sinh và các mối quan hệ liên quan.");
                             }
@@ -1169,7 +1282,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         else { MessageBox.Show("Mã học sinh không hợp lệ."); }
                     }
                 }
-                else if (dgv == tablePhuHuynh) // Xóa Phụ Huynh
+                else if (dgv == tablePhuHuynh)
                 {
                     if (MessageBox.Show($"Bạn có chắc muốn xóa phụ huynh {idValueStr}?\nTất cả mối quan hệ với học sinh liên quan cũng sẽ bị xóa.",
                                        "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
@@ -1177,12 +1290,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         int maPH;
                         if (int.TryParse(idValueStr, out maPH))
                         {
-                            bool deleteQuanHeSuccess = hocSinhPhuHuynhBLL.DeleteQuanHeByPhuHuynh(maPH); // Xóa QH trước
-                            bool deletePHSuccess = phuHuynhBLL.DeletePhuHuynh(maPH); // Xóa PH sau
+                            bool deleteQuanHeSuccess = hocSinhPhuHuynhBLL.DeleteQuanHeByPhuHuynh(maPH);
+                            bool deletePHSuccess = phuHuynhBLL.DeletePhuHuynh(maPH);
 
                             if (deletePHSuccess)
                             {
-                                // ✅ Xóa khỏi BindingList và Full list thay vì reload
                                 var phToRemove = bindingListPhuHuynh.FirstOrDefault(ph => ph.MaPhuHuynh == maPH);
                                 if (phToRemove != null)
                                 {
@@ -1195,11 +1307,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                                     danhSachPhuHuynhFull.Remove(phFullToRemove);
                                 }
 
-                                // ✅ Xóa dòng khỏi bảng thay vì reload
                                 tablePhuHuynh.Rows.RemoveAt(rowIndex);
 
-                                LoadSampleDataMoiQuanHe(); // Nạp lại bảng MQH
-                                SetupHeaderAndStats();      // Cập nhật lại các thẻ thống kê
+                                LoadSampleDataMoiQuanHe();
+                                SetupHeaderAndStats();
 
                                 MessageBox.Show("Đã xóa phụ huynh và các mối quan hệ liên quan.");
                             }
@@ -1211,7 +1322,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         else { MessageBox.Show("Mã phụ huynh không hợp lệ."); }
                     }
                 }
-
             }
         }
 
@@ -1296,6 +1406,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void btnThemHocSinh_Click(object sender, EventArgs e)
         {
+
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLHOCSINH, "Quản lý học sinh"))
+                return;
+
             // 1. Tạo và hiển thị form Thêm
             ThemHoSoHocSinh frm = new ThemHoSoHocSinh();
             frm.StartPosition = FormStartPosition.CenterScreen;
@@ -1368,6 +1482,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 
         private void btnThemPhuHuynh_Click(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLHOCSINH, "Quản lý học sinh"))
+                return;
+
             // 1. Tạo và hiển thị form Thêm
             ThemPhuHuynh frm = new ThemPhuHuynh();
             frm.StartPosition = FormStartPosition.CenterScreen;
@@ -2395,6 +2512,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
         }
 
         #endregion
+
+       
+
+    }
+}
+
 
         private void btnNhapExcel_Click_1(object sender, EventArgs e)
         {

@@ -22,9 +22,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
-            this.statCardKhoi3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
-            this.statCardKhoi2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
-            this.statCardKhoi1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
             this.guna2ComboBox1 = new Guna.UI2.WinForms.Guna2ComboBox();
             this.dgvLop = new Guna.UI2.WinForms.Guna2DataGridView();
             this.MaLop = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -189,6 +186,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.dgvLop.ThemeStyle.RowsStyle.Height = 22;
             this.dgvLop.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvLop.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            this.dgvLop.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvLop_CellContentClick);
             // 
             // MaLop
             // 

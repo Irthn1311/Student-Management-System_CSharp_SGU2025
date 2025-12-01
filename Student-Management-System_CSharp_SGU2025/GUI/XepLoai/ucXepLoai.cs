@@ -1,11 +1,17 @@
-﻿using Student_Management_System_CSharp_SGU2025.BUS;
+﻿using ClosedXML.Excel;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -1173,6 +1179,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             LoadThongKe();
             LoadThongKeToanTruong();
             LoadThongKeTheoKhoi();
+            PermissionHelper.ApplyPermissionXepLoai(btnLuuTongKet);
         }
 
         private void cbLop_SelectedIndexChanged(object sender, EventArgs e)
@@ -1187,6 +1194,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnLuuTongKet_Click(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckUpdatePermission(PermissionHelper.QLXEPLOAI, "Quản lý xếp loại"))
+                return;
+
             try
             {
                 if (cbHocKyNamHoc.SelectedItem == null)

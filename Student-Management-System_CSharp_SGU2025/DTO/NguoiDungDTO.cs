@@ -10,9 +10,10 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         public string TenDangNhap { get; set; }
         public string MatKhau { get; set; } // Mật khẩu đã hash (BCrypt hoặc SHA256)
         public string VaiTro { get; set; } // "HocSinh", "GiaoVien", "GiaoVu", "Admin" hoặc MaVaiTro như "HS", "GV"
+        public string MaVaiTro { get; set; }
         public DateTime? NgayTao { get; set; }
         public string TrangThai { get; set; } // "Hoạt động", "Bị khóa"
-
+        public DateTime? LanDangNhapCuoi { get; set; }
         // Constructor mặc định
         public NguoiDungDTO()
         {
@@ -28,6 +29,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             VaiTro = vaiTro;
             NgayTao = DateTime.Now;
             TrangThai = "Hoạt động";
+            LanDangNhapCuoi = null;
         }
     }
 }

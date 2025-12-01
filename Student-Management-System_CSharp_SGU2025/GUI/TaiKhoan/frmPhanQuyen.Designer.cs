@@ -32,8 +32,6 @@
             this.pnlRoleContainer = new Guna.UI2.WinForms.Guna2Panel();
             this.btnExit = new Guna.UI2.WinForms.Guna2Button();
             this.btnAddRole = new Guna.UI2.WinForms.Guna2Button();
-            this.roleItem1 = new Student_Management_System_CSharp_SGU2025.GUI.RoleItem();
-            this.pnlRoleContainer.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblPhanQuyen
@@ -55,7 +53,6 @@
             this.pnlRoleContainer.BorderColor = System.Drawing.Color.LightGray;
             this.pnlRoleContainer.BorderRadius = 6;
             this.pnlRoleContainer.BorderThickness = 1;
-            this.pnlRoleContainer.Controls.Add(this.roleItem1);
             this.pnlRoleContainer.FillColor = System.Drawing.Color.White;
             this.pnlRoleContainer.Location = new System.Drawing.Point(36, 66);
             this.pnlRoleContainer.Margin = new System.Windows.Forms.Padding(2);
@@ -101,18 +98,6 @@
             this.btnAddRole.Text = "Thêm phân quyền";
             this.btnAddRole.Click += new System.EventHandler(this.guna2Button1_Click);
             // 
-            // roleItem1
-            // 
-            this.roleItem1.BackColor = System.Drawing.Color.Transparent;
-            this.roleItem1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.roleItem1.Location = new System.Drawing.Point(2, 2);
-            this.roleItem1.Margin = new System.Windows.Forms.Padding(2);
-            this.roleItem1.Name = "roleItem1";
-            this.roleItem1.RoleDescription = "Role Describe";
-            this.roleItem1.RoleName = "Role Name";
-            this.roleItem1.Size = new System.Drawing.Size(823, 77);
-            this.roleItem1.TabIndex = 0;
-            // 
             // frmPhanQuyen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -128,7 +113,6 @@
             this.Name = "frmPhanQuyen";
             this.Text = "frmPhanQuyen";
             this.Load += new System.EventHandler(this.frmPhanQuyen_Load);
-            this.pnlRoleContainer.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -139,6 +123,5 @@
         private Guna.UI2.WinForms.Guna2Panel pnlRoleContainer;
         private Guna.UI2.WinForms.Guna2Button btnAddRole;
         private Guna.UI2.WinForms.Guna2Button btnExit;
-        private RoleItem roleItem1;
     }
 }

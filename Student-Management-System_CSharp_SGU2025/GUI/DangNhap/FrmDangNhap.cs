@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Student_Management_System_CSharp_SGU2025.BUS; // Thêm để sử dụng LoginBUS
+using Student_Management_System_CSharp_SGU2025.GUI.DangNhap; // Thêm để sử dụng FrmXacThucOTP
+using Student_Management_System_CSharp_SGU2025.Services; // Thêm để sử dụng EmailService và OTPManager
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -9,12 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Student_Management_System_CSharp_SGU2025.BUS; // Thêm để sử dụng LoginBUS
-using Student_Management_System_CSharp_SGU2025.Services; // Thêm để sử dụng EmailService và OTPManager
-using Student_Management_System_CSharp_SGU2025.GUI.DangNhap; // Thêm để sử dụng FrmXacThucOTP
-using Student_Management_System_CSharp_SGU2025.BUS; // Thêm để sử dụng LoginBUS
-using Student_Management_System_CSharp_SGU2025.Services; // Thêm để sử dụng EmailService và OTPManager
-using Student_Management_System_CSharp_SGU2025.GUI.DangNhap; // Thêm để sử dụng FrmXacThucOTP
+using Student_Management_System_CSharp_SGU2025.Utils;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
@@ -55,12 +53,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             
             // Cho phép nhấn Enter để đăng nhập
             this.AcceptButton = btnDangNhap;
-            // Cài đặt ban đầu khi form load
-            txtMatKhau.PasswordChar = '●'; // Ẩn mật khẩu
-            txtTenDangNhap.Focus(); // Focus vào ô tên đăng nhập
-            
-            // Cho phép nhấn Enter để đăng nhập
-            this.AcceptButton = btnDangNhap;
+
+
         }
 
         private void lbTenDangNhap_Click(object sender, EventArgs e)
@@ -79,9 +73,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Kiểm tra rỗng
                 if (string.IsNullOrWhiteSpace(tenDangNhap))
                 {
-                    MessageBox.Show("Vui lòng nhập tên đăng nhập!", 
-                        "Thông báo", 
-                        MessageBoxButtons.OK, 
+                    MessageBox.Show("Vui lòng nhập tên đăng nhập!",
+                        "Thông báo",
+                        MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     txtTenDangNhap.Focus();
                     return;
@@ -89,9 +83,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (string.IsNullOrWhiteSpace(matKhau))
                 {
-                    MessageBox.Show("Vui lòng nhập mật khẩu!", 
-                        "Thông báo", 
-                        MessageBoxButtons.OK, 
+                    MessageBox.Show("Vui lòng nhập mật khẩu!",
+                        "Thông báo",
+                        MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     txtMatKhau.Focus();
                     return;
@@ -102,10 +96,58 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (ketQua)
                 {
+                    try
+                    {
+                        // ✅ LẤY THÔNG TIN ĐẦY ĐỦ
+                        NguoiDungBLL nguoiDungBLL = new NguoiDungBLL();
+                        PhanQuyenBUS phanQuyenBUS = new PhanQuyenBUS();
+
+                        // Lấy thông tin người dùng
+                        var nguoiDung = nguoiDungBLL.GetNguoiDungByTenDangNhap(tenDangNhap);
+
+                        string hoTen = tenDangNhap;
+                        string email = "";
+                        string vaiTro = "Người dùng";
+                        List<string> danhSachMaVaiTro = new List<string>();
+
+                        if (nguoiDung != null)
+                        {
+                            // ✅ LẤY TÊN VAI TRÒ ĐỂ HIỂN THỊ
+                            vaiTro = !string.IsNullOrEmpty(nguoiDung.VaiTro)
+                                ? nguoiDung.VaiTro
+                                : "Người dùng";
+
+                            Console.WriteLine($"[DEBUG] VaiTro từ DB: {vaiTro}");
+                        }
+
+                        // Lấy hồ sơ người dùng (nếu có)
+                        var hoSo = nguoiDungBLL.GetHoSoByTenDangNhap(tenDangNhap);
+                        if (hoSo != null)
+                        {
+                            hoTen = !string.IsNullOrEmpty(hoSo.HoTen) ? hoSo.HoTen : tenDangNhap;
+                            email = hoSo.Email ?? "";
+                            Console.WriteLine($"[DEBUG] HoTen từ HoSo: {hoTen}");
+                        }
+
+                        // Lấy danh sách MaVaiTro để phân quyền
+                        danhSachMaVaiTro = phanQuyenBUS.GetVaiTroByNguoiDung(tenDangNhap);
+
+                        // ✅ LƯU VÀO SESSION MANAGER
+                        SessionManager.Login(tenDangNhap, hoTen, email, vaiTro, danhSachMaVaiTro);
+
+                        Console.WriteLine($"[SUCCESS] Đăng nhập - User: {tenDangNhap}, Họ tên: {hoTen}, Vai trò: {vaiTro}");
+                    }
+                    catch (Exception sessionEx)
+                    {
+                        Console.WriteLine($"[WARNING] Lỗi khi tạo session: {sessionEx.Message}");
+                        // Vẫn cho phép đăng nhập nhưng với thông tin mặc định
+                        SessionManager.Login(tenDangNhap, tenDangNhap, "", "Người dùng", new List<string>());
+                    }
+
                     // Đăng nhập thành công
-                    MessageBox.Show($"Đăng nhập thành công!\nChào mừng: {tenDangNhap}", 
-                        "Thành công", 
-                        MessageBoxButtons.OK, 
+                    MessageBox.Show($"Đăng nhập thành công!\nChào mừng: {SessionManager.HoTen}",
+                        "Thành công",
+                        MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
 
                     // Ẩn form đăng nhập
@@ -113,41 +155,40 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     // Mở MainForm
                     MainForm mainForm = new MainForm();
-                    mainForm.FormClosed += (s, args) => this.Close(); // Đóng form đăng nhập khi MainForm đóng
+                    mainForm.FormClosed += (s, args) => this.Close();
                     mainForm.Show();
                 }
                 else
                 {
                     // Đăng nhập thất bại
-                    MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng!\nHoặc tài khoản đã bị khóa.", 
-                        "Đăng nhập thất bại", 
-                        MessageBoxButtons.OK, 
+                    MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng!\nHoặc tài khoản đã bị khóa.",
+                        "Đăng nhập thất bại",
+                        MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
 
-                    // Xóa mật khẩu và focus vào ô mật khẩu
                     txtMatKhau.Clear();
                     txtMatKhau.Focus();
                 }
             }
             catch (ArgumentException ex)
             {
-                // Lỗi validation từ BUS
-                MessageBox.Show(ex.Message, 
-                    "Lỗi", 
-                    MessageBoxButtons.OK, 
+                MessageBox.Show(ex.Message,
+                    "Lỗi",
+                    MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                // Lỗi hệ thống
-                MessageBox.Show($"Đã xảy ra lỗi khi đăng nhập:\n{ex.Message}", 
-                    "Lỗi hệ thống", 
-                    MessageBoxButtons.OK, 
+                MessageBox.Show($"Đã xảy ra lỗi khi đăng nhập:\n{ex.Message}",
+                    "Lỗi hệ thống",
+                    MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 Console.WriteLine("Lỗi đăng nhập: " + ex.Message);
             }
             
         }
+
+
 
         private void lbChaoMung2_Click(object sender, EventArgs e)
         {
@@ -473,9 +514,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
-        private void txtTenDangNhap_TextChanged(object sender, EventArgs e)
-        {
 
-        }
+
+
     }
 }

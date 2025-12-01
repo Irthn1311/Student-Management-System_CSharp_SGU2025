@@ -1,12 +1,14 @@
-﻿using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
-using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using Guna.UI2.WinForms;
 using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.GUI.statcardLHP;
+using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
+using Student_Management_System_CSharp_SGU2025.Utils;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
@@ -81,6 +83,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // --- Gắn sự kiện ---
             dgvLop.CellPainting += dgvLop_CellPainting;
             dgvLop.CellClick += dgvLop_CellClick;
+            PermissionHelper.ApplyPermissionLopHoc(btnThem, dgvLop);
         }
 
         // ✅ HÀM HỖ TRỢ: Gắn sự kiện click cho tất cả controls con
@@ -594,18 +597,69 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             e.Paint(e.CellBounds, DataGridViewPaintParts.All);
 
+            // ✅ Lấy thông tin quyền từ Tag
+            dynamic permissions = dgvLop.Tag;
+            bool canUpdate = permissions?.CanUpdate ?? true; // Mặc định true nếu chưa set
+            bool canDelete = permissions?.CanDelete ?? true;
+
             Image editIcon = Properties.Resources.edit_icon;
             Image deleteIcon = Properties.Resources.delete_icon;
 
             int iconSize = 20;
             int spacing = 10;
-            int totalWidth = iconSize * 2 + spacing;
-
-            int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
+            int startX = e.CellBounds.Left + (e.CellBounds.Width - iconSize * 2 - spacing) / 2;
             int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
 
-            e.Graphics.DrawImage(editIcon, new Rectangle(startX, y, iconSize, iconSize));
-            e.Graphics.DrawImage(deleteIcon, new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize));
+            // ✅ Vẽ icon Edit (với opacity nếu không có quyền)
+            if (canUpdate)
+            {
+                e.Graphics.DrawImage(editIcon, new Rectangle(startX, y, iconSize, iconSize));
+            }
+            else
+            {
+                // Vẽ icon mờ (disabled)
+                using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+                {
+                    float[][] matrixItems = {
+                new float[] {0.3f, 0, 0, 0, 0},
+                new float[] {0, 0.3f, 0, 0, 0},
+                new float[] {0, 0, 0.3f, 0, 0},
+                new float[] {0, 0, 0, 0.3f, 0},
+                new float[] {0.5f, 0.5f, 0.5f, 0, 1}
+            };
+                    var colorMatrix = new System.Drawing.Imaging.ColorMatrix(matrixItems);
+                    attributes.SetColorMatrix(colorMatrix, System.Drawing.Imaging.ColorMatrixFlag.Default,
+                                             System.Drawing.Imaging.ColorAdjustType.Bitmap);
+                    e.Graphics.DrawImage(editIcon, new Rectangle(startX, y, iconSize, iconSize),
+                                        0, 0, editIcon.Width, editIcon.Height, GraphicsUnit.Pixel, attributes);
+                }
+            }
+
+            // ✅ Vẽ icon Delete (với opacity nếu không có quyền)
+            int deleteX = startX + iconSize + spacing;
+            if (canDelete)
+            {
+                e.Graphics.DrawImage(deleteIcon, new Rectangle(deleteX, y, iconSize, iconSize));
+            }
+            else
+            {
+                // Vẽ icon mờ (disabled)
+                using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+                {
+                    float[][] matrixItems = {
+                new float[] {0.3f, 0, 0, 0, 0},
+                new float[] {0, 0.3f, 0, 0, 0},
+                new float[] {0, 0, 0.3f, 0, 0},
+                new float[] {0, 0, 0, 0.3f, 0},
+                new float[] {0.5f, 0.5f, 0.5f, 0, 1}
+            };
+                    var colorMatrix = new System.Drawing.Imaging.ColorMatrix(matrixItems);
+                    attributes.SetColorMatrix(colorMatrix, System.Drawing.Imaging.ColorMatrixFlag.Default,
+                                             System.Drawing.Imaging.ColorAdjustType.Bitmap);
+                    e.Graphics.DrawImage(deleteIcon, new Rectangle(deleteX, y, iconSize, iconSize),
+                                        0, 0, deleteIcon.Width, deleteIcon.Height, GraphicsUnit.Pixel, attributes);
+                }
+            }
 
             e.Handled = true;
         }
@@ -637,22 +691,33 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             int totalWidth = iconSize * 2 + spacing;
             int startX = cellRect.Left + (cellRect.Width - totalWidth) / 2;
 
-            // ✅ CLICK ICON SỬA (truyền maLop để load, nhưng không cho sửa maLop trong form)
+            int maLop = Convert.ToInt32(dgvLop.Rows[e.RowIndex].Cells["MaLop"].Value);
+            string tenLop = dgvLop.Rows[e.RowIndex].Cells["TenLop"].Value.ToString();
+
+            // ✅ CLICK ICON SỬA
             if (clickPoint.X >= startX && clickPoint.X <= startX + iconSize)
             {
-                SuaLopHoc frm = new SuaLopHoc(maLop); // Truyền mã lớp (tự động từ DB)
+                // ✅ Kiểm tra quyền UPDATE
+                if (!PermissionHelper.CheckDataGridIconPermission(dgvLop, "edit", "Quản lý lớp học"))
+                    return;
+
+                SuaLopHoc frm = new SuaLopHoc(maLop);
                 frm.StartPosition = FormStartPosition.CenterParent;
 
                 DialogResult result = frm.ShowDialog();
 
                 if (result == DialogResult.OK)
                 {
-                    LoadData(); // ✅ Reload dữ liệu và cập nhật thống kê (maLop giữ nguyên)
+                    LoadData();
                 }
             }
             // ✅ CLICK ICON XÓA
             else if (clickPoint.X >= startX + iconSize + spacing && clickPoint.X <= startX + iconSize * 2 + spacing)
             {
+                // ✅ Kiểm tra quyền DELETE
+                if (!PermissionHelper.CheckDataGridIconPermission(dgvLop, "delete", "Quản lý lớp học"))
+                    return;
+
                 DialogResult dr = MessageBox.Show(
                     $"Bạn có chắc muốn xóa lớp '{tenLop}'?\n\nLưu ý: Thao tác này không thể hoàn tác!",
                     "Xác nhận xóa",
@@ -669,7 +734,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         if (kq)
                         {
                             MessageBox.Show("Xóa lớp học thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            LoadData(); // ✅ Reload dữ liệu và cập nhật thống kê
+                            LoadData();
                         }
                         else
                         {
@@ -708,6 +773,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // ✅ THÊM MỚI: Không cần nhập maLop (DB tự sinh), reload để hiển thị maLop mới
         private void guna2Button1_Click(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLLOPHOC, "Quản lý lớp học"))
+                return;
             ThemLopHoc formThem = new ThemLopHoc(); // Form chỉ nhập tenLop, maKhoi, maGVCN (maLop tự động)
 
             DialogResult result = formThem.ShowDialog();
@@ -740,7 +807,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         }
 
-        private void statCardKhoi3_Load(object sender, EventArgs e)
+        private void dgvLop_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }

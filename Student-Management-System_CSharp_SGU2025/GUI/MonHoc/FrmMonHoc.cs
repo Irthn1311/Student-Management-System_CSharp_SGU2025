@@ -1,5 +1,6 @@
 ﻿using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +25,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void FrmMonHoc_Load(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLMONHOC, "Quản lý môn học"))
+            {
+                this.Enabled = false;
+                MessageBox.Show(
+                    "Bạn không có quyền truy cập chức năng 'Quản lý môn học'!",
+                    "Không có quyền",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return;
+            }
+
             SetupDataGridView();
             LoadData();
             dgvMonHoc.SelectionChanged += dgvMonHoc_SelectionChanged;
@@ -32,6 +45,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             txtSoTiet.Validating += txtSoTiet_Validating;
             txtMaMon.Validating += txtMaMon_Validating;
             this.AutoValidate = AutoValidate.EnableAllowFocusChange;
+
+            PermissionHelper.ApplyPermissionMonHoc(
+             btnThemMonHoc,
+             btnSua,
+             btnXoa
+         );
         }
 
         // =======================================================
@@ -250,6 +269,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnThemMonHoc_Click(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckUpdatePermission(PermissionHelper.QLMONHOC, "Quản lý môn học"))
+                return;
             dangThem = true;
             XoaDuLieuControls();
             KichHoatControls();
@@ -262,6 +283,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnSua_Click(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckUpdatePermission(PermissionHelper.QLMONHOC, "Quản lý môn học"))
+                return;
             if (monHocDangChon == null)
             {
                 MessageBox.Show("Vui lòng chọn môn học cần sửa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -275,6 +298,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnXoa_Click(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckDeletePermission(PermissionHelper.QLMONHOC, "Quản lý môn học"))
+                return;
             XoaMonHoc();
         }
 
@@ -342,6 +367,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 e.Cancel = false;
                 errorProvider1.SetError(txtMaMon, null);
             }
+        }
+
+        private void panelThongTin_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

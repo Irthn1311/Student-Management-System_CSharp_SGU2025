@@ -949,5 +949,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             }
         }
         #endregion
+
+        private void panelHeader_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

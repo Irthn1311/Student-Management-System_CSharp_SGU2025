@@ -150,6 +150,7 @@
             this.Controls.Add(this.lbNhapMaOTP);
             this.Name = "FrmDoiMatKhau";
             this.Text = "FrmDoiMatKhau";
+            this.Load += new System.EventHandler(this.FrmDoiMatKhau_Load_1);
             this.ResumeLayout(false);
 
         }

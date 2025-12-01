@@ -212,5 +212,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DangNhap
                 this.Close();
             }
         }
+
+        private void FrmDoiMatKhau_Load_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

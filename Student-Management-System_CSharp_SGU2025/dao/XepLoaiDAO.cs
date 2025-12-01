@@ -217,10 +217,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn = ConnectionDatabase.GetConnection();
                 conn.Open();
 
-                string query = @"INSERT INTO XepLoai (MaHocSinh, MaHocKy, XepLoaiDG, GhiChu) 
+                string query = @"INSERT INTO XepLoai (MaHocSinh, MaHocKy, HocLuc, GhiChu) 
                         VALUES (@maHS, @maHK, @xepLoai, @ghiChu)
                         ON DUPLICATE KEY UPDATE 
-                        XepLoaiDG = @xepLoai, 
+                        HocLuc = @xepLoai, 
                         GhiChu = @ghiChu";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
@@ -255,7 +255,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn = ConnectionDatabase.GetConnection();
                 conn.Open();
 
-                string query = @"SELECT XepLoaiDG FROM XepLoai 
+                string query = @"SELECT HocLuc FROM XepLoai 
                         WHERE MaHocSinh = @maHS AND MaHocKy = @maHK";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))

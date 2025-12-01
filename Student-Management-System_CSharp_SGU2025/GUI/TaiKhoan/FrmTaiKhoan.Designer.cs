@@ -43,7 +43,11 @@
             this.statCardThongKeTaiKhoan3 = new Student_Management_System_CSharp_SGU2025.GUI.TaiKhoan.statCardThongKeTaiKhoan();
             this.statCardThongKeTaiKhoan2 = new Student_Management_System_CSharp_SGU2025.GUI.TaiKhoan.statCardThongKeTaiKhoan();
             this.statCardThongKeTaiKhoan1 = new Student_Management_System_CSharp_SGU2025.GUI.TaiKhoan.statCardThongKeTaiKhoan();
+            this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.guna2CustomGradientPanel1 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
+            this.txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.tbTaiKhoan)).BeginInit();
+            this.guna2Panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnVaiTro
@@ -170,6 +174,7 @@
             this.btnAddAcc.Size = new System.Drawing.Size(179, 40);
             this.btnAddAcc.TabIndex = 1;
             this.btnAddAcc.Text = "Tạo tài khoản";
+            this.btnAddAcc.Click += new System.EventHandler(this.btnAddAcc_Click);
             // 
             // statCardThongKeTaiKhoan4
             // 
@@ -227,11 +232,48 @@
             this.statCardThongKeTaiKhoan1.TitleGhiChu = "Note";
             this.statCardThongKeTaiKhoan1.TitleLietKe = "Value";
             // 
+            // guna2Panel1
+            // 
+            this.guna2Panel1.Controls.Add(this.guna2CustomGradientPanel1);
+            this.guna2Panel1.Location = new System.Drawing.Point(607, 777);
+            this.guna2Panel1.Name = "guna2Panel1";
+            this.guna2Panel1.Size = new System.Drawing.Size(153, 37);
+            this.guna2Panel1.TabIndex = 9;
+            // 
+            // guna2CustomGradientPanel1
+            // 
+            this.guna2CustomGradientPanel1.Location = new System.Drawing.Point(124, 8);
+            this.guna2CustomGradientPanel1.Name = "guna2CustomGradientPanel1";
+            this.guna2CustomGradientPanel1.Size = new System.Drawing.Size(11, 8);
+            this.guna2CustomGradientPanel1.TabIndex = 0;
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtSearch.DefaultText = "";
+            this.txtSearch.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtSearch.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtSearch.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtSearch.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtSearch.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSearch.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtSearch.Location = new System.Drawing.Point(32, 757);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.PlaceholderText = "Tìm kiếm tài khoản...";
+            this.txtSearch.SelectedText = "";
+            this.txtSearch.Size = new System.Drawing.Size(236, 36);
+            this.txtSearch.TabIndex = 10;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            // 
             // FrmTaiKhoan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.txtSearch);
+            this.Controls.Add(this.guna2Panel1);
             this.Controls.Add(this.statCardThongKeTaiKhoan4);
             this.Controls.Add(this.statCardThongKeTaiKhoan3);
             this.Controls.Add(this.statCardThongKeTaiKhoan2);
@@ -242,9 +284,10 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximumSize = new System.Drawing.Size(1168, 768);
             this.Name = "FrmTaiKhoan";
-            this.Size = new System.Drawing.Size(1168, 768);
+            this.Size = new System.Drawing.Size(1151, 768);
             this.Load += new System.EventHandler(this.TaiKhoan_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tbTaiKhoan)).EndInit();
+            this.guna2Panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -262,5 +305,8 @@
         private TaiKhoan.statCardThongKeTaiKhoan statCardThongKeTaiKhoan2;
         private TaiKhoan.statCardThongKeTaiKhoan statCardThongKeTaiKhoan3;
         private TaiKhoan.statCardThongKeTaiKhoan statCardThongKeTaiKhoan4;
+        private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
+        private Guna.UI2.WinForms.Guna2CustomGradientPanel guna2CustomGradientPanel1;
+        private Guna.UI2.WinForms.Guna2TextBox txtSearch;
     }
 }

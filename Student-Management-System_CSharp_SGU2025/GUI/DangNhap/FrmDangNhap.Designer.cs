@@ -43,8 +43,6 @@
             this.lbMatKhau = new System.Windows.Forms.Label();
             this.btnDangNhap = new Guna.UI2.WinForms.Guna2Button();
             this.linkLbQuenMatKhau = new System.Windows.Forms.LinkLabel();
-            this.lbVaiTro = new System.Windows.Forms.Label();
-            this.cbVaiTro = new Guna.UI2.WinForms.Guna2ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.linkLbLienHeIT = new System.Windows.Forms.LinkLabel();
             this.txtMatKhau = new Guna.UI2.WinForms.Guna2TextBox();
@@ -265,43 +263,6 @@
             this.linkLbQuenMatKhau.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLbQuenMatKhau_LinkClicked);
             this.linkLbQuenMatKhau.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLbQuenMatKhau_LinkClicked);
             // 
-            // lbVaiTro
-            // 
-            this.lbVaiTro.AutoSize = true;
-            this.lbVaiTro.BackColor = System.Drawing.Color.White;
-            this.lbVaiTro.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbVaiTro.ForeColor = System.Drawing.Color.DimGray;
-            this.lbVaiTro.Location = new System.Drawing.Point(600, 348);
-            this.lbVaiTro.Location = new System.Drawing.Point(600, 348);
-            this.lbVaiTro.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lbVaiTro.Name = "lbVaiTro";
-            this.lbVaiTro.Size = new System.Drawing.Size(49, 19);
-            this.lbVaiTro.TabIndex = 11;
-            this.lbVaiTro.Text = "Vai trò";
-            // 
-            // cbVaiTro
-            // 
-            this.cbVaiTro.BackColor = System.Drawing.Color.Transparent;
-            this.cbVaiTro.BorderRadius = 7;
-            this.cbVaiTro.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cbVaiTro.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbVaiTro.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbVaiTro.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbVaiTro.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbVaiTro.ForeColor = System.Drawing.Color.Black;
-            this.cbVaiTro.ItemHeight = 30;
-            this.cbVaiTro.Items.AddRange(new object[] {
-            "Giáo Viên ",
-            "Học Sinh"});
-            this.cbVaiTro.Location = new System.Drawing.Point(603, 371);
-            this.cbVaiTro.Margin = new System.Windows.Forms.Padding(2);
-            this.cbVaiTro.Location = new System.Drawing.Point(603, 371);
-            this.cbVaiTro.Margin = new System.Windows.Forms.Padding(2);
-            this.cbVaiTro.Name = "cbVaiTro";
-            this.cbVaiTro.Size = new System.Drawing.Size(341, 36);
-            this.cbVaiTro.Size = new System.Drawing.Size(341, 36);
-            this.cbVaiTro.TabIndex = 12;
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -391,8 +352,6 @@
             this.ClientSize = new System.Drawing.Size(1000, 625);
             this.Controls.Add(this.linkLbLienHeIT);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.cbVaiTro);
-            this.Controls.Add(this.lbVaiTro);
             this.Controls.Add(this.linkLbQuenMatKhau);
             this.Controls.Add(this.btnDangNhap);
             this.Controls.Add(this.txtMatKhau);
@@ -437,8 +396,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label lbVaiTro;
-        private Guna.UI2.WinForms.Guna2ComboBox cbVaiTro;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.LinkLabel linkLbLienHeIT;
     }
