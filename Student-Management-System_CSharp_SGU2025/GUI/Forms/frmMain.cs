@@ -29,7 +29,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             InitializeComponent();
             InitializeNavigation();
             UpdateHeaderUserInfo();
-            //ApplySidebarPermissions(); // Áp dụng phân quyền cho sidebar
+            ApplySidebarPermissions(); // Áp dụng phân quyền cho sidebar
             // Đặt trang mặc định là Dashboard khi form khởi chạy
             ShowDashboard();
         }

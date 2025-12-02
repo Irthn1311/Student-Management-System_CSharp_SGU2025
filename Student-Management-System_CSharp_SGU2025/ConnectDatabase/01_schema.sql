@@ -165,7 +165,7 @@ INSERT IGNORE INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES
 -- Tạo tài khoản admin (mật khẩu mặc định: admin - nên được thay đổi sau khi đăng nhập lần đầu)
 -- Lưu ý: Mật khẩu này nên được hash bằng bcrypt hoặc phương pháp tương tự trong ứng dụng
 INSERT IGNORE INTO NguoiDung (TenDangNhap, MatKhau, TrangThai) VALUES
-('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Hoạt động');
+('admin', 'admin123', 'Hoạt động');
 
 INSERT IGNORE INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES 
 ('admin', 'qldiem'),
