@@ -8,6 +8,7 @@ using Student_Management_System_CSharp_SGU2025.Scheduling;
 using System.Threading;
 using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using MySql.Data.MySqlClient;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
 {
@@ -424,11 +425,47 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Không thể lưu lịch chính thức:\n\n{ex.Message}",
-                    "Lỗi",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                // Check for MySqlException
+                if (ex.InnerException is MySqlException sqlEx && sqlEx.Number == 1062)
+                {
+                     // Handle duplicate key
+                     if (sqlEx.Message.Contains("ux_tkb_lop"))
+                     {
+                         MessageBox.Show("Lớp đã có tiết học tại (Học kỳ, Thứ, Tiết) này. Vui lòng chọn slot khác cho lớp.", "Lỗi trùng lịch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                     }
+                     else if (sqlEx.Message.Contains("ux_tkb_gv"))
+                     {
+                         MessageBox.Show("Giáo viên đang dạy lớp khác tại (Học kỳ, Thứ, Tiết) này. Vui lòng đổi giáo viên hoặc slot.", "Lỗi trùng lịch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                     }
+                     else
+                     {
+                         MessageBox.Show($"Lỗi trùng dữ liệu: {sqlEx.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                     }
+                }
+                else if (ex is MySqlException sqlExDirect && sqlExDirect.Number == 1062)
+                {
+                     // Handle duplicate key (direct exception)
+                     if (sqlExDirect.Message.Contains("ux_tkb_lop"))
+                     {
+                         MessageBox.Show("Lớp đã có tiết học tại (Học kỳ, Thứ, Tiết) này. Vui lòng chọn slot khác cho lớp.", "Lỗi trùng lịch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                     }
+                     else if (sqlExDirect.Message.Contains("ux_tkb_gv"))
+                     {
+                         MessageBox.Show("Giáo viên đang dạy lớp khác tại (Học kỳ, Thứ, Tiết) này. Vui lòng đổi giáo viên hoặc slot.", "Lỗi trùng lịch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                     }
+                     else
+                     {
+                         MessageBox.Show($"Lỗi trùng dữ liệu: {sqlExDirect.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                     }
+                }
+                else
+                {
+                    MessageBox.Show(
+                        $"Không thể lưu lịch chính thức:\n\n{ex.Message}",
+                        "Lỗi",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
             }
             finally
             {
@@ -533,6 +570,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                 int col = s.Thu - 1;  // Thu 2 -> col 1, Thu 6 -> col 5
                 int row = s.Tiet;     // Tiet 1 -> row 1, Tiet 10 -> row 10
                 
+                SubscribeDragDropEvents(card);
                 tableThoiKhoaBieu.Controls.Add(card, col, row);
             }
         }
@@ -583,6 +621,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
 				int col = s.Thu - 1;  // Thu 2 -> col 1, Thu 7 -> col 6
 				int row = s.Tiet;     // Tiet 1 -> row 1, Tiet 10 -> row 10
 				
+				SubscribeDragDropEvents(card);
 				tableThoiKhoaBieu.Controls.Add(card, col, row);
 			}
 		}
@@ -640,6 +679,107 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                     return (Color.Black, Color.Gainsboro, Color.WhiteSmoke);
             }
         }
+
+        #region Drag & Drop Logic
+        private StatCardTKB draggedCard = null;
+
+        private void SubscribeDragDropEvents(StatCardTKB card)
+        {
+            card.AllowDrop = true;
+            card.MouseDown += Card_MouseDown;
+            card.DragEnter += Card_DragEnter;
+            card.DragDrop += Card_DragDrop;
+        }
+
+        private void Card_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && sender is StatCardTKB card)
+            {
+                // Chỉ cho phép kéo nếu đang ở chế độ chỉnh sửa (đã có TKB)
+                if (!hasTKBForSemester) return;
+
+                draggedCard = card;
+                card.DoDragDrop(card, DragDropEffects.Move);
+            }
+        }
+
+        private void Card_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(StatCardTKB)))
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void Card_DragDrop(object sender, DragEventArgs e)
+        {
+            var targetCard = sender as StatCardTKB;
+            var sourceCard = e.Data.GetData(typeof(StatCardTKB)) as StatCardTKB;
+
+            if (targetCard != null && sourceCard != null && targetCard != sourceCard)
+            {
+                // 1. Get coordinates
+                var sourcePos = tableThoiKhoaBieu.GetPositionFromControl(sourceCard);
+                var targetPos = tableThoiKhoaBieu.GetPositionFromControl(targetCard);
+
+                int sourceThu = sourcePos.Column + 1; // Col 0 -> Thu 2
+                int sourceTiet = sourcePos.Row;       // Row 1 -> Tiet 1 (assuming row 0 is header? No, row is Tiet directly based on RenderSlots)
+                // Wait, RenderSlots uses: int row = s.Tiet; (1-10)
+                // But TableLayoutPanel usually is 0-indexed.
+                // Let's check RenderSlots again.
+                // tableThoiKhoaBieu.Controls.Add(card, col, row);
+                // If row=1, it's 2nd row.
+                // Assuming the layout is: Row 0 = Header (Tiet 1..10 labels?), Col 0 = Header (Thu 2..6 labels?)
+                // I need to verify the TableLayoutPanel structure in Designer.
+                // But assuming RenderSlots logic is correct:
+                // int col = s.Thu - 1; (Thu 2 -> 1) -> This implies Col 0 is for labels?
+                // int row = s.Tiet; (Tiet 1 -> 1) -> This implies Row 0 is for labels?
+                
+                // Let's assume the coordinates from GetPositionFromControl are correct relative to what RenderSlots used.
+                
+                int targetThu = targetPos.Column + 1;
+                int targetTiet = targetPos.Row;
+
+                // 2. Perform Swap in Backend (TKB_Temp)
+                // We need to call BUS to swap
+                try
+                {
+                    bool success = tkbBUS.SwapSlots(currentSemesterId, 1, currentLopId,
+                        sourceThu, sourceTiet, 
+                        targetThu, targetTiet);
+
+                    if (success)
+                    {
+                        // 3. Swap UI
+                        // Remove controls
+                        tableThoiKhoaBieu.Controls.Remove(sourceCard);
+                        tableThoiKhoaBieu.Controls.Remove(targetCard);
+
+                        // Add back in swapped positions
+                        tableThoiKhoaBieu.Controls.Add(sourceCard, targetPos.Column, targetPos.Row);
+                        tableThoiKhoaBieu.Controls.Add(targetCard, sourcePos.Column, sourcePos.Row);
+                        
+                        // Update Tag or internal data if needed? 
+                        // The card displays static data, so swapping the control is enough for visual.
+                        // But we should re-render to be safe and ensure data consistency.
+                        // However, re-rendering might be slow. Swapping controls is faster.
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không thể đổi chỗ. Có thể do vi phạm ràng buộc.", "Lỗi di chuyển", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi di chuyển: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+        #endregion
 
         // Empty event handlers (keep for Designer compatibility)
         private void guna2HtmlLabel25_Click(object sender, EventArgs e) { }

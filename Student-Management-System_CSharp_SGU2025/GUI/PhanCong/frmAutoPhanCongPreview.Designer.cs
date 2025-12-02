@@ -474,7 +474,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             this.cbHocKy.Name = "cbHocKy";
             this.cbHocKy.Size = new System.Drawing.Size(280, 34);
             this.cbHocKy.TabIndex = 1;
-            this.cbHocKy.SelectedIndexChanged += new System.EventHandler(this.cbHocKy_SelectedIndexChanged);
+            this.cbHocKy.SelectedIndexChanged += new System.EventHandler(this.CbHocKy_SelectedIndexChanged);
             // 
             // lblHocKy
             // 
@@ -538,7 +538,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             this.Padding = new System.Windows.Forms.Padding(20);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Phân Công Giảng Dạy Tự Động";
-            this.Load += new System.EventHandler(this.frmAutoPhanCongPreview_Load);
+            this.Load += new System.EventHandler(this.FrmAutoPhanCongPreview_Load);
             this.panelContainer.ResumeLayout(false);
             this.panelContainer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();

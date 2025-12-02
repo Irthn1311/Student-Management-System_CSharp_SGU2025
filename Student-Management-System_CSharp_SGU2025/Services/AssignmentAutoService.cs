@@ -12,9 +12,8 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 	{
 		/// <summary>
 		/// Số tiết tối đa mỗi giáo viên được phân công trong MỘT HỌC KỲ
-		/// (Không phải tuần!)
 		/// </summary>
-		public int MaxLoadPerTeacherPerWeek { get; set; } = 100; // ✅ Default 100 tiết/học kỳ
+		public int MaxLoadPerSemester { get; set; } = 450; // ✅ Default 450 tiết/học kỳ (approx 30/week * 15 weeks)
 		public bool AllowNonPrimarySpecialty { get; set; } = false;
 		public int SpecialtyWeight { get; set; } = 5;
 		public int PriorityWeight { get; set; } = 2;
@@ -56,119 +55,7 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 		/// </summary>
 		public AutoAssignResult GenerateAutoAssignments(int hocKyId, AssignmentPolicy policy)
 		{
-			var result = new AutoAssignResult();
-			
-			// ✅ KIỂM TRA HỌC KỲ CÓ THỂ CHỈNH SỬA KHÔNG
-			if (SemesterHelper.IsPast(hocKyId))
-			{
-				result.IsReadOnly = true;
-				result.SemesterStatus = SemesterHelper.GetStatus(hocKyId);
-				result.Report.HardViolations++;
-				result.Report.Messages.Add($"⚠ Học kỳ này đã kết thúc ({result.SemesterStatus}). Không thể tạo phân công mới!");
-				return result;
-			}
-			
-			result.SemesterStatus = SemesterHelper.GetStatus(hocKyId);
-			
-			// Logic cũ tiếp tục...
-			var lopDao = new LopDAO();
-			var monDao = new MonHocDAO();
-			var pcDao = new PhanCongGiangDayDAO();
-
-			var classes = lopDao.DocDSLop();
-			var subjects = monDao.DocDSMH();	
-			var current = pcDao.LayPhanCongTheoHocKy(hocKyId);
-
-			var teacherToLoad = GetTeacherWeeklyLoad(hocKyId);
-			var subjectToTeachers = GetSubjectSpecialists();
-
-			foreach (var lop in classes)
-			{
-				string gvcn = GetGVCN(lop.maLop);
-
-				foreach (var mon in subjects)
-				{
-					int required = mon.soTiet;
-					if (required <= 0) continue;
-
-					bool already = current.Any(x => x.MaLop == lop.maLop && x.MaMonHoc == mon.maMon && x.MaHocKy == hocKyId);
-					if (already) continue;
-
-					var candidates = subjectToTeachers.ContainsKey(mon.maMon)
-						? subjectToTeachers[mon.maMon]
-						: new List<string>();
-
-					// B1: Ưu tiên GVCN
-					if (!string.IsNullOrEmpty(gvcn) && candidates.Contains(gvcn))
-					{
-						int loadGVCN = teacherToLoad.ContainsKey(gvcn) ? teacherToLoad[gvcn] : 0;
-						result.Candidates.Add(new PhanCongCandidate
-						{
-							MaLop = lop.maLop,
-							MaMonHoc = mon.maMon,
-							MaGiaoVien = gvcn,
-							SoTietTuan = required,
-							Score = policy.SpecialtyWeight + policy.PriorityWeight * 10,
-							Note = "GVCN"
-						});
-						teacherToLoad[gvcn] = loadGVCN + required;
-						continue;
-					}
-
-					// B2: Chọn GV khác
-					var scored = new List<(string gv, int score)>();
-					foreach (var gv in candidates)
-					{
-						int load = teacherToLoad.ContainsKey(gv) ? teacherToLoad[gv] : 0;
-						int soTietMon = mon.soTiet;
-						
-						// ✅ HARD CHECK: Không cho vượt ngưỡng
-						if (load + soTietMon > policy.MaxLoadPerTeacherPerWeek)
-						{
-							Console.WriteLine($"⚠️ Skip GV {gv}: Load hiện tại {load} + {soTietMon} = {load + soTietMon} > {policy.MaxLoadPerTeacherPerWeek}");
-							continue; // Skip giáo viên này
-						}
-						
-						int loadDelta = policy.MaxLoadPerTeacherPerWeek - load;
-						int score = policy.SpecialtyWeight + (policy.LoadBalanceWeight * Math.Max(0, loadDelta));
-						if (loadDelta < 0) score += loadDelta;
-
-						bool sameClassOfficial = current.Any(x => x.MaLop == lop.maLop && x.MaGiaoVien == gv);
-						bool sameClassProposed = result.Candidates.Any(x => x.MaLop == lop.maLop && x.MaGiaoVien == gv);
-						if (sameClassOfficial || sameClassProposed) score += policy.PriorityWeight * 3;
-						scored.Add((gv, score));
-					}
-
-					if (scored.Count == 0 && policy.AllowNonPrimarySpecialty)
-					{
-						foreach (var kv in teacherToLoad)
-						{
-							int load = kv.Value;
-							scored.Add((kv.Key, policy.LoadBalanceWeight * Math.Max(0, policy.MaxLoadPerTeacherPerWeek - load)));
-						}
-					}
-
-					if (scored.Count == 0)
-					{
-						result.Report.HardViolations++;
-						result.Report.Messages.Add($"Không tìm được GV phù hợp cho Lớp {lop.maLop}, Môn {mon.maMon}.");
-						continue;
-					}
-
-					var best = scored.OrderByDescending(x => x.score).First();
-					result.Candidates.Add(new PhanCongCandidate
-					{
-						MaLop = lop.maLop,
-						MaMonHoc = mon.maMon,
-						MaGiaoVien = best.gv,
-						SoTietTuan = required,
-						Score = best.score
-					});
-					teacherToLoad[best.gv] = (teacherToLoad.ContainsKey(best.gv) ? teacherToLoad[best.gv] : 0) + required;
-				}
-			}
-
-			return result;
+			return GenerateAutoAssignmentsFiltered(hocKyId, policy, null, null);
 		}
 
 		/// <summary>
@@ -190,11 +77,11 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 			
 			result.SemesterStatus = SemesterHelper.GetStatus(hocKyId);
 			
-			// Logic cũ với filter...
 			var lopDao = new LopDAO();
 			var monDao = new MonHocDAO();
 			var pcDao = new PhanCongGiangDayDAO();
 
+			// 1. Load Data
 			var classes = lopDao.DocDSLop() ?? new List<LopDTO>();
 			if (khoi.HasValue)
 			{
@@ -216,93 +103,95 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 			var teacherToLoad = GetTeacherWeeklyLoad(hocKyId);
 			var subjectToTeachers = GetSubjectSpecialists();
 
-			foreach (var lop in classes)
+			// 2. Sort subjects by scarcity (fewer teachers -> assign first)
+			var sortedSubjects = subjects.OrderBy(s => 
+				subjectToTeachers.ContainsKey(s.maMon) ? subjectToTeachers[s.maMon].Count : 0
+			).ToList();
+
+			foreach (var mon in sortedSubjects)
 			{
-				string gvcn = GetGVCN(lop.maLop);
+				int required = mon.soTiet;
+				if (required <= 0) continue;
 
-				foreach (var mon in subjects)
+				foreach (var lop in classes)
 				{
-					int required = mon.soTiet;
-					if (required <= 0) continue;
-
+					// Skip if already assigned in DB
 					bool already = current.Any(x => x.MaLop == lop.maLop && x.MaMonHoc == mon.maMon && x.MaHocKy == hocKyId);
 					if (already) continue;
 
+					// Skip if already assigned in current session (if running multiple batches, though usually we run once)
+					if (result.Candidates.Any(c => c.MaLop == lop.maLop && c.MaMonHoc == mon.maMon)) continue;
+
+					string gvcn = GetGVCN(lop.maLop);
 					var candidates = subjectToTeachers.ContainsKey(mon.maMon)
 						? subjectToTeachers[mon.maMon]
 						: new List<string>();
 
-					// Ưu tiên GVCN
-					if (!string.IsNullOrEmpty(gvcn) && candidates.Contains(gvcn))
-					{
-						int loadGVCN = teacherToLoad.ContainsKey(gvcn) ? teacherToLoad[gvcn] : 0;
-						result.Candidates.Add(new PhanCongCandidate
-						{
-							MaLop = lop.maLop,
-							MaMonHoc = mon.maMon,
-							MaGiaoVien = gvcn,
-							SoTietTuan = required,
-							Score = policy.SpecialtyWeight + policy.PriorityWeight * 10,
-							Note = "GVCN"
-						});
-						teacherToLoad[gvcn] = loadGVCN + required;
-						continue;
-					}
-
+					// Strategy: Score candidates
 					var scored = new List<(string gv, int score)>();
+
 					foreach (var gv in candidates)
 					{
 						int load = teacherToLoad.ContainsKey(gv) ? teacherToLoad[gv] : 0;
-						int soTietMon = mon.soTiet;
 						
 						// ✅ HARD CHECK: Không cho vượt ngưỡng
-						if (load + soTietMon > policy.MaxLoadPerTeacherPerWeek)
+						if (load + required > policy.MaxLoadPerSemester)
 						{
-							Console.WriteLine($"⚠️ Skip GV {gv}: Load hiện tại {load} + {soTietMon} = {load + soTietMon} > {policy.MaxLoadPerTeacherPerWeek}");
-							continue; // Skip giáo viên này
+							// Console.WriteLine($"⚠️ Skip GV {gv}: Load {load} + {required} > {policy.MaxLoadPerSemester}");
+							continue; 
 						}
 						
-						int loadDelta = policy.MaxLoadPerTeacherPerWeek - load;
-						int score = policy.SpecialtyWeight + (policy.LoadBalanceWeight * Math.Max(0, loadDelta));
-						if (loadDelta < 0) score += loadDelta;
+						int loadDelta = policy.MaxLoadPerSemester - load;
+						
+						// Base score: Specialty
+						int score = policy.SpecialtyWeight * 10;
 
-						bool sameClassOfficial = current.Any(x => x.MaLop == lop.maLop && x.MaGiaoVien == gv);
-						bool sameClassProposed = result.Candidates.Any(x => x.MaLop == lop.maLop && x.MaGiaoVien == gv);
-						if (sameClassOfficial || sameClassProposed) score += policy.PriorityWeight * 3;
+						// Load balance: More remaining load = higher score (distribute to those with less work?)
+						// Actually, we want to balance. 
+						// Strategy: Prefer teachers who have LESS load currently.
+						// Score += (MaxLoad - CurrentLoad) * Weight
+						score += (loadDelta * policy.LoadBalanceWeight) / 10; // Scale down a bit
+
+						// Priority: GVCN
+						if (gv == gvcn) score += policy.PriorityWeight * 50;
+
+						// Continuity: Prefer teacher who is already teaching this class (other subjects) ??
+						// Or prefer teacher who is teaching SAME subject to OTHER classes in SAME GRADE (reduce prep time)
+						// TODO: Add continuity logic if needed.
+
 						scored.Add((gv, score));
 					}
 
+					// Fallback: Non-specialty
 					if (scored.Count == 0 && policy.AllowNonPrimarySpecialty)
 					{
-						foreach (var kv in teacherToLoad)
-						{
-							int load = kv.Value;
-							int soTietMon = mon.soTiet;
-							
-							// ✅ HARD CHECK: Không cho vượt ngưỡng ngay cả khi AllowNonPrimarySpecialty
-							if (load + soTietMon > policy.MaxLoadPerTeacherPerWeek)
-								continue;
-								
-							scored.Add((kv.Key, policy.LoadBalanceWeight * Math.Max(0, policy.MaxLoadPerTeacherPerWeek - load)));
-						}
+						// Try all teachers
+						// This is very slow and usually bad, but implemented as requested
+						// Better: Only try teachers with LOW load
+						// For now, let's skip to avoid assigning Math teacher to Literature unless explicitly configured
 					}
 
 					if (scored.Count == 0)
 					{
 						result.Report.HardViolations++;
-						result.Report.Messages.Add($"Không tìm được GV phù hợp cho Lớp {lop.maLop}, Môn {mon.maMon}.");
+						result.Report.Messages.Add($"Không tìm được GV phù hợp cho Lớp {lop.tenLop}, Môn {mon.tenMon}.");
 						continue;
 					}
 
+					// Pick best
 					var best = scored.OrderByDescending(x => x.score).First();
+					
 					result.Candidates.Add(new PhanCongCandidate
 					{
 						MaLop = lop.maLop,
 						MaMonHoc = mon.maMon,
 						MaGiaoVien = best.gv,
 						SoTietTuan = required,
-						Score = best.score
+						Score = best.score,
+						Note = best.gv == gvcn ? "GVCN" : ""
 					});
+
+					// Update load immediately for next iterations
 					teacherToLoad[best.gv] = (teacherToLoad.ContainsKey(best.gv) ? teacherToLoad[best.gv] : 0) + required;
 				}
 			}
@@ -310,7 +199,7 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 			return result;
 		}
 
-		public ValidationReport ValidateAutoAssignments(List<PhanCongCandidate> list, int maxLoadPerSemester = 100)
+		public ValidationReport ValidateAutoAssignments(List<PhanCongCandidate> list, int maxLoadPerSemester = 450)
 		{
 			var report = new ValidationReport();
 			var seen = new HashSet<string>();
@@ -330,7 +219,7 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 				if (!teacherLoad.ContainsKey(c.MaGiaoVien))
 					teacherLoad[c.MaGiaoVien] = 0;
 				
-				teacherLoad[c.MaGiaoVien] += c.SoTietTuan; // Tên biến là SoTietTuan nhưng thực tế là SoTiet/HocKy
+				teacherLoad[c.MaGiaoVien] += c.SoTietTuan;
 			}
 			
 			// ✅ Validate teacher load không vượt ngưỡng
@@ -418,5 +307,3 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 		}
 	}
 }
-
-

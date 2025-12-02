@@ -142,11 +142,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                     Console.WriteLine($"✅ Loaded {allTeachers.Count} teachers, {monHocCache.Count} subjects");
                     return true;
                 }
-                catch (Exception ex)
+                catch (Exception exLoad)
                 {
-                    Console.WriteLine($"❌ Lỗi load giáo viên: {ex.Message}");
+                    Console.WriteLine($"❌ Lỗi load giáo viên: {exLoad.Message}");
                     MessageBox.Show(
-                        $"Lỗi khi load danh sách giáo viên:\n\n{ex.Message}\n\n" +
+                        $"Lỗi khi load danh sách giáo viên:\n\n{exLoad.Message}\n\n" +
                         "Có thể do dữ liệu NgaySinh không hợp lệ trong database.",
                         "Lỗi",
                         MessageBoxButtons.OK,
@@ -154,16 +154,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception exInit)
             {
-                Console.WriteLine($"❌ Lỗi load cache: {ex.Message}");
-                MessageBox.Show($"Lỗi load dữ liệu: {ex.Message}", "Lỗi",
+                Console.WriteLine($"❌ Lỗi load cache: {exInit.Message}");
+                MessageBox.Show($"Lỗi load dữ liệu: {exInit.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
 
-        private void frmAutoPhanCongPreview_Load(object sender, EventArgs e)
+        private void FrmAutoPhanCongPreview_Load(object sender, EventArgs e)
         {
             // Form initialized
         }
@@ -268,11 +268,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
 
                 SelectCurrentSemester();
             }
-            catch (Exception ex)
+            catch (Exception exSem)
             {
-                MessageBox.Show($"Lỗi khi load danh sách học kỳ: {ex.Message}", "Lỗi",
+                MessageBox.Show($"Lỗi khi load danh sách học kỳ: {exSem.Message}", "Lỗi",
                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                UpdateStatusMessage($"✗ Lỗi: {ex.Message}", StatusType.Error);
+                UpdateStatusMessage($"✗ Lỗi: {exSem.Message}", StatusType.Error);
             }
         }
 
@@ -285,8 +285,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             {
                 for (int i = 0; i < cbHocKy.Items.Count; i++)
                 {
-                    var item = cbHocKy.Items[i] as ComboBoxItem;
-                    if (item != null && (int)item.Value == hocKyHienTai.MaHocKy)
+                    if (cbHocKy.Items[i] is ComboBoxItem item && (int)item.Value == hocKyHienTai.MaHocKy)
                     {
                         cbHocKy.SelectedIndex = i;
                         return;
@@ -297,12 +296,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             cbHocKy.SelectedIndex = 0;
         }
 
-        private void cbHocKy_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbHocKy_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbHocKy.SelectedItem == null) return;
 
-            var selectedItem = cbHocKy.SelectedItem as ComboBoxItem;
-            if (selectedItem == null) return;
+            if (!(cbHocKy.SelectedItem is ComboBoxItem selectedItem)) return;
 
             selectedHocKyId = (int)selectedItem.Value;
             isReadOnly = !SemesterHelper.IsEditable(selectedHocKyId.Value);
@@ -359,11 +357,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                     UpdateStatusMessage("📌 Nhấn 'Tạo tự động' để bắt đầu", StatusType.Info);
                 }
             }
-            catch (Exception ex)
+            catch (Exception exAssign)
             {
-                MessageBox.Show($"Lỗi khi tải phân công: {ex.Message}", "Lỗi",
+                MessageBox.Show($"Lỗi khi tải phân công: {exAssign.Message}", "Lỗi",
                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                UpdateStatusMessage($"✗ Lỗi: {ex.Message}", StatusType.Error);
+                UpdateStatusMessage($"✗ Lỗi: {exAssign.Message}", StatusType.Error);
             }
         }
 
@@ -392,9 +390,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                 cbKhoi.Items.Add("12");
                 cbKhoi.SelectedIndex = 0;
             }
-            catch (Exception ex)
+            catch (Exception exKhoi)
             {
-                UpdateStatusMessage($"⚠ Lỗi load khối: {ex.Message}", StatusType.Warning);
+                UpdateStatusMessage($"⚠ Lỗi load khối: {exKhoi.Message}", StatusType.Warning);
             }
         }
 
@@ -430,9 +428,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                 cbMon.ValueMember = "Value";
                 cbMon.SelectedIndex = 0;
             }
-            catch (Exception ex)
+            catch (Exception exMon)
             {
-                UpdateStatusMessage($"⚠ Lỗi load môn học: {ex.Message}", StatusType.Warning);
+                UpdateStatusMessage($"⚠ Lỗi load môn học: {exMon.Message}", StatusType.Warning);
             }
         }
 
@@ -460,9 +458,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                     grid.DataSource = currentCandidates;
                 }
             }
-            catch (Exception ex)
+            catch (Exception exGrid)
             {
-                Console.WriteLine($"⚠ Lỗi refresh grid: {ex.Message}");
+                Console.WriteLine($"⚠ Lỗi refresh grid: {exGrid.Message}");
             }
         }
 
@@ -509,9 +507,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception exEnrich)
                 {
-                    Console.WriteLine($"⚠ Lỗi enrich candidate: {ex.Message}");
+                    Console.WriteLine($"⚠ Lỗi enrich candidate: {exEnrich.Message}");
                 }
             }
         }
@@ -624,8 +622,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             if (grid.Columns[e.ColumnIndex].Name == "TenGiaoVien")
             {
                 var row = grid.Rows[e.RowIndex];
-                var candidate = row.DataBoundItem as PhanCongCandidate;
-                if (candidate != null)
+                if (row.DataBoundItem is PhanCongCandidate candidate)
                 {
                     string newTeacherName = row.Cells["TenGiaoVien"].Value?.ToString();
                     UpdateTeacherForCandidate(candidate, newTeacherName);
@@ -678,8 +675,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
 
             foreach (DataGridViewRow row in grid.SelectedRows)
             {
-                var candidate = row.DataBoundItem as PhanCongCandidate;
-                if (candidate != null && currentCandidates != null)
+                if (row.DataBoundItem is PhanCongCandidate candidate && currentCandidates != null)
                 {
                     currentCandidates.Remove(candidate);
                 }
@@ -691,6 +687,66 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
         #endregion
 
         #region Auto Generation
+        private async Task GenerateAsync()
+        {
+            try
+            {
+                if (!selectedHocKyId.HasValue) return;
+
+                // ✅ Đọc filter Khối
+                int? khoi = null;
+                if (cbKhoi != null && cbKhoi.SelectedItem != null && cbKhoi.SelectedItem.ToString() != "Tất cả")
+                {
+                    if (int.TryParse(cbKhoi.SelectedItem.ToString(), out int k)) khoi = k;
+                }
+
+                // ✅ Đọc filter Môn học (từ ComboBoxItem)
+                string maMon = null;
+                if (cbMon != null && cbMon.SelectedItem is ComboBoxItem monItem && monItem.Value != null)
+                {
+                    maMon = monItem.Value.ToString();
+                }
+
+                // ✅ FIX: Default max load 450 (Semester), not 30 (Week)
+                int maxTiet = numMaxTiet != null ? (int)numMaxTiet.Value : 450;
+                bool allowNonPrimary = swAllowNonPrimary != null && swAllowNonPrimary.Checked;
+
+                var policy = new AssignmentPolicy
+                {
+                    MaxLoadPerSemester = maxTiet,
+                    AllowNonPrimarySpecialty = allowNonPrimary
+                };
+
+                UpdateStatusMessage("⏳ Đang tạo phân công...", StatusType.Info);
+                SetButtonsState(false, false);
+
+                var res = await Task.Run(() => autoService.GenerateAutoAssignmentsFiltered(
+                    selectedHocKyId.Value, policy, khoi, maMon));
+
+                currentCandidates = res.Candidates;
+                EnrichCandidatesWithNames(currentCandidates);
+                RefreshGrid();
+
+                if (res.Report.HardViolations == 0)
+                {
+                    UpdateStatusMessage($"✓ Tạo thành công {currentCandidates.Count} phân công", StatusType.Success);
+                }
+                else
+                {
+                    UpdateStatusMessage($"⚠ Tạo xong với {res.Report.HardViolations} cảnh báo", StatusType.Warning);
+                }
+
+                SetButtonsState(true, true);
+            }
+            catch (Exception exGen)
+            {
+                UpdateStatusMessage($"✗ Lỗi: {exGen.Message}", StatusType.Error);
+                MessageBox.Show($"Lỗi khi tạo phân công: {exGen.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SetButtonsState(true, false);
+            }
+        }
+
         private void BtnGenerate_Click(object sender, EventArgs e)
         {
             if (!selectedHocKyId.HasValue)
@@ -715,90 +771,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             _ = GenerateAsync();
         }
 
-        private async Task GenerateAsync()
-        {
-            try
-            {
-                UpdateStatusMessage("⏳ Đang tạo phân công tự động...", StatusType.Info);
-                if (progressBar != null)
-                {
-                    progressBar.Visible = true;
-                    progressBar.Value = 10;
-                }
-
-                // ✅ Đọc filter Khối
-                int? khoi = null;
-                if (cbKhoi != null && cbKhoi.SelectedItem != null && cbKhoi.SelectedItem.ToString() != "Tất cả")
-                {
-                    if (int.TryParse(cbKhoi.SelectedItem.ToString(), out int k)) khoi = k;
-                }
-
-                // ✅ Đọc filter Môn học (từ ComboBoxItem)
-                string maMon = null;
-                if (cbMon != null && cbMon.SelectedItem is ComboBoxItem monItem && monItem.Value != null)
-                {
-                    maMon = monItem.Value.ToString();
-                }
-                int maxTiet = numMaxTiet != null ? (int)numMaxTiet.Value : 30;
-                bool allowNonPrimary = swAllowNonPrimary != null && swAllowNonPrimary.Checked;
-
-                var policy = new AssignmentPolicy
-                {
-                    MaxLoadPerTeacherPerWeek = maxTiet,
-                    AllowNonPrimarySpecialty = allowNonPrimary
-                };
-
-                await Task.Delay(50);
-                if (progressBar != null) progressBar.Value = 35;
-
-                Console.WriteLine($"🔄 Bắt đầu tạo phân công cho HocKy ID: {selectedHocKyId}");
-
-                var res = await Task.Run(() => autoService.GenerateAutoAssignmentsFiltered(
-                    selectedHocKyId.Value, policy, khoi, maMon));
-
-                Console.WriteLine($"✅ Đã tạo {res.Candidates.Count} candidates");
-
-                currentCandidates = res.Candidates;
-                if (progressBar != null) progressBar.Value = 70;
-
-                EnrichCandidatesWithNames(currentCandidates);
-                RefreshGrid();
-
-                if (progressBar != null)
-                {
-                    progressBar.Value = 100;
-                    await Task.Delay(200);
-                    progressBar.Visible = false;
-                }
-
-                if (res.Report.HardViolations > 0)
-                {
-                    UpdateStatusMessage($"⚠ Có {res.Report.HardViolations} vấn đề cần kiểm tra", StatusType.Warning);
-                    MessageBox.Show(
-                        string.Join("\n\n", res.Report.Messages),
-                        "Cảnh báo",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    );
-                }
-                else
-                {
-                    UpdateStatusMessage($"✓ Đã tạo {currentCandidates.Count} phân công thành công!", StatusType.Success);
-                }
-
-                SetButtonsState(true, true);
-            }
-            catch (Exception ex)
-            {
-                if (progressBar != null) progressBar.Visible = false;
-                UpdateStatusMessage($"✗ Lỗi: {ex.Message}", StatusType.Error);
-                MessageBox.Show($"Lỗi: {ex.Message}\n\n{ex.StackTrace}", "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        #endregion
-
-        #region Button Handlers
         private void BtnValidate_Click(object sender, EventArgs e)
         {
             if (currentCandidates == null || currentCandidates.Count == 0)
@@ -849,7 +821,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
 
             try
             {
-                // ✅ Truyền hocKyId vào PersistTemporary
                 persistService.PersistTemporary(currentCandidates, selectedHocKyId.Value);
                 UpdateStatusMessage($"💾 Đã lưu tạm {currentCandidates.Count} phân công", StatusType.Success);
                 MessageBox.Show(
@@ -859,10 +830,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                     MessageBoxIcon.Information
                 );
             }
-            catch (Exception ex)
+            catch (Exception exSave)
             {
-                UpdateStatusMessage($"✗ Lỗi lưu tạm: {ex.Message}", StatusType.Error);
-                MessageBox.Show($"Lỗi khi lưu tạm: {ex.Message}", "Lỗi",
+                UpdateStatusMessage($"✗ Lỗi lưu tạm: {exSave.Message}", StatusType.Error);
+                MessageBox.Show($"Lỗi khi lưu tạm: {exSave.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -916,10 +887,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
-            catch (Exception ex)
+            catch (Exception exAccept)
             {
-                UpdateStatusMessage($"✗ Lỗi: {ex.Message}", StatusType.Error);
-                MessageBox.Show($"Lỗi khi chấp nhận: {ex.Message}", "Lỗi",
+                UpdateStatusMessage($"✗ Lỗi: {exAccept.Message}", StatusType.Error);
+                MessageBox.Show($"Lỗi khi chấp nhận: {exAccept.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -941,10 +912,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                 MessageBox.Show("Đã xóa bảng tạm thành công.", "Thông báo",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (Exception ex)
+            catch (Exception exRollback)
             {
-                UpdateStatusMessage($"✗ Lỗi xóa: {ex.Message}", StatusType.Error);
-                MessageBox.Show($"Lỗi khi xóa bảng tạm: {ex.Message}", "Lỗi",
+                UpdateStatusMessage($"✗ Lỗi xóa: {exRollback.Message}", StatusType.Error);
+                MessageBox.Show($"Lỗi khi xóa bảng tạm: {exRollback.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

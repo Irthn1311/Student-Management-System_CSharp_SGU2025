@@ -65,12 +65,15 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 			// Map TKB_Temp rows to official ThoiKhoaBieu through PhanCongGiangDay to obtain MaPhanCong.
 			// Assumption: a unique PhanCongGiangDay exists for (MaLop, MaGV, MaMon, MaHocKy=SemesterId)
 			const string insertSql = @"
-				INSERT INTO ThoiKhoaBieu(MaPhanCong, ThuTrongTuan, TietBatDau, SoTiet, PhongHoc)
+				INSERT INTO ThoiKhoaBieu(MaPhanCong, ThuTrongTuan, TietBatDau, SoTiet, PhongHoc, MaHocKy, MaLop, MaGiaoVien)
 				SELECT pc.MaPhanCong,
 					CASE WHEN t.Thu IN (2,3,4,5,6,7) THEN CONCAT('Thu ', t.Thu) ELSE CAST(t.Thu AS CHAR) END AS ThuTrongTuan,
 					t.Tiet AS TietBatDau,
 					1 AS SoTiet,
-					t.Phong
+					t.Phong,
+					t.SemesterId,
+					t.MaLop,
+					t.MaGV
 				FROM TKB_Temp t
 				JOIN PhanCongGiangDay pc ON pc.MaLop = t.MaLop AND pc.MaGiaoVien = t.MaGV AND pc.MaMonHoc = t.MaMon AND pc.MaHocKy = @SemesterId
 				WHERE t.SemesterId = @SemesterId AND t.WeekNo = @WeekNo;";
@@ -377,10 +380,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 				WHERE pc.MaHocKy = @MaHocKy";
 
 			const string insertSql = @"
-				INSERT INTO ThoiKhoaBieu(MaPhanCong, ThuTrongTuan, TietBatDau, SoTiet, PhongHoc)
+				INSERT INTO ThoiKhoaBieu(MaPhanCong, ThuTrongTuan, TietBatDau, SoTiet, PhongHoc, MaHocKy, MaLop, MaGiaoVien)
 				SELECT pc.MaPhanCong,
 					CASE WHEN @Thu IN (2,3,4,5,6,7) THEN CONCAT('Thu ', @Thu) ELSE CAST(@Thu AS CHAR) END,
-					@Tiet, 1, @Phong
+					@Tiet, 1, @Phong,
+					@MaHocKy,
+					@MaLop,
+					@MaGV
 				FROM PhanCongGiangDay pc
 				WHERE pc.MaLop = @MaLop AND pc.MaMonHoc = @MaMon AND pc.MaGiaoVien = @MaGV AND pc.MaHocKy = @MaHocKy
 				LIMIT 1";
@@ -422,6 +428,154 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 						tx.Rollback();
 						throw;
 					}
+				}
+			}
+		}
+
+		public bool SwapSlots(int semesterId, int weekNo, int maLop, int srcThu, int srcTiet, int destThu, int destTiet)
+		{
+			// 1. Get Source and Dest slots
+			var src = GetSlot(semesterId, weekNo, maLop, srcThu, srcTiet);
+			var dest = GetSlot(semesterId, weekNo, maLop, destThu, destTiet);
+
+			if (src == null && dest == null) return false; // Nothing to swap
+
+			// 2. Validate Teacher Conflicts
+			// If moving Src to Dest: Check if Src.Teacher is busy at Dest (excluding Src itself)
+			if (src != null)
+			{
+				if (IsTeacherBusy(semesterId, weekNo, src.MaGV, destThu, destTiet, maLop))
+					return false;
+			}
+			// If moving Dest to Src: Check if Dest.Teacher is busy at Src (excluding Dest itself)
+			if (dest != null)
+			{
+				if (IsTeacherBusy(semesterId, weekNo, dest.MaGV, srcThu, srcTiet, maLop))
+					return false;
+			}
+
+			// 3. Perform Swap
+			const string updateSql = @"UPDATE TKB_Temp SET Thu=@NewThu, Tiet=@NewTiet WHERE SemesterId=@SemesterId AND WeekNo=@WeekNo AND MaLop=@MaLop AND Thu=@OldThu AND Tiet=@OldTiet";
+			
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var tx = conn.BeginTransaction())
+				{
+					try
+					{
+						// Move Src to Temp location (-1, -1) to avoid collision if swapping
+						if (src != null)
+						{
+							using (var cmd = new MySqlCommand(updateSql, conn, tx))
+							{
+								cmd.Parameters.AddWithValue("@NewThu", -1);
+								cmd.Parameters.AddWithValue("@NewTiet", -1);
+								cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+								cmd.Parameters.AddWithValue("@WeekNo", weekNo);
+								cmd.Parameters.AddWithValue("@MaLop", maLop);
+								cmd.Parameters.AddWithValue("@OldThu", srcThu);
+								cmd.Parameters.AddWithValue("@OldTiet", srcTiet);
+								cmd.ExecuteNonQuery();
+							}
+						}
+
+						// Move Dest to Src
+						if (dest != null)
+						{
+							using (var cmd = new MySqlCommand(updateSql, conn, tx))
+							{
+								cmd.Parameters.AddWithValue("@NewThu", srcThu);
+								cmd.Parameters.AddWithValue("@NewTiet", srcTiet);
+								cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+								cmd.Parameters.AddWithValue("@WeekNo", weekNo);
+								cmd.Parameters.AddWithValue("@MaLop", maLop);
+								cmd.Parameters.AddWithValue("@OldThu", destThu);
+								cmd.Parameters.AddWithValue("@OldTiet", destTiet);
+								cmd.ExecuteNonQuery();
+							}
+						}
+
+						// Move Src (from Temp) to Dest
+						if (src != null)
+						{
+							using (var cmd = new MySqlCommand(updateSql, conn, tx))
+							{
+								cmd.Parameters.AddWithValue("@NewThu", destThu);
+								cmd.Parameters.AddWithValue("@NewTiet", destTiet);
+								cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+								cmd.Parameters.AddWithValue("@WeekNo", weekNo);
+								cmd.Parameters.AddWithValue("@MaLop", maLop);
+								cmd.Parameters.AddWithValue("@OldThu", -1);
+								cmd.Parameters.AddWithValue("@OldTiet", -1);
+								cmd.ExecuteNonQuery();
+							}
+						}
+
+						tx.Commit();
+						return true;
+					}
+					catch
+					{
+						tx.Rollback();
+						return false;
+					}
+				}
+			}
+		}
+
+		private AssignmentSlot GetSlot(int semesterId, int weekNo, int maLop, int thu, int tiet)
+		{
+			const string sql = "SELECT * FROM TKB_Temp WHERE SemesterId=@SemesterId AND WeekNo=@WeekNo AND MaLop=@MaLop AND Thu=@Thu AND Tiet=@Tiet";
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+					cmd.Parameters.AddWithValue("@WeekNo", weekNo);
+					cmd.Parameters.AddWithValue("@MaLop", maLop);
+					cmd.Parameters.AddWithValue("@Thu", thu);
+					cmd.Parameters.AddWithValue("@Tiet", tiet);
+					using (var reader = cmd.ExecuteReader())
+					{
+						if (reader.Read())
+						{
+							return new AssignmentSlot
+							{
+								MaLop = reader.GetInt32("MaLop"),
+								Thu = reader.GetInt32("Thu"),
+								Tiet = reader.GetInt32("Tiet"),
+								MaMon = reader.GetInt32("MaMon"),
+								MaGV = reader.GetString("MaGV"),
+								Phong = reader.IsDBNull(reader.GetOrdinal("Phong")) ? "" : reader.GetString("Phong")
+							};
+						}
+						return null;
+					}
+				}
+			}
+		}
+
+		private bool IsTeacherBusy(int semesterId, int weekNo, string maGV, int thu, int tiet, int excludeMaLop)
+		{
+			// Check if teacher is teaching ANY OTHER class at this time
+			const string sql = @"SELECT COUNT(*) FROM TKB_Temp 
+								 WHERE SemesterId=@SemesterId AND WeekNo=@WeekNo 
+								 AND MaGV=@MaGV AND Thu=@Thu AND Tiet=@Tiet AND MaLop != @ExcludeMaLop";
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+					cmd.Parameters.AddWithValue("@WeekNo", weekNo);
+					cmd.Parameters.AddWithValue("@MaGV", maGV);
+					cmd.Parameters.AddWithValue("@Thu", thu);
+					cmd.Parameters.AddWithValue("@Tiet", tiet);
+					cmd.Parameters.AddWithValue("@ExcludeMaLop", excludeMaLop);
+					int count = Convert.ToInt32(cmd.ExecuteScalar());
+					return count > 0;
 				}
 			}
 		}

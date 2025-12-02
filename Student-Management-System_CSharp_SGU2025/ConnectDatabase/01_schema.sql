@@ -217,36 +217,59 @@ CREATE TABLE ThoiKhoaBieu (
     TietBatDau INT,
     SoTiet INT,
     PhongHoc VARCHAR(50),
-    FOREIGN KEY (MaPhanCong) REFERENCES PhanCongGiangDay(MaPhanCong)
+    MaHocKy INT NOT NULL,
+    MaLop INT NOT NULL,
+    MaGiaoVien VARCHAR(15) NOT NULL,
+    FOREIGN KEY (MaPhanCong) REFERENCES PhanCongGiangDay(MaPhanCong),
+    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy),
+    FOREIGN KEY (MaLop) REFERENCES LopHoc(MaLop),
+    FOREIGN KEY (MaGiaoVien) REFERENCES GiaoVien(MaGiaoVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Bảng tạm cho Auto Phân công
+-- Bảng tạm cho Auto Phân công
 CREATE TABLE IF NOT EXISTS PhanCong_Temp (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    MaLop INT NOT NULL,
-    MaGiaoVien VARCHAR(15) NOT NULL,
-    MaMonHoc INT NOT NULL,
-    MaHocKy INT NOT NULL,
-    SoTietTuan INT NOT NULL,
-    Score INT NULL,
-    Note NVARCHAR(255) NULL,
-    UNIQUE KEY uq_pc_temp (MaLop, MaGiaoVien, MaMonHoc, MaHocKy),
-    INDEX idx_pc_temp_hk (MaHocKy)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    MaLop INT,
+    MaGiaoVien VARCHAR(20),
+    MaMonHoc INT,
+    MaHocKy INT,
+    SoTietTuan INT,
+    Score INT,
+    Note NVARCHAR(255)
+);
 
--- Bảng tạm để lưu lịch sinh tự động trước khi chấp nhận chính thức
+-- Bảng TKB_Temp (Lưu kết quả phân công tạm thời)
 CREATE TABLE IF NOT EXISTS TKB_Temp (
     Id INT PRIMARY KEY AUTO_INCREMENT,
-    SemesterId INT NOT NULL,
-    WeekNo INT NOT NULL,
-    MaLop INT NOT NULL,
-    Thu INT NOT NULL,
-    Tiet INT NOT NULL,
-    MaMon INT NOT NULL,
-    MaGV VARCHAR(15) NOT NULL,
-    Phong VARCHAR(50) NULL,
-    UNIQUE KEY uq_temp_slot (SemesterId, WeekNo, MaLop, Thu, Tiet),
-    INDEX idx_temp_teacher (SemesterId, WeekNo, MaGV, Thu, Tiet)
+    SemesterId INT,
+    WeekNo INT,
+    MaLop INT,
+    MaGV VARCHAR(20),
+    MaMon INT,
+    Thu INT,
+    Tiet INT,
+    Phong VARCHAR(50)
+);
+
+-- Bảng lịch sử chuyển lớp
+CREATE TABLE IF NOT EXISTS LichSuChuyenLop (
+    MaLichSu INT PRIMARY KEY AUTO_INCREMENT,
+    MaHocSinh INT NOT NULL,
+    MaLopCu INT NOT NULL,
+    MaLopMoi INT NOT NULL,
+    MaHocKy INT NOT NULL,
+    NgayChuyen DATE NOT NULL DEFAULT (CURRENT_DATE),
+    LyDo NVARCHAR(500),
+    NguoiThucHien VARCHAR(20),
+    FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh) ON DELETE CASCADE,
+    FOREIGN KEY (MaLopCu) REFERENCES LopHoc(MaLop) ON DELETE CASCADE,
+    FOREIGN KEY (MaLopMoi) REFERENCES LopHoc(MaLop) ON DELETE CASCADE,
+    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy) ON DELETE CASCADE,
+    FOREIGN KEY (NguoiThucHien) REFERENCES NguoiDung(TenDangNhap) ON DELETE SET NULL,
+    INDEX idx_hocsinh (MaHocSinh),
+    INDEX idx_hocky (MaHocKy),
+    INDEX idx_ngaychuyen (NgayChuyen)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE DiemSo (

@@ -12,7 +12,7 @@ namespace Student_Management_System_CSharp_SGU2025.ConnectDatabase
 {
     internal class ConnectionDatabase
     {
-        private static string connectionString = "Server=localhost;Database=QuanLyHocSinh;Uid=root;Pwd=;";
+        private static string connectionString = "Server=localhost;Database=QuanLyHocSinh;Uid=root;Pwd=12345678;";
 
         /// <summary>
         /// Lấy kết nối đến cơ sở dữ liệu MySQL

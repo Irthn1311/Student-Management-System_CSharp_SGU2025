@@ -51,6 +51,11 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 		{
 			return _dao.HasConflict(semesterId, weekNo, slot);
 		}
+
+		public bool SwapSlots(int semesterId, int weekNo, int maLop, int srcThu, int srcTiet, int destThu, int destTiet)
+		{
+			return _dao.SwapSlots(semesterId, weekNo, maLop, srcThu, srcTiet, destThu, destTiet);
+		}
 	}
 }
 

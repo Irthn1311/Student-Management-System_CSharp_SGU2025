@@ -119,5 +119,9 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return phongHoc; }
             set { phongHoc = value; }
         }
+
+        public int MaHocKy { get; set; }
+        public int MaLop { get; set; }
+        public string MaGiaoVien { get; set; }
     }
 }

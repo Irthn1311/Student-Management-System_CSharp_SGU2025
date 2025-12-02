@@ -11,23 +11,45 @@ USE QuanLyHocSinh;
 -- =====================================================================
 
 -- Kiểm tra và tạo unique index cho lớp học (không thể có 2 môn trùng thứ/tiết)
+-- Option B: Constraint on (MaHocKy, ThuTrongTuan, TietBatDau, MaLop)
 SET @index_exists_lop = (
     SELECT COUNT(*)
     FROM information_schema.STATISTICS
     WHERE TABLE_SCHEMA = 'QuanLyHocSinh'
       AND TABLE_NAME = 'ThoiKhoaBieu'
-      AND INDEX_NAME = 'ux_tkb_lop_slot'
+      AND INDEX_NAME = 'ux_tkb_lop'
 );
 
 SET @sql_create_lop_index = IF(
     @index_exists_lop = 0,
-    'CREATE UNIQUE INDEX ux_tkb_lop_slot ON ThoiKhoaBieu (MaPhanCong, ThuTrongTuan, TietBatDau)',
-    'SELECT "Index ux_tkb_lop_slot already exists" AS Status'
+    'CREATE UNIQUE INDEX ux_tkb_lop ON ThoiKhoaBieu (MaHocKy, ThuTrongTuan, TietBatDau, MaLop)',
+    'SELECT "Index ux_tkb_lop already exists" AS Status'
 );
 
 PREPARE stmt_lop FROM @sql_create_lop_index;
 EXECUTE stmt_lop;
 DEALLOCATE PREPARE stmt_lop;
+
+
+-- Kiểm tra và tạo unique index cho giáo viên (không thể dạy 2 lớp cùng lúc)
+-- Option B: Constraint on (MaHocKy, ThuTrongTuan, TietBatDau, MaGiaoVien)
+SET @index_exists_gv = (
+    SELECT COUNT(*)
+    FROM information_schema.STATISTICS
+    WHERE TABLE_SCHEMA = 'QuanLyHocSinh'
+      AND TABLE_NAME = 'ThoiKhoaBieu'
+      AND INDEX_NAME = 'ux_tkb_gv'
+);
+
+SET @sql_create_gv_index = IF(
+    @index_exists_gv = 0,
+    'CREATE UNIQUE INDEX ux_tkb_gv ON ThoiKhoaBieu (MaHocKy, ThuTrongTuan, TietBatDau, MaGiaoVien)',
+    'SELECT "Index ux_tkb_gv already exists" AS Status'
+);
+
+PREPARE stmt_gv FROM @sql_create_gv_index;
+EXECUTE stmt_gv;
+DEALLOCATE PREPARE stmt_gv;
 
 -- Kiểm tra và tạo unique index cho giáo viên (không thể dạy 2 lớp cùng lúc)
 -- Lưu ý: Do cấu trúc hiện tại dùng MaPhanCong làm FK, constraint này sẽ được enforce
