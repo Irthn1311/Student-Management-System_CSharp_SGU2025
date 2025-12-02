@@ -36,14 +36,14 @@ INSERT INTO MonHoc (MaMonHoc, TenMonHoc, SoTiet, GhiChu) VALUES
 (13, 'GDQP-AN', 26, 'Kỹ năng khác');
 
 -- Vai trò hệ thống
-INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES
+INSERT IGNORE INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES
 ('student', 'Học sinh', 'Học sinh trong hệ thống'),
 ('parent', 'Phụ huynh', 'Phụ huynh học sinh'),
 ('teacher', 'Giáo viên', 'Giáo viên giảng dạy'),
 ('admin', 'Quản trị viên', 'Quản trị hệ thống');
 
 -- Chức năng hệ thống
-INSERT INTO ChucNang (MaChucNang, TenChucNang, MoTa) VALUES
+INSERT IGNORE INTO ChucNang (MaChucNang, TenChucNang, MoTa) VALUES
 ('qlhs', 'Quản lý học sinh', 'Quản lý thông tin học sinh'),
 ('qlphuhuynh', 'Quản lý phụ huynh', 'Quản lý thông tin phụ huynh'),
 ('qlgiaovien', 'Quản lý giáo viên', 'Quản lý thông tin giáo viên'),
@@ -54,7 +54,7 @@ INSERT INTO ChucNang (MaChucNang, TenChucNang, MoTa) VALUES
 ('qlthongbao', 'Quản lý thông báo', 'Quản lý thông báo hệ thống');
 
 -- Phân quyền vai trò - chức năng
-INSERT INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
+INSERT IGNORE INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
 -- Học sinh
 ('student', 'qlhs'),
 -- Phụ huynh
@@ -564,7 +564,7 @@ WHERE h.MaHocSinh BETWEEN 85 AND 1008;
 -- LƯU Ý: Tài khoản học sinh đã được tạo ở PHẦN 5B, không tạo lại ở đây
 
 -- Người dùng hệ thống (chỉ Admin và Giáo viên)
-INSERT INTO NguoiDung (TenDangNhap, MatKhau, TrangThai) VALUES
+INSERT IGNORE INTO NguoiDung (TenDangNhap, MatKhau, TrangThai) VALUES
 -- Admin
 ('admin', '12345678', 'Hoạt động'),
 -- Giáo viên (70 tài khoản)
@@ -597,7 +597,7 @@ SELECT 'Admin and teacher accounts created (71 accounts)' AS Status;
 
 -- Phân quyền người dùng (chỉ Admin và Giáo viên)
 -- LƯU Ý: Phân quyền học sinh đã được thực hiện ở PHẦN 5B
-INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro) VALUES
+INSERT IGNORE INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro) VALUES
 -- Admin
 ('admin', 'admin'),
 -- Giáo viên
