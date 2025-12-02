@@ -90,7 +90,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.Dashboard
         {
             try
             {
-                // Lấy danh sách học kỳ từ database
+                // Lấy danh sách học kỳ từ database (đã sắp xếp theo thứ tự mới nhất)
                 List<HocKyDTO> dsHocKy = hocKyDAO.DocDSHocKy();
 
                 // Xóa dữ liệu cũ trong combobox
@@ -98,17 +98,44 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.Dashboard
                 cbHocKiNamHoc.DisplayMember = "Text";
                 cbHocKiNamHoc.ValueMember = "Value";
 
-                // Thêm các item với định dạng "tenhocky - manamhoc"
-                foreach (HocKyDTO hocKy in dsHocKy)
+                // Tạo danh sách các item để thêm vào combobox
+                var itemsToAdd = new List<dynamic>();
+
+                // Tìm học kỳ mới nhất có dữ liệu
+                int indexHocKyMoiNhatCoDuLieu = -1;
+
+                for (int i = 0; i < dsHocKy.Count; i++)
                 {
+                    HocKyDTO hocKy = dsHocKy[i];
                     string displayText = $"{hocKy.TenHocKy} - {hocKy.MaNamHoc}";
-                    cbHocKiNamHoc.Items.Add(new { Text = displayText, Value = hocKy.MaHocKy });
+
+                    var item = new { Text = displayText, Value = hocKy.MaHocKy };
+                    itemsToAdd.Add(item);
+
+                    // Kiểm tra học kỳ này có dữ liệu không
+                    if (indexHocKyMoiNhatCoDuLieu == -1 && hocKyDAO.KiemTraHocKyCoXepLoai(hocKy.MaHocKy))
+                    {
+                        indexHocKyMoiNhatCoDuLieu = i;
+                    }
                 }
 
-                // Chọn item đầu tiên nếu có dữ liệu
+                // Thêm tất cả items vào combobox
+                foreach (var item in itemsToAdd)
+                {
+                    cbHocKiNamHoc.Items.Add(item);
+                }
+
+                // Chọn học kỳ mới nhất có dữ liệu, nếu không có thì chọn học kỳ mới nhất
                 if (cbHocKiNamHoc.Items.Count > 0)
                 {
-                    cbHocKiNamHoc.SelectedIndex = 0;
+                    if (indexHocKyMoiNhatCoDuLieu >= 0)
+                    {
+                        cbHocKiNamHoc.SelectedIndex = indexHocKyMoiNhatCoDuLieu;
+                    }
+                    else
+                    {
+                        cbHocKiNamHoc.SelectedIndex = 0; // Chọn học kỳ mới nhất (dù chưa có dữ liệu)
+                    }
                 }
             }
             catch (Exception ex)
