@@ -599,5 +599,29 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 return false;
             }
         }
+
+        /// <summary>
+        /// Lấy danh sách học sinh trong lớp theo học kỳ cụ thể.
+        /// </summary>
+        /// <param name="maLop">Mã lớp.</param>
+        /// <param name="maHocKy">Mã học kỳ.</param>
+        /// <returns>Danh sách học sinh trong lớp.</returns>
+        public List<HocSinhDTO> LayDanhSachHocSinhTheoLopVaHocKy(int maLop, int maHocKy)
+        {
+            if (maLop <= 0 || maHocKy <= 0)
+            {
+                throw new ArgumentException("Mã lớp và mã học kỳ không hợp lệ.");
+            }
+
+            try
+            {
+                return phanLopDAO.LayDanhSachHocSinhTrongLop(maLop, maHocKy);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi BLL LayDanhSachHocSinhTheoLopVaHocKy: " + ex.Message);
+                throw;
+            }
+        }
     }
 }

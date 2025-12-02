@@ -84,6 +84,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.Dashboard
             cardHoatDongNoiBatDashboard4.PictureBoxThongBao.BackColor = Color.FromArgb(243, 232, 255);
             cardHoatDongNoiBatDashboard4.lbCardValue.ForeColor = Color.FromArgb(147,51,234);
 
+            // 🆕 Thêm button "Gửi yêu cầu chuyển lớp" cho PHỤ HUYNH
+            ThemButtonGuiYeuCauChuyenLop();
         }
 
         private void LoadHocKyToCombobox()
@@ -243,6 +245,132 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.Dashboard
         private void cbHocKiNamHoc_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadThongKeXepLoai();
+        }
+
+        /// <summary>
+        /// 🆕 Thêm button "Gửi yêu cầu chuyển lớp" CHỈ cho PHỤ HUYNH và HỌC SINH
+        /// </summary>
+        private void ThemButtonGuiYeuCauChuyenLop()
+        {
+            try
+            {
+                // ✅ KIỂM TRA QUYỀN: Chỉ hiển thị cho Phụ huynh hoặc Học sinh
+                bool coQuyen = false;
+                string tenDangNhap = Utils.SessionManager.TenDangNhap;
+                string vaiTro = Utils.SessionManager.VaiTro ?? "";
+
+                // CÁCH 1: Kiểm tra theo VaiTro từ SessionManager
+                if (!string.IsNullOrEmpty(vaiTro))
+                {
+                    string vaiTroUpper = vaiTro.ToUpper();
+                    if (vaiTroUpper.Contains("HỌC SINH") || vaiTroUpper.Contains("HOCSINH") || 
+                        vaiTroUpper.Contains("PHỤ HUYNH") || vaiTroUpper.Contains("PHUHUYNH") ||
+                        vaiTroUpper == "HỌC SINH" || vaiTroUpper == "PHỤ HUYNH")
+                    {
+                        coQuyen = true;
+                    }
+                }
+
+                // CÁCH 2: Fallback - Kiểm tra theo tên đăng nhập
+                if (!coQuyen && !string.IsNullOrEmpty(tenDangNhap))
+                {
+                    string upper = tenDangNhap.ToUpper();
+                    // HS1001, PH001, hoặc chứa từ khóa
+                    if (upper.StartsWith("HS") || upper.StartsWith("PH") || 
+                        upper.Contains("HOCSINH") || upper.Contains("PHUHUYNH"))
+                    {
+                        coQuyen = true;
+                    }
+                }
+
+                // CÁCH 3: Kiểm tra theo PermissionHelper (nếu không phải Admin/GV)
+                if (!coQuyen)
+                {
+                    try
+                    {
+                        // Nếu KHÔNG có quyền admin → có thể là HS/PH
+                        bool coQuyenAdmin = Utils.PermissionHelper.HasAccessToFunction("QLLOPHOC");
+                        if (!coQuyenAdmin)
+                        {
+                            coQuyen = true; // Không phải admin → cho phép
+                        }
+                    }
+                    catch
+                    {
+                        // Nếu lỗi, không cho phép
+                    }
+                }
+
+                // ❌ Nếu KHÔNG có quyền → Không hiển thị button
+                if (!coQuyen)
+                {
+                    Console.WriteLine($"ℹ️ Button 'Gửi yêu cầu' không hiển thị - User: {tenDangNhap}, Role: {vaiTro}");
+                    return;
+                }
+
+                // ✅ CÓ QUYỀN → Tạo button
+                Console.WriteLine($"✅ Button 'Gửi yêu cầu' sẽ hiển thị cho User: {tenDangNhap}, Role: {vaiTro}");
+
+                // ✅ CÓ QUYỀN → Tạo button
+                Guna.UI2.WinForms.Guna2Button btnGuiYeuCau = new Guna.UI2.WinForms.Guna2Button();
+                btnGuiYeuCau.Name = "btnGuiYeuCauChuyenLop";
+                btnGuiYeuCau.Text = "📤 Gửi yêu cầu chuyển lớp";
+                btnGuiYeuCau.Size = new Size(250, 80);
+                btnGuiYeuCau.FillColor = Color.FromArgb(34, 197, 94); // Màu xanh lá
+                btnGuiYeuCau.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+                btnGuiYeuCau.ForeColor = Color.White;
+                btnGuiYeuCau.BorderRadius = 12;
+                btnGuiYeuCau.Cursor = Cursors.Hand;
+
+                // ĐẶT VỊ TRÍ: Góc phải trên
+                btnGuiYeuCau.Location = new Point(920, 30);
+
+                // Gắn sự kiện click
+                btnGuiYeuCau.Click += BtnGuiYeuCauChuyenLop_Click;
+
+                // Thêm vào dashboard
+                this.Controls.Add(btnGuiYeuCau);
+                btnGuiYeuCau.BringToFront();
+
+                // Debug log
+                Console.WriteLine("✅ Button 'Gửi yêu cầu chuyển lớp' đã được thêm cho Phụ huynh/Học sinh!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi khi thêm button Gửi yêu cầu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 🆕 Event khi click button "Gửi yêu cầu chuyển lớp"
+        /// </summary>
+        private void BtnGuiYeuCauChuyenLop_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // ✅ Lấy tên đăng nhập từ SessionManager (đúng tên đăng nhập trong hệ thống)
+                string tenDangNhap = Utils.SessionManager.TenDangNhap;
+
+                if (string.IsNullOrEmpty(tenDangNhap))
+                {
+                    MessageBox.Show("Không xác định được người dùng hiện tại.\n\nVui lòng đăng nhập lại.", 
+                        "Lỗi", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Mở form gửi yêu cầu cho học sinh/phụ huynh
+                PhuHuynh.FormPhuHuynhGuiYeuCau form = new PhuHuynh.FormPhuHuynhGuiYeuCau(tenDangNhap);
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở form gửi yêu cầu: {ex.Message}", 
+                    "Lỗi", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

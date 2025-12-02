@@ -523,41 +523,6 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
-        public HocSinhDTO LayHocSinhTheoMa(int maHocSinh)
-        {
-            string sql = "SELECT * FROM HocSinh WHERE MaHocSinh = @maHS";
-
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                try
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@maHS", maHocSinh);
-
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                return new HocSinhDTO
-                                {
-                                    MaHS = reader.GetInt32("MaHocSinh"),
-                                    HoTen = reader.GetString("HoTen"),
-                                    // Thêm các field khác nếu cần
-                                };
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    ConnectionDatabase.CloseConnection(conn);
-                }
-            }
-            return null;
-        }
-
         /// <summary>
         /// Cập nhật tên đăng nhập cho học sinh
         /// </summary>
@@ -594,5 +559,60 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         // Ví dụ: Tìm theo tên, tìm theo lớp (cần JOIN), ...
         // public List<HocSinhDTO> TimHocSinhTheoTen(string ten) { ... }
         // public List<HocSinhDTO> LayDanhSachHocSinhTheoLop(int maLop, int maHocKy) { ... } // Cần JOIN với PhanLop
+
+        /// <summary>
+        /// Lấy học sinh theo mã (alias của TimHocSinhTheoMa để tương thích)
+        /// </summary>
+        public HocSinhDTO LayHocSinhTheoMa(int maHocSinh)
+        {
+            // Dùng lại method TimHocSinhTheoMa đã có sẵn
+            return TimHocSinhTheoMa(maHocSinh);
+        }
+
+        /// <summary>
+        /// Lấy học sinh theo tên đăng nhập
+        /// </summary>
+        public HocSinhDTO LayHocSinhTheoTenDangNhap(string tenDangNhap)
+        {
+            string sql = "SELECT * FROM HocSinh WHERE TenDangNhap = @tenDangNhap";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@tenDangNhap", tenDangNhap);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new HocSinhDTO
+                                {
+                                    MaHS = Convert.ToInt32(reader["MaHocSinh"]),
+                                    HoTen = reader["HoTen"].ToString(),
+                                    NgaySinh = Convert.ToDateTime(reader["NgaySinh"]),
+                                    GioiTinh = reader["GioiTinh"].ToString(),
+                                    SdtHS = reader["SDTHS"].ToString(),
+                                    Email = reader["Email"].ToString(),
+                                    TrangThai = reader["TrangThai"].ToString(),
+                                    TenDangNhap = reader["TenDangNhap"] != DBNull.Value ? reader["TenDangNhap"].ToString() : null
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Lỗi khi lấy học sinh theo tên đăng nhập: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return null;
+        }
     }
 }
