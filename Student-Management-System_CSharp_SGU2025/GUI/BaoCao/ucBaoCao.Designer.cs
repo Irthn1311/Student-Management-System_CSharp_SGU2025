@@ -195,9 +195,9 @@
             this.lblBaoCaoHocSinhDesc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.lblBaoCaoHocSinhDesc.Location = new System.Drawing.Point(90, 49);
             this.lblBaoCaoHocSinhDesc.Name = "lblBaoCaoHocSinhDesc";
-            this.lblBaoCaoHocSinhDesc.Size = new System.Drawing.Size(87, 15);
+            this.lblBaoCaoHocSinhDesc.Size = new System.Drawing.Size(71, 15);
             this.lblBaoCaoHocSinhDesc.TabIndex = 2;
-            this.lblBaoCaoHocSinhDesc.Text = "1,247 học sinh";
+            this.lblBaoCaoHocSinhDesc.Text = "Số học sinh";
             this.lblBaoCaoHocSinhDesc.Click += new System.EventHandler(this.lblBaoCaoHocSinhDesc_Click);
             // 
             // pnlIconBaoCao
@@ -239,7 +239,7 @@
             this.cboHocKy.Items.AddRange(new object[] {
             "Học kỳ I - 2024-2025",
             "Học kỳ II - 2024-2025"});
-            this.cboHocKy.Location = new System.Drawing.Point(885, 12);
+            this.cboHocKy.Location = new System.Drawing.Point(868, 12);
             this.cboHocKy.Name = "cboHocKy";
             this.cboHocKy.Size = new System.Drawing.Size(206, 36);
             this.cboHocKy.StartIndex = 0;
@@ -273,9 +273,14 @@
             // itemLopHoc1
             // 
             this.itemLopHoc1.Location = new System.Drawing.Point(3, 3);
+            this.itemLopHoc1.MaHocKy = 0;
+            this.itemLopHoc1.MaLop = 0;
             this.itemLopHoc1.Name = "itemLopHoc1";
+            this.itemLopHoc1.SiSo = 0;
             this.itemLopHoc1.Size = new System.Drawing.Size(1071, 77);
             this.itemLopHoc1.TabIndex = 0;
+            this.itemLopHoc1.TenGVCN = null;
+            this.itemLopHoc1.TenLop = null;
             this.itemLopHoc1.Load += new System.EventHandler(this.itemLopHoc1_Load);
             // 
             // pnlClassListHeader

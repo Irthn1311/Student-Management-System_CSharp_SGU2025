@@ -251,8 +251,14 @@
     <Compile Include="DTO\ThongKeDTO.cs" />
     <Compile Include="DTO\VaiTroDTO.cs" />
     <Compile Include="DTO\XepLoaiDTO.cs" />
-    <Compile Include="GUI\BaoCao\BaoCaoLop.cs">
+    <Compile Include="GUI\BaoCao\BaoCaoKhoi.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\BaoCaoKhoi.Designer.cs">
+      <DependentUpon>BaoCaoKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\BaoCaoLop.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\BaoCao\BaoCaoLop.Designer.cs">
       <DependentUpon>BaoCaoLop.cs</DependentUpon>
@@ -656,6 +662,9 @@
     <Compile Include="Utils\PermissionHelper.cs" />
     <Compile Include="Utils\SessionManager.cs" />
     <Compile Include="Utils\ValidationHelper.cs" />
+    <EmbeddedResource Include="GUI\BaoCao\BaoCaoKhoi.resx">
+      <DependentUpon>BaoCaoKhoi.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\BaoCao\BaoCaoLop.resx">
       <DependentUpon>BaoCaoLop.cs</DependentUpon>
     </EmbeddedResource>
