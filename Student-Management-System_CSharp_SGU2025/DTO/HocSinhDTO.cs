@@ -12,6 +12,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         private string _email;
         private string _trangThai;
         private string _tenDangNhap;
+        private string _anhDaiDien;
 
         public HocSinhDTO() { }
 
@@ -119,6 +120,12 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         {
             get { return this._tenDangNhap; }
             set { this._tenDangNhap = value?.Trim(); }
+        }
+
+        public string AnhDaiDien
+        {
+            get { return this._anhDaiDien; }
+            set { this._anhDaiDien = value?.Trim(); }
         }
     }
 }
