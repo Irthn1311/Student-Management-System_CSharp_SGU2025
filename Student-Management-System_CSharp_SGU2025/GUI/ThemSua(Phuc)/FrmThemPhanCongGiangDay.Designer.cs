@@ -136,12 +136,12 @@
             this.dtpNgayKetThuc.FillColor = System.Drawing.Color.White;
             this.dtpNgayKetThuc.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.dtpNgayKetThuc.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpNgayKetThuc.Location = new System.Drawing.Point(200, 490);
+            this.dtpNgayKetThuc.Location = new System.Drawing.Point(200, 420);
             this.dtpNgayKetThuc.MaxDate = new System.DateTime(9998, 12, 31, 0, 0, 0, 0);
             this.dtpNgayKetThuc.MinDate = new System.DateTime(1753, 1, 1, 0, 0, 0, 0);
             this.dtpNgayKetThuc.Name = "dtpNgayKetThuc";
             this.dtpNgayKetThuc.Size = new System.Drawing.Size(296, 36);
-            this.dtpNgayKetThuc.TabIndex = 6;
+            this.dtpNgayKetThuc.TabIndex = 5; // ✅ Thứ tự 5: Sau ngày bắt đầu
             this.dtpNgayKetThuc.Value = new System.DateTime(2025, 1, 23, 0, 0, 0, 0);
             // 
             // dtpNgayBatDau
@@ -151,12 +151,12 @@
             this.dtpNgayBatDau.FillColor = System.Drawing.Color.White;
             this.dtpNgayBatDau.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.dtpNgayBatDau.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpNgayBatDau.Location = new System.Drawing.Point(200, 420);
+            this.dtpNgayBatDau.Location = new System.Drawing.Point(200, 345);
             this.dtpNgayBatDau.MaxDate = new System.DateTime(9998, 12, 31, 0, 0, 0, 0);
             this.dtpNgayBatDau.MinDate = new System.DateTime(1753, 1, 1, 0, 0, 0, 0);
             this.dtpNgayBatDau.Name = "dtpNgayBatDau";
             this.dtpNgayBatDau.Size = new System.Drawing.Size(296, 36);
-            this.dtpNgayBatDau.TabIndex = 5;
+            this.dtpNgayBatDau.TabIndex = 4; // ✅ Thứ tự 4: Sau giáo viên
             this.dtpNgayBatDau.Value = new System.DateTime(2025, 1, 23, 0, 0, 0, 0);
             // 
             // cbHocKy
@@ -171,10 +171,11 @@
             this.cbHocKy.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.cbHocKy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbHocKy.ItemHeight = 30;
-            this.cbHocKy.Location = new System.Drawing.Point(200, 350);
+            // ✅ Thứ tự hợp lý: Học kỳ → Lớp → Giáo viên → Ngày bắt đầu → Ngày kết thúc
+            this.cbHocKy.Location = new System.Drawing.Point(200, 120);
             this.cbHocKy.Name = "cbHocKy";
             this.cbHocKy.Size = new System.Drawing.Size(296, 36);
-            this.cbHocKy.TabIndex = 4;
+            this.cbHocKy.TabIndex = 1; // ✅ Thứ tự 1: Đầu tiên (chọn học kỳ trước)
             // 
             // cbLop
             // 
@@ -188,10 +189,10 @@
             this.cbLop.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.cbLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbLop.ItemHeight = 30;
-            this.cbLop.Location = new System.Drawing.Point(200, 275);
+            this.cbLop.Location = new System.Drawing.Point(200, 195);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(296, 36);
-            this.cbLop.TabIndex = 3;
+            this.cbLop.TabIndex = 2; // ✅ Thứ tự 2: Sau học kỳ
             // 
             // cbMonHoc
             // 
@@ -205,10 +206,11 @@
             this.cbMonHoc.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.cbMonHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbMonHoc.ItemHeight = 30;
-            this.cbMonHoc.Location = new System.Drawing.Point(200, 195);
+            this.cbMonHoc.Location = new System.Drawing.Point(200, 270);
             this.cbMonHoc.Name = "cbMonHoc";
             this.cbMonHoc.Size = new System.Drawing.Size(296, 36);
-            this.cbMonHoc.TabIndex = 2;
+            this.cbMonHoc.TabIndex = 99; // ✅ TabIndex cao để không focus được (đã ẩn)
+            this.cbMonHoc.Visible = false; // ✅ Ẩn ComboBox môn học
             // 
             // cbGiaoVien
             // 
@@ -222,16 +224,16 @@
             this.cbGiaoVien.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.cbGiaoVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbGiaoVien.ItemHeight = 30;
-            this.cbGiaoVien.Location = new System.Drawing.Point(200, 120);
+            this.cbGiaoVien.Location = new System.Drawing.Point(200, 270);
             this.cbGiaoVien.Name = "cbGiaoVien";
-            this.cbGiaoVien.Size = new System.Drawing.Size(338, 36);
-            this.cbGiaoVien.TabIndex = 1;
+            this.cbGiaoVien.Size = new System.Drawing.Size(296, 36);
+            this.cbGiaoVien.TabIndex = 3; // ✅ Thứ tự 3: Sau lớp (sẽ reload khi chọn lớp)
             // 
             // lblNgayKetThuc
             // 
             this.lblNgayKetThuc.BackColor = System.Drawing.Color.Transparent;
             this.lblNgayKetThuc.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.lblNgayKetThuc.Location = new System.Drawing.Point(31, 490);
+            this.lblNgayKetThuc.Location = new System.Drawing.Point(31, 420);
             this.lblNgayKetThuc.Name = "lblNgayKetThuc";
             this.lblNgayKetThuc.Size = new System.Drawing.Size(109, 23);
             this.lblNgayKetThuc.TabIndex = 14;
@@ -241,7 +243,7 @@
             // 
             this.lblNgayBatDau.BackColor = System.Drawing.Color.Transparent;
             this.lblNgayBatDau.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.lblNgayBatDau.Location = new System.Drawing.Point(31, 420);
+            this.lblNgayBatDau.Location = new System.Drawing.Point(31, 345);
             this.lblNgayBatDau.Name = "lblNgayBatDau";
             this.lblNgayBatDau.Size = new System.Drawing.Size(103, 23);
             this.lblNgayBatDau.TabIndex = 13;
@@ -251,7 +253,7 @@
             // 
             this.lblHocKy.BackColor = System.Drawing.Color.Transparent;
             this.lblHocKy.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.lblHocKy.Location = new System.Drawing.Point(31, 350);
+            this.lblHocKy.Location = new System.Drawing.Point(31, 120);
             this.lblHocKy.Name = "lblHocKy";
             this.lblHocKy.Size = new System.Drawing.Size(54, 23);
             this.lblHocKy.TabIndex = 12;
@@ -261,7 +263,7 @@
             // 
             this.lblLop.BackColor = System.Drawing.Color.Transparent;
             this.lblLop.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.lblLop.Location = new System.Drawing.Point(31, 275);
+            this.lblLop.Location = new System.Drawing.Point(31, 195);
             this.lblLop.Name = "lblLop";
             this.lblLop.Size = new System.Drawing.Size(30, 23);
             this.lblLop.TabIndex = 11;
@@ -271,17 +273,18 @@
             // 
             this.lblMonHoc.BackColor = System.Drawing.Color.Transparent;
             this.lblMonHoc.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.lblMonHoc.Location = new System.Drawing.Point(31, 195);
+            this.lblMonHoc.Location = new System.Drawing.Point(31, 270);
             this.lblMonHoc.Name = "lblMonHoc";
             this.lblMonHoc.Size = new System.Drawing.Size(69, 23);
             this.lblMonHoc.TabIndex = 10;
             this.lblMonHoc.Text = "Môn học";
+            this.lblMonHoc.Visible = false; // ✅ Ẩn label môn học
             // 
             // lblGiaoVien
             // 
             this.lblGiaoVien.BackColor = System.Drawing.Color.Transparent;
             this.lblGiaoVien.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
-            this.lblGiaoVien.Location = new System.Drawing.Point(31, 120);
+            this.lblGiaoVien.Location = new System.Drawing.Point(31, 270);
             this.lblGiaoVien.Name = "lblGiaoVien";
             this.lblGiaoVien.Size = new System.Drawing.Size(75, 23);
             this.lblGiaoVien.TabIndex = 9;

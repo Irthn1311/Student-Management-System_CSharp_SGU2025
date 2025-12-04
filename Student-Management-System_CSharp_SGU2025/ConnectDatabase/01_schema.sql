@@ -23,12 +23,10 @@ DROP TABLE IF EXISTS ThongBao;
 DROP TABLE IF EXISTS YeuCauChuyenLop;
 DROP TABLE IF EXISTS PhanLop;
 DROP TABLE IF EXISTS HocSinhPhuHuynh;
-DROP TABLE IF EXISTS GiaoVien_MonHoc;
 
 -- Bảng trung gian
 DROP TABLE IF EXISTS LopHoc;
 DROP TABLE IF EXISTS HocKy;
-DROP TABLE IF EXISTS GiaoVienChuyenMon;
 
 -- Bảng có foreign key đến NguoiDung hoặc VaiTro
 DROP TABLE IF EXISTS NguoiDungVaiTro;
@@ -251,16 +249,9 @@ CREATE TABLE GiaoVien (
     DiaChi NVARCHAR(255),
     SoDienThoai VARCHAR(15),
     Email VARCHAR(100) UNIQUE,
-    TrangThai VARCHAR(50) DEFAULT 'Đang giảng dạy'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE GiaoVienChuyenMon (
-    MaGiaoVien VARCHAR(15),
-    MaMonHoc INT,
-    LaChuyenMonChinh BOOLEAN DEFAULT FALSE,
-    PRIMARY KEY (MaGiaoVien, MaMonHoc),
-    FOREIGN KEY (MaGiaoVien) REFERENCES GiaoVien(MaGiaoVien),
-    FOREIGN KEY (MaMonHoc) REFERENCES MonHoc(MaMonHoc)
+    MaMonChuyenMon INT NULL COMMENT 'Môn chuyên môn chính của giáo viên',
+    TrangThai VARCHAR(50) DEFAULT 'Đang giảng dạy',
+    FOREIGN KEY (MaMonChuyenMon) REFERENCES MonHoc(MaMonHoc)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE HocSinh (
@@ -314,15 +305,6 @@ CREATE TABLE PhanLop (
     FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh),
     FOREIGN KEY (MaLop) REFERENCES LopHoc(MaLop),
     FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE GiaoVien_MonHoc (
-    MaGiaoVien VARCHAR(15),
-    MaMonHoc INT,
-    LaMonChinh BOOLEAN DEFAULT FALSE,
-    PRIMARY KEY (MaGiaoVien, MaMonHoc),
-    FOREIGN KEY (MaGiaoVien) REFERENCES GiaoVien(MaGiaoVien),
-    FOREIGN KEY (MaMonHoc) REFERENCES MonHoc(MaMonHoc)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE PhanCongGiangDay (

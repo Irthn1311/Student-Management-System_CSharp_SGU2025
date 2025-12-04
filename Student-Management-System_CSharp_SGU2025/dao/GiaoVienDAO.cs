@@ -18,7 +18,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public List<int> GetChuyenMon(string maGiaoVien)
         {
             var ds = new List<int>();
-            string query = @"SELECT MaMonHoc FROM GiaoVien_MonHoc WHERE MaGiaoVien=@MaGiaoVien";
+            // ✅ Updated: Query GiaoVien table directly using MaMonChuyenMon
+            string query = @"SELECT MaMonChuyenMon AS MaMonHoc 
+                            FROM GiaoVien 
+                            WHERE MaGiaoVien = @MaGiaoVien 
+                            AND MaMonChuyenMon IS NOT NULL";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 conn.Open();
@@ -29,7 +33,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     {
                         while (reader.Read())
                         {
-                            ds.Add(reader.GetInt32("MaMonHoc"));
+                            if (!reader.IsDBNull(reader.GetOrdinal("MaMonHoc")))
+                            {
+                                ds.Add(reader.GetInt32("MaMonHoc"));
+                            }
                         }
                     }
                 }
@@ -89,8 +96,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         // Thêm giáo viên
         public bool ThemGiaoVien(GiaoVienDTO giaoVien)
         {
-            string query = "INSERT INTO GiaoVien(MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai) " +
-                          "VALUES(@MaGiaoVien, @HoTen, @NgaySinh, @GioiTinh, @DiaChi, @SoDienThoai, @Email, @TrangThai)";
+            string query = "INSERT INTO GiaoVien(MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, MaMonChuyenMon, TrangThai) " +
+                          "VALUES(@MaGiaoVien, @HoTen, @NgaySinh, @GioiTinh, @DiaChi, @SoDienThoai, @Email, @MaMonChuyenMon, @TrangThai)";
             try
             {
                 using (MySqlConnection conn = ConnectionDatabase.GetConnection())
@@ -105,6 +112,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmd.Parameters.AddWithValue("@DiaChi", giaoVien.DiaChi ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@SoDienThoai", giaoVien.SoDienThoai ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@Email", giaoVien.Email ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@MaMonChuyenMon", giaoVien.MaMonChuyenMon.HasValue ? (object)giaoVien.MaMonChuyenMon.Value : DBNull.Value);
                         cmd.Parameters.AddWithValue("@TrangThai", giaoVien.TrangThai ?? "Đang giảng dạy");
                         
                         int result = cmd.ExecuteNonQuery();
@@ -123,7 +131,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public List<GiaoVienDTO> DocDSGiaoVien()
         {
             List<GiaoVienDTO> ds = new List<GiaoVienDTO>();
-            string query = "SELECT MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai FROM GiaoVien ORDER BY HoTen";
+            string query = @"SELECT gv.MaGiaoVien, gv.HoTen, gv.NgaySinh, gv.GioiTinh, gv.DiaChi, gv.SoDienThoai, gv.Email, gv.TrangThai, 
+                            gv.MaMonChuyenMon, mh.TenMonHoc AS TenMonChuyenMon
+                            FROM GiaoVien gv
+                            LEFT JOIN MonHoc mh ON gv.MaMonChuyenMon = mh.MaMonHoc
+                            ORDER BY gv.HoTen";
 
             try
             {
@@ -145,7 +157,9 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                     DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? "" : reader.GetString("DiaChi"),
                                     SoDienThoai = reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? "" : reader.GetString("SoDienThoai"),
                                     Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? "" : reader.GetString("Email"),
-                                    TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) ? "Đang giảng dạy" : reader.GetString("TrangThai")
+                                    TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) ? "Đang giảng dạy" : reader.GetString("TrangThai"),
+                                    MaMonChuyenMon = reader.IsDBNull(reader.GetOrdinal("MaMonChuyenMon")) ? (int?)null : reader.GetInt32("MaMonChuyenMon"),
+                                    TenMonChuyenMon = reader.IsDBNull(reader.GetOrdinal("TenMonChuyenMon")) ? "" : reader.GetString("TenMonChuyenMon")
                                 };
                                 ds.Add(gv);
                             }
@@ -166,7 +180,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public GiaoVienDTO LayGiaoVienTheoMa(string maGiaoVien)
         {
             GiaoVienDTO giaoVien = null;
-            string query = "SELECT MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai FROM GiaoVien WHERE MaGiaoVien = @MaGiaoVien";
+            string query = @"SELECT gv.MaGiaoVien, gv.HoTen, gv.NgaySinh, gv.GioiTinh, gv.DiaChi, gv.SoDienThoai, gv.Email, gv.TrangThai,
+                            gv.MaMonChuyenMon, mh.TenMonHoc AS TenMonChuyenMon
+                            FROM GiaoVien gv
+                            LEFT JOIN MonHoc mh ON gv.MaMonChuyenMon = mh.MaMonHoc
+                            WHERE gv.MaGiaoVien = @MaGiaoVien";
 
             try
             {
@@ -189,7 +207,9 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                     DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? "" : reader.GetString("DiaChi"),
                                     SoDienThoai = reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? "" : reader.GetString("SoDienThoai"),
                                     Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? "" : reader.GetString("Email"),
-                                    TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) ? "Đang giảng dạy" : reader.GetString("TrangThai")
+                                    TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) ? "Đang giảng dạy" : reader.GetString("TrangThai"),
+                                    MaMonChuyenMon = reader.IsDBNull(reader.GetOrdinal("MaMonChuyenMon")) ? (int?)null : reader.GetInt32("MaMonChuyenMon"),
+                                    TenMonChuyenMon = reader.IsDBNull(reader.GetOrdinal("TenMonChuyenMon")) ? "" : reader.GetString("TenMonChuyenMon")
                                 };
                             }
                         }
@@ -209,7 +229,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public bool CapNhatGiaoVien(GiaoVienDTO giaoVien)
         {
             string query = "UPDATE GiaoVien SET HoTen=@HoTen, NgaySinh=@NgaySinh, GioiTinh=@GioiTinh, " +
-                          "DiaChi=@DiaChi, SoDienThoai=@SoDienThoai, Email=@Email, TrangThai=@TrangThai " +
+                          "DiaChi=@DiaChi, SoDienThoai=@SoDienThoai, Email=@Email, MaMonChuyenMon=@MaMonChuyenMon, TrangThai=@TrangThai " +
                           "WHERE MaGiaoVien=@MaGiaoVien";
 
             try
@@ -225,6 +245,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmd.Parameters.AddWithValue("@DiaChi", giaoVien.DiaChi ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@SoDienThoai", giaoVien.SoDienThoai ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@Email", giaoVien.Email ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@MaMonChuyenMon", giaoVien.MaMonChuyenMon.HasValue ? (object)giaoVien.MaMonChuyenMon.Value : DBNull.Value);
                         cmd.Parameters.AddWithValue("@TrangThai", giaoVien.TrangThai);
                         cmd.Parameters.AddWithValue("@MaGiaoVien", giaoVien.MaGiaoVien);
                         
