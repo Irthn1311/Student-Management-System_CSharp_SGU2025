@@ -1,0 +1,20 @@
+{
+  "CauHinhTietHoc": {
+    "ThuBatDau": 2,
+    "ThuKetThuc": 7,
+    "SoTietMoiNgay": 10
+  },
+  "CauHinhTrongSo": {
+    "TrongSoMonNangLienTiep": 5,
+    "TrongSoTrenMotNgay": 3,
+    "TrongSoCanBangNgay": 2,
+    "TrongSoOnDinh": 1
+  },
+  "ThamSoThuatToan": {
+    "SoVongLapToiDa": 5000,
+    "DoDaiTabu": 9,
+    "ThoiGianChayToiDaGiay": 90,
+    "GioiHanKhongCaiThien": 500
+  }
+}
+

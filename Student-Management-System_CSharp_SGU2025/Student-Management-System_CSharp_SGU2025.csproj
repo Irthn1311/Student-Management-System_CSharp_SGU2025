@@ -174,6 +174,7 @@
     </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -192,6 +193,7 @@
     <Compile Include="bus\HocSinhBLL.cs" />
     <Compile Include="bus\HocSinhPhuHuynhBLL.cs" />
     <Compile Include="bus\LoginBUS.cs" />
+    <Compile Include="bus\MoveResult.cs" />
     <Compile Include="bus\NguoiDungBLL.cs" />
     <Compile Include="BUS\KhenThuongKyLuatBUS.cs" />
     <Compile Include="BUS\NhapDiemBUS.cs" />
@@ -203,6 +205,7 @@
     <Compile Include="bus\ThoiKhoaBieuBUS.cs" />
     <Compile Include="bus\CaiDatBUS.cs" />
     <Compile Include="bus\XepLoaiBUS.cs" />
+    <Compile Include="Config\TimetableConfig.cs" />
     <Compile Include="dao\DiemSoDAO.cs" />
     <Compile Include="dao\HocSinhDAO.cs" />
     <Compile Include="dao\HocSinhPhuHuynhDAO.cs" />
@@ -249,6 +252,7 @@
     <Compile Include="DTO\PhanCongGiangDayDTO.cs" />
     <Compile Include="DTO\ThoiKhoaBieuDTO.cs" />
     <Compile Include="DTO\ThongKeDTO.cs" />
+    <Compile Include="DTO\TimeTableSlotDTO.cs" />
     <Compile Include="DTO\VaiTroDTO.cs" />
     <Compile Include="DTO\XepLoaiDTO.cs" />
     <Compile Include="GUI\CaiDat\CaiDat.cs">
@@ -359,10 +363,10 @@
     <Compile Include="GUI\NamHoc\ucNamHoc.Designer.cs">
       <DependentUpon>ucNamHoc.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\PhanCong\frmAutoPhanCongPreview.cs">
+    <Compile Include="GUI\PhanCongGiangDay\frmAutoPhanCongPreview.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\PhanCong\frmAutoPhanCongPreview.Designer.cs">
+    <Compile Include="GUI\PhanCongGiangDay\frmAutoPhanCongPreview.Designer.cs">
       <DependentUpon>frmAutoPhanCongPreview.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
@@ -506,9 +510,7 @@
     <Compile Include="GUI\MonHoc\FrmMonHoc.Designer.cs">
       <DependentUpon>FrmMonHoc.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\PhanCongGiangDay\PhanCongGiangDay.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="GUI\PhanCongGiangDay\PhanCongGiangDay.cs" />
     <Compile Include="GUI\PhanCongGiangDay\PhanCongGiangDay.Designer.cs">
       <DependentUpon>PhanCongGiangDay.cs</DependentUpon>
     </Compile>
@@ -634,13 +636,17 @@
     </Compile>
     <Compile Include="Scheduling\Models.cs" />
     <Compile Include="Scheduling\SchedulingService.cs" />
+    <Compile Include="Scheduling\TimetableConfigService.cs" />
     <Compile Include="Services\AssignmentAutoService.cs" />
     <Compile Include="Services\AssignmentPersistService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\OTPManager.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\OTPManager.cs" />
+    <Compile Include="Services\SeedingService.cs" />
     <Compile Include="Services\SemesterHelper.cs" />
+    <Compile Include="Services\TimetableHybridService.cs" />
+    <Compile Include="Services\TKBExportService.cs" />
     <Compile Include="Utils\PermissionHelper.cs" />
     <Compile Include="Utils\SessionManager.cs" />
     <Compile Include="Utils\ValidationHelper.cs" />
@@ -721,7 +727,7 @@
     <EmbeddedResource Include="GUI\NamHoc\ucNamHoc.resx">
       <DependentUpon>ucNamHoc.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\PhanCong\frmAutoPhanCongPreview.resx">
+    <EmbeddedResource Include="GUI\PhanCongGiangDay\frmAutoPhanCongPreview.resx">
       <DependentUpon>frmAutoPhanCongPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\RecentActivityItem.resx">
@@ -820,6 +826,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Config\timetable_config.json" />
     <None Include="docs\CaiTienTKB.md" />
     <None Include="FIX_COMPLETED.md" />
     <None Include="NuGet.Config" />

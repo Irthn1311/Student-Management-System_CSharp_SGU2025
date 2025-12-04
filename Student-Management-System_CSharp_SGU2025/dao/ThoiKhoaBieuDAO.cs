@@ -4,7 +4,7 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using Student_Management_System_CSharp_SGU2025.Scheduling;
 using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
-//using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
+using Student_Management_System_CSharp_SGU2025.DTO;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
@@ -422,6 +422,311 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 						tx.Rollback();
 						throw;
 					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Lấy danh sách thời khóa biểu theo học kỳ với đầy đủ thông tin (JOIN)
+		/// Trả về List<TimeTableSlotDTO> để hiển thị trên lưới TKB
+		/// </summary>
+		/// <param name="maHocKy">Mã học kỳ</param>
+		/// <returns>Danh sách các ô thời khóa biểu</returns>
+		public List<TimeTableSlotDTO> GetTKBViewByHocKy(int maHocKy)
+		{
+			const string sql = @"
+				SELECT 
+					tkb.MaThoiKhoaBieu, 
+					CAST(SUBSTRING_INDEX(tkb.ThuTrongTuan, ' ', -1) AS SIGNED) AS Thu, 
+					tkb.TietBatDau AS Tiet,
+					pc.MaPhanCong, 
+					l.TenLop, 
+					l.MaLop, 
+					mh.TenMonHoc AS TenMon, 
+					gv.HoTen AS TenGiaoVien, 
+					gv.MaGiaoVien
+				FROM ThoiKhoaBieu tkb
+				JOIN PhanCongGiangDay pc ON tkb.MaPhanCong = pc.MaPhanCong
+				JOIN LopHoc l ON pc.MaLop = l.MaLop
+				JOIN MonHoc mh ON pc.MaMonHoc = mh.MaMonHoc
+				JOIN GiaoVien gv ON pc.MaGiaoVien = gv.MaGiaoVien
+				WHERE pc.MaHocKy = @MaHocKy
+				ORDER BY tkb.ThuTrongTuan, tkb.TietBatDau";
+
+			var result = new List<TimeTableSlotDTO>();
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+					using (var reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							var slot = new TimeTableSlotDTO
+							{
+								MaThoiKhoaBieu = reader.GetInt32("MaThoiKhoaBieu"),
+								MaPhanCong = reader.GetInt32("MaPhanCong"),
+								Thu = reader.GetInt32("Thu"),
+								Tiet = reader.GetInt32("Tiet"),
+								TenLop = reader.IsDBNull(reader.GetOrdinal("TenLop")) ? string.Empty : reader.GetString("TenLop"),
+								MaLop = reader.GetInt32("MaLop"),
+								TenMon = reader.IsDBNull(reader.GetOrdinal("TenMon")) ? string.Empty : reader.GetString("TenMon"),
+								TenGiaoVien = reader.IsDBNull(reader.GetOrdinal("TenGiaoVien")) ? string.Empty : reader.GetString("TenGiaoVien"),
+								MaGiaoVien = reader.IsDBNull(reader.GetOrdinal("MaGiaoVien")) ? string.Empty : reader.GetString("MaGiaoVien")
+							};
+							result.Add(slot);
+						}
+					}
+				}
+			}
+			return result;
+		}
+
+		/// <summary>
+		/// Kiểm tra lớp có bận tại vị trí (thứ, tiết) không
+		/// Logic-based validation: Sử dụng SQL JOIN thay vì DB constraint
+		/// </summary>
+		/// <param name="maLop">Mã lớp cần kiểm tra</param>
+		/// <param name="thu">Thứ trong tuần (2-6)</param>
+		/// <param name="tiet">Tiết bắt đầu (1-10)</param>
+		/// <param name="excludeId">Mã thời khóa biểu cần loại trừ (khi đang sửa)</param>
+		/// <returns>True nếu lớp đã bận, False nếu rảnh</returns>
+		public bool CheckClassBusy(int maLop, int thu, int tiet, int excludeId = 0)
+		{
+			const string sql = @"
+				SELECT COUNT(*) 
+				FROM ThoiKhoaBieu tkb
+				JOIN PhanCongGiangDay pc ON tkb.MaPhanCong = pc.MaPhanCong
+				WHERE pc.MaLop = @MaLop 
+					AND CAST(SUBSTRING_INDEX(tkb.ThuTrongTuan, ' ', -1) AS SIGNED) = @Thu 
+					AND tkb.TietBatDau = @Tiet 
+					AND (@ExcludeId = 0 OR tkb.MaThoiKhoaBieu != @ExcludeId)";
+
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@MaLop", maLop);
+					cmd.Parameters.AddWithValue("@Thu", thu);
+					cmd.Parameters.AddWithValue("@Tiet", tiet);
+					cmd.Parameters.AddWithValue("@ExcludeId", excludeId);
+					
+					long count = (long)cmd.ExecuteScalar();
+					return count > 0;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Kiểm tra giáo viên có bận tại vị trí (thứ, tiết) không
+		/// Logic-based validation: Sử dụng SQL JOIN thay vì DB constraint
+		/// </summary>
+		/// <param name="maGV">Mã giáo viên cần kiểm tra</param>
+		/// <param name="thu">Thứ trong tuần (2-6)</param>
+		/// <param name="tiet">Tiết bắt đầu (1-10)</param>
+		/// <param name="excludeId">Mã thời khóa biểu cần loại trừ (khi đang sửa)</param>
+		/// <returns>True nếu giáo viên đã bận, False nếu rảnh</returns>
+		public bool CheckTeacherBusy(string maGV, int thu, int tiet, int excludeId = 0)
+		{
+			if (string.IsNullOrWhiteSpace(maGV))
+				throw new ArgumentException("Mã giáo viên không được để trống");
+
+			const string sql = @"
+				SELECT COUNT(*) 
+				FROM ThoiKhoaBieu tkb
+				JOIN PhanCongGiangDay pc ON tkb.MaPhanCong = pc.MaPhanCong
+				WHERE pc.MaGiaoVien = @MaGV 
+					AND CAST(SUBSTRING_INDEX(tkb.ThuTrongTuan, ' ', -1) AS SIGNED) = @Thu 
+					AND tkb.TietBatDau = @Tiet 
+					AND (@ExcludeId = 0 OR tkb.MaThoiKhoaBieu != @ExcludeId)";
+
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@MaGV", maGV);
+					cmd.Parameters.AddWithValue("@Thu", thu);
+					cmd.Parameters.AddWithValue("@Tiet", tiet);
+					cmd.Parameters.AddWithValue("@ExcludeId", excludeId);
+					
+					long count = (long)cmd.ExecuteScalar();
+					return count > 0;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Lấy thời khóa biểu theo giáo viên cho học kỳ cụ thể.
+		/// </summary>
+		public List<TimeTableSlotDTO> GetTKBByTeacher(int maHocKy, string maGiaoVien)
+		{
+			const string sql = @"
+				SELECT 
+					tkb.MaThoiKhoaBieu, 
+					CAST(SUBSTRING_INDEX(tkb.ThuTrongTuan, ' ', -1) AS SIGNED) AS Thu, 
+					tkb.TietBatDau AS Tiet,
+					pc.MaPhanCong, 
+					l.TenLop, 
+					l.MaLop, 
+					mh.TenMonHoc AS TenMon, 
+					gv.HoTen AS TenGiaoVien, 
+					gv.MaGiaoVien
+				FROM ThoiKhoaBieu tkb
+				JOIN PhanCongGiangDay pc ON tkb.MaPhanCong = pc.MaPhanCong
+				JOIN LopHoc l ON pc.MaLop = l.MaLop
+				JOIN MonHoc mh ON pc.MaMonHoc = mh.MaMonHoc
+				JOIN GiaoVien gv ON pc.MaGiaoVien = gv.MaGiaoVien
+				WHERE pc.MaHocKy = @MaHocKy AND gv.MaGiaoVien = @MaGiaoVien
+				ORDER BY tkb.ThuTrongTuan, tkb.TietBatDau";
+
+			var result = new List<TimeTableSlotDTO>();
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+					cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+					using (var reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							var slot = new TimeTableSlotDTO
+							{
+								MaThoiKhoaBieu = reader.GetInt32("MaThoiKhoaBieu"),
+								MaPhanCong = reader.GetInt32("MaPhanCong"),
+								Thu = reader.GetInt32("Thu"),
+								Tiet = reader.GetInt32("Tiet"),
+								TenLop = reader.IsDBNull(reader.GetOrdinal("TenLop")) ? string.Empty : reader.GetString("TenLop"),
+								MaLop = reader.GetInt32("MaLop"),
+								TenMon = reader.IsDBNull(reader.GetOrdinal("TenMon")) ? string.Empty : reader.GetString("TenMon"),
+								TenGiaoVien = reader.IsDBNull(reader.GetOrdinal("TenGiaoVien")) ? string.Empty : reader.GetString("TenGiaoVien"),
+								MaGiaoVien = reader.IsDBNull(reader.GetOrdinal("MaGiaoVien")) ? string.Empty : reader.GetString("MaGiaoVien")
+							};
+							result.Add(slot);
+						}
+					}
+				}
+			}
+			return result;
+		}
+
+		/// <summary>
+		/// Xóa temp schedule cho học kỳ và tuần cụ thể.
+		/// </summary>
+		public void ClearTempForSemester(int semesterId, int weekNo)
+		{
+			const string sql = "DELETE FROM TKB_Temp WHERE SemesterId=@SemesterId AND WeekNo=@WeekNo";
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+					cmd.Parameters.AddWithValue("@WeekNo", weekNo);
+					cmd.ExecuteNonQuery();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Kiểm tra xem học kỳ có temp schedule chưa.
+		/// </summary>
+		public bool HasTempScheduleForSemester(int semesterId)
+		{
+			const string sql = "SELECT COUNT(*) FROM TKB_Temp WHERE SemesterId=@SemesterId";
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+					long count = (long)cmd.ExecuteScalar();
+					return count > 0;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Thêm một bản ghi thời khóa biểu mới
+		/// </summary>
+		/// <param name="maPhanCong">Mã phân công</param>
+		/// <param name="thu">Thứ trong tuần (2-6)</param>
+		/// <param name="tiet">Tiết bắt đầu (1-10)</param>
+		/// <param name="soTiet">Số tiết (mặc định 1)</param>
+		/// <param name="phongHoc">Phòng học (có thể null)</param>
+		/// <returns>Mã thời khóa biểu vừa tạo, hoặc 0 nếu thất bại</returns>
+		public int InsertTKB(int maPhanCong, int thu, int tiet, int soTiet = 1, string phongHoc = null)
+		{
+			// Chuyển đổi thu (int) sang format string cho database
+			string thuTrongTuan = $"Thu {thu}";
+
+			const string sql = @"
+				INSERT INTO ThoiKhoaBieu(MaPhanCong, ThuTrongTuan, TietBatDau, SoTiet, PhongHoc)
+				VALUES(@MaPhanCong, @ThuTrongTuan, @TietBatDau, @SoTiet, @PhongHoc)";
+
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@MaPhanCong", maPhanCong);
+					cmd.Parameters.AddWithValue("@ThuTrongTuan", thuTrongTuan);
+					cmd.Parameters.AddWithValue("@TietBatDau", tiet);
+					cmd.Parameters.AddWithValue("@SoTiet", soTiet);
+					cmd.Parameters.AddWithValue("@PhongHoc", string.IsNullOrWhiteSpace(phongHoc) ? (object)DBNull.Value : phongHoc);
+					
+					cmd.ExecuteNonQuery();
+					
+					// Lấy ID vừa insert
+					using (var cmdId = new MySqlCommand("SELECT LAST_INSERT_ID()", conn))
+					{
+						object result = cmdId.ExecuteScalar();
+						return result != null ? Convert.ToInt32(result) : 0;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Cập nhật một bản ghi thời khóa biểu
+		/// </summary>
+		/// <param name="maThoiKhoaBieu">Mã thời khóa biểu cần cập nhật</param>
+		/// <param name="thu">Thứ trong tuần mới (2-6)</param>
+		/// <param name="tiet">Tiết bắt đầu mới (1-10)</param>
+		/// <param name="soTiet">Số tiết (mặc định 1)</param>
+		/// <param name="phongHoc">Phòng học (có thể null)</param>
+		/// <returns>True nếu cập nhật thành công</returns>
+		public bool UpdateTKB(int maThoiKhoaBieu, int thu, int tiet, int soTiet = 1, string phongHoc = null)
+		{
+			// Chuyển đổi thu (int) sang format string cho database
+			string thuTrongTuan = $"Thu {thu}";
+
+			const string sql = @"
+				UPDATE ThoiKhoaBieu
+				SET ThuTrongTuan = @ThuTrongTuan,
+					TietBatDau = @TietBatDau,
+					SoTiet = @SoTiet,
+					PhongHoc = @PhongHoc
+				WHERE MaThoiKhoaBieu = @MaThoiKhoaBieu";
+
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					cmd.Parameters.AddWithValue("@MaThoiKhoaBieu", maThoiKhoaBieu);
+					cmd.Parameters.AddWithValue("@ThuTrongTuan", thuTrongTuan);
+					cmd.Parameters.AddWithValue("@TietBatDau", tiet);
+					cmd.Parameters.AddWithValue("@SoTiet", soTiet);
+					cmd.Parameters.AddWithValue("@PhongHoc", string.IsNullOrWhiteSpace(phongHoc) ? (object)DBNull.Value : phongHoc);
+					
+					int rowsAffected = cmd.ExecuteNonQuery();
+					return rowsAffected > 0;
 				}
 			}
 		}

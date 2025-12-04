@@ -8,9 +8,11 @@ using Student_Management_System_CSharp_SGU2025.Services;
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
+using MySql.Data.MySqlClient;
 using Guna.UI2.WinForms;
 
-namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
+namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCongGiangDay
 {
     public partial class frmAutoPhanCongPreview : Form
     {
@@ -258,10 +260,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                     string trangThai = SemesterHelper.GetStatus(hk.MaHocKy);
                     string icon = trangThai == "Đang diễn ra" ? "🟢" : "🔵";
                     string displayText = $"{hk.TenHocKy} - {hk.MaNamHoc}";
+                    
+                    // Kiểm tra trạng thái phân công
+                    bool hasOfficial = phanCongBUS.HasAssignmentsForSemester(hk.MaHocKy);
+                    bool hasTemp = phanCongBUS.HasTempAssignmentsForSemester(hk.MaHocKy);
+                    
+                    string statusText = hasOfficial
+                        ? " (ĐÃ PHÂN CÔNG)"
+                        : (hasTemp ? " (ĐANG LƯU TẠM)" : " (CHƯA PHÂN)");
 
                     cbHocKy.Items.Add(new ComboBoxItem
                     {
-                        Text = $"{icon} {displayText} ({trangThai})",
+                        Text = $"{icon} {displayText} ({trangThai}){statusText}",
                         Value = hk.MaHocKy
                     });
                 }
@@ -304,7 +314,52 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             var selectedItem = cbHocKy.SelectedItem as ComboBoxItem;
             if (selectedItem == null) return;
 
-            selectedHocKyId = (int)selectedItem.Value;
+            int newHocKyId = (int)selectedItem.Value;
+            
+            // Kiểm tra nếu có dữ liệu tạm cho học kỳ này
+            bool hasTemp = phanCongBUS.HasTempAssignmentsForSemester(newHocKyId);
+            
+            if (hasTemp && selectedHocKyId.HasValue && selectedHocKyId.Value != newHocKyId)
+            {
+                // Hỏi người dùng muốn tải lại dữ liệu tạm hay tạo mới
+                var dialogResult = MessageBox.Show(
+                    $"Học kỳ này đang có dữ liệu phân công tạm.\n\n" +
+                    $"Bạn muốn:\n" +
+                    $"• Tải lại dữ liệu tạm (Yes)\n" +
+                    $"• Tạo mới (No)\n" +
+                    $"• Hủy (Cancel)",
+                    "Dữ liệu tạm tồn tại",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+                
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    // Khôi phục selection cũ
+                    for (int i = 0; i < cbHocKy.Items.Count; i++)
+                    {
+                        var item = cbHocKy.Items[i] as ComboBoxItem;
+                        if (item != null && (int)item.Value == selectedHocKyId.Value)
+                        {
+                            cbHocKy.SelectedIndex = i;
+                            return;
+                        }
+                    }
+                    return;
+                }
+                
+                if (dialogResult == DialogResult.Yes)
+                {
+                    // Tải lại từ PhanCong_Temp
+                    LoadTempAssignments(newHocKyId);
+                    selectedHocKyId = newHocKyId;
+                    isReadOnly = !SemesterHelper.IsEditable(selectedHocKyId.Value);
+                    SetButtonsState(true, true);
+                    return;
+                }
+                // DialogResult.No: tiếp tục tạo mới (clear grid)
+            }
+
+            selectedHocKyId = newHocKyId;
             isReadOnly = !SemesterHelper.IsEditable(selectedHocKyId.Value);
 
             string status = SemesterHelper.GetStatus(selectedHocKyId.Value);
@@ -322,6 +377,56 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             }
 
             LoadExistingAssignments();
+        }
+        
+        /// <summary>
+        /// Tải phân công tạm từ PhanCong_Temp
+        /// </summary>
+        private void LoadTempAssignments(int hocKyId)
+        {
+            try
+            {
+                const string sql = @"SELECT MaLop, MaGiaoVien, MaMonHoc, MaHocKy, SoTietTuan, Score, Note
+                                    FROM PhanCong_Temp
+                                    WHERE MaHocKy = @MaHocKy";
+                
+                currentCandidates = new List<PhanCongCandidate>();
+                
+                using (var conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaHocKy", hocKyId);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                currentCandidates.Add(new PhanCongCandidate
+                                {
+                                    MaLop = reader.GetInt32("MaLop"),
+                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
+                                    MaMonHoc = reader.GetInt32("MaMonHoc"),
+                                    SoTietTuan = reader.GetInt32("SoTietTuan"),
+                                    Score = reader.IsDBNull(reader.GetOrdinal("Score")) ? 0 : reader.GetInt32("Score"),
+                                    Note = reader.IsDBNull(reader.GetOrdinal("Note")) ? "" : reader.GetString("Note")
+                                });
+                            }
+                        }
+                    }
+                }
+                
+                EnrichCandidatesWithNames(currentCandidates);
+                RefreshGrid();
+                
+                UpdateStatusMessage($"📋 Đã tải {currentCandidates.Count} phân công tạm", StatusType.Info);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu tạm: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                UpdateStatusMessage($"✗ Lỗi: {ex.Message}", StatusType.Error);
+            }
         }
         #endregion
 
@@ -739,14 +844,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                 {
                     maMon = monItem.Value.ToString();
                 }
-                int maxTiet = numMaxTiet != null ? (int)numMaxTiet.Value : 30;
-                bool allowNonPrimary = swAllowNonPrimary != null && swAllowNonPrimary.Checked;
-
+                // ✅ Chỉ cho phép GV dạy đúng chuyên môn, không giới hạn tải
                 var policy = new AssignmentPolicy
                 {
-                    MaxLoadPerTeacherPerWeek = maxTiet,
-                    AllowNonPrimarySpecialty = allowNonPrimary
+                    MaxLoadPerTeacherPerWeek = int.MaxValue, // Không giới hạn tải
+                    AllowNonPrimarySpecialty = false, // Chỉ cho phép GV dạy đúng chuyên môn
+                    SpecialtyWeight = 10,
+                    LoadBalanceWeight = 5
                 };
+                
+                Console.WriteLine($"📋 Policy: MaxLoad={policy.MaxLoadPerTeacherPerWeek}, AllowNonPrimary={policy.AllowNonPrimarySpecialty}");
 
                 await Task.Delay(50);
                 if (progressBar != null) progressBar.Value = 35;
@@ -852,6 +959,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                 // ✅ Truyền hocKyId vào PersistTemporary
                 persistService.PersistTemporary(currentCandidates, selectedHocKyId.Value);
                 UpdateStatusMessage($"💾 Đã lưu tạm {currentCandidates.Count} phân công", StatusType.Success);
+                
+                // Refresh semester status in combo
+                LoadHocKyToComboBox();
+                
                 MessageBox.Show(
                     $"Đã lưu tạm {currentCandidates.Count} phân công.\n\nBạn có thể xem lại và chỉnh sửa trước khi chấp nhận chính thức.",
                     "Lưu thành công",
@@ -876,18 +987,112 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                 return;
             }
 
-            if (currentCandidates == null || currentCandidates.Count == 0)
+            // ✅ Kiểm tra xem có dữ liệu trong memory hoặc trong PhanCong_Temp
+            bool hasInMemory = currentCandidates != null && currentCandidates.Count > 0;
+            bool hasInTemp = phanCongBUS.HasTempAssignmentsForSemester(selectedHocKyId.Value);
+
+            if (!hasInMemory && !hasInTemp)
             {
-                MessageBox.Show("Chưa có dữ liệu để chấp nhận!", "Thông báo",
+                MessageBox.Show("Chưa có dữ liệu để chấp nhận!\n\nVui lòng tạo phân công trước.", "Thông báo",
                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            // ✅ Nếu có dữ liệu trong memory nhưng chưa lưu tạm → tự động lưu tạm trước
+            if (hasInMemory && !hasInTemp)
+            {
+                var saveFirst = MessageBox.Show(
+                    $"⚠️ Dữ liệu chưa được lưu tạm!\n\n" +
+                    $"Bạn có muốn lưu tạm trước khi chấp nhận không?\n\n" +
+                    $"• Yes: Lưu tạm rồi chấp nhận (An toàn - có thể chỉnh sửa sau)\n" +
+                    $"• No: Chấp nhận trực tiếp (Nhanh - không lưu tạm)\n" +
+                    $"• Cancel: Hủy",
+                    "Xác nhận",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+
+                if (saveFirst == DialogResult.Cancel) return;
+
+                if (saveFirst == DialogResult.Yes)
+                {
+                    // Lưu tạm trước
+                    try
+                    {
+                        persistService.PersistTemporary(currentCandidates, selectedHocKyId.Value);
+                        UpdateStatusMessage($"💾 Đã lưu tạm {currentCandidates.Count} phân công", StatusType.Info);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Lỗi khi lưu tạm: {ex.Message}", "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else // DialogResult.No - Chấp nhận trực tiếp từ memory
+                {
+                    // Lưu tạm ngầm định trước khi chấp nhận (để đảm bảo dữ liệu đồng bộ)
+                    try
+                    {
+                        persistService.PersistTemporary(currentCandidates, selectedHocKyId.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Lỗi khi chuẩn bị dữ liệu: {ex.Message}", "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+            }
+            // ✅ Nếu có dữ liệu trong PhanCong_Temp nhưng khác với memory → hỏi người dùng muốn dùng cái nào
+            else if (hasInTemp && hasInMemory)
+            {
+                // Kiểm tra xem dữ liệu có khác nhau không
+                var tempCount = GetTempAssignmentsCount(selectedHocKyId.Value);
+                if (tempCount != currentCandidates.Count)
+                {
+                    var choice = MessageBox.Show(
+                        $"⚠️ Phát hiện dữ liệu khác nhau:\n\n" +
+                        $"• Trong bộ nhớ: {currentCandidates.Count} phân công\n" +
+                        $"• Đã lưu tạm: {tempCount} phân công\n\n" +
+                        $"Bạn muốn chấp nhận:\n" +
+                        $"• Yes: Dữ liệu đã lưu tạm ({tempCount} phân công)\n" +
+                        $"• No: Dữ liệu hiện tại trong bộ nhớ ({currentCandidates.Count} phân công - sẽ cập nhật lại tạm)\n" +
+                        $"• Cancel: Hủy",
+                        "Chọn dữ liệu",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Question);
+
+                    if (choice == DialogResult.Cancel) return;
+
+                    if (choice == DialogResult.No)
+                    {
+                        // Cập nhật lại tạm với dữ liệu hiện tại
+                        try
+                        {
+                            persistService.PersistTemporary(currentCandidates, selectedHocKyId.Value);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Lỗi khi cập nhật dữ liệu tạm: {ex.Message}", "Lỗi",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    // DialogResult.Yes: Dùng dữ liệu đã lưu tạm (không làm gì)
+                }
+            }
+
+            // ✅ Đếm số phân công sẽ được chấp nhận
+            int countToAccept = hasInTemp 
+                ? GetTempAssignmentsCount(selectedHocKyId.Value) 
+                : (currentCandidates?.Count ?? 0);
+
             var confirm = MessageBox.Show(
-                $"✅ Bạn có chắc chắn muốn chấp nhận {currentCandidates.Count} phân công này?\n\n" +
+                $"✅ Bạn có chắc chắn muốn chấp nhận {countToAccept} phân công này?\n\n" +
                 $"📋 Học kỳ: {cbHocKy.Text}\n" +
-                $"📊 Số phân công: {currentCandidates.Count}\n\n" +
-                "➡️ Dữ liệu sẽ được lưu vào bảng PhanCongGiangDay chính thức.",
+                $"📊 Số phân công: {countToAccept}\n\n" +
+                "➡️ Dữ liệu sẽ được lưu vào bảng PhanCongGiangDay chính thức.\n" +
+                "⚠️ Thao tác này không thể hoàn tác!",
                 "Xác nhận chấp nhận",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -896,11 +1101,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
 
             try
             {
+                // ✅ Chấp nhận từ PhanCong_Temp (đã được đảm bảo có dữ liệu)
                 persistService.AcceptToOfficial(selectedHocKyId.Value);
 
-                UpdateStatusMessage($"✓ Đã chấp nhận {currentCandidates.Count} phân công!", StatusType.Success);
+                UpdateStatusMessage($"✓ Đã chấp nhận {countToAccept} phân công!", StatusType.Success);
                 MessageBox.Show(
-                    $"✅ Đã chấp nhận {currentCandidates.Count} phân công thành công!\n\n" +
+                    $"✅ Đã chấp nhận {countToAccept} phân công thành công!\n\n" +
                     "Dữ liệu đã được lưu vào bảng chính thức.",
                     "Thành công",
                     MessageBoxButtons.OK,
@@ -910,6 +1116,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
                 currentCandidates = null;
                 if (grid != null) grid.DataSource = null;
                 SetButtonsState(true, false);
+
+                // Refresh semester status
+                LoadHocKyToComboBox();
 
                 OnAssignmentAccepted?.Invoke(this, EventArgs.Empty);
 
@@ -924,10 +1133,41 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
             }
         }
 
+        /// <summary>
+        /// Lấy số lượng phân công tạm cho học kỳ
+        /// </summary>
+        private int GetTempAssignmentsCount(int hocKyId)
+        {
+            try
+            {
+                const string sql = "SELECT COUNT(*) FROM PhanCong_Temp WHERE MaHocKy = @MaHocKy";
+                using (var conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaHocKy", hocKyId);
+                        return Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+                }
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         private void BtnRollback_Click(object sender, EventArgs e)
         {
+            if (!selectedHocKyId.HasValue)
+            {
+                MessageBox.Show("Vui lòng chọn học kỳ!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            
             var confirm = MessageBox.Show(
-                "Bạn có chắc chắn muốn xóa bảng tạm?\n\nThao tác này không thể hoàn tác.",
+                $"Bạn có chắc chắn muốn xóa phân công tạm của học kỳ này?\n\nThao tác này không thể hoàn tác.",
                 "Xác nhận xóa",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
@@ -936,15 +1176,32 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.PhanCong
 
             try
             {
-                persistService.RollbackTemp();
-                UpdateStatusMessage("🗑 Đã xóa bảng tạm", StatusType.Info);
-                MessageBox.Show("Đã xóa bảng tạm thành công.", "Thông báo",
+                // Xóa chỉ cho học kỳ đã chọn
+                const string sql = "DELETE FROM PhanCong_Temp WHERE MaHocKy = @MaHocKy";
+                using (var conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaHocKy", selectedHocKyId.Value);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                
+                currentCandidates = new List<PhanCongCandidate>();
+                RefreshGrid();
+                
+                // Refresh semester status
+                LoadHocKyToComboBox();
+                
+                UpdateStatusMessage("🗑 Đã xóa phân công tạm", StatusType.Info);
+                MessageBox.Show("Đã xóa phân công tạm thành công.", "Thông báo",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 UpdateStatusMessage($"✗ Lỗi xóa: {ex.Message}", StatusType.Error);
-                MessageBox.Show($"Lỗi khi xóa bảng tạm: {ex.Message}", "Lỗi",
+                MessageBox.Show($"Lỗi khi xóa phân công tạm: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
