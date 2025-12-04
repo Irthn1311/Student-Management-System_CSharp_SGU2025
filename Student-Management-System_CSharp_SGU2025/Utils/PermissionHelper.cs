@@ -28,6 +28,7 @@ namespace Student_Management_System_CSharp_SGU2025.Utils
         public const string QLCAIDAT = "qlcaidat";
         public const string QLDANHGIA = "qldanhgia";
         public const string QLXEPLOAI = "qlxeploai";
+        public const string QLYEUCAUCHUYENLOP = "qlyeucau_chuyenlop"; // ✅ Quản lý yêu cầu chuyển lớp
 
         // Danh sách hành động 
         public const string READ = "read";

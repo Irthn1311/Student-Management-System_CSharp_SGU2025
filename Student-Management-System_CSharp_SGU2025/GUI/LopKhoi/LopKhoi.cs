@@ -52,7 +52,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             LoadSiSoComboBox();
             
             // --- Khởi tạo filter trạng thái ---
-            LoadTrangThaiComboBox();
+            //LoadTrangThaiComboBox();
 
             // --- Cập nhật thống kê ---
             CapNhatThongKeKhoi();
@@ -84,6 +84,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.CellPainting += dgvLop_CellPainting;
             dgvLop.CellClick += dgvLop_CellClick;
             PermissionHelper.ApplyPermissionLopHoc(btnThem, dgvLop);
+            
+            // 🆕 Thêm button "Quản lý yêu cầu chuyển lớp" cho ADMIN
+            ThemButtonQuanLyYeuCau();
         }
 
         // ✅ HÀM HỖ TRỢ: Gắn sự kiện click cho tất cả controls con
@@ -256,25 +259,42 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                if (cbGiaoVien == null) return;
+                if (cbGiaoVien == null)
+                {
+                    MessageBox.Show("ComboBox giáo viên chưa được khởi tạo!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
                 cbGiaoVien.Items.Clear();
                 cbGiaoVien.Items.Add("Tất cả GV");
 
+                // Lấy danh sách giáo viên từ BUS
                 danhSachGiaoVien = giaoVienBUS.DocDSGiaoVien();
-                if (danhSachGiaoVien != null && danhSachGiaoVien.Count > 0)
+                
+                if (danhSachGiaoVien == null || danhSachGiaoVien.Count == 0)
                 {
-                    foreach (GiaoVienDTO gv in danhSachGiaoVien.OrderBy(g => g.HoTen))
-                    {
-                        cbGiaoVien.Items.Add(gv.HoTen);
-                    }
+                    cbGiaoVien.SelectedIndex = 0;
+                    return;
+                }
+
+                // Lọc và sắp xếp giáo viên
+                var dsGiaoVienHopLe = danhSachGiaoVien
+                    .Where(gv => !string.IsNullOrWhiteSpace(gv.HoTen))
+                    .OrderBy(gv => gv.HoTen)
+                    .ToList();
+
+                // Thêm từng giáo viên vào ComboBox
+                foreach (GiaoVienDTO gv in dsGiaoVienHopLe)
+                {
+                    cbGiaoVien.Items.Add(gv.HoTen);
                 }
 
                 cbGiaoVien.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi nạp danh sách giáo viên: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi khi nạp danh sách giáo viên:\n{ex.Message}\n\nStack Trace:\n{ex.StackTrace}", 
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -301,23 +321,23 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         // ✅ KHỞI TẠO FILTER TRẠNG THÁI (tạm thời chưa sử dụng vì chưa có trường TrangThai trong LopDTO)
-        private void LoadTrangThaiComboBox()
-        {
-            try
-            {
-                if (cbTrangThai == null) return;
+        //private void LoadTrangThaiComboBox()
+        //{
+        //    try
+        //    {
+        //        if (cbTrangThai == null) return;
                 
-                // Đảm bảo selectedIndex = 0 (Tất cả)
-                if (cbTrangThai.Items.Count > 0)
-                {
-                    cbTrangThai.SelectedIndex = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi khởi tạo filter trạng thái: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+        //        // Đảm bảo selectedIndex = 0 (Tất cả)
+        //        if (cbTrangThai.Items.Count > 0)
+        //        {
+        //            cbTrangThai.SelectedIndex = 0;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Lỗi khi khởi tạo filter trạng thái: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
 
         // ✅ XỬ LÝ KHI CHỌN NĂM HỌC
         private void cbNamHoc_SelectedIndexChanged(object sender, EventArgs e)
@@ -396,10 +416,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 if (cbSiSo != null && cbSiSo.Items.Count > 0)
                     cbSiSo.SelectedIndex = 0; // "Tất cả sĩ số"
 
-                if (cbTrangThai != null && cbTrangThai.Items.Count > 0)
-                    cbTrangThai.SelectedIndex = 0; // "Tất cả"
+                //if (cbTrangThai != null && cbTrangThai.Items.Count > 0)
+                //    cbTrangThai.SelectedIndex = 0; // "Tất cả"
 
-                // Áp dụng filter sau khi reset
+                //// Áp dụng filter sau khi reset
                 ApDungFilter();
             }
             catch (Exception ex)
@@ -808,6 +828,77 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void dgvLop_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// 🆕 Thêm button "Quản lý yêu cầu chuyển lớp" cho ADMIN
+        /// </summary>
+        private void ThemButtonQuanLyYeuCau()
+        {
+            try
+            {
+                // Tạo button mới
+                Guna2Button btnQuanLyYeuCau = new Guna2Button();
+                btnQuanLyYeuCau.Text = "📋 Yêu cầu chuyển lớp";
+                btnQuanLyYeuCau.Size = new Size(180, 40);
+                btnQuanLyYeuCau.FillColor = Color.FromArgb(139, 92, 246); // Màu tím
+                btnQuanLyYeuCau.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+                btnQuanLyYeuCau.ForeColor = Color.White;
+                btnQuanLyYeuCau.BorderRadius = 8;
+                btnQuanLyYeuCau.Cursor = Cursors.Hand;
+
+                // Đặt vị trí button (bên cạnh button "Thêm")
+                if (btnThem != null)
+                {
+                    btnQuanLyYeuCau.Location = new Point(btnThem.Location.X + btnThem.Width + 10, btnThem.Location.Y);
+                }
+                else
+                {
+                    btnQuanLyYeuCau.Location = new Point(30, 20);
+                }
+
+                // Gắn sự kiện click
+                btnQuanLyYeuCau.Click += BtnQuanLyYeuCau_Click;
+
+                // Thêm button vào form
+                this.Controls.Add(btnQuanLyYeuCau);
+                btnQuanLyYeuCau.BringToFront();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi thêm button Quản lý yêu cầu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 🆕 Event khi click button "Quản lý yêu cầu chuyển lớp"
+        /// </summary>
+        private void BtnQuanLyYeuCau_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Lấy tên đăng nhập admin hiện tại
+                // string tenDangNhapAdmin = PermissionHelper.GetCurrentUsername();
+                // Sửa: Nếu bạn có một biến lưu username, hãy dùng nó. Nếu không, cần truyền username từ nơi khác.
+                string tenDangNhapAdmin = Environment.UserName; // Hoặc lấy từ biến/thuộc tính hiện có
+
+                if (string.IsNullOrEmpty(tenDangNhapAdmin))
+                {
+                    MessageBox.Show("Không xác định được người dùng hiện tại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Mở form quản lý yêu cầu chuyển lớp
+                FormQuanLyYeuCauChuyenLop form = new FormQuanLyYeuCauChuyenLop(tenDangNhapAdmin);
+                form.ShowDialog();
+
+                // Reload dữ liệu sau khi đóng form (nếu có thay đổi)
+                LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở form quản lý yêu cầu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

@@ -359,5 +359,46 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
 
         // === KẾT THÚC HÀM MỚI ===
+
+        /// <summary>
+        /// Kiểm tra học kỳ có dữ liệu xếp loại hay không
+        /// </summary>
+        public bool KiemTraHocKyCoXepLoai(int maHocKy)
+        {
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+            SELECT COUNT(DISTINCT hs.MaHocSinh) as SoLuong
+            FROM HocSinh hs
+            INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh 
+                AND pl.MaHocKy = @MaHocKy
+            LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
+                AND ds.MaHocKy = @MaHocKy
+            WHERE hs.TrangThai = 'Đang học'
+                AND ds.DiemTrungBinh IS NOT NULL";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+                    object result = cmd.ExecuteScalar();
+                    int soLuong = result != null ? Convert.ToInt32(result) : 0;
+                    return soLuong > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi KiemTraHocKyCoXepLoai: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+        }
+
     }
 }

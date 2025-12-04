@@ -206,6 +206,7 @@
     <Compile Include="bus\CaiDatBUS.cs" />
     <Compile Include="bus\XepLoaiBUS.cs" />
     <Compile Include="Config\TimetableConfig.cs" />
+    <Compile Include="bus\YeuCauChuyenLopBLL.cs" />
     <Compile Include="dao\DiemSoDAO.cs" />
     <Compile Include="dao\HocSinhDAO.cs" />
     <Compile Include="dao\HocSinhPhuHuynhDAO.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="dao\PhuHuynhDAO.cs" />
     <Compile Include="dao\ThoiKhoaBieuDAO.cs" />
     <Compile Include="dao\XepLoaiDAO.cs" />
+    <Compile Include="dao\YeuCauChuyenLopDAO.cs" />
     <Compile Include="DTO\ChiTietDiemDTO.cs" />
     <Compile Include="DTO\HoSoNguoiDungDTO.cs" />
     <Compile Include="DTO\KhenThuongKyLuatDTO.cs" />
@@ -255,6 +257,25 @@
     <Compile Include="DTO\TimeTableSlotDTO.cs" />
     <Compile Include="DTO\VaiTroDTO.cs" />
     <Compile Include="DTO\XepLoaiDTO.cs" />
+    <Compile Include="DTO\YeuCauChuyenLopDTO.cs" />
+    <Compile Include="GUI\BaoCao\BaoCaoKhoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\BaoCaoKhoi.Designer.cs">
+      <DependentUpon>BaoCaoKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\BaoCaoLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\BaoCaoLop.Designer.cs">
+      <DependentUpon>BaoCaoLop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\itemLopHoc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\itemLopHoc.Designer.cs">
+      <DependentUpon>itemLopHoc.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\CaiDat\CaiDat.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -357,6 +378,24 @@
     <Compile Include="GUI\HocSinh\PhanLop.Designer.cs">
       <DependentUpon>PhanLop.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\LopKhoi\FormDuyetYeuCau.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\FormDuyetYeuCau.Designer.cs">
+      <DependentUpon>FormDuyetYeuCau.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\FormGuiYeuCauChuyenLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\FormGuiYeuCauChuyenLop.Designer.cs">
+      <DependentUpon>FormGuiYeuCauChuyenLop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\FormQuanLyYeuCauChuyenLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\LopKhoi\FormQuanLyYeuCauChuyenLop.Designer.cs">
+      <DependentUpon>FormQuanLyYeuCauChuyenLop.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\NamHoc\ucNamHoc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -368,6 +407,12 @@
     </Compile>
     <Compile Include="GUI\PhanCongGiangDay\frmAutoPhanCongPreview.Designer.cs">
       <DependentUpon>frmAutoPhanCongPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\PhuHuynh\FormPhuHuynhGuiYeuCau.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\PhuHuynh\FormPhuHuynhGuiYeuCau.Designer.cs">
+      <DependentUpon>FormPhuHuynhGuiYeuCau.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\RecentActivityItem.cs">
       <SubType>UserControl</SubType>
@@ -650,6 +695,15 @@
     <Compile Include="Utils\PermissionHelper.cs" />
     <Compile Include="Utils\SessionManager.cs" />
     <Compile Include="Utils\ValidationHelper.cs" />
+    <EmbeddedResource Include="GUI\BaoCao\BaoCaoKhoi.resx">
+      <DependentUpon>BaoCaoKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\BaoCaoLop.resx">
+      <DependentUpon>BaoCaoLop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\itemLopHoc.resx">
+      <DependentUpon>itemLopHoc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\CaiDat\CaiDat.resx">
       <DependentUpon>CaiDat.cs</DependentUpon>
     </EmbeddedResource>
@@ -724,11 +778,23 @@
     <EmbeddedResource Include="GUI\HocSinh\PhanLop.resx">
       <DependentUpon>PhanLop.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\LopKhoi\FormDuyetYeuCau.resx">
+      <DependentUpon>FormDuyetYeuCau.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\LopKhoi\FormGuiYeuCauChuyenLop.resx">
+      <DependentUpon>FormGuiYeuCauChuyenLop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\LopKhoi\FormQuanLyYeuCauChuyenLop.resx">
+      <DependentUpon>FormQuanLyYeuCauChuyenLop.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\NamHoc\ucNamHoc.resx">
       <DependentUpon>ucNamHoc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\PhanCongGiangDay\frmAutoPhanCongPreview.resx">
       <DependentUpon>frmAutoPhanCongPreview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\PhuHuynh\FormPhuHuynhGuiYeuCau.resx">
+      <DependentUpon>FormPhuHuynhGuiYeuCau.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\RecentActivityItem.resx">
       <DependentUpon>RecentActivityItem.cs</DependentUpon>
