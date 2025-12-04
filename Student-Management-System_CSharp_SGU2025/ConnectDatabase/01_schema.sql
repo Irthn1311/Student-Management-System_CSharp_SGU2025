@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS HanhKiem;
 DROP TABLE IF EXISTS XepLoai;
 DROP TABLE IF EXISTS KhenThuongKyLuat;
 DROP TABLE IF EXISTS ThongBao;
+DROP TABLE IF EXISTS YeuCauChuyenLop;
 DROP TABLE IF EXISTS PhanLop;
 DROP TABLE IF EXISTS HocSinhPhuHuynh;
 DROP TABLE IF EXISTS GiaoVien_MonHoc;
@@ -135,7 +136,8 @@ INSERT INTO ChucNang (MaChucNang, TenChucNang, MoTa) VALUES
 ('qlnamhoc', 'Quản lý năm học', 'Quản lý năm học và học kỳ'),
 ('qlcaidat', 'Quản lý cài đặt', 'Cài đặt hệ thống'),
 ('qldanhgia', 'Quản lý đánh giá', 'Quản lý khen thưởng và đánh giá'),
-('qlxeploai', 'Quản lý xếp loại', 'Xếp loại và tổng kết học sinh');
+('qlxeploai', 'Quản lý xếp loại', 'Xếp loại và tổng kết học sinh'),
+('qlyeucau_chuyenlop', 'Quản lý yêu cầu chuyển lớp', 'Quản lý và duyệt yêu cầu chuyển lớp từ phụ huynh/học sinh');
 
 INSERT IGNORE INTO ChucNangHanhDong (MaChucNang, HanhDong) VALUES
 ('qlhocsinh', 'read'), ('qlhocsinh', 'create'), ('qlhocsinh', 'update'), ('qlhocsinh', 'delete'),
@@ -151,7 +153,8 @@ INSERT IGNORE INTO ChucNangHanhDong (MaChucNang, HanhDong) VALUES
 ('qlnamhoc', 'read'), ('qlnamhoc', 'create'), ('qlnamhoc', 'update'), ('qlnamhoc', 'delete'),
 ('qlcaidat', 'read'), ('qlcaidat', 'update'),
 ('qldanhgia', 'read'), ('qldanhgia', 'create'), ('qldanhgia', 'update'), ('qldanhgia', 'delete'),
-('qlxeploai', 'read');
+('qlxeploai', 'read'),
+('qlyeucau_chuyenlop', 'read'), ('qlyeucau_chuyenlop', 'create'), ('qlyeucau_chuyenlop', 'update'), ('qlyeucau_chuyenlop', 'delete');
 
 INSERT IGNORE INTO ChucNangHanhDong (MaChucNang, HanhDong) VALUES
 ('qldiem', 'read'),
@@ -182,7 +185,8 @@ INSERT IGNORE INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
 ('admin', 'qlnamhoc'),
 ('admin', 'qlcaidat'),
 ('admin', 'qldanhgia'),
-('admin', 'qlxeploai');
+('admin', 'qlxeploai'),
+('admin', 'qlyeucau_chuyenlop');
 
 INSERT IGNORE INTO VaiTroChucNangHanhDong (MaVaiTro, MaChucNang, HanhDong) VALUES
 ('admin', 'qldiem', 'read'),
@@ -435,6 +439,35 @@ CREATE TABLE ThongBao (
     FOREIGN KEY (MaNguoiTao) REFERENCES NguoiDung(TenDangNhap)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE YeuCauChuyenLop (
+    MaYeuCau INT PRIMARY KEY AUTO_INCREMENT,
+    MaHocSinh INT NOT NULL,
+    MaLopHienTai INT NOT NULL,
+    MaLopMongMuon INT NULL,          -- Có thể null nếu phụ huynh không chọn lớp cụ thể
+    MaHocKy INT NOT NULL,
+    LyDoYeuCau NVARCHAR(1000) NOT NULL,
+    NgayTao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    NguoiTao VARCHAR(20) NOT NULL,   -- TenDangNhap của phụ huynh hoặc admin tạo
+    TrangThai NVARCHAR(50) NOT NULL DEFAULT N'Chờ duyệt',  -- 'Chờ duyệt', 'Đã duyệt', 'Từ chối'
+    NgayXuLy DATETIME NULL,
+    NguoiXuLy VARCHAR(20) NULL,      -- TenDangNhap của admin xử lý
+    GhiChuAdmin NVARCHAR(1000) NULL, -- Ghi chú của admin khi duyệt/từ chối
+    MaLopDuocDuyet INT NULL,         -- Lớp được admin duyệt (có thể khác lớp mong muốn)
+    
+    FOREIGN KEY (MaHocSinh) REFERENCES HocSinh(MaHocSinh) ON DELETE CASCADE,
+    FOREIGN KEY (MaLopHienTai) REFERENCES LopHoc(MaLop) ON DELETE CASCADE,
+    FOREIGN KEY (MaLopMongMuon) REFERENCES LopHoc(MaLop) ON DELETE SET NULL,
+    FOREIGN KEY (MaLopDuocDuyet) REFERENCES LopHoc(MaLop) ON DELETE SET NULL,
+    FOREIGN KEY (MaHocKy) REFERENCES HocKy(MaHocKy) ON DELETE CASCADE,
+    FOREIGN KEY (NguoiTao) REFERENCES NguoiDung(TenDangNhap) ON DELETE CASCADE,
+    FOREIGN KEY (NguoiXuLy) REFERENCES NguoiDung(TenDangNhap) ON DELETE SET NULL,
+    
+    INDEX idx_hocsinh (MaHocSinh),
+    INDEX idx_trangthai (TrangThai),
+    INDEX idx_ngaytao (NgayTao),
+    INDEX idx_nguoitao (NguoiTao)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- =====================================================================
 -- INDEXES CƠ BẢN
 -- =====================================================================
@@ -453,5 +486,8 @@ ALTER TABLE PhuHuynh ADD INDEX idx_hoten_ph (HoTen);
 ALTER TABLE PhanLop ADD INDEX idx_hocky_phanlop (MaHocKy);
 ALTER TABLE PhanCongGiangDay ADD INDEX idx_hocky_phancong (MaHocKy);
 ALTER TABLE ThoiKhoaBieu ADD INDEX idx_phancong_tkb (MaPhanCong);
+
+-- Indexes cho YeuCauChuyenLop (các indexes cơ bản đã được tạo trong CREATE TABLE)
+-- Các indexes nâng cao sẽ được tạo trong file 02_unique_indexes.sql
 
 SELECT 'Schema creation completed successfully' AS Status;
