@@ -204,6 +204,7 @@
     <Compile Include="bus\CaiDatBUS.cs" />
     <Compile Include="bus\XepLoaiBUS.cs" />
     <Compile Include="bus\YeuCauChuyenLopBLL.cs" />
+    <Compile Include="bus\YeuCauChuyenLopBLL.cs" />
     <Compile Include="dao\DiemSoDAO.cs" />
     <Compile Include="dao\HocSinhDAO.cs" />
     <Compile Include="dao\HocSinhPhuHuynhDAO.cs" />
@@ -254,6 +255,24 @@
     <Compile Include="DTO\VaiTroDTO.cs" />
     <Compile Include="DTO\XepLoaiDTO.cs" />
     <Compile Include="DTO\YeuCauChuyenLopDTO.cs" />
+    <Compile Include="GUI\BaoCao\BaoCaoKhoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\BaoCaoKhoi.Designer.cs">
+      <DependentUpon>BaoCaoKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\BaoCaoLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\BaoCaoLop.Designer.cs">
+      <DependentUpon>BaoCaoLop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\BaoCao\itemLopHoc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\BaoCao\itemLopHoc.Designer.cs">
+      <DependentUpon>itemLopHoc.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\CaiDat\CaiDat.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -671,6 +690,15 @@
     <Compile Include="Utils\PermissionHelper.cs" />
     <Compile Include="Utils\SessionManager.cs" />
     <Compile Include="Utils\ValidationHelper.cs" />
+    <EmbeddedResource Include="GUI\BaoCao\BaoCaoKhoi.resx">
+      <DependentUpon>BaoCaoKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\BaoCaoLop.resx">
+      <DependentUpon>BaoCaoLop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\BaoCao\itemLopHoc.resx">
+      <DependentUpon>itemLopHoc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\CaiDat\CaiDat.resx">
       <DependentUpon>CaiDat.cs</DependentUpon>
     </EmbeddedResource>

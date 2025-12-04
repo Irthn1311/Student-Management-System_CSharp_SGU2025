@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.lblPercent = new Guna.UI2.WinForms.Guna2Panel();
             this.lblPercentKem = new System.Windows.Forms.Label();
@@ -50,6 +50,9 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.guna2Panel6 = new Guna.UI2.WinForms.Guna2Panel();
+            this.cardTheoKhoi3 = new Student_Management_System_CSharp_SGU2025.GUI.XepLoai.CardTheoKhoi();
+            this.cardTheoKhoi2 = new Student_Management_System_CSharp_SGU2025.GUI.XepLoai.CardTheoKhoi();
+            this.cardTheoKhoi1 = new Student_Management_System_CSharp_SGU2025.GUI.XepLoai.CardTheoKhoi();
             this.label19 = new System.Windows.Forms.Label();
             this.guna2Panel10 = new Guna.UI2.WinForms.Guna2Panel();
             this.tableXepLoai = new Guna.UI2.WinForms.Guna2DataGridView();
@@ -68,9 +71,6 @@
             this.thongKeXepLoai3 = new Student_Management_System_CSharp_SGU2025.GUI.XepLoai.ThongKeXepLoai();
             this.thongKeXepLoai2 = new Student_Management_System_CSharp_SGU2025.GUI.XepLoai.ThongKeXepLoai();
             this.thongKeXepLoai1 = new Student_Management_System_CSharp_SGU2025.GUI.XepLoai.ThongKeXepLoai();
-            this.cardTheoKhoi3 = new Student_Management_System_CSharp_SGU2025.GUI.XepLoai.CardTheoKhoi();
-            this.cardTheoKhoi2 = new Student_Management_System_CSharp_SGU2025.GUI.XepLoai.CardTheoKhoi();
-            this.cardTheoKhoi1 = new Student_Management_System_CSharp_SGU2025.GUI.XepLoai.CardTheoKhoi();
             this.txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
             this.lblPercent.SuspendLayout();
             this.guna2Panel6.SuspendLayout();
@@ -367,6 +367,52 @@
             this.guna2Panel6.TabIndex = 8;
             this.guna2Panel6.Paint += new System.Windows.Forms.PaintEventHandler(this.guna2Panel6_Paint);
             // 
+            // cardTheoKhoi3
+            // 
+            this.cardTheoKhoi3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.cardTheoKhoi3.KhoiLop = "Khối lớp";
+            this.cardTheoKhoi3.Location = new System.Drawing.Point(18, 287);
+            this.cardTheoKhoi3.Name = "cardTheoKhoi3";
+            this.cardTheoKhoi3.Size = new System.Drawing.Size(499, 97);
+            this.cardTheoKhoi3.SoGioi = "98";
+            this.cardTheoKhoi3.SoHocSinhKhoi = "Số học sinh";
+            this.cardTheoKhoi3.SoKem = "0";
+            this.cardTheoKhoi3.SoKha = "192";
+            this.cardTheoKhoi3.SoTrungBinh = "154";
+            this.cardTheoKhoi3.SoYeu = "36 ";
+            this.cardTheoKhoi3.TabIndex = 3;
+            // 
+            // cardTheoKhoi2
+            // 
+            this.cardTheoKhoi2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.cardTheoKhoi2.KhoiLop = "Khối lớp";
+            this.cardTheoKhoi2.Location = new System.Drawing.Point(18, 172);
+            this.cardTheoKhoi2.Name = "cardTheoKhoi2";
+            this.cardTheoKhoi2.Size = new System.Drawing.Size(499, 97);
+            this.cardTheoKhoi2.SoGioi = "98";
+            this.cardTheoKhoi2.SoHocSinhKhoi = "Số học sinh";
+            this.cardTheoKhoi2.SoKem = "0";
+            this.cardTheoKhoi2.SoKha = "192";
+            this.cardTheoKhoi2.SoTrungBinh = "154";
+            this.cardTheoKhoi2.SoYeu = "36 ";
+            this.cardTheoKhoi2.TabIndex = 2;
+            // 
+            // cardTheoKhoi1
+            // 
+            this.cardTheoKhoi1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.cardTheoKhoi1.KhoiLop = "Khối lớp";
+            this.cardTheoKhoi1.Location = new System.Drawing.Point(18, 59);
+            this.cardTheoKhoi1.Name = "cardTheoKhoi1";
+            this.cardTheoKhoi1.Size = new System.Drawing.Size(499, 97);
+            this.cardTheoKhoi1.SoGioi = "98";
+            this.cardTheoKhoi1.SoHocSinhKhoi = "Số học sinh";
+            this.cardTheoKhoi1.SoKem = "0";
+            this.cardTheoKhoi1.SoKha = "192";
+            this.cardTheoKhoi1.SoTrungBinh = "154";
+            this.cardTheoKhoi1.SoYeu = "36 ";
+            this.cardTheoKhoi1.TabIndex = 1;
+            this.cardTheoKhoi1.Load += new System.EventHandler(this.cardTheoKhoi1_Load);
+            // 
             // label19
             // 
             this.label19.AutoSize = true;
@@ -395,14 +441,14 @@
             this.tableXepLoai.AllowUserToDeleteRows = false;
             this.tableXepLoai.AllowUserToResizeColumns = false;
             this.tableXepLoai.AllowUserToResizeRows = false;
-            dataGridViewCellStyle7.BackColor = System.Drawing.Color.White;
-            this.tableXepLoai.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            dataGridViewCellStyle8.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.tableXepLoai.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            this.tableXepLoai.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            this.tableXepLoai.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.tableXepLoai.ColumnHeadersHeight = 52;
             this.tableXepLoai.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.maHS,
@@ -412,15 +458,15 @@
             this.hanhKiem,
             this.hocLuc,
             this.xepLoai});
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            dataGridViewCellStyle9.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tableXepLoai.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            dataGridViewCellStyle3.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(246)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tableXepLoai.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableXepLoai.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tableXepLoai.Location = new System.Drawing.Point(24, 694);
             this.tableXepLoai.Margin = new System.Windows.Forms.Padding(2);
@@ -631,51 +677,6 @@
             this.thongKeXepLoai1.TieuDe2 = "Tiêu đề 2";
             this.thongKeXepLoai1.TieuDe3 = "Tiêu đề 3";
             // 
-            // cardTheoKhoi3
-            // 
-            this.cardTheoKhoi3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.cardTheoKhoi3.KhoiLop = "Khối lớp";
-            this.cardTheoKhoi3.Location = new System.Drawing.Point(18, 287);
-            this.cardTheoKhoi3.Name = "cardTheoKhoi3";
-            this.cardTheoKhoi3.Size = new System.Drawing.Size(499, 97);
-            this.cardTheoKhoi3.SoGioi = "98";
-            this.cardTheoKhoi3.SoHocSinhKhoi = "Số học sinh";
-            this.cardTheoKhoi3.SoKem = "0";
-            this.cardTheoKhoi3.SoKha = "192";
-            this.cardTheoKhoi3.SoTrungBinh = "154";
-            this.cardTheoKhoi3.SoYeu = "36 ";
-            this.cardTheoKhoi3.TabIndex = 3;
-            // 
-            // cardTheoKhoi2
-            // 
-            this.cardTheoKhoi2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.cardTheoKhoi2.KhoiLop = "Khối lớp";
-            this.cardTheoKhoi2.Location = new System.Drawing.Point(18, 172);
-            this.cardTheoKhoi2.Name = "cardTheoKhoi2";
-            this.cardTheoKhoi2.Size = new System.Drawing.Size(499, 97);
-            this.cardTheoKhoi2.SoGioi = "98";
-            this.cardTheoKhoi2.SoHocSinhKhoi = "Số học sinh";
-            this.cardTheoKhoi2.SoKem = "0";
-            this.cardTheoKhoi2.SoKha = "192";
-            this.cardTheoKhoi2.SoTrungBinh = "154";
-            this.cardTheoKhoi2.SoYeu = "36 ";
-            this.cardTheoKhoi2.TabIndex = 2;
-            // 
-            // cardTheoKhoi1
-            // 
-            this.cardTheoKhoi1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.cardTheoKhoi1.KhoiLop = "Khối lớp";
-            this.cardTheoKhoi1.Location = new System.Drawing.Point(18, 59);
-            this.cardTheoKhoi1.Name = "cardTheoKhoi1";
-            this.cardTheoKhoi1.Size = new System.Drawing.Size(499, 97);
-            this.cardTheoKhoi1.SoGioi = "98";
-            this.cardTheoKhoi1.SoHocSinhKhoi = "Số học sinh";
-            this.cardTheoKhoi1.SoKem = "0";
-            this.cardTheoKhoi1.SoKha = "192";
-            this.cardTheoKhoi1.SoTrungBinh = "154";
-            this.cardTheoKhoi1.SoYeu = "36 ";
-            this.cardTheoKhoi1.TabIndex = 1;
-            // 
             // txtSearch
             // 
             this.txtSearch.BackColor = System.Drawing.Color.Transparent;
@@ -723,7 +724,7 @@
             this.MinimumSize = new System.Drawing.Size(1168, 768);
             this.Name = "ucXepLoai";
             this.Padding = new System.Windows.Forms.Padding(24);
-            this.Size = new System.Drawing.Size(1151, 751);
+            this.Size = new System.Drawing.Size(1151, 768);
             this.Load += new System.EventHandler(this.ucXepLoai_Load);
             this.lblPercent.ResumeLayout(false);
             this.lblPercent.PerformLayout();
