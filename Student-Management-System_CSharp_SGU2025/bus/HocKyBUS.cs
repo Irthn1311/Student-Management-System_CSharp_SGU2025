@@ -173,5 +173,24 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 return false;
             }
         }
+
+        /// <summary>
+        /// Tìm học kỳ theo tên học kỳ và mã năm học.
+        /// </summary>
+        /// <param name="tenHocKy">Tên học kỳ (ví dụ: "Học kỳ I", "Học kỳ II")</param>
+        /// <param name="maNamHoc">Mã năm học (ví dụ: "2024-2025")</param>
+        /// <returns>HocKyDTO nếu tìm thấy, null nếu không tìm thấy</returns>
+        public HocKyDTO LayHocKyTheoTenVaNamHoc(string tenHocKy, string maNamHoc)
+        {
+            try
+            {
+                return hocKyDAO.LayHocKyTheoTenVaNamHoc(tenHocKy, maNamHoc);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS LayHocKyTheoTenVaNamHoc: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

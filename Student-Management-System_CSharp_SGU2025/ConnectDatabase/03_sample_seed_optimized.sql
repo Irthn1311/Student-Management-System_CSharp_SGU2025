@@ -35,46 +35,29 @@ INSERT INTO MonHoc (MaMonHoc, TenMonHoc, SoTiet, GhiChu) VALUES
 (12, 'Giáo dục thể chất', 35, 'Kỹ năng khác'),
 (13, 'GDQP-AN', 26, 'Kỹ năng khác');
 
--- Vai trò hệ thống
-INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES
+-- Vai trò hệ thống (chỉ insert các vai trò chưa có, admin đã có trong file 01)
+INSERT IGNORE INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES
 ('student', 'Học sinh', 'Học sinh trong hệ thống'),
 ('parent', 'Phụ huynh', 'Phụ huynh học sinh'),
-('teacher', 'Giáo viên', 'Giáo viên giảng dạy'),
-('admin', 'Quản trị viên', 'Quản trị hệ thống');
+('teacher', 'Giáo viên', 'Giáo viên giảng dạy');
 
--- Chức năng hệ thống
-INSERT INTO ChucNang (MaChucNang, TenChucNang, MoTa) VALUES
-('qlhs', 'Quản lý học sinh', 'Quản lý thông tin học sinh'),
-('qlphuhuynh', 'Quản lý phụ huynh', 'Quản lý thông tin phụ huynh'),
-('qlgiaovien', 'Quản lý giáo viên', 'Quản lý thông tin giáo viên'),
-('qllophoc', 'Quản lý lớp học', 'Quản lý lớp học và phân lớp'),
-('qlmonhoc', 'Quản lý môn học', 'Quản lý môn học và phân công'),
-('qltkb', 'Quản lý thời khóa biểu', 'Quản lý thời khóa biểu'),
-('qldiem', 'Quản lý điểm số', 'Quản lý điểm số học sinh'),
-('qlthongbao', 'Quản lý thông báo', 'Quản lý thông báo hệ thống');
+-- Lưu ý: ChucNang và admin đã được tạo trong file 01_schema.sql
+-- Chỉ cần phân quyền cho các vai trò mới (student, parent, teacher)
 
--- Phân quyền vai trò - chức năng
-INSERT INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
+-- Phân quyền vai trò - chức năng (dùng mã chức năng từ schema mới trong file 01)
+INSERT IGNORE INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
 -- Học sinh
-('student', 'qlhs'),
+('student', 'qlhocsinh'),
 -- Phụ huynh
-('parent', 'qlhs'),
-('parent', 'qlphuhuynh'),
+('parent', 'qlhocsinh'),
 -- Giáo viên
 ('teacher', 'qlgiaovien'),
 ('teacher', 'qllophoc'),
 ('teacher', 'qlmonhoc'),
+('teacher', 'qlphancong'),
 ('teacher', 'qltkb'),
 ('teacher', 'qldiem'),
--- Admin (tất cả quyền)
-('admin', 'qlhs'),
-('admin', 'qlphuhuynh'),
-('admin', 'qlgiaovien'),
-('admin', 'qllophoc'),
-('admin', 'qlmonhoc'),
-('admin', 'qltkb'),
-('admin', 'qldiem'),
-('admin', 'qlthongbao');
+('teacher', 'qlhanhkiem');
 
 -- =====================================================================
 -- PHẦN 2: NĂM HỌC VÀ HỌC KỲ
@@ -82,13 +65,13 @@ INSERT INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
 
 -- Năm học
 INSERT INTO NamHoc (MaNamHoc, TenNamHoc, NgayBatDau, NgayKetThuc) VALUES
-('2024-2025', 'Năm học 2024-2025', '2024-09-01', '2025-05-31'),
 ('2025-2026', 'Năm học 2025-2026', '2025-09-01', '2026-05-31'),
 ('2026-2027', 'Năm học 2026-2027', '2026-09-01', '2027-05-31');
 
--- Học kỳ (4 học kỳ cho test 2 kịch bản)
+-- Học kỳ (4 học kỳ: 2 năm học)
+-- ✅ LƯU Ý: Không có học kỳ 2024-2025 vì chỉ đọc từ Excel để xét điều kiện
 INSERT INTO HocKy (MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT) VALUES
--- Năm 2025-2026: Test kịch bản HK1 -> HK2
+-- Năm 2025-2026: Học kỳ hiện tại (bắt đầu từ MaHocKy = 1)
 (1, 'Học kỳ I', '2025-2026', 'Đang diễn ra', '2025-09-01', '2026-01-15'),
 (2, 'Học kỳ II', '2025-2026', 'Chưa bắt đầu', '2026-01-16', '2026-05-31'),
 -- Năm 2026-2027: Sẵn sàng cho test kịch bản HK2 -> HK1 năm sau
@@ -274,38 +257,45 @@ FROM (
 
 SELECT 'Phu huynh da duoc tao (500 phu huynh)' AS Status;
 
--- Liên kết học sinh - phụ huynh (1-1, HS active với PH tương ứng)
+-- Liên kết học sinh - phụ huynh (500 học sinh với 500 phụ huynh)
+-- Mỗi học sinh có 1 phụ huynh với các mối quan hệ: Cha, Mẹ, Ông, Bà, Người giám hộ
 INSERT INTO HocSinhPhuHuynh (MaHocSinh, MaPhuHuynh, MoiQuanHe)
 SELECT 
     hs.MaHocSinh,
     ph.MaPhuHuynh,
-    'Cha/Mẹ' as MoiQuanHe
+    CASE 
+        -- 60% Cha, 30% Mẹ, 5% Ông, 3% Bà, 2% Người giám hộ
+        WHEN hs.hs_num MOD 100 < 60 THEN 'Cha'
+        WHEN hs.hs_num MOD 100 < 90 THEN 'Mẹ'
+        WHEN hs.hs_num MOD 100 < 95 THEN 'Ông'
+        WHEN hs.hs_num MOD 100 < 98 THEN 'Bà'
+        ELSE 'Người giám hộ'
+    END as MoiQuanHe
 FROM (
     SELECT MaHocSinh, @hs_row := @hs_row + 1 as hs_num
     FROM HocSinh, (SELECT @hs_row := 0) r
-    WHERE TrangThai = 'Đang học'
     ORDER BY MaHocSinh
-    LIMIT 475
+    LIMIT 500
 ) hs
 JOIN (
     SELECT MaPhuHuynh, @ph_row := @ph_row + 1 as ph_num
     FROM PhuHuynh, (SELECT @ph_row := 0) r2
     ORDER BY MaPhuHuynh
-    LIMIT 475
+    LIMIT 500
 ) ph ON hs.hs_num = ph.ph_num;
 
-SELECT 'Lien ket hoc sinh - phu huynh hoan thanh (475 lien ket)' AS Status;
+SELECT 'Lien ket hoc sinh - phu huynh hoan thanh (500 lien ket)' AS Status;
 
 -- =====================================================================
 -- PHẦN 7: PHÂN LỚP (Phân 475 học sinh active vào 24 lớp)
 -- =====================================================================
 
--- Phân lớp cho học kỳ 1 (2025-2026)
+-- Phân lớp cho học kỳ hiện tại (2025-2026, MaHocKy = 1)
 INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy)
 SELECT 
     hs.MaHocSinh,
     lh.MaLop,
-    1 as MaHocKy
+    1 as MaHocKy  -- ✅ Sửa: Dùng MaHocKy = 1 (Học kỳ I, 2025-2026 - Đang diễn ra)
 FROM (
     SELECT MaHocSinh, @row_num := @row_num + 1 as row_num
     FROM HocSinh, (SELECT @row_num := 0) r
@@ -319,53 +309,56 @@ JOIN (
     ORDER BY MaLop
 ) lh ON lh.lop_num = CEILING(hs.row_num / 19.79);
 
-SELECT 'Phan lop hoc ky 1 hoan thanh (475 hoc sinh)' AS Status;
+SELECT 'Phan lop hoc ky hien tai (MaHocKy = 1) hoan thanh (475 hoc sinh)' AS Status;
 
 -- =====================================================================
--- PHẦN 8: DỮ LIỆU TEST - ĐIỂM SỐ HỌC KỲ 1
+-- PHẦN 8: DỮ LIỆU TEST - ĐIỂM SỐ HỌC KỲ HIỆN TẠI (2025-2026)
 -- =====================================================================
 
 -- Tạo điểm cho 475 học sinh × 13 môn = 6,175 bản ghi
+-- ✅ LƯU Ý: Chỉ tạo điểm cho học kỳ hiện tại (MaHocKy = 1)
 INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, DiemThuongXuyen, DiemGiuaKy, DiemCuoiKy, DiemTrungBinh)
 SELECT 
     pl.MaHocSinh,
     mh.MaMonHoc,
-    1 as MaHocKy,
+    1 as MaHocKy,  -- ✅ Sửa: Dùng MaHocKy = 1 (Học kỳ I, 2025-2026 - Đang diễn ra)
     ROUND(5.0 + (RAND() * 5.0), 1) as DiemThuongXuyen,
     ROUND(5.0 + (RAND() * 5.0), 1) as DiemGiuaKy,
     ROUND(5.0 + (RAND() * 5.0), 1) as DiemCuoiKy,
     ROUND(5.0 + (RAND() * 5.0), 1) as DiemTrungBinh
 FROM PhanLop pl
 CROSS JOIN MonHoc mh
-WHERE pl.MaHocKy = 1;
+WHERE pl.MaHocKy = 1;  -- ✅ Sửa: Chỉ tạo điểm cho học kỳ hiện tại
 
-SELECT 'Diem so HK1 da duoc tao (6,175 ban ghi)' AS Status;
+SELECT 'Diem so HK hien tai (MaHocKy = 1) da duoc tao (6,175 ban ghi)' AS Status;
 
 -- =====================================================================
--- PHẦN 9: DỮ LIỆU TEST - HẠNH KIỂM HỌC KỲ 1
+-- PHẦN 9: DỮ LIỆU TEST - HẠNH KIỂM HỌC KỲ HIỆN TẠI (2025-2026)
 -- =====================================================================
 
 -- Tạo hạnh kiểm cho 475 học sinh
+-- ✅ LƯU Ý: Chỉ tạo hạnh kiểm cho học kỳ hiện tại (MaHocKy = 1)
 INSERT INTO HanhKiem (MaHocSinh, MaHocKy, XepLoai, NhanXet)
 SELECT 
     pl.MaHocSinh,
-    1 as MaHocKy,
+    1 as MaHocKy,  -- ✅ Sửa: Dùng MaHocKy = 1 (Học kỳ I, 2025-2026 - Đang diễn ra)
     ELT(CEILING(RAND() * 4), 'Tốt', 'Khá', 'Trung bình', 'Yếu') as XepLoai,
     'Tự động tạo' as NhanXet
 FROM PhanLop pl
-WHERE pl.MaHocKy = 1;
+WHERE pl.MaHocKy = 1;  -- ✅ Sửa: Chỉ tạo hạnh kiểm cho học kỳ hiện tại
 
-SELECT 'Hanh kiem HK1 da duoc tao (475 ban ghi)' AS Status;
+SELECT 'Hanh kiem HK hien tai (MaHocKy = 1) da duoc tao (475 ban ghi)' AS Status;
 
 -- =====================================================================
--- PHẦN 10: DỮ LIỆU TEST - XẾP LOẠI HỌC KỲ 1
+-- PHẦN 10: DỮ LIỆU TEST - XẾP LOẠI HỌC KỲ HIỆN TẠI (2025-2026)
 -- =====================================================================
 
 -- Tạo xếp loại cho 475 học sinh
+-- ✅ LƯU Ý: Chỉ tạo xếp loại cho học kỳ hiện tại (MaHocKy = 1)
 INSERT INTO XepLoai (MaHocSinh, MaHocKy, HocLuc, GhiChu)
 SELECT
     hs.MaHocSinh,
-    1 AS MaHocKy,
+    1 AS MaHocKy,  -- ✅ Sửa: Dùng MaHocKy = 1 (Học kỳ I, 2025-2026 - Đang diễn ra)
     -- Xếp loại cuối cùng: lấy bậc thấp hơn giữa học lực và hạnh kiểm
     CASE
         WHEN
@@ -378,18 +371,18 @@ SELECT
             END)
             >
             (CASE
-                WHEN hk.HocLuc = 'Giỏi' THEN 1
-                WHEN hk.HocLuc = 'Khá' THEN 2
-                WHEN hk.HocLuc = 'Trung bình' THEN 3
-                WHEN hk.HocLuc = 'Yếu' THEN 4
+                WHEN hk.XepLoai = 'Tốt' THEN 1
+                WHEN hk.XepLoai = 'Khá' THEN 2
+                WHEN hk.XepLoai = 'Trung bình' THEN 3
+                WHEN hk.XepLoai = 'Yếu' THEN 4
                 ELSE 5
             END)
         THEN
             CASE
-                WHEN hk.HocLuc = 'Giỏi' THEN 'Giỏi'
-                WHEN hk.HocLuc = 'Khá' THEN 'Khá'
-                WHEN hk.HocLuc = 'Trung bình' THEN 'Trung bình'
-                WHEN hk.HocLuc = 'Yếu' THEN 'Yếu'
+                WHEN hk.XepLoai = 'Tốt' THEN 'Giỏi'
+                WHEN hk.XepLoai = 'Khá' THEN 'Khá'
+                WHEN hk.XepLoai = 'Trung bình' THEN 'Trung bình'
+                WHEN hk.XepLoai = 'Yếu' THEN 'Yếu'
                 ELSE 'Kém'
             END
         ELSE
@@ -401,14 +394,14 @@ SELECT
                 ELSE 'Kém'
             END
     END AS HocLuc,
-    'HK1 - Tự động tính theo quy tắc' as GhiChu
+    'HK hien tai - Tự động tính theo quy tắc' as GhiChu
 FROM
     PhanLop pl
     JOIN HocSinh hs ON pl.MaHocSinh = hs.MaHocSinh
     LEFT JOIN (
         SELECT MaHocSinh, MaHocKy, XepLoai
         FROM HanhKiem
-        WHERE MaHocKy = 1
+        WHERE MaHocKy = 1  -- ✅ Sửa: Chỉ lấy hạnh kiểm của học kỳ hiện tại
     ) hk ON hk.MaHocSinh = hs.MaHocSinh
     -- Tính điểm trung bình các môn, điểm TB Toán/Văn/Anh, điểm thấp nhất
     JOIN (
@@ -419,27 +412,74 @@ FROM
             MIN(ds.DiemTrungBinh) AS min_mon
         FROM DiemSo ds
         JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
-        WHERE ds.MaHocKy = 1
+        WHERE ds.MaHocKy = 1  -- ✅ Sửa: Chỉ lấy điểm của học kỳ hiện tại
         GROUP BY ds.MaHocSinh
     ) diem ON diem.MaHocSinh = hs.MaHocSinh
-WHERE pl.MaLop BETWEEN 17 AND 24 AND pl.MaHocKy = 1;
+WHERE pl.MaHocKy = 1;  -- ✅ Sửa: Chỉ tạo xếp loại cho học kỳ hiện tại
 
-SELECT 'Xep loai HK1 da duoc tao (475 ban ghi)' AS Status;
+SELECT 'Xep loai HK hien tai (MaHocKy = 1) da duoc tao (475 ban ghi)' AS Status;
 
 -- =====================================================================
--- PHẦN 11: PHÂN CÔNG GIẢNG DẠY (30 GV × 13 môn = 390 phân công)
+-- PHẦN 11: PHÂN CÔNG GIẢNG DẠY (Phân công giáo viên vào các lớp)
 -- =====================================================================
+-- Lưu ý: Schema yêu cầu MaLop trong PhanCongGiangDay (bắt buộc)
+-- Phân công: mỗi lớp cần 13 môn, phân bố giáo viên vào các lớp
 
-INSERT INTO PhanCongGiangDay (MaGiaoVien, MaMonHoc, MaHocKy)
+INSERT INTO PhanCongGiangDay (MaLop, MaGiaoVien, MaMonHoc, MaHocKy)
 SELECT 
-    gv.MaGiaoVien,
-    mh.MaMonHoc,
-    1 as MaHocKy
-FROM GiaoVien gv
-CROSS JOIN MonHoc mh
-LIMIT 390;
+    lh.MaLop,
+    gv_mh.MaGiaoVien,
+    gv_mh.MaMonHoc,
+    1 as MaHocKy  -- ✅ Sửa: Dùng MaHocKy = 1 (Học kỳ I, 2025-2026 - Đang diễn ra)
+FROM LopHoc lh
+CROSS JOIN (
+    -- Toán (môn 2): GV001, GV002, GV003 - mỗi GV dạy 8 lớp
+    SELECT 'GV001' as MaGiaoVien, 2 as MaMonHoc, 1 as lop_start, 8 as lop_count
+    UNION ALL SELECT 'GV002', 2, 9, 8
+    UNION ALL SELECT 'GV003', 2, 17, 8
+    -- Văn (môn 1): GV004, GV005, GV006
+    UNION ALL SELECT 'GV004', 1, 1, 8
+    UNION ALL SELECT 'GV005', 1, 9, 8
+    UNION ALL SELECT 'GV006', 1, 17, 8
+    -- Anh (môn 3): GV007, GV008, GV009
+    UNION ALL SELECT 'GV007', 3, 1, 8
+    UNION ALL SELECT 'GV008', 3, 9, 8
+    UNION ALL SELECT 'GV009', 3, 17, 8
+    -- Lý (môn 7): GV010, GV011
+    UNION ALL SELECT 'GV010', 7, 1, 12
+    UNION ALL SELECT 'GV011', 7, 13, 12
+    -- Hóa (môn 8): GV012, GV013
+    UNION ALL SELECT 'GV012', 8, 1, 12
+    UNION ALL SELECT 'GV013', 8, 13, 12
+    -- Sinh (môn 9): GV014, GV015
+    UNION ALL SELECT 'GV014', 9, 1, 12
+    UNION ALL SELECT 'GV015', 9, 13, 12
+    -- Sử (môn 4): GV016, GV017
+    UNION ALL SELECT 'GV016', 4, 1, 12
+    UNION ALL SELECT 'GV017', 4, 13, 12
+    -- Địa (môn 5): GV018, GV019
+    UNION ALL SELECT 'GV018', 5, 1, 12
+    UNION ALL SELECT 'GV019', 5, 13, 12
+    -- GDCD (môn 6): GV020, GV021
+    UNION ALL SELECT 'GV020', 6, 1, 12
+    UNION ALL SELECT 'GV021', 6, 13, 12
+    -- Công nghệ (môn 10): GV022, GV023
+    UNION ALL SELECT 'GV022', 10, 1, 12
+    UNION ALL SELECT 'GV023', 10, 13, 12
+    -- Tin (môn 11): GV024, GV025, GV026
+    UNION ALL SELECT 'GV024', 11, 1, 8
+    UNION ALL SELECT 'GV025', 11, 9, 8
+    UNION ALL SELECT 'GV026', 11, 17, 8
+    -- Thể dục (môn 12): GV027, GV028
+    UNION ALL SELECT 'GV027', 12, 1, 12
+    UNION ALL SELECT 'GV028', 12, 13, 12
+    -- GDQP-AN (môn 13): GV029, GV030
+    UNION ALL SELECT 'GV029', 13, 1, 12
+    UNION ALL SELECT 'GV030', 13, 13, 12
+) gv_mh
+WHERE lh.MaLop >= gv_mh.lop_start AND lh.MaLop < gv_mh.lop_start + gv_mh.lop_count;
 
-SELECT 'Phan cong giang day hoan thanh (390 phan cong)' AS Status;
+SELECT 'Phan cong giang day hoan thanh (312 phan cong)' AS Status;
 
 -- =====================================================================
 -- HOÀN TẤT
@@ -453,8 +493,10 @@ SELECT '500 hoc sinh (475 active, 25 inactive)' AS HocSinh;
 SELECT '500 phu huynh' AS PhuHuynh;
 SELECT '30 giao vien' AS GiaoVien;
 SELECT '24 lop hoc (8 lop/khoi)' AS LopHoc;
-SELECT '475 hoc sinh da duoc phan lop HK1' AS PhanLop;
-SELECT '6,175 ban ghi diem (475 HS × 13 mon)' AS DiemSo;
-SELECT '475 ban ghi hanh kiem' AS HanhKiem;
-SELECT '475 ban ghi xep loai' AS XepLoai;
+SELECT '475 hoc sinh da duoc phan lop HK hien tai (MaHocKy = 1)' AS PhanLop;
+SELECT '6,175 ban ghi diem (475 HS × 13 mon) - CHI cho HK hien tai (MaHocKy = 1)' AS DiemSo;
+SELECT '475 ban ghi hanh kiem - CHI cho HK hien tai (MaHocKy = 1)' AS HanhKiem;
+SELECT '475 ban ghi xep loai - CHI cho HK hien tai (MaHocKy = 1)' AS XepLoai;
+SELECT 'LƯU Ý: Học kỳ 2024-2025 đã bị XÓA khỏi database' AS LuuY;
+SELECT '      → Dữ liệu điểm/hạnh kiểm/xếp loại của học kỳ 2024-2025 chỉ đọc từ Excel để xét điều kiện' AS LuuY2;
 SELECT 'SAN SANG TEST PHAN LOP TU DONG!' AS KetLuan;

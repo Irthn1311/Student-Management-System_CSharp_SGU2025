@@ -314,7 +314,129 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return count;
         }
 
+        /// <summary>
+        /// Đếm tổng số học sinh có trạng thái "Nghỉ học".
+        /// </summary>
+        /// <returns>Tổng số lượng học sinh có trạng thái "Nghỉ học"</returns>
+        public int DemTongSoLuongHocSinhNghiHoc()
+        {
+            int count = 0;
+            string sql = "SELECT COUNT(*) FROM HocSinh WHERE TrangThai = 'Nghỉ học'";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        count = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi đếm số lượng học sinh nghỉ học: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return count;
+        }
 
+        /// <summary>
+        /// Đếm tổng số học sinh có trạng thái "Thôi học".
+        /// </summary>
+        /// <returns>Tổng số lượng học sinh có trạng thái "Thôi học"</returns>
+        public int DemTongSoLuongHocSinhThoiHoc()
+        {
+            int count = 0;
+            string sql = "SELECT COUNT(*) FROM HocSinh WHERE TrangThai = 'Thôi học'";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        count = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi đếm số lượng học sinh thôi học: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Đếm tổng số học sinh có trạng thái "Bảo lưu".
+        /// </summary>
+        /// <returns>Tổng số lượng học sinh có trạng thái "Bảo lưu"</returns>
+        public int DemTongSoLuongHocSinhBaoLuu()
+        {
+            int count = 0;
+            string sql = "SELECT COUNT(*) FROM HocSinh WHERE TrangThai = 'Bảo lưu'";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        count = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi đếm số lượng học sinh bảo lưu: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Đếm tổng số học sinh có trạng thái "Đang học(CT)" (chuyển trường).
+        /// </summary>
+        /// <returns>Tổng số lượng học sinh có trạng thái "Đang học(CT)"</returns>
+        public int DemTongSoLuongHocSinhChuyenTruong()
+        {
+            int count = 0;
+            string sql = "SELECT COUNT(*) FROM HocSinh WHERE TrangThai = 'Đang học(CT)'";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        count = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi đếm số lượng học sinh chuyển trường: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return count;
+        }
 
         /// <summary>
         /// Tự động phân bổ ảnh đại diện dựa trên MaHocSinh (sử dụng 4 ảnh: hs1.jpg, hs2.jpg, hs3.jpg, hs4.jpg)

@@ -110,23 +110,8 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             try
             {
-                // Lấy tất cả học kỳ và lấy xếp loại cho từng học kỳ
-                List<XepLoaiDTO> allXepLoai = new List<XepLoaiDTO>();
-                HocKyDAO hocKyDAO = new HocKyDAO();
-                List<HocKyDTO> allHocKy = hocKyDAO.GetAllHocKy();
-
-                foreach (var hk in allHocKy)
-                {
-                    List<XepLoaiDTO> xepLoaiTheoHocKy = xepLoaiDAO.GetDanhSachXepLoai(hk.MaHocKy, null);
-                    // Thêm MaHocKy vào mỗi item
-                    foreach (var item in xepLoaiTheoHocKy)
-                    {
-                        item.MaHocKy = hk.MaHocKy;
-                    }
-                    allXepLoai.AddRange(xepLoaiTheoHocKy);
-                }
-
-                return allXepLoai;
+                // Đọc trực tiếp từ bảng XepLoai trong database
+                return xepLoaiDAO.GetAllXepLoaiFromDB();
             }
             catch (Exception ex)
             {

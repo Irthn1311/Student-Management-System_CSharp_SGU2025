@@ -32,12 +32,19 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             else if (Regex.IsMatch(hs.HoTen, @"\d")) errors.Add("Họ và tên không được chứa số.");
             if (!IsValidNgaySinh(hs.NgaySinh)) errors.Add("Ngày sinh không hợp lệ (từ 16 tuổi trở lên).");
             if (string.IsNullOrWhiteSpace(hs.GioiTinh) || (hs.GioiTinh != "Nam" && hs.GioiTinh != "Nữ")) errors.Add("Vui lòng chọn giới tính.");
-            // 4 trạng thái hợp lệ: Đang học, Nghỉ học, Bảo lưu, Thôi học
+            // 6 trạng thái hợp lệ: Đang học, Đang học(CT), Đang học (CT), Nghỉ học, Bảo lưu, Thôi học, Chuyển trường
+            // Lưu ý: "Đang học (CT)" (có khoảng trắng) sẽ được normalize thành "Đang học(CT)"
+            string trangThaiNormalized = hs.TrangThai?.Replace(" (CT)", "(CT)").Trim();
             if (string.IsNullOrWhiteSpace(hs.TrangThai) || 
-                (hs.TrangThai != "Đang học" && hs.TrangThai != "Nghỉ học" && 
-                 hs.TrangThai != "Bảo lưu" && hs.TrangThai != "Thôi học")) 
+                (trangThaiNormalized != "Đang học" && trangThaiNormalized != "Đang học(CT)" && trangThaiNormalized != "Nghỉ học" && 
+                 trangThaiNormalized != "Bảo lưu" && trangThaiNormalized != "Thôi học" && trangThaiNormalized != "Chuyển trường")) 
             {
                 errors.Add("Trạng thái không hợp lệ.");
+            }
+            // ✅ Normalize trạng thái: "Đang học (CT)" -> "Đang học(CT)"
+            if (hs.TrangThai != null && hs.TrangThai.Contains("(CT)"))
+            {
+                hs.TrangThai = hs.TrangThai.Replace(" (CT)", "(CT)").Trim();
             }
 
             
@@ -234,6 +241,74 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             }
         }
 
+        /// <summary>
+        /// Tổng số lượng tất cả học sinh có trạng thái "Nghỉ học".
+        /// </summary>
+        /// <returns>Tổng số lượng học sinh có trạng thái "Nghỉ học"</returns>
+        public int GetTotalHocSinhNghiHoc()
+        {
+            try
+            {
+                return hocSinhDAO.DemTongSoLuongHocSinhNghiHoc();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi BLL GetTotalHocSinhNghiHoc: " + ex.Message);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tổng số lượng tất cả học sinh có trạng thái "Thôi học".
+        /// </summary>
+        /// <returns>Tổng số lượng học sinh có trạng thái "Thôi học"</returns>
+        public int GetTotalHocSinhThoiHoc()
+        {
+            try
+            {
+                return hocSinhDAO.DemTongSoLuongHocSinhThoiHoc();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi BLL GetTotalHocSinhThoiHoc: " + ex.Message);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tổng số lượng tất cả học sinh có trạng thái "Bảo lưu".
+        /// </summary>
+        /// <returns>Tổng số lượng học sinh có trạng thái "Bảo lưu"</returns>
+        public int GetTotalHocSinhBaoLuu()
+        {
+            try
+            {
+                return hocSinhDAO.DemTongSoLuongHocSinhBaoLuu();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi BLL GetTotalHocSinhBaoLuu: " + ex.Message);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tổng số lượng tất cả học sinh có trạng thái "Đang học(CT)" (chuyển trường).
+        /// </summary>
+        /// <returns>Tổng số lượng học sinh có trạng thái "Đang học(CT)"</returns>
+        public int GetTotalHocSinhChuyenTruong()
+        {
+            try
+            {
+                return hocSinhDAO.DemTongSoLuongHocSinhChuyenTruong();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi BLL GetTotalHocSinhChuyenTruong: " + ex.Message);
+                throw;
+            }
+        }
+
 
         /// <summary>
         /// Thêm học sinh mới sau khi đã kiểm tra dữ liệu và trùng lặp.
@@ -357,9 +432,9 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 {
                     string trangThaiTaiKhoan;
                     
-                    // Logic: "Đang học" hoặc "Nghỉ học" → Tài khoản "Hoạt động"
+                    // Logic: "Đang học", "Đang học(CT)" hoặc "Nghỉ học" → Tài khoản "Hoạt động"
                     //        "Bảo lưu" hoặc "Thôi học" → Tài khoản "Tạm khóa"
-                    if (hs.TrangThai == "Đang học" || hs.TrangThai == "Nghỉ học")
+                    if (hs.TrangThai == "Đang học" || hs.TrangThai == "Đang học(CT)" || hs.TrangThai == "Nghỉ học")
                     {
                         trangThaiTaiKhoan = "Hoạt động";
                     }

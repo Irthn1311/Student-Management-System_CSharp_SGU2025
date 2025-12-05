@@ -54,7 +54,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
                         AND ds.MaHocKy = @MaHocKy
                     LEFT JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
-                    WHERE hs.TrangThai = 'Đang học'
+                    WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
                     GROUP BY hs.MaHocSinh, hs.HoTen, l.TenLop
                     HAVING DiemTB IS NOT NULL
                     ORDER BY l.TenLop, hs.HoTen";
@@ -227,7 +227,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 {
                     cmd.Parameters.AddWithValue("@maHS", maHocSinh);
                     cmd.Parameters.AddWithValue("@maHK", maHocKy);
-                    cmd.Parameters.AddWithValue("@xepLoai", xepLoai);
+                    cmd.Parameters.AddWithValue("@xepLoai", (object)xepLoai ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@ghiChu", (object)ghiChu ?? DBNull.Value);
 
                     int result = cmd.ExecuteNonQuery();
@@ -325,7 +325,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
                 AND ds.MaHocKy = @MaHocKy
             LEFT JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
-            WHERE hs.TrangThai = 'Đang học'
+            WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
             GROUP BY hs.MaHocSinh
             HAVING DiemTB IS NOT NULL";
 
@@ -451,7 +451,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
                 AND ds.MaHocKy = @MaHocKy
             LEFT JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
-            WHERE hs.TrangThai = 'Đang học'
+            WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
             GROUP BY hs.MaHocSinh, hs.HoTen, l.TenLop
             HAVING DiemTB IS NOT NULL
             ORDER BY l.TenLop, hs.HoTen";
@@ -499,6 +499,48 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             catch (Exception ex)
             {
                 throw new Exception("Lỗi khi lấy danh sách xếp loại theo khối: " + ex.Message);
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// Lấy TẤT CẢ xếp loại đã lưu từ bảng XepLoai (đọc trực tiếp từ DB)
+        /// </summary>
+        public List<XepLoaiDTO> GetAllXepLoaiFromDB()
+        {
+            List<XepLoaiDTO> list = new List<XepLoaiDTO>();
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"SELECT MaHocSinh, MaHocKy, HocLuc, GhiChu FROM XepLoai";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        XepLoaiDTO dto = new XepLoaiDTO
+                        {
+                            MaHocSinh = reader.GetInt32("MaHocSinh"),
+                            MaHocKy = reader.GetInt32("MaHocKy"),
+                            HocLuc = reader.IsDBNull(reader.GetOrdinal("HocLuc")) ? "" : reader.GetString("HocLuc"),
+                            GhiChu = reader.IsDBNull(reader.GetOrdinal("GhiChu")) ? "" : reader.GetString("GhiChu")
+                        };
+                        list.Add(dto);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi lấy tất cả xếp loại từ DB: " + ex.Message);
+                throw;
             }
             finally
             {
