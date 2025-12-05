@@ -3,9 +3,14 @@ using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.Scheduling;
 using Student_Management_System_CSharp_SGU2025.Utils;
 
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -23,6 +28,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private NamHocBUS namHocBUS;
         private int maHocKyHienTai; // Lưu học kỳ đang được chọn
         private string genderFilter = "all"; // all, nam, nu
+        
+        // Biến để track vị trí in (tránh vòng lặp vô hạn)
+        private int currentPrintIndex = 0;
 
         public ChiTietLop(int maLop)
         {
@@ -1015,6 +1023,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
+                // Yêu cầu bản quyền cho EPPlus 5 trở lên
+                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
                 SaveFileDialog saveDialog = new SaveFileDialog
                 {
                     Filter = "Excel Files|*.xlsx",
@@ -1024,13 +1035,183 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (saveDialog.ShowDialog() == DialogResult.OK)
                 {
-                    // TODO: Implement Excel export
-                    MessageBox.Show("Chức năng xuất Excel đang được phát triển.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ExportDanhSachHocSinhToExcel(saveDialog.FileName);
+                    MessageBox.Show("Xuất file Excel thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
+                    // Hỏi có muốn mở file không
+                    if (MessageBox.Show("Bạn có muốn mở file Excel vừa xuất?", "Xác nhận",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start(saveDialog.FileName);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi xuất Excel: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Xuất danh sách học sinh ra file Excel
+        /// </summary>
+        private void ExportDanhSachHocSinhToExcel(string filePath)
+        {
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                // Xóa các sheet cũ nếu file đã tồn tại
+                while (package.Workbook.Worksheets.Count > 0)
+                {
+                    package.Workbook.Worksheets.Delete(0);
+                }
+
+                var ws = package.Workbook.Worksheets.Add("DanhSachHocSinh");
+
+                // Lấy thông tin lớp
+                LopDTO lop = lopHocBUS.LayLopTheoId(maLop);
+                string tenLop = lop?.tenLop ?? $"Lớp {maLop}";
+                string tenHocKy = "N/A";
+                string tenNamHoc = "N/A";
+                
+                if (maHocKyHienTai > 0)
+                {
+                    HocKyDTO hocKy = hocKyBUS.LayHocKyTheoMa(maHocKyHienTai);
+                    if (hocKy != null)
+                    {
+                        tenHocKy = hocKy.TenHocKy;
+                        if (!string.IsNullOrEmpty(hocKy.MaNamHoc))
+                        {
+                            NamHocDTO namHoc = namHocBUS.LayNamHocTheoMa(hocKy.MaNamHoc);
+                            if (namHoc != null)
+                            {
+                                tenNamHoc = namHoc.TenNamHoc;
+                            }
+                        }
+                    }
+                }
+
+                // === TIÊU ĐỀ BÁO CÁO ===
+                ws.Cells[1, 1].Value = $"DANH SÁCH HỌC SINH LỚP {tenLop.ToUpper()}";
+                ws.Cells[1, 1, 1, 7].Merge = true;
+                ws.Cells[1, 1].Style.Font.Bold = true;
+                ws.Cells[1, 1].Style.Font.Size = 16;
+                ws.Cells[1, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                ws.Cells[1, 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(79, 129, 189));
+                ws.Cells[1, 1].Style.Font.Color.SetColor(Color.White);
+                ws.Cells[1, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                ws.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                ws.Row(1).Height = 30;
+
+                // Thông tin bổ sung
+                ws.Cells[2, 1].Value = $"Học kỳ: {tenHocKy} | Năm học: {tenNamHoc} | Ngày xuất: {DateTime.Now:dd/MM/yyyy HH:mm}";
+                ws.Cells[2, 1, 2, 7].Merge = true;
+                ws.Cells[2, 1].Style.Font.Italic = true;
+                ws.Cells[2, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                ws.Row(2).Height = 20;
+
+                // === HEADER ===
+                int headerRow = 3;
+                ws.Cells[headerRow, 1].Value = "STT";
+                ws.Cells[headerRow, 2].Value = "Mã HS";
+                ws.Cells[headerRow, 3].Value = "Họ và tên";
+                ws.Cells[headerRow, 4].Value = "Ngày sinh";
+                ws.Cells[headerRow, 5].Value = "Giới tính";
+                ws.Cells[headerRow, 6].Value = "SĐT";
+                ws.Cells[headerRow, 7].Value = "Email";
+
+                // Định dạng Header
+                using (var range = ws.Cells[headerRow, 1, headerRow, 7])
+                {
+                    range.Style.Font.Bold = true;
+                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    range.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(79, 129, 189));
+                    range.Style.Font.Color.SetColor(Color.White);
+                    range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    range.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                }
+                ws.Row(headerRow).Height = 25;
+
+                // === DỮ LIỆU ===
+                int row = headerRow + 1;
+                int stt = 1;
+                foreach (var hs in danhSachHocSinhGoc)
+                {
+                    ws.Cells[row, 1].Value = stt;
+                    ws.Cells[row, 2].Value = hs.MaHS;
+                    ws.Cells[row, 3].Value = hs.HoTen;
+                    ws.Cells[row, 4].Value = hs.NgaySinh.ToString("dd/MM/yyyy");
+                    ws.Cells[row, 5].Value = hs.GioiTinh;
+                    ws.Cells[row, 6].Value = hs.SdtHS ?? "";
+                    ws.Cells[row, 7].Value = hs.Email ?? "";
+
+                    // Định dạng màu cho Giới tính
+                    if (hs.GioiTinh == "Nam")
+                        ws.Cells[row, 5].Style.Font.Color.SetColor(Color.FromArgb(29, 78, 216));
+                    else if (hs.GioiTinh == "Nữ")
+                        ws.Cells[row, 5].Style.Font.Color.SetColor(Color.FromArgb(190, 24, 93));
+
+                    // Thêm viền
+                    using (var range = ws.Cells[row, 1, row, 7])
+                    {
+                        range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    }
+
+                    row++;
+                    stt++;
+                }
+
+                // === TỔNG KẾT ===
+                int tongKetRow = row;
+                ws.Cells[tongKetRow, 1].Value = "TỔNG CỘNG:";
+                ws.Cells[tongKetRow, 2].Value = danhSachHocSinhGoc.Count;
+                ws.Cells[tongKetRow, 1, tongKetRow, 2].Merge = true;
+                ws.Cells[tongKetRow, 1].Style.Font.Bold = true;
+                ws.Cells[tongKetRow, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                ws.Cells[tongKetRow, 1].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 240, 240));
+                ws.Cells[tongKetRow, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                int soNam = danhSachHocSinhGoc.Count(h => h.GioiTinh == "Nam");
+                int soNu = danhSachHocSinhGoc.Count(h => h.GioiTinh == "Nữ");
+                ws.Cells[tongKetRow, 5].Value = $"Nam: {soNam} | Nữ: {soNu}";
+                ws.Cells[tongKetRow, 5, tongKetRow, 7].Merge = true;
+                ws.Cells[tongKetRow, 5].Style.Font.Bold = true;
+                ws.Cells[tongKetRow, 5].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                ws.Cells[tongKetRow, 5].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 240, 240));
+                ws.Cells[tongKetRow, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                // Thêm viền cho dòng tổng kết
+                using (var range = ws.Cells[tongKetRow, 1, tongKetRow, 7])
+                {
+                    range.Style.Border.Top.Style = ExcelBorderStyle.Medium;
+                    range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                }
+
+                // === TỰ ĐỘNG ĐIỀU CHỈNH ĐỘ RỘNG CỘT ===
+                ws.Column(1).Width = 8;   // STT
+                ws.Column(2).Width = 12;  // Mã HS
+                ws.Column(3).Width = 30;   // Họ và tên
+                ws.Column(4).Width = 15;   // Ngày sinh
+                ws.Column(5).Width = 12;  // Giới tính
+                ws.Column(6).Width = 15;   // SĐT
+                ws.Column(7).Width = 30;   // Email
+
+                // Căn giữa cột STT và Mã HS
+                ws.Column(1).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                ws.Column(2).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                ws.Column(4).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                ws.Column(5).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                // Lưu file
+                package.Save();
             }
         }
 
@@ -1045,8 +1226,210 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                // TODO: Implement print functionality
-                MessageBox.Show("Chức năng in đang được phát triển.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Reset index về 0 khi bắt đầu in
+                currentPrintIndex = 0;
+
+                PrintDocument printDoc = new PrintDocument();
+                printDoc.PrintPage += PrintDocument_PrintPage;
+
+                PrintPreviewDialog previewDialog = new PrintPreviewDialog
+                {
+                    Document = printDoc,
+                    WindowState = FormWindowState.Maximized
+                };
+
+                // Hiển thị preview trước khi in
+                previewDialog.ShowDialog();
+                
+                // Reset lại sau khi đóng preview
+                currentPrintIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi in: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                currentPrintIndex = 0; // Reset nếu có lỗi
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện in trang
+        /// </summary>
+        private void PrintDocument_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            try
+            {
+                // Lấy thông tin lớp
+                LopDTO lop = lopHocBUS.LayLopTheoId(maLop);
+                string tenLop = lop?.tenLop ?? $"Lớp {maLop}";
+                string tenHocKy = "N/A";
+                string tenNamHoc = "N/A";
+                
+                if (maHocKyHienTai > 0)
+                {
+                    HocKyDTO hocKy = hocKyBUS.LayHocKyTheoMa(maHocKyHienTai);
+                    if (hocKy != null)
+                    {
+                        tenHocKy = hocKy.TenHocKy;
+                        if (!string.IsNullOrEmpty(hocKy.MaNamHoc))
+                        {
+                            NamHocDTO namHoc = namHocBUS.LayNamHocTheoMa(hocKy.MaNamHoc);
+                            if (namHoc != null)
+                            {
+                                tenNamHoc = namHoc.TenNamHoc;
+                            }
+                        }
+                    }
+                }
+
+                Graphics g = e.Graphics;
+                Font titleFont = new Font("Arial", 18, FontStyle.Bold);
+                Font headerFont = new Font("Arial", 11, FontStyle.Bold);
+                Font normalFont = new Font("Arial", 10, FontStyle.Regular);
+                Font infoFont = new Font("Arial", 9, FontStyle.Italic);
+                Brush brush = Brushes.Black;
+                Pen pen = new Pen(Color.Black, 1);
+
+                float yPos = e.MarginBounds.Top;
+                float leftMargin = e.MarginBounds.Left;
+                float rightMargin = e.MarginBounds.Right;
+                float pageWidth = e.MarginBounds.Width;
+
+                // === TIÊU ĐỀ ===
+                string title = $"DANH SÁCH HỌC SINH LỚP {tenLop.ToUpper()}";
+                SizeF titleSize = g.MeasureString(title, titleFont);
+                float titleX = leftMargin + (pageWidth - titleSize.Width) / 2;
+                g.DrawString(title, titleFont, brush, titleX, yPos);
+                yPos += titleSize.Height + 10;
+
+                // === THÔNG TIN BỔ SUNG ===
+                string info = $"Học kỳ: {tenHocKy} | Năm học: {tenNamHoc} | Ngày xuất: {DateTime.Now:dd/MM/yyyy HH:mm}";
+                SizeF infoSize = g.MeasureString(info, infoFont);
+                float infoX = leftMargin + (pageWidth - infoSize.Width) / 2;
+                g.DrawString(info, infoFont, brush, infoX, yPos);
+                yPos += infoSize.Height + 15;
+
+                // === HEADER BẢNG ===
+                float headerY = yPos;
+                float col1 = leftMargin;                    // STT
+                float col2 = col1 + 35;                     // Mã HS
+                float col3 = col2 + 70;                     // Họ tên
+                float col4 = col3 + 150;                    // Ngày sinh
+                float col5 = col4 + 80;                     // Giới tính
+                float col6 = col5 + 70;                     // SĐT
+                float col7 = col6 + 95;                     // Email
+                float rowHeight = 25;
+
+                // Vẽ header background
+                RectangleF headerRect = new RectangleF(leftMargin, headerY, pageWidth, rowHeight);
+                g.FillRectangle(new SolidBrush(Color.FromArgb(79, 129, 189)), headerRect);
+
+                // Vẽ text header
+                g.DrawString("STT", headerFont, Brushes.White, col1 + 5, headerY + 5);
+                g.DrawString("Mã HS", headerFont, Brushes.White, col2 + 5, headerY + 5);
+                g.DrawString("Họ và tên", headerFont, Brushes.White, col3 + 5, headerY + 5);
+                g.DrawString("Ngày sinh", headerFont, Brushes.White, col4 + 5, headerY + 5);
+                g.DrawString("Giới tính", headerFont, Brushes.White, col5 + 5, headerY + 5);
+                g.DrawString("SĐT", headerFont, Brushes.White, col6 + 5, headerY + 5);
+                g.DrawString("Email", headerFont, Brushes.White, col7 + 5, headerY + 5);
+
+                // Vẽ viền header
+                g.DrawRectangle(pen, headerRect.X, headerRect.Y, headerRect.Width, headerRect.Height);
+
+                yPos += rowHeight;
+
+                // === DỮ LIỆU ===
+                // Chỉ in từ vị trí currentPrintIndex trở đi (tránh vòng lặp vô hạn)
+                int stt = currentPrintIndex + 1;
+                float maxY = e.MarginBounds.Bottom - 50; // Để chỗ cho tổng kết
+                bool isLastPage = false;
+
+                // In từ vị trí hiện tại
+                for (int i = currentPrintIndex; i < danhSachHocSinhGoc.Count; i++)
+                {
+                    // Kiểm tra nếu hết chỗ trên trang này
+                    if (yPos + rowHeight > maxY)
+                    {
+                        // Cập nhật index để trang sau tiếp tục từ đây
+                        currentPrintIndex = i;
+                        e.HasMorePages = true;
+                        return;
+                    }
+
+                    var hs = danhSachHocSinhGoc[i];
+
+                    // Vẽ viền dòng
+                    RectangleF rowRect = new RectangleF(leftMargin, yPos, pageWidth, rowHeight);
+                    g.DrawRectangle(pen, rowRect.X, rowRect.Y, rowRect.Width, rowRect.Height);
+
+                    // Vẽ dữ liệu
+                    g.DrawString(stt.ToString(), normalFont, brush, col1 + 5, yPos + 5);
+                    g.DrawString(hs.MaHS.ToString(), normalFont, brush, col2 + 5, yPos + 5);
+                    g.DrawString(hs.HoTen ?? "", normalFont, brush, col3 + 5, yPos + 5);
+                    g.DrawString(hs.NgaySinh.ToString("dd/MM/yyyy"), normalFont, brush, col4 + 5, yPos + 5);
+                    
+                    // Màu cho giới tính
+                    Brush genderBrush = brush;
+                    if (hs.GioiTinh == "Nam")
+                        genderBrush = new SolidBrush(Color.FromArgb(29, 78, 216));
+                    else if (hs.GioiTinh == "Nữ")
+                        genderBrush = new SolidBrush(Color.FromArgb(190, 24, 93));
+                    
+                    g.DrawString(hs.GioiTinh ?? "", normalFont, genderBrush, col5 + 5, yPos + 5);
+                    g.DrawString(hs.SdtHS ?? "", normalFont, brush, col6 + 5, yPos + 5);
+                    
+                    // Cắt email nếu quá dài để vừa trong cột
+                    string email = hs.Email ?? "";
+                    float emailColWidth = rightMargin - col7 - 10; // Tính độ rộng còn lại
+                    SizeF emailSize = g.MeasureString(email, normalFont);
+                    
+                    // Nếu email quá dài, cắt bớt
+                    if (emailSize.Width > emailColWidth && email.Length > 0)
+                    {
+                        // Cắt dần cho đến khi vừa
+                        while (emailSize.Width > emailColWidth && email.Length > 3)
+                        {
+                            email = email.Substring(0, email.Length - 1);
+                            emailSize = g.MeasureString(email + "...", normalFont);
+                        }
+                        email = email + "...";
+                    }
+                    g.DrawString(email, normalFont, brush, col7 + 5, yPos + 5);
+
+                    yPos += rowHeight;
+                    stt++;
+                    currentPrintIndex = i + 1; // Cập nhật index
+
+                    // Nếu đã in hết, đánh dấu là trang cuối
+                    if (i == danhSachHocSinhGoc.Count - 1)
+                    {
+                        isLastPage = true;
+                    }
+                }
+
+                // === TỔNG KẾT (chỉ hiển thị ở trang cuối) ===
+                if (isLastPage)
+                {
+                    yPos += 10;
+                    float totalY = yPos;
+                    int soNam = danhSachHocSinhGoc.Count(h => h.GioiTinh == "Nam");
+                    int soNu = danhSachHocSinhGoc.Count(h => h.GioiTinh == "Nữ");
+
+                    // Kiểm tra xem còn chỗ cho tổng kết không
+                    if (totalY + rowHeight <= e.MarginBounds.Bottom)
+                    {
+                        // Vẽ background tổng kết
+                        RectangleF totalRect = new RectangleF(leftMargin, totalY, pageWidth, rowHeight);
+                        g.FillRectangle(new SolidBrush(Color.FromArgb(240, 240, 240)), totalRect);
+
+                        string totalText = $"TỔNG CỘNG: {danhSachHocSinhGoc.Count} học sinh (Nam: {soNam} | Nữ: {soNu})";
+                        g.DrawString(totalText, headerFont, brush, col1 + 5, totalY + 5);
+                        g.DrawRectangle(pen, totalRect.X, totalRect.Y, totalRect.Width, totalRect.Height);
+                    }
+                }
+
+                // Đánh dấu không còn trang nào nữa
+                e.HasMorePages = false;
+                currentPrintIndex = 0; // Reset sau khi in xong
             }
             catch (Exception ex)
             {

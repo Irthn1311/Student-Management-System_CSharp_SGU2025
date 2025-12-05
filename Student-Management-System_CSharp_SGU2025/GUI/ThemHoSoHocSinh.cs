@@ -24,6 +24,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         // Biến để lưu ID phụ huynh đã chọn
         private int selectedMaPhuHuynh = -1;
+        
+        // Biến để phân biệt: true = nhập mới phụ huynh, false = chọn phụ huynh có sẵn
+        private bool isNhapPhuHuynhMoi = false;
+        
+        // Thông tin phụ huynh mới (nếu nhập mới)
+        private PhuHuynhDTO phuHuynhMoi = null;
 
         // ✅ Property để trả về học sinh vừa tạo
         public HocSinhDTO NewHocSinh { get; private set; }
@@ -57,43 +63,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 errorProvider.Icon = Icon.FromHandle(bmp.GetHicon());
             }
 
-            SetupTablePhuHuynh();
-            LoadSampleDataPhuHuynh();
-            LoadMasterPhuHuynhList(); // Tải danh sách phụ huynh gốc
-            RefreshPhuHuynhTable("");
+            LoadMasterPhuHuynhList(); // Tải danh sách phụ huynh gốc để dùng khi chọn
             
             // ✅ Thiết lập Tab Order
             SetupTabOrder();
         }
 
-        private void SetupTablePhuHuynh()
-        {
-            // --- Xóa cột cũ và cấu hình chung ---
-            tablePhuHuynh.Columns.Clear();
-            ApplyBaseTableStyle(tablePhuHuynh); // Áp dụng style chung
-
-            // --- Thêm cột mới ---
-            tablePhuHuynh.Columns.Add("MaPH", "Mã PH");
-            tablePhuHuynh.Columns.Add("HoTenPH", "Họ và Tên");
-            tablePhuHuynh.Columns.Add("Sdt", "SĐT");
-            tablePhuHuynh.Columns.Add("Email", "Email");
-            tablePhuHuynh.Columns.Add("DiaChi", "Địa chỉ");
-
-            // --- Căn chỉnh cột ---
-            ApplyColumnAlignmentAndWrapping(tablePhuHuynh);
-            tablePhuHuynh.Columns["HoTenPH"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            tablePhuHuynh.Columns["Email"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            tablePhuHuynh.Columns["DiaChi"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-
-            // --- Tùy chỉnh kích thước ---
-            tablePhuHuynh.Columns["MaPH"].FillWeight = 10; tablePhuHuynh.Columns["MaPH"].MinimumWidth = 50;
-            tablePhuHuynh.Columns["HoTenPH"].FillWeight = 20; tablePhuHuynh.Columns["HoTenPH"].MinimumWidth = 110;
-            tablePhuHuynh.Columns["Sdt"].FillWeight = 12; tablePhuHuynh.Columns["Sdt"].MinimumWidth = 100;
-            tablePhuHuynh.Columns["Email"].FillWeight = 20; tablePhuHuynh.Columns["Email"].MinimumWidth = 170;
-            tablePhuHuynh.Columns["DiaChi"].FillWeight = 25; tablePhuHuynh.Columns["DiaChi"].MinimumWidth = 200;
-
-            tablePhuHuynh.CellDoubleClick += TablePhuHuynh_CellDoubleClick;
-        }
 
         /// <summary>
         /// ✅ Thiết lập thứ tự Tab cho các control
@@ -101,7 +76,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void SetupTabOrder()
         {
             // Đặt TabStop = false cho txtPhuHuynhDuocChon
-            txtPhuHuynhDuocChon.TabStop = false;
+            //txtPhuHuynhDuocChon.TabStop = false;
+            
+            // Đặt TabStop = false cho các RadioButton (sử dụng mũi tên để chọn)
+            rbChonPhuHuynh.TabStop = true;
+            rbNhapPhuHuynhMoi.TabStop = true;
 
             // Thiết lập thứ tự Tab
             int tabIndex = 0;
@@ -111,7 +90,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             rbNu.TabIndex = tabIndex++;
             txtSoDienThoai.TabIndex = tabIndex++;
             txtEmail.TabIndex = tabIndex++;
-            txtTimKiem.TabIndex = tabIndex++;
+            rbChonPhuHuynh.TabIndex = tabIndex++;
+            rbNhapPhuHuynhMoi.TabIndex = tabIndex++;
+            btnChon.TabIndex = tabIndex++;
+            txtHovaTenPH.TabIndex = tabIndex++;
+            txtSoDienThoaiPH.TabIndex = tabIndex++;
+            txtEmailPH.TabIndex = tabIndex++;
+            txtDiaChiPH.TabIndex = tabIndex++;
             cbMoiQuanHe.TabIndex = tabIndex++;
             btnThemHocSinh.TabIndex = tabIndex++;
             btnHuy.TabIndex = tabIndex++;
@@ -126,9 +111,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             errorProvider.SetError(dateTimePickerNgaySinh, "");
             errorProvider.SetError(txtSoDienThoai, "");
             errorProvider.SetError(txtEmail, "");
-            errorProvider.SetError(txtPhuHuynhDuocChon, "");
+            //errorProvider.SetError(txtPhuHuynhDuocChon, "");
             errorProvider.SetError(cbMoiQuanHe, "");
             errorProvider.SetError(groupBoxGioiTinh, ""); // ✅ Xóa lỗi GroupBox giới tính
+            // Xóa lỗi các trường phụ huynh mới
+            errorProvider.SetError(txtHovaTenPH, "");
+            errorProvider.SetError(txtSoDienThoaiPH, "");
+            errorProvider.SetError(txtEmailPH, "");
+            errorProvider.SetError(txtDiaChiPH, "");
         }
 
         /// <summary>
@@ -147,26 +137,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
-        /// <summary>
-        /// Lọc và hiển thị danh sách phụ huynh lên bảng dựa trên từ khóa
-        /// </summary>
-        private void RefreshPhuHuynhTable(string keyword)
-        {
-            tablePhuHuynh.Rows.Clear();
-            string keywordLower = keyword.ToLower().Trim();
-
-            // Lọc từ danh sách gốc
-            var filteredList = danhSachPhuHuynh.Where(ph =>
-                ph.HoTen.ToLower().Contains(keywordLower) ||
-                ph.SoDienThoai.Contains(keyword) 
-            ).ToList();
-
-            // Đổ dữ liệu đã lọc vào bảng
-            foreach (PhuHuynhDTO ph in filteredList)
-            {
-                tablePhuHuynh.Rows.Add(ph.MaPhuHuynh, ph.HoTen, ph.SoDienThoai, ph.Email, ph.DiaChi);
-            }
-        }
 
         private void ApplyBaseTableStyle(Guna.UI2.WinForms.Guna2DataGridView dgv)
         {
@@ -217,23 +187,61 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
-        private void LoadSampleDataPhuHuynh()
-        {
-            tablePhuHuynh.Rows.Clear();
-
-            danhSachPhuHuynh = phuHuynhBLL.GetAllPhuHuynh();
-
-            foreach (PhuHuynhDTO ph in danhSachPhuHuynh)
-            {
-                tablePhuHuynh.Rows.Add(ph.MaPhuHuynh, ph.HoTen, ph.SoDienThoai, ph.Email, ph.DiaChi);
-            }
-        }
-
-        
 
         private void ThemHoSoHocSinh_Load(object sender, EventArgs e)
         {
-            
+            // Mặc định chọn "Chọn phụ huynh có sẵn"
+            rbChonPhuHuynh.Checked = true;
+            UpdatePhuHuynhUI();
+        }
+
+        /// <summary>
+        /// Xử lý khi thay đổi RadioButton phụ huynh
+        /// </summary>
+        private void rbPhuHuynh_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdatePhuHuynhUI();
+        }
+
+        /// <summary>
+        /// Cập nhật UI dựa trên RadioButton được chọn
+        /// </summary>
+        private void UpdatePhuHuynhUI()
+        {
+            if (rbChonPhuHuynh.Checked)
+            {
+                // Hiển thị phần chọn phụ huynh có sẵn
+                //txtPhuHuynhDuocChon.Visible = true;
+                btnChon.Visible = true;
+                panelNhapPhuHuynhMoi.Visible = false;
+                isNhapPhuHuynhMoi = false;
+                
+                // Xóa dữ liệu phụ huynh mới nếu có
+                ClearPhuHuynhMoiFields();
+            }
+            else if (rbNhapPhuHuynhMoi.Checked)
+            {
+                // Hiển thị phần nhập phụ huynh mới
+                btnChon.Visible = false;
+                panelNhapPhuHuynhMoi.Visible = true;
+                panelThongTinPhuHuynh.Visible = false; // Ẩn panel thông tin phụ huynh
+                isNhapPhuHuynhMoi = true;
+                
+                // Reset selectedMaPhuHuynh
+                selectedMaPhuHuynh = -1;
+            }
+        }
+
+        /// <summary>
+        /// Xóa các trường nhập phụ huynh mới
+        /// </summary>
+        private void ClearPhuHuynhMoiFields()
+        {
+            txtHovaTenPH.Text = "";
+            txtSoDienThoaiPH.Text = "";
+            txtEmailPH.Text = "";
+            txtDiaChiPH.Text = "";
+            phuHuynhMoi = null;
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
@@ -318,11 +326,57 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
 
             // Kiểm tra Phụ huynh
-            if (this.selectedMaPhuHuynh <= 0)
+            if (rbChonPhuHuynh.Checked)
             {
-                errorProvider.SetError(txtPhuHuynhDuocChon, "Vui lòng chọn phụ huynh từ danh sách");
-                txtTimKiem.Focus();
-                hasError = true;
+                // Kiểm tra nếu chọn phụ huynh có sẵn
+                if (this.selectedMaPhuHuynh <= 0)
+                {
+                    //errorProvider.SetError(txtPhuHuynhDuocChon, "Vui lòng chọn phụ huynh từ danh sách");
+                    btnChon.Focus();
+                    hasError = true;
+                }
+            }
+            else if (rbNhapPhuHuynhMoi.Checked)
+            {
+                // Kiểm tra nếu nhập phụ huynh mới
+                if (string.IsNullOrWhiteSpace(txtHovaTenPH.Text))
+                {
+                    errorProvider.SetError(txtHovaTenPH, "Vui lòng nhập họ và tên phụ huynh");
+                    hasError = true;
+                }
+                else if (System.Text.RegularExpressions.Regex.IsMatch(txtHovaTenPH.Text, @"\d"))
+                {
+                    errorProvider.SetError(txtHovaTenPH, "Họ và tên không được chứa số");
+                    hasError = true;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtSoDienThoaiPH.Text))
+                {
+                    errorProvider.SetError(txtSoDienThoaiPH, "Vui lòng nhập số điện thoại phụ huynh");
+                    hasError = true;
+                }
+                else if (!System.Text.RegularExpressions.Regex.IsMatch(txtSoDienThoaiPH.Text, @"^[0-9]{10,11}$"))
+                {
+                    errorProvider.SetError(txtSoDienThoaiPH, "Số điện thoại phải là 10-11 chữ số");
+                    hasError = true;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtEmailPH.Text))
+                {
+                    errorProvider.SetError(txtEmailPH, "Vui lòng nhập email phụ huynh");
+                    hasError = true;
+                }
+                else if (!System.Text.RegularExpressions.Regex.IsMatch(txtEmailPH.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                {
+                    errorProvider.SetError(txtEmailPH, "Email không hợp lệ");
+                    hasError = true;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtDiaChiPH.Text))
+                {
+                    errorProvider.SetError(txtDiaChiPH, "Vui lòng nhập địa chỉ phụ huynh");
+                    hasError = true;
+                }
             }
 
             // Kiểm tra Mối quan hệ
@@ -355,8 +409,61 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Lấy thông tin quan hệ và phân lớp
                 string moiQuanHe = cbMoiQuanHe.SelectedItem.ToString();
 
+                // --- 3. Xử lý Phụ huynh trước khi thêm học sinh ---
+                int maPhuHuynhToUse = -1;
+                
+                if (rbNhapPhuHuynhMoi.Checked)
+                {
+                    // Tạo phụ huynh mới
+                    PhuHuynhDTO phMoi = new PhuHuynhDTO();
+                    phMoi.HoTen = txtHovaTenPH.Text.Trim();
+                    phMoi.SoDienThoai = txtSoDienThoaiPH.Text.Trim();
+                    phMoi.Email = txtEmailPH.Text.Trim();
+                    phMoi.DiaChi = txtDiaChiPH.Text.Trim();
 
-                // --- 3. Gọi BLL để thêm (Thực hiện tuần tự) ---
+                    // Thêm phụ huynh mới vào database
+                    if (phuHuynhBLL.AddPhuHuynh(phMoi))
+                    {
+                        // Lấy lại phụ huynh vừa thêm để lấy MaPhuHuynh
+                        var allPH = phuHuynhBLL.GetAllPhuHuynh();
+                        var phVuaThem = allPH.FirstOrDefault(p => 
+                            p.SoDienThoai == phMoi.SoDienThoai && 
+                            p.Email == phMoi.Email &&
+                            p.HoTen == phMoi.HoTen);
+                        
+                        if (phVuaThem != null)
+                        {
+                            maPhuHuynhToUse = phVuaThem.MaPhuHuynh;
+                            this.phuHuynhMoi = phVuaThem;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Đã thêm phụ huynh nhưng không thể lấy mã phụ huynh. Vui lòng thử lại.", 
+                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không thể thêm phụ huynh mới. Vui lòng kiểm tra lại thông tin.", 
+                            "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    // Sử dụng phụ huynh đã chọn
+                    maPhuHuynhToUse = this.selectedMaPhuHuynh;
+                }
+
+                if (maPhuHuynhToUse <= 0)
+                {
+                    MessageBox.Show("Không thể xác định phụ huynh. Vui lòng kiểm tra lại.", 
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // --- 4. Gọi BLL để thêm (Thực hiện tuần tự) ---
 
                 // Bước 1: Thêm Học Sinh
                 int newMaHocSinh = hocSinhBLL.AddHocSinh(hs);
@@ -373,7 +480,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     // Bước 2: Thêm Mối Quan Hệ
                     try
                     {
-                        bool addQuanHeSuccess = hocSinhPhuHuynhBLL.AddQuanHe(newMaHocSinh, this.selectedMaPhuHuynh, moiQuanHe);
+                        bool addQuanHeSuccess = hocSinhPhuHuynhBLL.AddQuanHe(newMaHocSinh, maPhuHuynhToUse, moiQuanHe);
                         if (!addQuanHeSuccess)
                         {
                             warningMessage += "Không thể thêm mối quan hệ phụ huynh.\n";
@@ -423,52 +530,54 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         }
 
+        /// <summary>
+        /// Mở dialog để chọn phụ huynh hoặc thêm mới
+        /// </summary>
         private void btnChon_Click(object sender, EventArgs e)
         {
-            ChonPhuHuynhTuBang();
+            ChonPhuHuynhTuDialog();
         }
 
-        private void txtTimKiem_TextChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Hiển thị dialog đầy đủ để chọn phụ huynh với tùy chọn thêm mới
+        /// </summary>
+        private void ChonPhuHuynhTuDialog()
         {
-            RefreshPhuHuynhTable(txtTimKiem.Text);
-        }
-
-        private void TablePhuHuynh_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            // Đảm bảo double click vào một dòng hợp lệ (không phải header)
-            if (e.RowIndex >= 0)
+            using (ChonPhuHuynhDialog dialog = new ChonPhuHuynhDialog(this.selectedMaPhuHuynh))
             {
-                ChonPhuHuynhTuBang();
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Xử lý phụ huynh đã chọn
+                    if (dialog.SelectedPhuHuynh != null)
+                    {
+                        this.selectedMaPhuHuynh = dialog.SelectedPhuHuynh.MaPhuHuynh;
+                        HienThiThongTinPhuHuynh(dialog.SelectedPhuHuynh);
+                    }
+                }
             }
         }
 
-        private void ChonPhuHuynhTuBang()
+        /// <summary>
+        /// Hiển thị thông tin phụ huynh đã chọn
+        /// </summary>
+        private void HienThiThongTinPhuHuynh(PhuHuynhDTO phuHuynh)
         {
-            if (tablePhuHuynh.CurrentRow != null)
+            if (phuHuynh != null)
             {
-                try
-                {
-                    // Lấy dữ liệu từ các ô trong dòng đang chọn
-                    int maPH = Convert.ToInt32(tablePhuHuynh.CurrentRow.Cells["MaPH"].Value);
-                    string tenPH = tablePhuHuynh.CurrentRow.Cells["HoTenPH"].Value.ToString();
-
-                    // Lưu lại ID và hiển thị tên
-                    this.selectedMaPhuHuynh = maPH;
-                    txtPhuHuynhDuocChon.Text = tenPH;
-                    txtPhuHuynhDuocChon.ForeColor = Color.Green; // (Tùy chọn) Đổi màu để báo đã chọn
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi khi chọn phụ huynh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    this.selectedMaPhuHuynh = -1;
-                    txtPhuHuynhDuocChon.Text = "Chưa chọn";
-                    txtPhuHuynhDuocChon.ForeColor = Color.Red;
-                }
+                lblTenPhuHuynh.Text = $"Họ và tên: {phuHuynh.HoTen}";
+                lblSDTPhuHuynh.Text = $"Số điện thoại: {phuHuynh.SoDienThoai}";
+                lblEmailPhuHuynh.Text = $"Email: {(string.IsNullOrEmpty(phuHuynh.Email) ? "Chưa có" : phuHuynh.Email)}";
+                panelThongTinPhuHuynh.Visible = true;
             }
             else
             {
-                MessageBox.Show("Không có phụ huynh nào được chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                panelThongTinPhuHuynh.Visible = false;
             }
+        }
+
+        private void groupBoxGioiTinh_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }
