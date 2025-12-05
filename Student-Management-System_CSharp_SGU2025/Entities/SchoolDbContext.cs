@@ -1,7 +1,4 @@
-using System.Configuration;
 using System.Data.Entity;
-using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
-using Student_Management_System_CSharp_SGU2025.Config;
 using System;
 
 namespace Student_Management_System_CSharp_SGU2025.Entities
@@ -16,10 +13,10 @@ namespace Student_Management_System_CSharp_SGU2025.Entities
     public class SchoolDbContext : DbContext
     {
         /// <summary>
-        /// Constructor - Ưu tiên connection string từ App.config, fallback về ConnectionDatabase
+        /// Constructor - Sử dụng connection string hardcoded
         /// </summary>
         public SchoolDbContext() 
-            : base(GetConnectionStringOrName())
+            : base(GetConnectionString())
         {
             // Tắt lazy loading để tránh vấn đề performance
             this.Configuration.LazyLoadingEnabled = false;
@@ -27,74 +24,23 @@ namespace Student_Management_System_CSharp_SGU2025.Entities
         }
 
         /// <summary>
-        /// Lấy connection string - Ưu tiên từ database_config.json, fallback về App.config
-        /// </summary>
-        private static string GetConnectionStringOrName()
-        {
-            try
-            {
-                // ✅ Ưu tiên 1: Lấy từ database_config.json
-                return DatabaseConfig.GetEntityFrameworkConnectionString();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"⚠️ Không thể đọc connection string từ database_config.json: {ex.Message}");
-            }
-
-            // ✅ Fallback: Sử dụng connection string name từ App.config
-            try
-            {
-                var connStringFromConfig = ConfigurationManager.ConnectionStrings["SchoolDbContext"];
-                if (connStringFromConfig != null)
-                {
-                    // Nếu có connection string name, sử dụng name (EF6 sẽ tự động lấy từ App.config)
-                    return "SchoolDbContext";
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"⚠️ Không thể đọc connection string từ App.config: {ex.Message}");
-            }
-
-            // ✅ Fallback cuối cùng: Lấy connection string trực tiếp
-            return GetConnectionString();
-        }
-
-        /// <summary>
-        /// Lấy connection string - Ưu tiên từ database_config.json, fallback về App.config
+        /// Lấy connection string cho Entity Framework - Hardcoded trong code
+        /// Để thay đổi cấu hình, sửa trực tiếp trong method này
         /// </summary>
         private static string GetConnectionString()
         {
-            try
-            {
-                // ✅ Ưu tiên 1: Lấy từ database_config.json
-                return DatabaseConfig.GetEntityFrameworkConnectionString();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"⚠️ Không thể đọc connection string từ database_config.json: {ex.Message}");
-            }
+            // ✅ Cấu hình database - Sửa các giá trị dưới đây
+            string server = "127.0.0.1";
+            string database = "QuanLyHocSinh";
+            string userId = "root";
+            string password = "12345678";  // Để trống "" nếu localhost không có password
+            int port = 3306;
+            int connectionTimeout = 30;
 
-            // ✅ Fallback: Lấy từ App.config nếu có
-            try
-            {
-                var connStringFromConfig = ConfigurationManager.ConnectionStrings["SchoolDbContext"];
-                if (connStringFromConfig != null && !string.IsNullOrEmpty(connStringFromConfig.ConnectionString))
-                {
-                    return connStringFromConfig.ConnectionString;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"⚠️ Không thể đọc connection string từ App.config: {ex.Message}");
-            }
-
-            // ✅ Fallback cuối cùng: Connection string mặc định
-            throw new Exception($"❌ Không thể tạo connection string!\n\n" +
-                "Vui lòng kiểm tra:\n" +
-                "1. File Config/database_config.json tồn tại và hợp lệ\n" +
-                "2. MySQL Server đang chạy\n" +
-                "3. Database 'QuanLyHocSinh' đã được tạo");
+            // Tạo connection string cho Entity Framework
+            string serverWithPort = port != 3306 ? $"{server}:{port}" : server;
+            string passwordParam = string.IsNullOrEmpty(password) ? "" : $"password={password};";
+            return $"server={serverWithPort};database={database};user id={userId};{passwordParam}Connection Timeout={connectionTimeout};";
         }
 
         /// <summary>

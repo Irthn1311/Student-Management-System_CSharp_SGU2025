@@ -317,7 +317,6 @@
     <Compile Include="bus\ThoiKhoaBieuBUS.cs" />
     <Compile Include="bus\CaiDatBUS.cs" />
     <Compile Include="bus\XepLoaiBUS.cs" />
-    <Compile Include="Config\DatabaseConfig.cs" />
     <Compile Include="Config\TimetableConfig.cs" />
     <Compile Include="bus\YeuCauChuyenLopBLL.cs" />
     <Compile Include="bus\YeuCauChuyenLopBLL.cs" />
@@ -1049,7 +1048,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Config\database_config.json" />
     <None Include="Config\timetable_config.json" />
     <None Include="docs\CaiTienTKB.md" />
     <None Include="FIX_COMPLETED.md" />

@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,27 +7,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Student_Management_System_CSharp_SGU2025.Config;
 
 namespace Student_Management_System_CSharp_SGU2025.ConnectDatabase
 {
     internal class ConnectionDatabase
     {
         /// <summary>
-        /// Lấy connection string từ file cấu hình database_config.json
+        /// Lấy connection string - Hardcoded trong code
+        /// Để thay đổi cấu hình, sửa trực tiếp trong method này
         /// </summary>
         private static string GetConnectionString()
         {
-            try
-            {
-                return DatabaseConfig.GetAdoNetConnectionString();
-            }
-            catch (Exception ex)
-            {
-                // Fallback về connection string mặc định nếu không đọc được file config
-                Debug.WriteLine($"⚠️ Không thể đọc cấu hình database từ file: {ex.Message}");
-                return "Server=127.0.0.1;Database=QuanLyHocSinh;Uid=root;Pwd=12345678;";
-            }
+            // ✅ Cấu hình database - Sửa các giá trị dưới đây
+            string server = "127.0.0.1";
+            string database = "QuanLyHocSinh";
+            string userId = "root";
+            string password = "12345678";  // Để trống "" nếu localhost không có password
+            int port = 3306;
+            int connectionTimeout = 30;
+
+            // Tạo connection string
+            string serverWithPort = port != 3306 ? $"{server}:{port}" : server;
+            string pwdParam = string.IsNullOrEmpty(password) ? "" : $"Pwd={password};";
+            return $"Server={serverWithPort};Database={database};Uid={userId};{pwdParam}Connection Timeout={connectionTimeout};";
         }
 
         /// <summary>
