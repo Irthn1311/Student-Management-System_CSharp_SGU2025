@@ -65,6 +65,8 @@
             this.guna2HtmlLabel30 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.cbLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.cbViewMode = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.cbGiaoVien = new Guna.UI2.WinForms.Guna2ComboBox();
             this.btnSapXepTuDong = new Guna.UI2.WinForms.Guna2Button();
             this.btnLuuDiem = new Guna.UI2.WinForms.Guna2Button();
             this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
@@ -199,14 +201,16 @@
             // guna2Panel1
             // 
             this.guna2Panel1.AutoScroll = true;
-            this.guna2Panel1.Controls.Add(this.btnXoa);
-            this.guna2Panel1.Controls.Add(this.panel1);
-            this.guna2Panel1.Controls.Add(this.btnLuuDiem);
-            this.guna2Panel1.Controls.Add(this.guna2Panel2);
             this.guna2Panel1.Controls.Add(this.btnSapXepTuDong);
-            this.guna2Panel1.Controls.Add(this.cbLop);
+            this.guna2Panel1.Controls.Add(this.btnLuuDiem);
+            this.guna2Panel1.Controls.Add(this.btnXoa);
             this.guna2Panel1.Controls.Add(this.cbHocKyNamHoc);
+            this.guna2Panel1.Controls.Add(this.cbViewMode);
+            this.guna2Panel1.Controls.Add(this.cbLop);
+            this.guna2Panel1.Controls.Add(this.cbGiaoVien);
             this.guna2Panel1.Controls.Add(this.btnXuatExcel);
+            this.guna2Panel1.Controls.Add(this.guna2Panel2);
+            this.guna2Panel1.Controls.Add(this.panel1);
             this.guna2Panel1.Location = new System.Drawing.Point(0, 0);
             this.guna2Panel1.Name = "guna2Panel1";
             this.guna2Panel1.Size = new System.Drawing.Size(1159, 1037);
@@ -529,24 +533,6 @@
             this.guna2HtmlLabel30.Text = "Tiết 10";
             this.guna2HtmlLabel30.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // cbLop
-            // 
-            this.cbLop.BackColor = System.Drawing.Color.Transparent;
-            this.cbLop.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cbLop.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbLop.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbLop.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbLop.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
-            this.cbLop.ItemHeight = 30;
-            this.cbLop.Location = new System.Drawing.Point(627, 29);
-            this.cbLop.Margin = new System.Windows.Forms.Padding(2);
-            this.cbLop.Name = "cbLop";
-            this.cbLop.Size = new System.Drawing.Size(120, 36);
-            this.cbLop.StartIndex = 0;
-            this.cbLop.TabIndex = 18;
-            this.cbLop.SelectedIndexChanged += new System.EventHandler(this.cbLop_SelectedIndexChanged);
-            // 
             // cbHocKyNamHoc
             // 
             this.cbHocKyNamHoc.BackColor = System.Drawing.Color.Transparent;
@@ -557,13 +543,68 @@
             this.cbHocKyNamHoc.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbHocKyNamHoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cbHocKyNamHoc.ItemHeight = 30;
-            this.cbHocKyNamHoc.Location = new System.Drawing.Point(763, 29);
+            this.cbHocKyNamHoc.Location = new System.Drawing.Point(450, 29);
             this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
-            this.cbHocKyNamHoc.Size = new System.Drawing.Size(198, 36);
+            this.cbHocKyNamHoc.Size = new System.Drawing.Size(200, 36);
             this.cbHocKyNamHoc.StartIndex = 0;
             this.cbHocKyNamHoc.TabIndex = 17;
             this.cbHocKyNamHoc.SelectedIndexChanged += new System.EventHandler(this.cbHocKyNamHoc_SelectedIndexChanged);
+            // 
+            // cbLop
+            // 
+            this.cbLop.BackColor = System.Drawing.Color.Transparent;
+            this.cbLop.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbLop.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbLop.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbLop.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbLop.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbLop.ItemHeight = 30;
+            this.cbLop.Location = new System.Drawing.Point(660, 29);
+            this.cbLop.Margin = new System.Windows.Forms.Padding(2);
+            this.cbLop.Name = "cbLop";
+            this.cbLop.Size = new System.Drawing.Size(180, 36);
+            this.cbLop.StartIndex = 0;
+            this.cbLop.TabIndex = 18;
+            this.cbLop.SelectedIndexChanged += new System.EventHandler(this.cbLop_SelectedIndexChanged);
+            // 
+            // cbViewMode
+            // 
+            this.cbViewMode.BackColor = System.Drawing.Color.Transparent;
+            this.cbViewMode.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbViewMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbViewMode.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbViewMode.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbViewMode.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbViewMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbViewMode.ItemHeight = 30;
+            this.cbViewMode.Location = new System.Drawing.Point(260, 29);
+            this.cbViewMode.Margin = new System.Windows.Forms.Padding(2);
+            this.cbViewMode.Name = "cbViewMode";
+            this.cbViewMode.Size = new System.Drawing.Size(180, 36);
+            this.cbViewMode.StartIndex = 0;
+            this.cbViewMode.TabIndex = 19;
+            this.cbViewMode.SelectedIndexChanged += new System.EventHandler(this.cbViewMode_SelectedIndexChanged);
+            // 
+            // cbGiaoVien
+            // 
+            this.cbGiaoVien.BackColor = System.Drawing.Color.Transparent;
+            this.cbGiaoVien.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbGiaoVien.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbGiaoVien.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbGiaoVien.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbGiaoVien.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbGiaoVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbGiaoVien.ItemHeight = 30;
+            this.cbGiaoVien.Location = new System.Drawing.Point(850, 29);
+            this.cbGiaoVien.Margin = new System.Windows.Forms.Padding(2);
+            this.cbGiaoVien.Name = "cbGiaoVien";
+            this.cbGiaoVien.Size = new System.Drawing.Size(120, 36);
+            this.cbGiaoVien.StartIndex = 0;
+            this.cbGiaoVien.TabIndex = 20;
+            this.cbGiaoVien.Visible = false;
+            this.cbGiaoVien.SelectedIndexChanged += new System.EventHandler(this.cbGiaoVien_SelectedIndexChanged);
             // 
             // btnSapXepTuDong
             // 
@@ -573,7 +614,7 @@
             this.btnSapXepTuDong.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.btnSapXepTuDong.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
             this.btnSapXepTuDong.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnSapXepTuDong.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnSapXepTuDong.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
             this.btnSapXepTuDong.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnSapXepTuDong.ForeColor = System.Drawing.Color.White;
             this.btnSapXepTuDong.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus8;
@@ -581,7 +622,7 @@
             this.btnSapXepTuDong.Location = new System.Drawing.Point(18, 29);
             this.btnSapXepTuDong.Margin = new System.Windows.Forms.Padding(2);
             this.btnSapXepTuDong.Name = "btnSapXepTuDong";
-            this.btnSapXepTuDong.Size = new System.Drawing.Size(163, 35);
+            this.btnSapXepTuDong.Size = new System.Drawing.Size(163, 36);
             this.btnSapXepTuDong.TabIndex = 27;
             this.btnSapXepTuDong.Text = "Sắp xếp tự động";
             this.btnSapXepTuDong.Click += new System.EventHandler(this.btnGenerateAuto_Click);
@@ -598,33 +639,31 @@
             this.btnLuuDiem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnLuuDiem.ForeColor = System.Drawing.Color.White;
             this.btnLuuDiem.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.diskette;
-            this.btnLuuDiem.Location = new System.Drawing.Point(195, 30);
+            this.btnLuuDiem.Location = new System.Drawing.Point(195, 29);
             this.btnLuuDiem.Margin = new System.Windows.Forms.Padding(2);
             this.btnLuuDiem.Name = "btnLuuDiem";
-            this.btnLuuDiem.Size = new System.Drawing.Size(149, 35);
+            this.btnLuuDiem.Size = new System.Drawing.Size(149, 36);
             this.btnLuuDiem.TabIndex = 28;
-            this.btnLuuDiem.Text = "Lưu thời khóa biểu ";
+            this.btnLuuDiem.Text = "Lưu thời khóa biểu";
             this.btnLuuDiem.Click += new System.EventHandler(this.btnAccept_Click);
             // 
             // btnXoa
             // 
-            this.btnXoa.BorderColor = System.Drawing.Color.Red;
-            this.btnXoa.BorderRadius = 7;
-            this.btnXoa.BorderThickness = 2;
+            this.btnXoa.BackColor = System.Drawing.Color.Transparent;
+            this.btnXoa.BorderRadius = 5;
             this.btnXoa.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.btnXoa.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.btnXoa.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
             this.btnXoa.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnXoa.FillColor = System.Drawing.Color.White;
+            this.btnXoa.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
             this.btnXoa.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnXoa.ForeColor = System.Drawing.Color.Red;
-            this.btnXoa.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnXoa.Location = new System.Drawing.Point(367, 30);
+            this.btnXoa.ForeColor = System.Drawing.Color.White;
+            this.btnXoa.Location = new System.Drawing.Point(360, 29);
             this.btnXoa.Margin = new System.Windows.Forms.Padding(2);
             this.btnXoa.Name = "btnXoa";
-            this.btnXoa.Size = new System.Drawing.Size(69, 35);
+            this.btnXoa.Size = new System.Drawing.Size(100, 36);
             this.btnXoa.TabIndex = 47;
-            this.btnXoa.Text = "Xóa";
+            this.btnXoa.Text = "Xóa TKB";
             this.btnXoa.Click += new System.EventHandler(this.btnRollback_Click);
             // 
             // ThoiKhoaBieu
@@ -663,6 +702,8 @@
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private Guna.UI2.WinForms.Guna2ComboBox cbLop;
         private Guna.UI2.WinForms.Guna2ComboBox cbHocKyNamHoc;
+        private Guna.UI2.WinForms.Guna2ComboBox cbViewMode;
+        private Guna.UI2.WinForms.Guna2ComboBox cbGiaoVien;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel2;
         private System.Windows.Forms.TableLayoutPanel tableThoiKhoaBieu;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel21;

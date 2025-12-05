@@ -99,104 +99,104 @@ INSERT INTO HocKy (MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT) VALUE
 -- PHẦN 3: GIÁO VIÊN (65-70 giáo viên)
 -- =====================================================================
 
-INSERT INTO GiaoVien (MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai) VALUES
+INSERT INTO GiaoVien (MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, MaMonChuyenMon, TrangThai) VALUES
 -- Tổ Toán (7 giáo viên)
-('GV001', 'Nguyễn Văn Toán', '1985-03-15', 'Nam', '123 Nguyễn Huệ, Q1, TP.HCM', '0901234567', 'nguyen.toan.gv001@school.edu.vn', 'Đang giảng dạy'),
-('GV002', 'Trần Thị Hương', '1987-07-22', 'Nữ', '456 Lê Lợi, Q1, TP.HCM', '0901234568', 'tran.huong.gv002@school.edu.vn', 'Đang giảng dạy'),
-('GV003', 'Lê Minh Tuấn', '1983-11-08', 'Nam', '789 Đồng Khởi, Q1, TP.HCM', '0901234569', 'le.tuan.gv003@school.edu.vn', 'Đang giảng dạy'),
-('GV004', 'Phạm Thị Mai', '1986-05-14', 'Nữ', '321 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234570', 'pham.mai.gv004@school.edu.vn', 'Đang giảng dạy'),
-('GV005', 'Hoàng Văn Đức', '1984-09-30', 'Nam', '654 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234571', 'hoang.duc.gv005@school.edu.vn', 'Đang giảng dạy'),
-('GV006', 'Võ Thị Lan', '1988-01-18', 'Nữ', '987 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234572', 'vo.lan.gv006@school.edu.vn', 'Đang giảng dạy'),
-('GV007', 'Đặng Minh Khang', '1982-12-25', 'Nam', '147 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234573', 'dang.khang.gv007@school.edu.vn', 'Đang giảng dạy'),
+('GV001', 'Nguyễn Văn Toán', '1985-03-15', 'Nam', '123 Nguyễn Huệ, Q1, TP.HCM', '0901234567', 'nguyen.toan.gv001@school.edu.vn', 2, 'Đang giảng dạy'),
+('GV002', 'Trần Thị Hương', '1987-07-22', 'Nữ', '456 Lê Lợi, Q1, TP.HCM', '0901234568', 'tran.huong.gv002@school.edu.vn', 2, 'Đang giảng dạy'),
+('GV003', 'Lê Minh Tuấn', '1983-11-08', 'Nam', '789 Đồng Khởi, Q1, TP.HCM', '0901234569', 'le.tuan.gv003@school.edu.vn', 2, 'Đang giảng dạy'),
+('GV004', 'Phạm Thị Mai', '1986-05-14', 'Nữ', '321 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234570', 'pham.mai.gv004@school.edu.vn', 2, 'Đang giảng dạy'),
+('GV005', 'Hoàng Văn Đức', '1984-09-30', 'Nam', '654 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234571', 'hoang.duc.gv005@school.edu.vn', 2, 'Đang giảng dạy'),
+('GV006', 'Võ Thị Lan', '1988-01-18', 'Nữ', '987 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234572', 'vo.lan.gv006@school.edu.vn', 2, 'Đang giảng dạy'),
+('GV007', 'Đặng Minh Khang', '1982-12-25', 'Nam', '147 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234573', 'dang.khang.gv007@school.edu.vn', 2, 'Đang giảng dạy'),
 
 -- Tổ Văn (7 giáo viên)
-('GV008', 'Bùi Thị Hoa', '1985-04-12', 'Nữ', '258 Trần Hưng Đạo, Q5, TP.HCM', '0901234574', 'bui.hoa.gv008@school.edu.vn', 'Đang giảng dạy'),
-('GV009', 'Ngô Văn Nam', '1987-08-19', 'Nam', '369 Lý Tự Trọng, Q1, TP.HCM', '0901234575', 'ngo.nam.gv009@school.edu.vn', 'Đang giảng dạy'),
-('GV010', 'Đinh Thị Thu', '1983-06-07', 'Nữ', '741 Pasteur, Q3, TP.HCM', '0901234576', 'dinh.thu.gv010@school.edu.vn', 'Đang giảng dạy'),
-('GV011', 'Phan Văn Hùng', '1986-02-28', 'Nam', '852 Nguyễn Du, Q1, TP.HCM', '0901234577', 'phan.hung.gv011@school.edu.vn', 'Đang giảng dạy'),
-('GV012', 'Lý Thị Nga', '1984-10-15', 'Nữ', '963 Đinh Tiên Hoàng, Q.Bình Thạnh, TP.HCM', '0901234578', 'ly.nga.gv012@school.edu.vn', 'Đang giảng dạy'),
-('GV013', 'Vũ Minh Tuấn', '1988-12-03', 'Nam', '159 Nguyễn Thị Thập, Q7, TP.HCM', '0901234579', 'vu.tuan.gv013@school.edu.vn', 'Đang giảng dạy'),
-('GV014', 'Trịnh Thị Linh', '1982-09-21', 'Nữ', '357 Võ Văn Tần, Q3, TP.HCM', '0901234580', 'trinh.linh.gv014@school.edu.vn', 'Đang giảng dạy'),
+('GV008', 'Bùi Thị Hoa', '1985-04-12', 'Nữ', '258 Trần Hưng Đạo, Q5, TP.HCM', '0901234574', 'bui.hoa.gv008@school.edu.vn', 1, 'Đang giảng dạy'),
+('GV009', 'Ngô Văn Nam', '1987-08-19', 'Nam', '369 Lý Tự Trọng, Q1, TP.HCM', '0901234575', 'ngo.nam.gv009@school.edu.vn', 1, 'Đang giảng dạy'),
+('GV010', 'Đinh Thị Thu', '1983-06-07', 'Nữ', '741 Pasteur, Q3, TP.HCM', '0901234576', 'dinh.thu.gv010@school.edu.vn', 1, 'Đang giảng dạy'),
+('GV011', 'Phan Văn Hùng', '1986-02-28', 'Nam', '852 Nguyễn Du, Q1, TP.HCM', '0901234577', 'phan.hung.gv011@school.edu.vn', 1, 'Đang giảng dạy'),
+('GV012', 'Lý Thị Nga', '1984-10-15', 'Nữ', '963 Đinh Tiên Hoàng, Q.Bình Thạnh, TP.HCM', '0901234578', 'ly.nga.gv012@school.edu.vn', 1, 'Đang giảng dạy'),
+('GV013', 'Vũ Minh Tuấn', '1988-12-03', 'Nam', '159 Nguyễn Thị Thập, Q7, TP.HCM', '0901234579', 'vu.tuan.gv013@school.edu.vn', 1, 'Đang giảng dạy'),
+('GV014', 'Trịnh Thị Linh', '1982-09-21', 'Nữ', '357 Võ Văn Tần, Q3, TP.HCM', '0901234580', 'trinh.linh.gv014@school.edu.vn', 1, 'Đang giảng dạy'),
 
 -- Tổ Anh (6 giáo viên)
-('GV015', 'Cao Thị Hạnh', '1985-01-16', 'Nữ', '468 Nguyễn Đình Chiểu, Q3, TP.HCM', '0901234581', 'cao.hanh.gv015@school.edu.vn', 'Đang giảng dạy'),
-('GV016', 'Lâm Văn Phong', '1987-05-24', 'Nam', '579 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234582', 'lam.phong.gv016@school.edu.vn', 'Đang giảng dạy'),
-('GV017', 'Hồ Thị Yến', '1983-11-11', 'Nữ', '680 Nguyễn Văn Linh, Q7, TP.HCM', '0901234583', 'ho.yen.gv017@school.edu.vn', 'Đang giảng dạy'),
-('GV018', 'Dương Minh Đức', '1986-07-08', 'Nam', '791 Lê Văn Việt, Q9, TP.HCM', '0901234584', 'duong.duc.gv018@school.edu.vn', 'Đang giảng dạy'),
-('GV019', 'Tôn Thị Lan', '1984-03-26', 'Nữ', '802 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234585', 'ton.lan.gv019@school.edu.vn', 'Đang giảng dạy'),
-('GV020', 'Chu Văn Thành', '1988-09-13', 'Nam', '913 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234586', 'chu.thanh.gv020@school.edu.vn', 'Đang giảng dạy'),
+('GV015', 'Cao Thị Hạnh', '1985-01-16', 'Nữ', '468 Nguyễn Đình Chiểu, Q3, TP.HCM', '0901234581', 'cao.hanh.gv015@school.edu.vn', 3, 'Đang giảng dạy'),
+('GV016', 'Lâm Văn Phong', '1987-05-24', 'Nam', '579 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234582', 'lam.phong.gv016@school.edu.vn', 3, 'Đang giảng dạy'),
+('GV017', 'Hồ Thị Yến', '1983-11-11', 'Nữ', '680 Nguyễn Văn Linh, Q7, TP.HCM', '0901234583', 'ho.yen.gv017@school.edu.vn', 3, 'Đang giảng dạy'),
+('GV018', 'Dương Minh Đức', '1986-07-08', 'Nam', '791 Lê Văn Việt, Q9, TP.HCM', '0901234584', 'duong.duc.gv018@school.edu.vn', 3, 'Đang giảng dạy'),
+('GV019', 'Tôn Thị Lan', '1984-03-26', 'Nữ', '802 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234585', 'ton.lan.gv019@school.edu.vn', 3, 'Đang giảng dạy'),
+('GV020', 'Chu Văn Thành', '1988-09-13', 'Nam', '913 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234586', 'chu.thanh.gv020@school.edu.vn', 3, 'Đang giảng dạy'),
 
 -- Tổ Lý (5 giáo viên)
-('GV021', 'Đỗ Thị Hương', '1985-08-05', 'Nữ', '124 Nguyễn Huệ, Q1, TP.HCM', '0901234587', 'do.huong.gv021@school.edu.vn', 'Đang giảng dạy'),
-('GV022', 'Nguyễn Minh Tâm', '1987-04-22', 'Nam', '235 Lê Lợi, Q1, TP.HCM', '0901234588', 'nguyen.tam.gv022@school.edu.vn', 'Đang giảng dạy'),
-('GV023', 'Trần Thị Ngọc', '1983-12-09', 'Nữ', '346 Đồng Khởi, Q1, TP.HCM', '0901234589', 'tran.ngoc.gv023@school.edu.vn', 'Đang giảng dạy'),
-('GV024', 'Lê Văn Hải', '1986-06-16', 'Nam', '457 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234590', 'le.hai.gv024@school.edu.vn', 'Đang giảng dạy'),
-('GV025', 'Phạm Thị Thu', '1984-02-03', 'Nữ', '568 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234591', 'pham.thu.gv025@school.edu.vn', 'Đang giảng dạy'),
+('GV021', 'Đỗ Thị Hương', '1985-08-05', 'Nữ', '124 Nguyễn Huệ, Q1, TP.HCM', '0901234587', 'do.huong.gv021@school.edu.vn', 7, 'Đang giảng dạy'),
+('GV022', 'Nguyễn Minh Tâm', '1987-04-22', 'Nam', '235 Lê Lợi, Q1, TP.HCM', '0901234588', 'nguyen.tam.gv022@school.edu.vn', 7, 'Đang giảng dạy'),
+('GV023', 'Trần Thị Ngọc', '1983-12-09', 'Nữ', '346 Đồng Khởi, Q1, TP.HCM', '0901234589', 'tran.ngoc.gv023@school.edu.vn', 7, 'Đang giảng dạy'),
+('GV024', 'Lê Văn Hải', '1986-06-16', 'Nam', '457 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234590', 'le.hai.gv024@school.edu.vn', 7, 'Đang giảng dạy'),
+('GV025', 'Phạm Thị Thu', '1984-02-03', 'Nữ', '568 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234591', 'pham.thu.gv025@school.edu.vn', 7, 'Đang giảng dạy'),
 
 -- Tổ Hóa (5 giáo viên)
-('GV026', 'Hoàng Văn Long', '1985-10-20', 'Nam', '679 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234592', 'hoang.long.gv026@school.edu.vn', 'Đang giảng dạy'),
-('GV027', 'Võ Thị Hoa', '1987-07-17', 'Nữ', '790 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234593', 'vo.hoa.gv027@school.edu.vn', 'Đang giảng dạy'),
-('GV028', 'Đặng Minh Tuấn', '1983-05-04', 'Nam', '801 Trần Hưng Đạo, Q5, TP.HCM', '0901234594', 'dang.tuan.gv028@school.edu.vn', 'Đang giảng dạy'),
-('GV029', 'Bùi Thị Mai', '1986-01-11', 'Nữ', '912 Lý Tự Trọng, Q1, TP.HCM', '0901234595', 'bui.mai.gv029@school.edu.vn', 'Đang giảng dạy'),
-('GV030', 'Ngô Văn Đức', '1984-09-28', 'Nam', '023 Pasteur, Q3, TP.HCM', '0901234596', 'ngo.duc.gv030@school.edu.vn', 'Đang giảng dạy'),
+('GV026', 'Hoàng Văn Long', '1985-10-20', 'Nam', '679 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234592', 'hoang.long.gv026@school.edu.vn', 8, 'Đang giảng dạy'),
+('GV027', 'Võ Thị Hoa', '1987-07-17', 'Nữ', '790 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234593', 'vo.hoa.gv027@school.edu.vn', 8, 'Đang giảng dạy'),
+('GV028', 'Đặng Minh Tuấn', '1983-05-04', 'Nam', '801 Trần Hưng Đạo, Q5, TP.HCM', '0901234594', 'dang.tuan.gv028@school.edu.vn', 8, 'Đang giảng dạy'),
+('GV029', 'Bùi Thị Mai', '1986-01-11', 'Nữ', '912 Lý Tự Trọng, Q1, TP.HCM', '0901234595', 'bui.mai.gv029@school.edu.vn', 8, 'Đang giảng dạy'),
+('GV030', 'Ngô Văn Đức', '1984-09-28', 'Nam', '023 Pasteur, Q3, TP.HCM', '0901234596', 'ngo.duc.gv030@school.edu.vn', 8, 'Đang giảng dạy'),
 
 -- Tổ Sinh (4 giáo viên)
-('GV031', 'Đinh Thị Hoa', '1985-06-13', 'Nữ', '134 Nguyễn Du, Q1, TP.HCM', '0901234597', 'dinh.hoa.gv031@school.edu.vn', 'Đang giảng dạy'),
-('GV032', 'Phan Văn Nam', '1987-02-20', 'Nam', '245 Lê Văn Việt, Q9, TP.HCM', '0901234598', 'phan.nam.gv032@school.edu.vn', 'Đang giảng dạy'),
-('GV033', 'Lý Thị Thu', '1983-10-07', 'Nữ', '356 Nguyễn Văn Linh, Q7, TP.HCM', '0901234599', 'ly.thu.gv033@school.edu.vn', 'Đang giảng dạy'),
-('GV034', 'Vũ Minh Hùng', '1986-08-14', 'Nam', '467 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234600', 'vu.hung.gv034@school.edu.vn', 'Đang giảng dạy'),
+('GV031', 'Đinh Thị Hoa', '1985-06-13', 'Nữ', '134 Nguyễn Du, Q1, TP.HCM', '0901234597', 'dinh.hoa.gv031@school.edu.vn', 9, 'Đang giảng dạy'),
+('GV032', 'Phan Văn Nam', '1987-02-20', 'Nam', '245 Lê Văn Việt, Q9, TP.HCM', '0901234598', 'phan.nam.gv032@school.edu.vn', 9, 'Đang giảng dạy'),
+('GV033', 'Lý Thị Thu', '1983-10-07', 'Nữ', '356 Nguyễn Văn Linh, Q7, TP.HCM', '0901234599', 'ly.thu.gv033@school.edu.vn', 9, 'Đang giảng dạy'),
+('GV034', 'Vũ Minh Hùng', '1986-08-14', 'Nam', '467 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234600', 'vu.hung.gv034@school.edu.vn', 9, 'Đang giảng dạy'),
 
 -- Tổ Sử (4 giáo viên)
-('GV035', 'Trịnh Thị Lan', '1984-04-01', 'Nữ', '578 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234601', 'trinh.lan.gv035@school.edu.vn', 'Đang giảng dạy'),
-('GV036', 'Cao Văn Đức', '1988-12-18', 'Nam', '689 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234602', 'cao.duc.gv036@school.edu.vn', 'Đang giảng dạy'),
-('GV037', 'Lâm Thị Mai', '1982-08-05', 'Nữ', '790 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234603', 'lam.mai.gv037@school.edu.vn', 'Đang giảng dạy'),
-('GV038', 'Hồ Minh Tuấn', '1985-06-22', 'Nam', '801 Trần Hưng Đạo, Q5, TP.HCM', '0901234604', 'ho.tuan.gv038@school.edu.vn', 'Đang giảng dạy'),
+('GV035', 'Trịnh Thị Lan', '1984-04-01', 'Nữ', '578 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234601', 'trinh.lan.gv035@school.edu.vn', 4, 'Đang giảng dạy'),
+('GV036', 'Cao Văn Đức', '1988-12-18', 'Nam', '689 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234602', 'cao.duc.gv036@school.edu.vn', 4, 'Đang giảng dạy'),
+('GV037', 'Lâm Thị Mai', '1982-08-05', 'Nữ', '790 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234603', 'lam.mai.gv037@school.edu.vn', 4, 'Đang giảng dạy'),
+('GV038', 'Hồ Minh Tuấn', '1985-06-22', 'Nam', '801 Trần Hưng Đạo, Q5, TP.HCM', '0901234604', 'ho.tuan.gv038@school.edu.vn', 4, 'Đang giảng dạy'),
 
 -- Tổ Địa (4 giáo viên)
-('GV039', 'Dương Thị Hương', '1987-02-09', 'Nữ', '912 Lý Tự Trọng, Q1, TP.HCM', '0901234605', 'duong.huong.gv039@school.edu.vn', 'Đang giảng dạy'),
-('GV040', 'Tôn Văn Khang', '1983-10-26', 'Nam', '023 Pasteur, Q3, TP.HCM', '0901234606', 'ton.khang.gv040@school.edu.vn', 'Đang giảng dạy'),
-('GV041', 'Chu Thị Ngọc', '1986-08-13', 'Nữ', '134 Nguyễn Du, Q1, TP.HCM', '0901234607', 'chu.ngoc.gv041@school.edu.vn', 'Đang giảng dạy'),
-('GV042', 'Đỗ Minh Hải', '1984-04-30', 'Nam', '245 Lê Văn Việt, Q9, TP.HCM', '0901234608', 'do.hai.gv042@school.edu.vn', 'Đang giảng dạy'),
+('GV039', 'Dương Thị Hương', '1987-02-09', 'Nữ', '912 Lý Tự Trọng, Q1, TP.HCM', '0901234605', 'duong.huong.gv039@school.edu.vn', 5, 'Đang giảng dạy'),
+('GV040', 'Tôn Văn Khang', '1983-10-26', 'Nam', '023 Pasteur, Q3, TP.HCM', '0901234606', 'ton.khang.gv040@school.edu.vn', 5, 'Đang giảng dạy'),
+('GV041', 'Chu Thị Ngọc', '1986-08-13', 'Nữ', '134 Nguyễn Du, Q1, TP.HCM', '0901234607', 'chu.ngoc.gv041@school.edu.vn', 5, 'Đang giảng dạy'),
+('GV042', 'Đỗ Minh Hải', '1984-04-30', 'Nam', '245 Lê Văn Việt, Q9, TP.HCM', '0901234608', 'do.hai.gv042@school.edu.vn', 5, 'Đang giảng dạy'),
 
 -- Tổ GDCD (4 giáo viên)
-('GV043', 'Nguyễn Thị Thu', '1985-12-17', 'Nữ', '356 Nguyễn Văn Linh, Q7, TP.HCM', '0901234609', 'nguyen.thu.gv043@school.edu.vn', 'Đang giảng dạy'),
-('GV044', 'Trần Văn Long', '1987-08-04', 'Nam', '467 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234610', 'tran.long.gv044@school.edu.vn', 'Đang giảng dạy'),
-('GV045', 'Lê Thị Hoa', '1983-06-21', 'Nữ', '578 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234611', 'le.hoa.gv045@school.edu.vn', 'Đang giảng dạy'),
-('GV046', 'Phạm Minh Đức', '1986-02-08', 'Nam', '689 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234612', 'pham.duc.gv046@school.edu.vn', 'Đang giảng dạy'),
+('GV043', 'Nguyễn Thị Thu', '1985-12-17', 'Nữ', '356 Nguyễn Văn Linh, Q7, TP.HCM', '0901234609', 'nguyen.thu.gv043@school.edu.vn', 6, 'Đang giảng dạy'),
+('GV044', 'Trần Văn Long', '1987-08-04', 'Nam', '467 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234610', 'tran.long.gv044@school.edu.vn', 6, 'Đang giảng dạy'),
+('GV045', 'Lê Thị Hoa', '1983-06-21', 'Nữ', '578 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234611', 'le.hoa.gv045@school.edu.vn', 6, 'Đang giảng dạy'),
+('GV046', 'Phạm Minh Đức', '1986-02-08', 'Nam', '689 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234612', 'pham.duc.gv046@school.edu.vn', 6, 'Đang giảng dạy'),
 
 -- Tổ Công nghệ (4 giáo viên)
-('GV047', 'Hoàng Thị Lan', '1984-10-25', 'Nữ', '790 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234613', 'hoang.lan.gv047@school.edu.vn', 'Đang giảng dạy'),
-('GV048', 'Võ Minh Tuấn', '1988-08-12', 'Nam', '801 Trần Hưng Đạo, Q5, TP.HCM', '0901234614', 'vo.tuan.gv048@school.edu.vn', 'Đang giảng dạy'),
-('GV049', 'Đặng Thị Mai', '1982-06-29', 'Nữ', '912 Lý Tự Trọng, Q1, TP.HCM', '0901234615', 'dang.mai.gv049@school.edu.vn', 'Đang giảng dạy'),
-('GV050', 'Bùi Văn Hùng', '1985-04-16', 'Nam', '023 Pasteur, Q3, TP.HCM', '0901234616', 'bui.hung.gv050@school.edu.vn', 'Đang giảng dạy'),
+('GV047', 'Hoàng Thị Lan', '1984-10-25', 'Nữ', '790 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234613', 'hoang.lan.gv047@school.edu.vn', 10, 'Đang giảng dạy'),
+('GV048', 'Võ Minh Tuấn', '1988-08-12', 'Nam', '801 Trần Hưng Đạo, Q5, TP.HCM', '0901234614', 'vo.tuan.gv048@school.edu.vn', 10, 'Đang giảng dạy'),
+('GV049', 'Đặng Thị Mai', '1982-06-29', 'Nữ', '912 Lý Tự Trọng, Q1, TP.HCM', '0901234615', 'dang.mai.gv049@school.edu.vn', 10, 'Đang giảng dạy'),
+('GV050', 'Bùi Văn Hùng', '1985-04-16', 'Nam', '023 Pasteur, Q3, TP.HCM', '0901234616', 'bui.hung.gv050@school.edu.vn', 10, 'Đang giảng dạy'),
 
 -- Tổ Tin học (5 giáo viên)
-('GV051', 'Ngô Thị Hương', '1987-12-03', 'Nữ', '134 Nguyễn Du, Q1, TP.HCM', '0901234617', 'ngo.huong.gv051@school.edu.vn', 'Đang giảng dạy'),
-('GV052', 'Đinh Minh Nam', '1983-10-20', 'Nam', '245 Lê Văn Việt, Q9, TP.HCM', '0901234618', 'dinh.nam.gv052@school.edu.vn', 'Đang giảng dạy'),
-('GV053', 'Phan Thị Thu', '1986-08-07', 'Nữ', '356 Nguyễn Văn Linh, Q7, TP.HCM', '0901234619', 'phan.thu.gv053@school.edu.vn', 'Đang giảng dạy'),
-('GV054', 'Lý Minh Đức', '1984-06-24', 'Nam', '467 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234620', 'ly.duc.gv054@school.edu.vn', 'Đang giảng dạy'),
-('GV055', 'Vũ Thị Lan', '1988-04-11', 'Nữ', '578 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234621', 'vu.lan.gv055@school.edu.vn', 'Đang giảng dạy'),
+('GV051', 'Ngô Thị Hương', '1987-12-03', 'Nữ', '134 Nguyễn Du, Q1, TP.HCM', '0901234617', 'ngo.huong.gv051@school.edu.vn', 11, 'Đang giảng dạy'),
+('GV052', 'Đinh Minh Nam', '1983-10-20', 'Nam', '245 Lê Văn Việt, Q9, TP.HCM', '0901234618', 'dinh.nam.gv052@school.edu.vn', 11, 'Đang giảng dạy'),
+('GV053', 'Phan Thị Thu', '1986-08-07', 'Nữ', '356 Nguyễn Văn Linh, Q7, TP.HCM', '0901234619', 'phan.thu.gv053@school.edu.vn', 11, 'Đang giảng dạy'),
+('GV054', 'Lý Minh Đức', '1984-06-24', 'Nam', '467 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234620', 'ly.duc.gv054@school.edu.vn', 11, 'Đang giảng dạy'),
+('GV055', 'Vũ Thị Lan', '1988-04-11', 'Nữ', '578 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234621', 'vu.lan.gv055@school.edu.vn', 11, 'Đang giảng dạy'),
 
 -- Tổ Thể dục (4 giáo viên)
-('GV056', 'Trịnh Văn Hải', '1982-12-28', 'Nam', '689 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234622', 'trinh.hai.gv056@school.edu.vn', 'Đang giảng dạy'),
-('GV057', 'Cao Thị Ngọc', '1985-10-15', 'Nữ', '790 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234623', 'cao.ngoc.gv057@school.edu.vn', 'Đang giảng dạy'),
-('GV058', 'Lâm Minh Tuấn', '1987-08-02', 'Nam', '801 Trần Hưng Đạo, Q5, TP.HCM', '0901234624', 'lam.tuan.gv058@school.edu.vn', 'Đang giảng dạy'),
-('GV059', 'Hồ Thị Hoa', '1983-06-19', 'Nữ', '912 Lý Tự Trọng, Q1, TP.HCM', '0901234625', 'ho.hoa.gv059@school.edu.vn', 'Đang giảng dạy'),
+('GV056', 'Trịnh Văn Hải', '1982-12-28', 'Nam', '689 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234622', 'trinh.hai.gv056@school.edu.vn', 12, 'Đang giảng dạy'),
+('GV057', 'Cao Thị Ngọc', '1985-10-15', 'Nữ', '790 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234623', 'cao.ngoc.gv057@school.edu.vn', 12, 'Đang giảng dạy'),
+('GV058', 'Lâm Minh Tuấn', '1987-08-02', 'Nam', '801 Trần Hưng Đạo, Q5, TP.HCM', '0901234624', 'lam.tuan.gv058@school.edu.vn', 12, 'Đang giảng dạy'),
+('GV059', 'Hồ Thị Hoa', '1983-06-19', 'Nữ', '912 Lý Tự Trọng, Q1, TP.HCM', '0901234625', 'ho.hoa.gv059@school.edu.vn', 12, 'Đang giảng dạy'),
 
 -- Tổ GDQP-AN (3 giáo viên)
-('GV060', 'Dương Văn Long', '1986-04-06', 'Nam', '023 Pasteur, Q3, TP.HCM', '0901234626', 'duong.long.gv060@school.edu.vn', 'Đang giảng dạy'),
-('GV061', 'Tôn Thị Mai', '1984-12-23', 'Nữ', '134 Nguyễn Du, Q1, TP.HCM', '0901234627', 'ton.mai.gv061@school.edu.vn', 'Đang giảng dạy'),
-('GV062', 'Chu Minh Đức', '1988-10-10', 'Nam', '245 Lê Văn Việt, Q9, TP.HCM', '0901234628', 'chu.duc.gv062@school.edu.vn', 'Đang giảng dạy'),
+('GV060', 'Dương Văn Long', '1986-04-06', 'Nam', '023 Pasteur, Q3, TP.HCM', '0901234626', 'duong.long.gv060@school.edu.vn', 13, 'Đang giảng dạy'),
+('GV061', 'Tôn Thị Mai', '1984-12-23', 'Nữ', '134 Nguyễn Du, Q1, TP.HCM', '0901234627', 'ton.mai.gv061@school.edu.vn', 13, 'Đang giảng dạy'),
+('GV062', 'Chu Minh Đức', '1988-10-10', 'Nam', '245 Lê Văn Việt, Q9, TP.HCM', '0901234628', 'chu.duc.gv062@school.edu.vn', 13, 'Đang giảng dạy'),
 
 -- Giáo viên bổ sung (8 giáo viên)
-('GV063', 'Đỗ Thị Hương', '1982-08-27', 'Nữ', '356 Nguyễn Văn Linh, Q7, TP.HCM', '0901234629', 'do.huong.gv063@school.edu.vn', 'Đang giảng dạy'),
-('GV064', 'Nguyễn Văn Nam', '1985-06-14', 'Nam', '467 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234630', 'nguyen.nam.gv064@school.edu.vn', 'Đang giảng dạy'),
-('GV065', 'Trần Thị Thu', '1987-04-01', 'Nữ', '578 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234631', 'tran.thu.gv065@school.edu.vn', 'Đang giảng dạy'),
-('GV066', 'Lê Minh Hùng', '1983-02-18', 'Nam', '689 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234632', 'le.hung.gv066@school.edu.vn', 'Đang giảng dạy'),
-('GV067', 'Phạm Thị Lan', '1986-12-05', 'Nữ', '790 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234633', 'pham.lan.gv067@school.edu.vn', 'Đang giảng dạy'),
-('GV068', 'Hoàng Văn Đức', '1984-10-22', 'Nam', '801 Trần Hưng Đạo, Q5, TP.HCM', '0901234634', 'hoang.duc.gv068@school.edu.vn', 'Đang giảng dạy'),
-('GV069', 'Võ Thị Ngọc', '1988-08-09', 'Nữ', '912 Lý Tự Trọng, Q1, TP.HCM', '0901234635', 'vo.ngoc.gv069@school.edu.vn', 'Đang giảng dạy'),
-('GV070', 'Đặng Minh Hải', '1982-06-26', 'Nam', '023 Pasteur, Q3, TP.HCM', '0901234636', 'dang.hai.gv070@school.edu.vn', 'Đang giảng dạy');
+('GV063', 'Đỗ Thị Hương', '1982-08-27', 'Nữ', '356 Nguyễn Văn Linh, Q7, TP.HCM', '0901234629', 'do.huong.gv063@school.edu.vn', 1, 'Đang giảng dạy'),
+('GV064', 'Nguyễn Văn Nam', '1985-06-14', 'Nam', '467 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', '0901234630', 'nguyen.nam.gv064@school.edu.vn', 2, 'Đang giảng dạy'),
+('GV065', 'Trần Thị Thu', '1987-04-01', 'Nữ', '578 Nguyễn Thị Minh Khai, Q3, TP.HCM', '0901234631', 'tran.thu.gv065@school.edu.vn', 3, 'Đang giảng dạy'),
+('GV066', 'Lê Minh Hùng', '1983-02-18', 'Nam', '689 Cách Mạng Tháng 8, Q10, TP.HCM', '0901234632', 'le.hung.gv066@school.edu.vn', 7, 'Đang giảng dạy'),
+('GV067', 'Phạm Thị Lan', '1986-12-05', 'Nữ', '790 Nguyễn Văn Cừ, Q5, TP.HCM', '0901234633', 'pham.lan.gv067@school.edu.vn', 8, 'Đang giảng dạy'),
+('GV068', 'Hoàng Văn Đức', '1984-10-22', 'Nam', '801 Trần Hưng Đạo, Q5, TP.HCM', '0901234634', 'hoang.duc.gv068@school.edu.vn', 9, 'Đang giảng dạy'),
+('GV069', 'Võ Thị Ngọc', '1988-08-09', 'Nữ', '912 Lý Tự Trọng, Q1, TP.HCM', '0901234635', 'vo.ngoc.gv069@school.edu.vn', 11, 'Đang giảng dạy'),
+('GV070', 'Đặng Minh Hải', '1982-06-26', 'Nam', '023 Pasteur, Q3, TP.HCM', '0901234636', 'dang.hai.gv070@school.edu.vn', 12, 'Đang giảng dạy');
 
 SELECT 'Teachers insertion completed (70/70)' AS Status;
 
@@ -620,80 +620,48 @@ INSERT IGNORE INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro) VALUES
 SELECT 'Admin and teacher roles assigned (71 roles)' AS Status;
 
 -- =====================================================================
--- PHẦN 8: CHUYÊN MÔN GIÁO VIÊN VÀ PHÂN CÔNG GIẢNG DẠY
+-- PHẦN 8: PHÂN CÔNG GIẢNG DẠY
 -- =====================================================================
 
--- Chuyên môn giáo viên (mỗi GV có ít nhất 1 môn chính)
-INSERT INTO GiaoVienChuyenMon (MaGiaoVien, MaMonHoc, LaChuyenMonChinh) VALUES
--- Tổ Toán (7 GV)
-('GV001', 2, TRUE), ('GV002', 2, TRUE), ('GV003', 2, TRUE), ('GV004', 2, TRUE), ('GV005', 2, TRUE), ('GV006', 2, TRUE), ('GV007', 2, TRUE),
--- Tổ Văn (7 GV)
-('GV008', 1, TRUE), ('GV009', 1, TRUE), ('GV010', 1, TRUE), ('GV011', 1, TRUE), ('GV012', 1, TRUE), ('GV013', 1, TRUE), ('GV014', 1, TRUE),
--- Tổ Anh (6 GV)
-('GV015', 3, TRUE), ('GV016', 3, TRUE), ('GV017', 3, TRUE), ('GV018', 3, TRUE), ('GV019', 3, TRUE), ('GV020', 3, TRUE),
--- Tổ Lý (5 GV)
-('GV021', 7, TRUE), ('GV022', 7, TRUE), ('GV023', 7, TRUE), ('GV024', 7, TRUE), ('GV025', 7, TRUE),
--- Tổ Hóa (5 GV)
-('GV026', 8, TRUE), ('GV027', 8, TRUE), ('GV028', 8, TRUE), ('GV029', 8, TRUE), ('GV030', 8, TRUE),
--- Tổ Sinh (4 GV)
-('GV031', 9, TRUE), ('GV032', 9, TRUE), ('GV033', 9, TRUE), ('GV034', 9, TRUE),
--- Tổ Sử (4 GV)
-('GV035', 4, TRUE), ('GV036', 4, TRUE), ('GV037', 4, TRUE), ('GV038', 4, TRUE),
--- Tổ Địa (4 GV)
-('GV039', 5, TRUE), ('GV040', 5, TRUE), ('GV041', 5, TRUE), ('GV042', 5, TRUE),
--- Tổ GDCD (4 GV)
-('GV043', 6, TRUE), ('GV044', 6, TRUE), ('GV045', 6, TRUE), ('GV046', 6, TRUE),
--- Tổ Công nghệ (4 GV)
-('GV047', 10, TRUE), ('GV048', 10, TRUE), ('GV049', 10, TRUE), ('GV050', 10, TRUE),
--- Tổ Tin học (5 GV)
-('GV051', 11, TRUE), ('GV052', 11, TRUE), ('GV053', 11, TRUE), ('GV054', 11, TRUE), ('GV055', 11, TRUE),
--- Tổ Thể dục (4 GV)
-('GV056', 12, TRUE), ('GV057', 12, TRUE), ('GV058', 12, TRUE), ('GV059', 12, TRUE),
--- Tổ GDQP-AN (3 GV)
-('GV060', 13, TRUE), ('GV061', 13, TRUE), ('GV062', 13, TRUE),
--- GV bổ sung (8 GV) - phân bổ các môn
-('GV063', 1, TRUE), ('GV064', 2, TRUE), ('GV065', 3, TRUE), ('GV066', 7, TRUE),
-('GV067', 8, TRUE), ('GV068', 9, TRUE), ('GV069', 11, TRUE), ('GV070', 12, TRUE);
-
 -- Phân công giảng dạy mẫu cho lớp 10A1 (một số môn chính)
-INSERT INTO PhanCongGiangDay (MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc) VALUES
--- Lớp 10A1 - Các môn chính
-(1, 'GV001', 2, 1, '2024-09-01', '2024-12-31'), -- Toán
-(1, 'GV008', 1, 1, '2024-09-01', '2024-12-31'), -- Văn
-(1, 'GV015', 3, 1, '2024-09-01', '2024-12-31'), -- Anh
-(1, 'GV021', 7, 1, '2024-09-01', '2024-12-31'), -- Lý
-(1, 'GV026', 8, 1, '2024-09-01', '2024-12-31'), -- Hóa
-(1, 'GV031', 9, 1, '2024-09-01', '2024-12-31'), -- Sinh
-(1, 'GV035', 4, 1, '2024-09-01', '2024-12-31'), -- Sử
-(1, 'GV039', 5, 1, '2024-09-01', '2024-12-31'), -- Địa
-(1, 'GV043', 6, 1, '2024-09-01', '2024-12-31'), -- GDCD
-(1, 'GV047', 10, 1, '2024-09-01', '2024-12-31'), -- Công nghệ
-(1, 'GV051', 11, 1, '2024-09-01', '2024-12-31'), -- Tin học
-(1, 'GV056', 12, 1, '2024-09-01', '2024-12-31'), -- Thể dục
-(1, 'GV060', 13, 1, '2024-09-01', '2024-12-31'); -- GDQP-AN
+-- INSERT INTO PhanCongGiangDay (MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc) VALUES
+-- -- Lớp 10A1 - Các môn chính
+-- (1, 'GV001', 2, 1, '2024-09-01', '2024-12-31'), -- Toán
+-- (1, 'GV008', 1, 1, '2024-09-01', '2024-12-31'), -- Văn
+-- (1, 'GV015', 3, 1, '2024-09-01', '2024-12-31'), -- Anh
+-- (1, 'GV021', 7, 1, '2024-09-01', '2024-12-31'), -- Lý
+-- (1, 'GV026', 8, 1, '2024-09-01', '2024-12-31'), -- Hóa
+-- (1, 'GV031', 9, 1, '2024-09-01', '2024-12-31'), -- Sinh
+-- (1, 'GV035', 4, 1, '2024-09-01', '2024-12-31'), -- Sử
+-- (1, 'GV039', 5, 1, '2024-09-01', '2024-12-31'), -- Địa
+-- (1, 'GV043', 6, 1, '2024-09-01', '2024-12-31'), -- GDCD
+-- (1, 'GV047', 10, 1, '2024-09-01', '2024-12-31'), -- Công nghệ
+-- (1, 'GV051', 11, 1, '2024-09-01', '2024-12-31'), -- Tin học
+-- (1, 'GV056', 12, 1, '2024-09-01', '2024-12-31'), -- Thể dục
+-- (1, 'GV060', 13, 1, '2024-09-01', '2024-12-31'); -- GDQP-AN
 
 -- Thời khóa biểu mẫu cho lớp 10A1 (một số tiết)
-INSERT INTO ThoiKhoaBieu (MaPhanCong, ThuTrongTuan, TietBatDau, SoTiet, PhongHoc) VALUES
--- Thứ 2
-(1, 'Thứ 2', 1, 2, 'A101'), -- Toán tiết 1-2
-(2, 'Thứ 2', 3, 2, 'A101'), -- Văn tiết 3-4
-(3, 'Thứ 2', 5, 1, 'A101'), -- Anh tiết 5
--- Thứ 3
-(4, 'Thứ 3', 1, 2, 'A102'), -- Lý tiết 1-2
-(5, 'Thứ 3', 3, 2, 'A102'), -- Hóa tiết 3-4
-(6, 'Thứ 3', 5, 1, 'A102'), -- Sinh tiết 5
--- Thứ 4
-(7, 'Thứ 4', 1, 2, 'A101'), -- Sử tiết 1-2
-(8, 'Thứ 4', 3, 2, 'A101'), -- Địa tiết 3-4
-(9, 'Thứ 4', 5, 1, 'A101'), -- GDCD tiết 5
--- Thứ 5
-(10, 'Thứ 5', 1, 2, 'A103'), -- Công nghệ tiết 1-2
-(11, 'Thứ 5', 3, 2, 'A103'), -- Tin học tiết 3-4
-(12, 'Thứ 5', 5, 1, 'A103'), -- Thể dục tiết 5
--- Thứ 6
-(13, 'Thứ 6', 1, 1, 'A104'); -- GDQP-AN tiết 1
+-- INSERT INTO ThoiKhoaBieu (MaPhanCong, ThuTrongTuan, TietBatDau, SoTiet, PhongHoc) VALUES
+-- -- Thứ 2
+-- (1, 'Thứ 2', 1, 2, 'A101'), -- Toán tiết 1-2
+-- (2, 'Thứ 2', 3, 2, 'A101'), -- Văn tiết 3-4
+-- (3, 'Thứ 2', 5, 1, 'A101'), -- Anh tiết 5
+-- -- Thứ 3
+-- (4, 'Thứ 3', 1, 2, 'A102'), -- Lý tiết 1-2
+-- (5, 'Thứ 3', 3, 2, 'A102'), -- Hóa tiết 3-4
+-- (6, 'Thứ 3', 5, 1, 'A102'), -- Sinh tiết 5
+-- -- Thứ 4
+-- (7, 'Thứ 4', 1, 2, 'A101'), -- Sử tiết 1-2
+-- (8, 'Thứ 4', 3, 2, 'A101'), -- Địa tiết 3-4
+-- (9, 'Thứ 4', 5, 1, 'A101'), -- GDCD tiết 5
+-- -- Thứ 5
+-- (10, 'Thứ 5', 1, 2, 'A103'), -- Công nghệ tiết 1-2
+-- (11, 'Thứ 5', 3, 2, 'A103'), -- Tin học tiết 3-4
+-- (12, 'Thứ 5', 5, 1, 'A103'), -- Thể dục tiết 5
+-- -- Thứ 6
+-- (13, 'Thứ 6', 1, 1, 'A104'); -- GDQP-AN tiết 1
 
-SELECT 'Teacher expertise and assignments completed' AS Status;
+-- SELECT 'Assignments completed' AS Status;
 
 -- =====================================================================
 -- HOÀN THÀNH SEED DATA
