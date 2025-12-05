@@ -1,9 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
 using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
+using System.Linq;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
@@ -15,26 +18,28 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             return DocDSGiaoVien();
         }
 
+        // ✅ GetChuyenMon - Sử dụng LINQ to Entities
         public List<int> GetChuyenMon(string maGiaoVien)
         {
-            var ds = new List<int>();
-            string query = @"SELECT MaMonHoc FROM GiaoVien_MonHoc WHERE MaGiaoVien=@MaGiaoVien";
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            try
             {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (var db = new SchoolDbContext())
                 {
-                    cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            ds.Add(reader.GetInt32("MaMonHoc"));
-                        }
-                    }
+                    // ✅ LINQ to Entities query
+                    var results = db.GiaoViens
+                        .Where(g => g.MaGiaoVien == maGiaoVien && g.MaMonChuyenMon.HasValue)
+                        .Select(g => g.MaMonChuyenMon.Value)
+                        .Distinct()
+                        .ToList();
+                    
+                    return results;
                 }
             }
-            return ds;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi GetChuyenMon: {ex.Message}");
+                throw;
+            }
         }
 
         public int GetCurrentLoad(string maGiaoVien, int hocKyId)
@@ -54,27 +59,20 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 }
             }
         }
-        // ✅ LẤY TÊN GIÁO VIÊN THEO MÃ (Requirement chính của bạn)
+        // ✅ LẤY TÊN GIÁO VIÊN THEO MÃ - Sử dụng LINQ to Entities
         public string LayTenGiaoVienTheoMa(string maGiaoVien)
         {
-            string tenGiaoVien = null;
-            string query = "SELECT HoTen FROM GiaoVien WHERE MaGiaoVien = @MaGiaoVien";
-
             try
             {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                using (var db = new SchoolDbContext())
                 {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
-                        object result = cmd.ExecuteScalar();
-                        
-                        if (result != null)
-                        {
-                            tenGiaoVien = result.ToString();
-                        }
-                    }
+                    // ✅ LINQ to Entities query
+                    var tenGiaoVien = db.GiaoViens
+                        .Where(g => g.MaGiaoVien == maGiaoVien)
+                        .Select(g => g.HoTen)
+                        .FirstOrDefault();
+                    
+                    return tenGiaoVien;
                 }
             }
             catch (Exception ex)
@@ -82,34 +80,33 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 Console.WriteLine($"Lỗi LayTenGiaoVienTheoMa: {ex.Message}");
                 throw;
             }
-
-            return tenGiaoVien;
         }
 
-        // Thêm giáo viên
+        // ✅ Thêm giáo viên - Sử dụng LINQ to Entities
         public bool ThemGiaoVien(GiaoVienDTO giaoVien)
         {
-            string query = "INSERT INTO GiaoVien(MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai) " +
-                          "VALUES(@MaGiaoVien, @HoTen, @NgaySinh, @GioiTinh, @DiaChi, @SoDienThoai, @Email, @TrangThai)";
             try
             {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                using (var db = new SchoolDbContext())
                 {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    // ✅ Chuyển đổi từ DTO sang Entity
+                    var entity = new GiaoVienEntity
                     {
-                        cmd.Parameters.AddWithValue("@MaGiaoVien", giaoVien.MaGiaoVien);
-                        cmd.Parameters.AddWithValue("@HoTen", giaoVien.HoTen);
-                        cmd.Parameters.AddWithValue("@NgaySinh", giaoVien.NgaySinh);
-                        cmd.Parameters.AddWithValue("@GioiTinh", giaoVien.GioiTinh);
-                        cmd.Parameters.AddWithValue("@DiaChi", giaoVien.DiaChi ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@SoDienThoai", giaoVien.SoDienThoai ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@Email", giaoVien.Email ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@TrangThai", giaoVien.TrangThai ?? "Đang giảng dạy");
-                        
-                        int result = cmd.ExecuteNonQuery();
-                        return result > 0;
-                    }
+                        MaGiaoVien = giaoVien.MaGiaoVien,
+                        HoTen = giaoVien.HoTen,
+                        NgaySinh = giaoVien.NgaySinh != DateTime.MinValue ? (DateTime?)giaoVien.NgaySinh : null,
+                        GioiTinh = giaoVien.GioiTinh,
+                        DiaChi = giaoVien.DiaChi,
+                        SoDienThoai = giaoVien.SoDienThoai,
+                        Email = giaoVien.Email,
+                        MaMonChuyenMon = giaoVien.MaMonChuyenMon,
+                        TrangThai = giaoVien.TrangThai ?? "Đang giảng dạy"
+                    };
+
+                    // ✅ LINQ to Entities - Add và SaveChanges
+                    db.GiaoViens.Add(entity);
+                    int result = db.SaveChanges();
+                    return result > 0;
                 }
             }
             catch (Exception ex)
@@ -119,38 +116,33 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
-        // Đọc danh sách giáo viên
+        // ✅ Đọc danh sách giáo viên - Sử dụng LINQ to Entities
         public List<GiaoVienDTO> DocDSGiaoVien()
         {
-            List<GiaoVienDTO> ds = new List<GiaoVienDTO>();
-            string query = "SELECT MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai FROM GiaoVien ORDER BY HoTen";
-
             try
             {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                using (var db = new SchoolDbContext())
                 {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                GiaoVienDTO gv = new GiaoVienDTO
-                                {
-                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
-                                    HoTen = reader.GetString("HoTen"),
-                                    NgaySinh = reader.IsDBNull(reader.GetOrdinal("NgaySinh")) ? DateTime.MinValue : reader.GetDateTime("NgaySinh"),
-                                    GioiTinh = reader.IsDBNull(reader.GetOrdinal("GioiTinh")) ? "" : reader.GetString("GioiTinh"),
-                                    DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? "" : reader.GetString("DiaChi"),
-                                    SoDienThoai = reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? "" : reader.GetString("SoDienThoai"),
-                                    Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? "" : reader.GetString("Email"),
-                                    TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) ? "Đang giảng dạy" : reader.GetString("TrangThai")
-                                };
-                                ds.Add(gv);
-                            }
-                        }
-                    }
+                    // ✅ LINQ to Entities query với LEFT JOIN
+                    var danhSach = (from gv in db.GiaoViens
+                                   join mh in db.MonHocs on gv.MaMonChuyenMon equals mh.MaMonHoc into monHocGroup
+                                   from mh in monHocGroup.DefaultIfEmpty()
+                                   orderby gv.HoTen
+                                   select new GiaoVienDTO
+                                   {
+                                       MaGiaoVien = gv.MaGiaoVien,
+                                       HoTen = gv.HoTen,
+                                       NgaySinh = gv.NgaySinh ?? DateTime.MinValue,
+                                       GioiTinh = gv.GioiTinh ?? "",
+                                       DiaChi = gv.DiaChi ?? "",
+                                       SoDienThoai = gv.SoDienThoai ?? "",
+                                       Email = gv.Email ?? "",
+                                       TrangThai = gv.TrangThai ?? "Đang giảng dạy",
+                                       MaMonChuyenMon = gv.MaMonChuyenMon,
+                                       TenMonChuyenMon = mh != null ? mh.TenMonHoc : ""
+                                   }).ToList();
+
+                    return danhSach;
                 }
             }
             catch (Exception ex)
@@ -158,42 +150,35 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 Console.WriteLine($"Lỗi DocDSGiaoVien: {ex.Message}");
                 throw;
             }
-
-            return ds;
         }
 
-        // Lấy giáo viên theo mã
+        // ✅ Lấy giáo viên theo mã - Sử dụng LINQ to Entities
         public GiaoVienDTO LayGiaoVienTheoMa(string maGiaoVien)
         {
-            GiaoVienDTO giaoVien = null;
-            string query = "SELECT MaGiaoVien, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, TrangThai FROM GiaoVien WHERE MaGiaoVien = @MaGiaoVien";
-
             try
             {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                using (var db = new SchoolDbContext())
                 {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                giaoVien = new GiaoVienDTO
-                                {
-                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
-                                    HoTen = reader.GetString("HoTen"),
-                                    NgaySinh = reader.IsDBNull(reader.GetOrdinal("NgaySinh")) ? DateTime.MinValue : reader.GetDateTime("NgaySinh"),
-                                    GioiTinh = reader.IsDBNull(reader.GetOrdinal("GioiTinh")) ? "" : reader.GetString("GioiTinh"),
-                                    DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? "" : reader.GetString("DiaChi"),
-                                    SoDienThoai = reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) ? "" : reader.GetString("SoDienThoai"),
-                                    Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? "" : reader.GetString("Email"),
-                                    TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) ? "Đang giảng dạy" : reader.GetString("TrangThai")
-                                };
-                            }
-                        }
-                    }
+                    // ✅ LINQ to Entities query với LEFT JOIN
+                    var giaoVien = (from gv in db.GiaoViens
+                                   where gv.MaGiaoVien == maGiaoVien
+                                   join mh in db.MonHocs on gv.MaMonChuyenMon equals mh.MaMonHoc into monHocGroup
+                                   from mh in monHocGroup.DefaultIfEmpty()
+                                   select new GiaoVienDTO
+                                   {
+                                       MaGiaoVien = gv.MaGiaoVien,
+                                       HoTen = gv.HoTen,
+                                       NgaySinh = gv.NgaySinh ?? DateTime.MinValue,
+                                       GioiTinh = gv.GioiTinh ?? "",
+                                       DiaChi = gv.DiaChi ?? "",
+                                       SoDienThoai = gv.SoDienThoai ?? "",
+                                       Email = gv.Email ?? "",
+                                       TrangThai = gv.TrangThai ?? "Đang giảng dạy",
+                                       MaMonChuyenMon = gv.MaMonChuyenMon,
+                                       TenMonChuyenMon = mh != null ? mh.TenMonHoc : ""
+                                   }).FirstOrDefault();
+
+                    return giaoVien;
                 }
             }
             catch (Exception ex)
@@ -201,36 +186,34 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 Console.WriteLine($"Lỗi LayGiaoVienTheoMa: {ex.Message}");
                 throw;
             }
-
-            return giaoVien;
         }
 
-        // Cập nhật giáo viên
+        // ✅ Cập nhật giáo viên - Sử dụng LINQ to Entities
         public bool CapNhatGiaoVien(GiaoVienDTO giaoVien)
         {
-            string query = "UPDATE GiaoVien SET HoTen=@HoTen, NgaySinh=@NgaySinh, GioiTinh=@GioiTinh, " +
-                          "DiaChi=@DiaChi, SoDienThoai=@SoDienThoai, Email=@Email, TrangThai=@TrangThai " +
-                          "WHERE MaGiaoVien=@MaGiaoVien";
-
             try
             {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                using (var db = new SchoolDbContext())
                 {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@HoTen", giaoVien.HoTen);
-                        cmd.Parameters.AddWithValue("@NgaySinh", giaoVien.NgaySinh);
-                        cmd.Parameters.AddWithValue("@GioiTinh", giaoVien.GioiTinh);
-                        cmd.Parameters.AddWithValue("@DiaChi", giaoVien.DiaChi ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@SoDienThoai", giaoVien.SoDienThoai ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@Email", giaoVien.Email ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@TrangThai", giaoVien.TrangThai);
-                        cmd.Parameters.AddWithValue("@MaGiaoVien", giaoVien.MaGiaoVien);
-                        
-                        int result = cmd.ExecuteNonQuery();
-                        return result > 0;
-                    }
+                    // ✅ LINQ to Entities - Tìm entity theo mã
+                    var entity = db.GiaoViens.FirstOrDefault(g => g.MaGiaoVien == giaoVien.MaGiaoVien);
+                    
+                    if (entity == null)
+                        return false;
+
+                    // ✅ Cập nhật các thuộc tính
+                    entity.HoTen = giaoVien.HoTen;
+                    entity.NgaySinh = giaoVien.NgaySinh != DateTime.MinValue ? (DateTime?)giaoVien.NgaySinh : null;
+                    entity.GioiTinh = giaoVien.GioiTinh;
+                    entity.DiaChi = giaoVien.DiaChi;
+                    entity.SoDienThoai = giaoVien.SoDienThoai;
+                    entity.Email = giaoVien.Email;
+                    entity.MaMonChuyenMon = giaoVien.MaMonChuyenMon;
+                    entity.TrangThai = giaoVien.TrangThai;
+
+                    // ✅ LINQ to Entities - SaveChanges
+                    int result = db.SaveChanges();
+                    return result > 0;
                 }
             }
             catch (Exception ex)
@@ -240,28 +223,24 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
-        // Xóa giáo viên
+        // ✅ Xóa giáo viên - Sử dụng LINQ to Entities
         public bool XoaGiaoVien(string maGiaoVien)
         {
-            string query = "DELETE FROM GiaoVien WHERE MaGiaoVien = @MaGiaoVien";
-
             try
             {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                using (var db = new SchoolDbContext())
                 {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
-                        int result = cmd.ExecuteNonQuery();
-                        return result > 0;
-                    }
+                    // ✅ LINQ to Entities - Tìm entity theo mã
+                    var entity = db.GiaoViens.FirstOrDefault(g => g.MaGiaoVien == maGiaoVien);
+                    
+                    if (entity == null)
+                        return false;
+
+                    // ✅ LINQ to Entities - Remove và SaveChanges
+                    db.GiaoViens.Remove(entity);
+                    int result = db.SaveChanges();
+                    return result > 0;
                 }
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine($"MySQL Error [{ex.Number}]: {ex.Message}");
-                throw new Exception($"Lỗi database: {ex.Message}", ex);
             }
             catch (Exception ex)
             {
@@ -270,32 +249,22 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
-        // Kiểm tra email đã tồn tại chưa
+        // ✅ Kiểm tra email đã tồn tại chưa - Sử dụng LINQ to Entities
         public bool KiemTraEmailTonTai(string email, string maGiaoVienHienTai = null)
         {
-            string query = "SELECT COUNT(*) FROM GiaoVien WHERE Email = @Email";
-            
-            if (!string.IsNullOrEmpty(maGiaoVienHienTai))
-            {
-                query += " AND MaGiaoVien != @MaGiaoVien";
-            }
-
             try
             {
-                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                using (var db = new SchoolDbContext())
                 {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    // ✅ LINQ to Entities query
+                    var query = db.GiaoViens.Where(g => g.Email == email);
+                    
+                    if (!string.IsNullOrEmpty(maGiaoVienHienTai))
                     {
-                        cmd.Parameters.AddWithValue("@Email", email);
-                        if (!string.IsNullOrEmpty(maGiaoVienHienTai))
-                        {
-                            cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVienHienTai);
-                        }
-                        
-                        int count = Convert.ToInt32(cmd.ExecuteScalar());
-                        return count > 0;
+                        query = query.Where(g => g.MaGiaoVien != maGiaoVienHienTai);
                     }
+                    
+                    return query.Any();
                 }
             }
             catch (Exception ex)
@@ -303,6 +272,43 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 Console.WriteLine($"Lỗi KiemTraEmailTonTai: {ex.Message}");
                 throw;
             }
+        }
+
+        // ✅ Lấy mã giáo viên tiếp theo tự động - Sử dụng LINQ to Entities
+        public string LayMaGiaoVienTiepTheo()
+        {
+            string maTiepTheo = "GV001"; // Mã mặc định nếu chưa có giáo viên nào
+            
+            try
+            {
+                using (var db = new SchoolDbContext())
+                {
+                    // ✅ LINQ to Entities - Lấy mã giáo viên lớn nhất
+                    // Materialize query first, then parse in memory (cannot use out parameters in expression trees)
+                    var maGiaoViens = db.GiaoViens
+                        .Where(gv => !string.IsNullOrEmpty(gv.MaGiaoVien) && gv.MaGiaoVien.StartsWith("GV"))
+                        .Select(gv => gv.MaGiaoVien)
+                        .ToList();
+                    
+                    var maxSo = maGiaoViens
+                        .Select(ma =>
+                        {
+                            string soStr = ma.Substring(2);
+                            return int.TryParse(soStr, out int so) ? so : 0;
+                        })
+                        .DefaultIfEmpty(0)
+                        .Max();
+                    
+                    maTiepTheo = $"GV{(maxSo + 1):D3}";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayMaGiaoVienTiepTheo: {ex.Message}");
+                // Nếu có lỗi, trả về mã mặc định
+            }
+            
+            return maTiepTheo;
         }
     }
 }

@@ -332,5 +332,27 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 throw;
             }
         }
+
+        /// <summary>
+        /// Lấy danh sách lớp đã được phân lớp trong học kỳ cụ thể
+        /// </summary>
+        public List<LopDTO> GetDanhSachLopTheoHocKy(int maHocKy)
+        {
+            try
+            {
+                if (maHocKy <= 0)
+                {
+                    throw new ArgumentException("Mã học kỳ không hợp lệ.");
+                }
+
+                return lopDAO.GetDanhSachLopTheoHocKy(maHocKy);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS GetDanhSachLopTheoHocKy: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }

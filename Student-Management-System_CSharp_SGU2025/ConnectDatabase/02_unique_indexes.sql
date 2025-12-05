@@ -177,12 +177,55 @@ EXECUTE stmt_thongbao;
 DEALLOCATE PREPARE stmt_thongbao;
 
 -- =====================================================================
+-- INDEXES CHO BẢNG YÊU CẦU CHUYỂN LỚP
+-- =====================================================================
+
+-- Index cho tìm kiếm yêu cầu theo học sinh và học kỳ
+SET @index_exists_yc_hs_hk = (
+    SELECT COUNT(*)
+    FROM information_schema.STATISTICS
+    WHERE TABLE_SCHEMA = 'QuanLyHocSinh'
+      AND TABLE_NAME = 'YeuCauChuyenLop'
+      AND INDEX_NAME = 'idx_yc_hs_hocky'
+);
+
+SET @sql_create_yc_hs_hk_index = IF(
+    @index_exists_yc_hs_hk = 0,
+    'CREATE INDEX idx_yc_hs_hocky ON YeuCauChuyenLop (MaHocSinh, MaHocKy)',
+    'SELECT "Index idx_yc_hs_hocky already exists" AS Status'
+);
+
+PREPARE stmt_yc_hs_hk FROM @sql_create_yc_hs_hk_index;
+EXECUTE stmt_yc_hs_hk;
+DEALLOCATE PREPARE stmt_yc_hs_hk;
+
+-- Index cho tìm kiếm yêu cầu theo lớp hiện tại
+SET @index_exists_yc_lop = (
+    SELECT COUNT(*)
+    FROM information_schema.STATISTICS
+    WHERE TABLE_SCHEMA = 'QuanLyHocSinh'
+      AND TABLE_NAME = 'YeuCauChuyenLop'
+      AND INDEX_NAME = 'idx_yc_lophientai'
+);
+
+SET @sql_create_yc_lop_index = IF(
+    @index_exists_yc_lop = 0,
+    'CREATE INDEX idx_yc_lophientai ON YeuCauChuyenLop (MaLopHienTai, TrangThai)',
+    'SELECT "Index idx_yc_lophientai already exists" AS Status'
+);
+
+PREPARE stmt_yc_lop FROM @sql_create_yc_lop_index;
+EXECUTE stmt_yc_lop;
+DEALLOCATE PREPARE stmt_yc_lop;
+
+-- =====================================================================
 -- LƯU Ý QUAN TRỌNG:
 -- =====================================================================
 -- 1. Unique constraint cho giáo viên không dạy trùng giờ sẽ được enforce
 --    thông qua validation logic trong C# code hoặc trigger
 -- 2. Các index được tạo với IF NOT EXISTS để tránh lỗi khi chạy lại
 -- 3. Index ux_hs_hocky_unique đảm bảo mỗi học sinh chỉ thuộc 1 lớp trong 1 học kỳ
+-- 4. Indexes cho YeuCauChuyenLop giúp tối ưu truy vấn theo học sinh, lớp và trạng thái
 -- =====================================================================
 
 SELECT 'Unique indexes and constraints creation completed' AS Status;

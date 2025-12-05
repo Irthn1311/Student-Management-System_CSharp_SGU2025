@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,7 +12,25 @@ namespace Student_Management_System_CSharp_SGU2025.ConnectDatabase
 {
     internal class ConnectionDatabase
     {
-        private static string connectionString = "Server=localhost;Database=QuanLyHocSinh;Uid=root;Pwd=;";
+        /// <summary>
+        /// Lấy connection string - Hardcoded trong code
+        /// Để thay đổi cấu hình, sửa trực tiếp trong method này
+        /// </summary>
+        private static string GetConnectionString()
+        {
+            // ✅ Cấu hình database - Sửa các giá trị dưới đây
+            string server = "127.0.0.1";
+            string database = "QuanLyHocSinh";
+            string userId = "root";
+            string password = "12345678";  // Để trống "" nếu localhost không có password
+            int port = 3306;
+            int connectionTimeout = 30;
+
+            // Tạo connection string
+            string serverWithPort = port != 3306 ? $"{server}:{port}" : server;
+            string pwdParam = string.IsNullOrEmpty(password) ? "" : $"Pwd={password};";
+            return $"Server={serverWithPort};Database={database};Uid={userId};{pwdParam}Connection Timeout={connectionTimeout};";
+        }
 
         /// <summary>
         /// Lấy kết nối đến cơ sở dữ liệu MySQL
@@ -21,7 +39,8 @@ namespace Student_Management_System_CSharp_SGU2025.ConnectDatabase
         {
             try
             {
-                MySqlConnection connection = new MySqlConnection(connectionString);
+                string connString = GetConnectionString();
+                MySqlConnection connection = new MySqlConnection(connString);
                 return connection;
             }
             catch (MySqlException ex)

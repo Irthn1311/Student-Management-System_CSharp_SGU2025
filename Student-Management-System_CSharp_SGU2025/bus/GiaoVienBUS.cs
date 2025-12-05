@@ -2,6 +2,7 @@ using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
@@ -9,10 +10,12 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
     internal class GiaoVienBUS
     {
         private GiaoVienDAO giaoVienDAO;
+        private NguoiDungDAO nguoiDungDAO;
 
         public GiaoVienBUS()
         {
             giaoVienDAO = new GiaoVienDAO();
+            nguoiDungDAO = new NguoiDungDAO();
         }
 
         // ✅ LẤY TÊN GIÁO VIÊN THEO MÃ (Requirement chính)
@@ -33,7 +36,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             }
         }
 
-        // Thêm giáo viên với validation
+        // Thêm giáo viên với validation và tự động tạo tài khoản
         public bool ThemGiaoVien(GiaoVienDTO giaoVien)
         {
             try
@@ -53,6 +56,12 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 if (giaoVienDAO.LayGiaoVienTheoMa(giaoVien.MaGiaoVien) != null)
                 {
                     throw new ArgumentException("Mã giáo viên đã tồn tại.");
+                }
+
+                // Kiểm tra tên đăng nhập đã tồn tại chưa (nếu dùng mã giáo viên làm tên đăng nhập)
+                if (nguoiDungDAO.CheckTenDangNhapExists(giaoVien.MaGiaoVien))
+                {
+                    throw new ArgumentException("Tên đăng nhập (mã giáo viên) đã tồn tại trong hệ thống.");
                 }
 
                 // Kiểm tra email hợp lệ
@@ -93,6 +102,45 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     }
                 }
 
+                // ✅ Tạo tài khoản tự động cho giáo viên
+                // Sử dụng mã giáo viên làm tên đăng nhập
+                string tenDangNhap = giaoVien.MaGiaoVien;
+                // Mật khẩu mặc định: ngày sinh (ddMMyyyy) hoặc "12345678"
+                string matKhau = giaoVien.NgaySinh != DateTime.MinValue 
+                    ? giaoVien.NgaySinh.ToString("ddMMyyyy") 
+                    : "12345678";
+
+                // Tạo DTO NguoiDung
+                NguoiDungDTO nguoiDung = new NguoiDungDTO
+                {
+                    TenDangNhap = tenDangNhap,
+                    MatKhau = matKhau, // Có thể hash tại đây nếu cần
+                    TrangThai = "Hoạt động"
+                };
+
+                // Tạo DTO HoSoNguoiDung
+                HoSoNguoiDungDTO hoSo = new HoSoNguoiDungDTO
+                {
+                    TenDangNhap = tenDangNhap,
+                    HoTen = giaoVien.HoTen,
+                    Email = giaoVien.Email,
+                    SoDienThoai = giaoVien.SoDienThoai,
+                    NgaySinh = giaoVien.NgaySinh != DateTime.MinValue ? (DateTime?)giaoVien.NgaySinh : null,
+                    GioiTinh = giaoVien.GioiTinh,
+                    DiaChi = giaoVien.DiaChi,
+                    LoaiDoiTuong = "giaovien"
+                };
+
+                // ✅ Thêm giáo viên và tài khoản trong transaction
+                // Sử dụng phương thức ThemNguoiDungVoiVaiTroVaHoSo với MaVaiTro = "teacher"
+                bool themTaiKhoan = nguoiDungDAO.ThemNguoiDungVoiVaiTroVaHoSo(nguoiDung, "teacher", hoSo);
+                
+                if (!themTaiKhoan)
+                {
+                    throw new Exception("Không thể tạo tài khoản cho giáo viên.");
+                }
+
+                // Thêm giáo viên vào bảng GiaoVien
                 return giaoVienDAO.ThemGiaoVien(giaoVien);
             }
             catch (Exception ex)
@@ -246,6 +294,116 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             // Kiểm tra số điện thoại Việt Nam (10 số, bắt đầu bằng 0)
             string pattern = @"^0\d{9}$";
             return Regex.IsMatch(soDienThoai, pattern);
+        }
+
+        // Tìm kiếm giáo viên theo tên hoặc mã
+        public List<GiaoVienDTO> TimKiemGiaoVien(string keyword)
+        {
+            try
+            {
+                var danhSach = DocDSGiaoVien();
+                if (string.IsNullOrWhiteSpace(keyword))
+                    return danhSach;
+
+                keyword = keyword.ToLower().Trim();
+                return danhSach.Where(gv =>
+                    (gv.HoTen != null && gv.HoTen.ToLower().Contains(keyword)) ||
+                    (gv.MaGiaoVien != null && gv.MaGiaoVien.ToLower().Contains(keyword)) ||
+                    (gv.Email != null && gv.Email.ToLower().Contains(keyword)) ||
+                    (gv.SoDienThoai != null && gv.SoDienThoai.Contains(keyword))
+                ).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tìm kiếm giáo viên: {ex.Message}");
+            }
+        }
+
+        // Lọc giáo viên theo bộ môn
+        public List<GiaoVienDTO> LocGiaoVienTheoBoMon(int? maMonHoc)
+        {
+            try
+            {
+                var danhSach = DocDSGiaoVien();
+                if (!maMonHoc.HasValue)
+                    return danhSach;
+
+                return danhSach.Where(gv => gv.MaMonChuyenMon == maMonHoc.Value).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lọc giáo viên theo bộ môn: {ex.Message}");
+            }
+        }
+
+        // Tìm kiếm và lọc kết hợp
+        public List<GiaoVienDTO> TimKiemVaLocGiaoVien(string keyword, int? maMonHoc)
+        {
+            try
+            {
+                var danhSach = DocDSGiaoVien();
+
+                // Lọc theo bộ môn trước
+                if (maMonHoc.HasValue)
+                {
+                    danhSach = danhSach.Where(gv => gv.MaMonChuyenMon == maMonHoc.Value).ToList();
+                }
+
+                // Tìm kiếm sau
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    keyword = keyword.ToLower().Trim();
+                    danhSach = danhSach.Where(gv =>
+                        (gv.HoTen != null && gv.HoTen.ToLower().Contains(keyword)) ||
+                        (gv.MaGiaoVien != null && gv.MaGiaoVien.ToLower().Contains(keyword)) ||
+                        (gv.Email != null && gv.Email.ToLower().Contains(keyword)) ||
+                        (gv.SoDienThoai != null && gv.SoDienThoai.Contains(keyword))
+                    ).ToList();
+                }
+
+                return danhSach;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tìm kiếm và lọc giáo viên: {ex.Message}");
+            }
+        }
+
+        // Thống kê giáo viên
+        public Dictionary<string, int> ThongKeGiaoVien()
+        {
+            try
+            {
+                var danhSach = DocDSGiaoVien();
+                var thongKe = new Dictionary<string, int>
+                {
+                    ["TongGiaoVien"] = danhSach.Count,
+                    ["Nam"] = danhSach.Count(gv => gv.GioiTinh == "Nam"),
+                    ["Nu"] = danhSach.Count(gv => gv.GioiTinh == "Nữ"),
+                    ["BoMon"] = danhSach.Where(gv => gv.MaMonChuyenMon.HasValue)
+                                        .Select(gv => gv.MaMonChuyenMon.Value)
+                                        .Distinct()
+                                        .Count()
+                };
+                return thongKe;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi thống kê giáo viên: {ex.Message}");
+            }
+        }
+
+        // ✅ Lấy mã giáo viên tiếp theo tự động
+        public string LayMaGiaoVienTiepTheo()
+        {
+            try
+            {
+                return giaoVienDAO.LayMaGiaoVienTiepTheo();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy mã giáo viên tiếp theo: {ex.Message}");
+            }
         }
     }
 }

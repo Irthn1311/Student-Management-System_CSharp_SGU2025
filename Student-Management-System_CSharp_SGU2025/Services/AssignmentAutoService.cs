@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using Student_Management_System_CSharp_SGU2025.ConnectDatabase;
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.BUS;
 
 namespace Student_Management_System_CSharp_SGU2025.Services
 {
@@ -58,6 +59,15 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 		{
 			var result = new AutoAssignResult();
 			
+			// ✅ Không giới hạn tải, chỉ đảm bảo policy không null
+			if (policy == null)
+			{
+				policy = new AssignmentPolicy();
+			}
+			// Đảm bảo chỉ cho phép GV đúng chuyên môn
+			policy.AllowNonPrimarySpecialty = false;
+			policy.MaxLoadPerTeacherPerWeek = int.MaxValue; // Không giới hạn
+			
 			// ✅ KIỂM TRA HỌC KỲ CÓ THỂ CHỈNH SỬA KHÔNG
 			if (SemesterHelper.IsPast(hocKyId))
 			{
@@ -98,10 +108,15 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 						? subjectToTeachers[mon.maMon]
 						: new List<string>();
 
-					// B1: Ưu tiên GVCN
+					// ✅ Debug: Log if no candidates found
+					if (candidates.Count == 0)
+					{
+						Console.WriteLine($"⚠️ Môn {mon.maMon} ({mon.tenMon}) không có GV chuyên môn. AllowNonPrimary={policy.AllowNonPrimarySpecialty}");
+					}
+
+					// B1: Ưu tiên GVCN (không kiểm tra giới hạn tải)
 					if (!string.IsNullOrEmpty(gvcn) && candidates.Contains(gvcn))
 					{
-						int loadGVCN = teacherToLoad.ContainsKey(gvcn) ? teacherToLoad[gvcn] : 0;
 						result.Candidates.Add(new PhanCongCandidate
 						{
 							MaLop = lop.maLop,
@@ -111,27 +126,20 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 							Score = policy.SpecialtyWeight + policy.PriorityWeight * 10,
 							Note = "GVCN"
 						});
-						teacherToLoad[gvcn] = loadGVCN + required;
+						// Cập nhật tải để cân bằng (không giới hạn)
+						if (!teacherToLoad.ContainsKey(gvcn)) teacherToLoad[gvcn] = 0;
+						teacherToLoad[gvcn] += required;
 						continue;
 					}
 
-					// B2: Chọn GV khác
+					// B2: Chọn GV khác (chỉ chọn GV có chuyên môn đúng)
 					var scored = new List<(string gv, int score)>();
 					foreach (var gv in candidates)
 					{
 						int load = teacherToLoad.ContainsKey(gv) ? teacherToLoad[gv] : 0;
-						int soTietMon = mon.soTiet;
 						
-						// ✅ HARD CHECK: Không cho vượt ngưỡng
-						if (load + soTietMon > policy.MaxLoadPerTeacherPerWeek)
-						{
-							Console.WriteLine($"⚠️ Skip GV {gv}: Load hiện tại {load} + {soTietMon} = {load + soTietMon} > {policy.MaxLoadPerTeacherPerWeek}");
-							continue; // Skip giáo viên này
-						}
-						
-						int loadDelta = policy.MaxLoadPerTeacherPerWeek - load;
-						int score = policy.SpecialtyWeight + (policy.LoadBalanceWeight * Math.Max(0, loadDelta));
-						if (loadDelta < 0) score += loadDelta;
+						// ✅ Không kiểm tra giới hạn tải, chỉ ưu tiên GV có tải thấp hơn
+						int score = policy.SpecialtyWeight + (policy.LoadBalanceWeight * Math.Max(0, 100 - load));
 
 						bool sameClassOfficial = current.Any(x => x.MaLop == lop.maLop && x.MaGiaoVien == gv);
 						bool sameClassProposed = result.Candidates.Any(x => x.MaLop == lop.maLop && x.MaGiaoVien == gv);
@@ -139,19 +147,12 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 						scored.Add((gv, score));
 					}
 
-					if (scored.Count == 0 && policy.AllowNonPrimarySpecialty)
-					{
-						foreach (var kv in teacherToLoad)
-						{
-							int load = kv.Value;
-							scored.Add((kv.Key, policy.LoadBalanceWeight * Math.Max(0, policy.MaxLoadPerTeacherPerWeek - load)));
-						}
-					}
-
+					// ✅ Chỉ cho phép GV đúng chuyên môn, không tìm GV ngoài chuyên môn
 					if (scored.Count == 0)
 					{
+						Console.WriteLine($"❌ Không tìm được GV chuyên môn cho Lớp {lop.maLop}, Môn {mon.maMon} ({mon.tenMon})");
 						result.Report.HardViolations++;
-						result.Report.Messages.Add($"Không tìm được GV phù hợp cho Lớp {lop.maLop}, Môn {mon.maMon}.");
+						result.Report.Messages.Add($"Không tìm được GV có chuyên môn phù hợp cho Lớp {lop.maLop}, Môn {mon.maMon} ({mon.tenMon}).");
 						continue;
 					}
 
@@ -164,7 +165,9 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 						SoTietTuan = required,
 						Score = best.score
 					});
-					teacherToLoad[best.gv] = (teacherToLoad.ContainsKey(best.gv) ? teacherToLoad[best.gv] : 0) + required;
+					// Cập nhật tải để cân bằng (không giới hạn)
+					if (!teacherToLoad.ContainsKey(best.gv)) teacherToLoad[best.gv] = 0;
+					teacherToLoad[best.gv] += required;
 				}
 			}
 
@@ -177,6 +180,15 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 		public AutoAssignResult GenerateAutoAssignmentsFiltered(int hocKyId, AssignmentPolicy policy, int? khoi, string maMonFilter)
 		{
 			var result = new AutoAssignResult();
+			
+			// ✅ Không giới hạn tải, chỉ đảm bảo policy không null
+			if (policy == null)
+			{
+				policy = new AssignmentPolicy();
+			}
+			// Đảm bảo chỉ cho phép GV đúng chuyên môn
+			policy.AllowNonPrimarySpecialty = false;
+			policy.MaxLoadPerTeacherPerWeek = int.MaxValue; // Không giới hạn
 			
 			// ✅ KIỂM TRA HỌC KỲ
 			if (SemesterHelper.IsPast(hocKyId))
@@ -232,10 +244,15 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 						? subjectToTeachers[mon.maMon]
 						: new List<string>();
 
-					// Ưu tiên GVCN
+					// ✅ Debug: Log if no candidates found
+					if (candidates.Count == 0)
+					{
+						Console.WriteLine($"⚠️ Môn {mon.maMon} ({mon.tenMon}) không có GV chuyên môn. AllowNonPrimary={policy.AllowNonPrimarySpecialty}");
+					}
+
+					// Ưu tiên GVCN (không kiểm tra giới hạn tải)
 					if (!string.IsNullOrEmpty(gvcn) && candidates.Contains(gvcn))
 					{
-						int loadGVCN = teacherToLoad.ContainsKey(gvcn) ? teacherToLoad[gvcn] : 0;
 						result.Candidates.Add(new PhanCongCandidate
 						{
 							MaLop = lop.maLop,
@@ -245,7 +262,9 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 							Score = policy.SpecialtyWeight + policy.PriorityWeight * 10,
 							Note = "GVCN"
 						});
-						teacherToLoad[gvcn] = loadGVCN + required;
+						// Cập nhật tải để cân bằng (không giới hạn)
+						if (!teacherToLoad.ContainsKey(gvcn)) teacherToLoad[gvcn] = 0;
+						teacherToLoad[gvcn] += required;
 						continue;
 					}
 
@@ -253,18 +272,9 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 					foreach (var gv in candidates)
 					{
 						int load = teacherToLoad.ContainsKey(gv) ? teacherToLoad[gv] : 0;
-						int soTietMon = mon.soTiet;
 						
-						// ✅ HARD CHECK: Không cho vượt ngưỡng
-						if (load + soTietMon > policy.MaxLoadPerTeacherPerWeek)
-						{
-							Console.WriteLine($"⚠️ Skip GV {gv}: Load hiện tại {load} + {soTietMon} = {load + soTietMon} > {policy.MaxLoadPerTeacherPerWeek}");
-							continue; // Skip giáo viên này
-						}
-						
-						int loadDelta = policy.MaxLoadPerTeacherPerWeek - load;
-						int score = policy.SpecialtyWeight + (policy.LoadBalanceWeight * Math.Max(0, loadDelta));
-						if (loadDelta < 0) score += loadDelta;
+						// ✅ Không kiểm tra giới hạn tải, chỉ ưu tiên GV có tải thấp hơn
+						int score = policy.SpecialtyWeight + (policy.LoadBalanceWeight * Math.Max(0, 100 - load));
 
 						bool sameClassOfficial = current.Any(x => x.MaLop == lop.maLop && x.MaGiaoVien == gv);
 						bool sameClassProposed = result.Candidates.Any(x => x.MaLop == lop.maLop && x.MaGiaoVien == gv);
@@ -272,25 +282,12 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 						scored.Add((gv, score));
 					}
 
-					if (scored.Count == 0 && policy.AllowNonPrimarySpecialty)
-					{
-						foreach (var kv in teacherToLoad)
-						{
-							int load = kv.Value;
-							int soTietMon = mon.soTiet;
-							
-							// ✅ HARD CHECK: Không cho vượt ngưỡng ngay cả khi AllowNonPrimarySpecialty
-							if (load + soTietMon > policy.MaxLoadPerTeacherPerWeek)
-								continue;
-								
-							scored.Add((kv.Key, policy.LoadBalanceWeight * Math.Max(0, policy.MaxLoadPerTeacherPerWeek - load)));
-						}
-					}
-
+					// ✅ Chỉ cho phép GV đúng chuyên môn, không tìm GV ngoài chuyên môn
 					if (scored.Count == 0)
 					{
+						Console.WriteLine($"❌ [Filtered] Không tìm được GV chuyên môn cho Lớp {lop.maLop}, Môn {mon.maMon} ({mon.tenMon})");
 						result.Report.HardViolations++;
-						result.Report.Messages.Add($"Không tìm được GV phù hợp cho Lớp {lop.maLop}, Môn {mon.maMon}.");
+						result.Report.Messages.Add($"Không tìm được GV có chuyên môn phù hợp cho Lớp {lop.maLop}, Môn {mon.maMon} ({mon.tenMon}).");
 						continue;
 					}
 
@@ -303,14 +300,16 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 						SoTietTuan = required,
 						Score = best.score
 					});
-					teacherToLoad[best.gv] = (teacherToLoad.ContainsKey(best.gv) ? teacherToLoad[best.gv] : 0) + required;
+					// Cập nhật tải để cân bằng (không giới hạn)
+					if (!teacherToLoad.ContainsKey(best.gv)) teacherToLoad[best.gv] = 0;
+					teacherToLoad[best.gv] += required;
 				}
 			}
 
 			return result;
 		}
 
-		public ValidationReport ValidateAutoAssignments(List<PhanCongCandidate> list, int maxLoadPerSemester = 100)
+		public ValidationReport ValidateAutoAssignments(List<PhanCongCandidate> list, int maxLoadPerSemester = int.MaxValue)
 		{
 			var report = new ValidationReport();
 			var seen = new HashSet<string>();
@@ -333,16 +332,12 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 				teacherLoad[c.MaGiaoVien] += c.SoTietTuan; // Tên biến là SoTietTuan nhưng thực tế là SoTiet/HocKy
 			}
 			
-			// ✅ Validate teacher load không vượt ngưỡng
+			// ✅ Không kiểm tra giới hạn tải (đã bỏ giới hạn)
+			// Chỉ log thông tin tải để tham khảo
 			foreach (var kv in teacherLoad)
 			{
-				if (kv.Value > maxLoadPerSemester)
-				{
-					report.HardViolations++;
-					// Tìm tên GV
-					var gvName = list.FirstOrDefault(c => c.MaGiaoVien == kv.Key)?.TenGiaoVien ?? kv.Key;
-					report.Messages.Add($"⚠️ GV {gvName} vượt ngưỡng: {kv.Value}/{maxLoadPerSemester} tiết/học kỳ");
-				}
+				var gvName = list.FirstOrDefault(c => c.MaGiaoVien == kv.Key)?.TenGiaoVien ?? kv.Key;
+				Console.WriteLine($"📊 GV {gvName}: {kv.Value} tiết/học kỳ");
 			}
 			
 			return report;
@@ -377,10 +372,12 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 
 		private Dictionary<int, List<string>> GetSubjectSpecialists()
 		{
+			// ✅ Updated: Query GiaoVien table directly using MaMonChuyenMon
 			const string sql = @"
-				SELECT MaMonHoc, MaGiaoVien FROM GiaoVienChuyenMon
-				UNION
-				SELECT MaMonHoc, MaGiaoVien FROM GiaoVien_MonHoc";
+				SELECT MaMonChuyenMon AS MaMonHoc, MaGiaoVien 
+				FROM GiaoVien 
+				WHERE MaMonChuyenMon IS NOT NULL 
+				AND TrangThai = 'Đang giảng dạy'";
 			var result = new Dictionary<int, List<string>>();
 			using (var conn = ConnectionDatabase.GetConnection())
 			{

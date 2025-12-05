@@ -76,6 +76,22 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 				throw new InvalidOperationException($"Không thể lưu phân công cho học kỳ đã kết thúc! Trạng thái: {SemesterHelper.GetStatus(hocKyId)}");
 			}
 			
+			// ✅ Kiểm tra có dữ liệu tạm không trước khi bắt đầu transaction
+			const string checkSql = "SELECT COUNT(*) FROM PhanCong_Temp WHERE MaHocKy = @MaHocKy";
+			using (var checkConn = ConnectionDatabase.GetConnection())
+			{
+				checkConn.Open();
+				using (var checkCmd = new MySqlCommand(checkSql, checkConn))
+				{
+					checkCmd.Parameters.AddWithValue("@MaHocKy", hocKyId);
+					int tempCount = Convert.ToInt32(checkCmd.ExecuteScalar());
+					if (tempCount == 0)
+					{
+						throw new InvalidOperationException("❌ Không có dữ liệu phân công tạm để chấp nhận!\n\nVui lòng tạo và lưu tạm phân công trước.");
+					}
+				}
+			}
+			
 			// ✅ FIX: Lấy thời gian từ HocKy, không phải CURDATE()
 			const string insertSql = @"
 				INSERT INTO PhanCongGiangDay(MaLop, MaGiaoVien, MaMonHoc, MaHocKy, NgayBatDau, NgayKetThuc)
@@ -109,6 +125,13 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 							rowsAffected = cmd.ExecuteNonQuery();
 						}
 						
+						// ✅ Kiểm tra rowsAffected TRƯỚC khi commit
+						if (rowsAffected == 0)
+						{
+							tx.Rollback();
+							throw new InvalidOperationException("❌ Không có dữ liệu nào được lưu!\n\nKiểm tra:\n1. Bảng PhanCong_Temp có dữ liệu không?\n2. Học kỳ có đúng không?\n3. Có thể dữ liệu đã tồn tại trong PhanCongGiangDay.");
+						}
+						
 						Console.WriteLine($"✅ Đã lưu {rowsAffected} phân công vào PhanCongGiangDay (HocKy: {hocKyId})");
 						
 						using (var clr = new MySqlCommand(clearSql, conn, tx))
@@ -117,16 +140,24 @@ namespace Student_Management_System_CSharp_SGU2025.Services
 							clr.ExecuteNonQuery();
 						}
 						
+						// ✅ Commit chỉ một lần
 						tx.Commit();
-						
-						if (rowsAffected == 0)
-						{
-							throw new InvalidOperationException("❌ Không có dữ liệu nào được lưu!\n\nKiểm tra:\n1. Bảng PhanCong_Temp có dữ liệu không?\n2. Học kỳ có đúng không?");
-						}
+						Console.WriteLine($"✅ Đã xóa dữ liệu tạm cho HocKy {hocKyId}");
 					}
-					catch
+					catch (Exception ex)
 					{
-						tx.Rollback();
+						// ✅ Chỉ rollback nếu transaction chưa được commit/rollback
+						try
+						{
+							if (tx != null && tx.Connection != null && tx.Connection.State == System.Data.ConnectionState.Open)
+							{
+								tx.Rollback();
+							}
+						}
+						catch (Exception rollbackEx)
+						{
+							Console.WriteLine($"⚠️ Lỗi khi rollback transaction: {rollbackEx.Message}");
+						}
 						throw;
 					}
 				}

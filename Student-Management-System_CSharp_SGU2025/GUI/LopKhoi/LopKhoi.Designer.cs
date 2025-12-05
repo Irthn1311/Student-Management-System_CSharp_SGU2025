@@ -22,9 +22,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
-            this.statCardKhoi1 = new StatCardKhoi();
-            this.statCardKhoi2 = new StatCardKhoi();
-            this.statCardKhoi3 = new StatCardKhoi();
+            this.statCardKhoi3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
+            this.statCardKhoi2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
+            this.statCardKhoi1 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
             this.guna2ComboBox1 = new Guna.UI2.WinForms.Guna2ComboBox();
             this.dgvLop = new Guna.UI2.WinForms.Guna2DataGridView();
             this.MaLop = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -38,7 +38,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
             this.cbGiaoVien = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbSiSo = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.cbTrangThai = new Guna.UI2.WinForms.Guna2ComboBox();
             this.btnResetFilter = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLop)).BeginInit();
@@ -57,7 +56,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.guna2Panel1.Controls.Add(this.txtSearch);
             this.guna2Panel1.Controls.Add(this.cbGiaoVien);
             this.guna2Panel1.Controls.Add(this.cbSiSo);
-            this.guna2Panel1.Controls.Add(this.cbTrangThai);
             this.guna2Panel1.Controls.Add(this.btnResetFilter);
             this.guna2Panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.guna2Panel1.Location = new System.Drawing.Point(0, 0);
@@ -76,7 +74,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.statCardKhoi3.Size = new System.Drawing.Size(358, 136);
             this.statCardKhoi3.TabIndex = 5;
             this.statCardKhoi3.TextColor = System.Drawing.SystemColors.ControlText;
-            //this.statCardKhoi3.Load += new System.EventHandler(this.statCardKhoi3_Load);
             // 
             // statCardKhoi2
             // 
@@ -283,13 +280,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             this.cbGiaoVien.BackColor = System.Drawing.Color.Transparent;
             this.cbGiaoVien.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbGiaoVien.DropDownHeight = 250;
             this.cbGiaoVien.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbGiaoVien.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.cbGiaoVien.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.cbGiaoVien.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.cbGiaoVien.ForeColor = System.Drawing.Color.Black;
+            this.cbGiaoVien.IntegralHeight = false;
             this.cbGiaoVien.ItemHeight = 30;
-            this.cbGiaoVien.Location = new System.Drawing.Point(340, 70);
+            this.cbGiaoVien.Location = new System.Drawing.Point(370, 70);
             this.cbGiaoVien.Name = "cbGiaoVien";
             this.cbGiaoVien.Size = new System.Drawing.Size(200, 36);
             this.cbGiaoVien.TabIndex = 9;
@@ -305,33 +304,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.cbSiSo.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.cbSiSo.ForeColor = System.Drawing.Color.Black;
             this.cbSiSo.ItemHeight = 30;
-            this.cbSiSo.Location = new System.Drawing.Point(550, 70);
+            this.cbSiSo.Location = new System.Drawing.Point(628, 22);
             this.cbSiSo.Name = "cbSiSo";
             this.cbSiSo.Size = new System.Drawing.Size(140, 36);
             this.cbSiSo.TabIndex = 10;
             this.cbSiSo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.cbSiSo.SelectedIndexChanged += new System.EventHandler(this.cbSiSo_SelectedIndexChanged);
-            // 
-            // cbTrangThai
-            // 
-            this.cbTrangThai.BackColor = System.Drawing.Color.Transparent;
-            this.cbTrangThai.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cbTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbTrangThai.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbTrangThai.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbTrangThai.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.cbTrangThai.ForeColor = System.Drawing.Color.Black;
-            this.cbTrangThai.ItemHeight = 30;
-            this.cbTrangThai.Items.AddRange(new object[] {
-            "Tất cả",
-            "Đang hoạt động",
-            "Ngừng hoạt động"});
-            this.cbTrangThai.Location = new System.Drawing.Point(700, 70);
-            this.cbTrangThai.Name = "cbTrangThai";
-            this.cbTrangThai.Size = new System.Drawing.Size(140, 36);
-            this.cbTrangThai.TabIndex = 11;
-            this.cbTrangThai.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.cbTrangThai.SelectedIndexChanged += new System.EventHandler(this.cbTrangThai_SelectedIndexChanged);
             // 
             // btnResetFilter
             // 
@@ -339,7 +317,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnResetFilter.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(117)))), ((int)(((byte)(125)))));
             this.btnResetFilter.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
             this.btnResetFilter.ForeColor = System.Drawing.Color.White;
-            this.btnResetFilter.Location = new System.Drawing.Point(850, 70);
+            this.btnResetFilter.Location = new System.Drawing.Point(865, 22);
             this.btnResetFilter.Name = "btnResetFilter";
             this.btnResetFilter.Size = new System.Drawing.Size(120, 36);
             this.btnResetFilter.TabIndex = 12;
@@ -373,6 +351,5 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private Guna2TextBox txtSearch;
         private Guna2ComboBox cbGiaoVien;
         private Guna2ComboBox cbSiSo;
-        private Guna2ComboBox cbTrangThai;
     }
 }

@@ -154,6 +154,24 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                 reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString("Email"),    // Xử lý NULL
                                 reader.GetString("TrangThai")
                             );
+                            
+                            // Đọc AnhDaiDien
+                            if (!reader.IsDBNull(reader.GetOrdinal("AnhDaiDien")))
+                            {
+                                hs.AnhDaiDien = reader.GetString("AnhDaiDien");
+                            }
+                            else
+                            {
+                                // Tự động phân bổ ảnh nếu chưa có
+                                hs.AnhDaiDien = GetAnhDaiDienTuDong(hs.MaHS);
+                            }
+                            
+                            // Đọc TenDangNhap nếu có
+                            if (!reader.IsDBNull(reader.GetOrdinal("TenDangNhap")))
+                            {
+                                hs.TenDangNhap = reader.GetString("TenDangNhap");
+                            }
+                            
                             dsHocSinh.Add(hs);
                         }
                     }
@@ -421,14 +439,33 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
 
         /// <summary>
+        /// Tự động phân bổ ảnh đại diện dựa trên MaHocSinh (sử dụng 4 ảnh: hs1.jpg, hs2.jpg, hs3.jpg, hs4.jpg)
+        /// </summary>
+        /// <param name="maHS">Mã học sinh</param>
+        /// <returns>Đường dẫn ảnh đại diện</returns>
+        private string GetAnhDaiDienTuDong(int maHS)
+        {
+            // Phân bổ đều 4 ảnh: MaHS % 4 + 1 sẽ cho kết quả 1, 2, 3, 4
+            int soAnh = ((maHS - 1) % 4) + 1;
+            return $"Images/Students/hs{soAnh}.jpg";
+        }
+
+        /// <summary>
         /// Thêm một học sinh mới vào database và trả về ID của học sinh đó.
         /// </summary>
         /// <param name="hs">Đối tượng HocSinhDTO chứa thông tin cần thêm.</param>
         /// <returns>ID (MaHocSinh) của học sinh vừa thêm, hoặc -1 nếu thất bại.</returns>
         public int ThemHocSinh(HocSinhDTO hs)
         {
+            // Tự động phân bổ ảnh nếu chưa có
+            if (string.IsNullOrWhiteSpace(hs.AnhDaiDien))
+            {
+                // Tạm thời dùng ID 0, sau khi insert sẽ cập nhật lại
+                // Hoặc có thể dùng một giá trị tạm thời
+            }
+            
             // Thêm "; SELECT LAST_INSERT_ID()" vào cuối câu lệnh INSERT
-            string sql = "INSERT INTO HocSinh (HoTen, NgaySinh, GioiTinh, SDTHS, Email, TrangThai) VALUES (@hoTen, @ngaySinh, @gioiTinh, @sdtHS, @email, @trangThai); SELECT LAST_INSERT_ID();";
+            string sql = "INSERT INTO HocSinh (HoTen, NgaySinh, GioiTinh, SDTHS, Email, AnhDaiDien, TrangThai) VALUES (@hoTen, @ngaySinh, @gioiTinh, @sdtHS, @email, @anhDaiDien, @trangThai); SELECT LAST_INSERT_ID();";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
                 MySqlTransaction transaction = null;
@@ -444,6 +481,19 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmd.Parameters.AddWithValue("@gioiTinh", hs.GioiTinh);
                         cmd.Parameters.AddWithValue("@sdtHS", (object)hs.SdtHS ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@email", (object)hs.Email ?? DBNull.Value);
+                        
+                        // Tự động phân bổ ảnh nếu chưa có (sẽ cập nhật sau khi có ID)
+                        string anhDaiDien = hs.AnhDaiDien;
+                        if (string.IsNullOrWhiteSpace(anhDaiDien))
+                        {
+                            // Tạm thời để NULL, sau khi insert sẽ cập nhật
+                            cmd.Parameters.AddWithValue("@anhDaiDien", DBNull.Value);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@anhDaiDien", anhDaiDien);
+                        }
+                        
                         cmd.Parameters.AddWithValue("@trangThai", hs.TrangThai);
 
                         // Dùng ExecuteScalar để lấy giá trị ID trả về từ LAST_INSERT_ID()
@@ -451,8 +501,23 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
                         if (result != null && result != DBNull.Value)
                         {
+                            int newId = Convert.ToInt32(result);
+                            
+                            // Nếu chưa có ảnh, tự động phân bổ dựa trên ID mới
+                            if (string.IsNullOrWhiteSpace(anhDaiDien))
+                            {
+                                string anhTuDong = GetAnhDaiDienTuDong(newId);
+                                string sqlUpdateAnh = "UPDATE HocSinh SET AnhDaiDien = @anhDaiDien WHERE MaHocSinh = @maHS";
+                                using (MySqlCommand cmdUpdate = new MySqlCommand(sqlUpdateAnh, conn, transaction))
+                                {
+                                    cmdUpdate.Parameters.AddWithValue("@anhDaiDien", anhTuDong);
+                                    cmdUpdate.Parameters.AddWithValue("@maHS", newId);
+                                    cmdUpdate.ExecuteNonQuery();
+                                }
+                            }
+                            
                             transaction.Commit();
-                            return Convert.ToInt32(result); // Trả về ID mới
+                            return newId; // Trả về ID mới
                         }
                         else
                         {
@@ -522,6 +587,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                            GioiTinh = @gioiTinh,
                            SDTHS = @sdtHS,
                            Email = @email,
+                           AnhDaiDien = @anhDaiDien,
                            TrangThai = @trangThai
                          WHERE MaHocSinh = @maHS";
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
@@ -536,6 +602,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmd.Parameters.AddWithValue("@gioiTinh", hs.GioiTinh);
                         cmd.Parameters.AddWithValue("@sdtHS", (object)hs.SdtHS ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@email", (object)hs.Email ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@anhDaiDien", (object)hs.AnhDaiDien ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@trangThai", hs.TrangThai);
                         cmd.Parameters.AddWithValue("@maHS", hs.MaHS); // Điều kiện WHERE
 
@@ -592,6 +659,17 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                     hs.TenDangNhap = reader.GetString("TenDangNhap");
                                 }
 
+                                // ✅ Đọc AnhDaiDien
+                                if (!reader.IsDBNull(reader.GetOrdinal("AnhDaiDien")))
+                                {
+                                    hs.AnhDaiDien = reader.GetString("AnhDaiDien");
+                                }
+                                else
+                                {
+                                    // Tự động phân bổ ảnh nếu chưa có
+                                    hs.AnhDaiDien = GetAnhDaiDienTuDong(hs.MaHS);
+                                }
+
                                 return hs;
                             }
                         }
@@ -645,41 +723,6 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
-        public HocSinhDTO LayHocSinhTheoMa(int maHocSinh)
-        {
-            string sql = "SELECT * FROM HocSinh WHERE MaHocSinh = @maHS";
-
-            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
-            {
-                try
-                {
-                    conn.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@maHS", maHocSinh);
-
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                return new HocSinhDTO
-                                {
-                                    MaHS = reader.GetInt32("MaHocSinh"),
-                                    HoTen = reader.GetString("HoTen"),
-                                    // Thêm các field khác nếu cần
-                                };
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    ConnectionDatabase.CloseConnection(conn);
-                }
-            }
-            return null;
-        }
-
         /// <summary>
         /// Cập nhật tên đăng nhập cho học sinh
         /// </summary>
@@ -716,5 +759,62 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         // Ví dụ: Tìm theo tên, tìm theo lớp (cần JOIN), ...
         // public List<HocSinhDTO> TimHocSinhTheoTen(string ten) { ... }
         // public List<HocSinhDTO> LayDanhSachHocSinhTheoLop(int maLop, int maHocKy) { ... } // Cần JOIN với PhanLop
+
+        /// <summary>
+        /// Lấy học sinh theo mã (alias của TimHocSinhTheoMa để tương thích)
+        /// </summary>
+        public HocSinhDTO LayHocSinhTheoMa(int maHocSinh)
+        {
+            // Dùng lại method TimHocSinhTheoMa đã có sẵn
+            return TimHocSinhTheoMa(maHocSinh);
+        }
+
+        /// <summary>
+        /// Lấy học sinh theo tên đăng nhập
+        /// </summary>
+        public HocSinhDTO LayHocSinhTheoTenDangNhap(string tenDangNhap)
+        {
+            string sql = "SELECT * FROM HocSinh WHERE TenDangNhap = @tenDangNhap";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@tenDangNhap", tenDangNhap);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                int maHS = Convert.ToInt32(reader["MaHocSinh"]);
+                                return new HocSinhDTO
+                                {
+                                    MaHS = maHS,
+                                    HoTen = reader["HoTen"].ToString(),
+                                    NgaySinh = Convert.ToDateTime(reader["NgaySinh"]),
+                                    GioiTinh = reader["GioiTinh"].ToString(),
+                                    SdtHS = reader["SDTHS"] != DBNull.Value ? reader["SDTHS"].ToString() : null,
+                                    Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,
+                                    TrangThai = reader["TrangThai"].ToString(),
+                                    TenDangNhap = reader["TenDangNhap"] != DBNull.Value ? reader["TenDangNhap"].ToString() : null,
+                                    AnhDaiDien = reader["AnhDaiDien"] != DBNull.Value ? reader["AnhDaiDien"].ToString() : GetAnhDaiDienTuDong(maHS)
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Lỗi khi lấy học sinh theo tên đăng nhập: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return null;
+        }
     }
 }

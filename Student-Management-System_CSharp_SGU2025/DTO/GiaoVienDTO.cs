@@ -12,11 +12,13 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         private string soDienThoai;
         private string email;
         private string trangThai;
+        private int? maMonChuyenMon;
+        private string tenMonChuyenMon;
 
         public GiaoVienDTO() { }
 
         public GiaoVienDTO(string maGiaoVien, string hoTen, DateTime ngaySinh, string gioiTinh, 
-                          string diaChi, string soDienThoai, string email, string trangThai)
+                          string diaChi, string soDienThoai, string email, string trangThai, int? maMonChuyenMon = null)
         {
             this.maGiaoVien = maGiaoVien;
             this.hoTen = hoTen;
@@ -26,6 +28,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.soDienThoai = soDienThoai;
             this.email = email;
             this.trangThai = trangThai;
+            this.maMonChuyenMon = maMonChuyenMon;
         }
 
         public string MaGiaoVien
@@ -86,6 +89,18 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         {
             get { return trangThai; }
             set { trangThai = value; }
+        }
+
+        public int? MaMonChuyenMon
+        {
+            get { return maMonChuyenMon; }
+            set { maMonChuyenMon = value; }
+        }
+
+        public string TenMonChuyenMon
+        {
+            get { return tenMonChuyenMon ?? string.Empty; }
+            set { tenMonChuyenMon = value; }
         }
     }
 }

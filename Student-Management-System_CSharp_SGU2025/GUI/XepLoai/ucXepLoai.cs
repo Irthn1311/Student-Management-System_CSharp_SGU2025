@@ -1289,5 +1289,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
 
         }
+
+        private void cardTheoKhoi1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

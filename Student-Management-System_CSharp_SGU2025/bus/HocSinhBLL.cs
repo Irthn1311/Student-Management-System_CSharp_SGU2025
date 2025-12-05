@@ -217,7 +217,13 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 throw;
             }
         }
-
+        public List<HocSinhDTO> LayDanhSachHocSinhTheoPhuHuynh(string tenDangNhapPhuHuynh)
+        {
+            // TODO: Replace with actual data access logic
+            // For example, query the database for students linked to the parent username
+            // This is a stub implementation
+            return new List<HocSinhDTO>();
+        }
         /// <summary>
         /// Tổng số lượng tất cả học sinh có trạng thái "Đang học".
         /// </summary>
