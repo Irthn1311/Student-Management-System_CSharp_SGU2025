@@ -5,7 +5,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     partial class XemChiTietHocSinh
     {
         private System.ComponentModel.IContainer components = null;
-        private StudentCard studentCard;
         private System.Windows.Forms.Label lblLopHienTai;
         private System.Windows.Forms.Label lblGVCNLop;
         private System.Windows.Forms.Label lblSDTGVCN;
@@ -30,7 +29,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblTieuDe = new System.Windows.Forms.Label();
-            this.studentCard = new Student_Management_System_CSharp_SGU2025.GUI.HocSinh.StudentCard();
             this.panelLop = new System.Windows.Forms.Panel();
             this.lblLopHienTai = new System.Windows.Forms.Label();
             this.lblGVCNLop = new System.Windows.Forms.Label();
@@ -42,6 +40,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnDong = new Guna.UI2.WinForms.Guna2Button();
+            this.studentCard = new Student_Management_System_CSharp_SGU2025.GUI.HocSinh.StudentCard();
             this.panelLop.SuspendLayout();
             this.panelPhuHuynh.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhuHuynh)).BeginInit();
@@ -58,15 +57,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.lblTieuDe.Size = new System.Drawing.Size(266, 32);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Chi tiết hồ sơ học sinh";
-            // 
-            // studentCard
-            // 
-            this.studentCard.BackColor = System.Drawing.Color.White;
-            this.studentCard.Location = new System.Drawing.Point(20, 65);
-            this.studentCard.Margin = new System.Windows.Forms.Padding(2);
-            this.studentCard.Name = "studentCard";
-            this.studentCard.Size = new System.Drawing.Size(760, 340);
-            this.studentCard.TabIndex = 1;
             // 
             // panelLop
             // 
@@ -159,7 +149,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.dgvPhuHuynh.Name = "dgvPhuHuynh";
             this.dgvPhuHuynh.ReadOnly = true;
             this.dgvPhuHuynh.RowHeadersVisible = false;
-            this.dgvPhuHuynh.Size = new System.Drawing.Size(568, 133);
+            this.dgvPhuHuynh.Size = new System.Drawing.Size(758, 133);
             this.dgvPhuHuynh.TabIndex = 0;
             this.dgvPhuHuynh.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvPhuHuynh.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -225,11 +215,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnDong.Text = "Đóng";
             this.btnDong.Click += new System.EventHandler(this.btnDong_Click);
             // 
+            // studentCard
+            // 
+            this.studentCard.BackColor = System.Drawing.Color.White;
+            this.studentCard.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.studentCard.Location = new System.Drawing.Point(86, 50);
+            this.studentCard.Margin = new System.Windows.Forms.Padding(2);
+            this.studentCard.Name = "studentCard";
+            this.studentCard.Size = new System.Drawing.Size(672, 340);
+            this.studentCard.TabIndex = 1;
+            // 
             // XemChiTietHocSinh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(247)))), ((int)(((byte)(250)))));
+            this.BackColor = System.Drawing.Color.BlanchedAlmond;
             this.ClientSize = new System.Drawing.Size(800, 725);
             this.Controls.Add(this.btnDong);
             this.Controls.Add(this.panelPhuHuynh);
@@ -256,5 +256,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private StudentCard studentCard;
     }
 }

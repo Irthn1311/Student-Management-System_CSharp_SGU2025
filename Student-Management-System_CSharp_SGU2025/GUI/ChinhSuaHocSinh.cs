@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq; // Cần thêm using này
 using System.Windows.Forms;
+using System.IO;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
@@ -28,6 +29,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // Biến để theo dõi thay đổi
         private int selectedMaPhuHuynh = -1; // ID phụ huynh MỚI do người dùng chọn
         private int originalMaPhuHuynh = -1; // ID phụ huynh GỐC
+        
+        // Biến để lưu đường dẫn ảnh mới (nếu người dùng chọn ảnh mới)
+        private string newImagePath = null;
 
         // ✅ Property để trả về học sinh đã sửa
         public HocSinhDTO UpdatedHocSinh { get; private set; }
@@ -67,10 +71,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             // Chạy tuần tự
             LoadComboBoxData();       // 1. Nạp các lựa chọn Lớp, Học Kỳ
-            SetupTablePhuHuynh();     // 2. Cấu hình bảng Phụ huynh
-            LoadMasterPhuHuynhList(); // 3. Nạp danh sách tổng Phụ huynh
-            RefreshPhuHuynhTable(""); // 4. Hiển thị tất cả phụ huynh
-            LoadHocSinhData();        // 5. Nạp thông tin CỤ THỂ của học sinh
+            LoadMasterPhuHuynhList(); // 2. Nạp danh sách tổng Phụ huynh (để dùng khi chọn)
+            LoadHocSinhData();        // 3. Nạp thông tin CỤ THỂ của học sinh
             
             // ✅ Thiết lập Tab Order
             SetupTabOrder();
@@ -111,7 +113,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             txtSoDienThoai.TabIndex = tabIndex++;
             txtEmail.TabIndex = tabIndex++;
             txtTrangThai.TabIndex = tabIndex++;
-            txtTimKiem.TabIndex = tabIndex++;
+            btnChon.TabIndex = tabIndex++;
             cbMoiQuanHe.TabIndex = tabIndex++;
             btnChinhSuaHocSinh.TabIndex = tabIndex++;
             btnHuy.TabIndex = tabIndex++;
@@ -155,6 +157,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 txtSoDienThoai.Text = currentHocSinh.SdtHS;
                 txtEmail.Text = currentHocSinh.Email;
                 txtTrangThai.Text = currentHocSinh.TrangThai;
+                
+                // 1.1. Nạp ảnh đại diện học sinh
+                LoadAnhHocSinh();
 
                 // 2. Nạp thông tin Phụ huynh & Mối quan hệ hiện tại
                 try
@@ -288,7 +293,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (this.selectedMaPhuHuynh <= 0)
             {
                 errorProvider.SetError(txtPhuHuynhDuocChon, "Vui lòng chọn phụ huynh từ danh sách");
-                txtTimKiem.Focus();
+                btnChon.Focus();
                 hasError = true;
             }
 
@@ -323,6 +328,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 
                 // ✅ QUAN TRỌNG: Giữ nguyên TenDangNhap từ học sinh gốc
                 updatedHs.TenDangNhap = currentHocSinh.TenDangNhap;
+                
+                // ✅ Cập nhật ảnh đại diện (nếu có thay đổi)
+                if (!string.IsNullOrEmpty(newImagePath))
+                {
+                    updatedHs.AnhDaiDien = newImagePath;
+                }
+                else
+                {
+                    // Giữ nguyên ảnh cũ
+                    updatedHs.AnhDaiDien = currentHocSinh.AnhDaiDien;
+                }
 
                 // 2b. Thông tin quan hệ & phân lớp MỚI
                 int newSelectedMaPhuHuynh = this.selectedMaPhuHuynh;
@@ -405,39 +421,109 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.Close();
         }
 
-        private void txtTimKiem_TextChanged(object sender, EventArgs e)
-        {
-            RefreshPhuHuynhTable(txtTimKiem.Text);
-        }
-
+        /// <summary>
+        /// Mở dialog để chọn phụ huynh từ danh sách
+        /// </summary>
         private void btnChon_Click(object sender, EventArgs e)
         {
-            ChonPhuHuynhTuBang();
-        }
-
-        private void TablePhuHuynh_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                ChonPhuHuynhTuBang();
-            }
+            ChonPhuHuynhTuDialog();
         }
 
         /// <summary>
-        /// Hàm phụ trợ để lấy thông tin phụ huynh đang chọn trên bảng
+        /// Hiển thị dialog đơn giản để chọn phụ huynh
         /// </summary>
-        private void ChonPhuHuynhTuBang()
+        private void ChonPhuHuynhTuDialog()
         {
-            if (tablePhuHuynh.CurrentRow != null)
+            if (danhSachPhuHuynh == null || danhSachPhuHuynh.Count == 0)
+            {
+                MessageBox.Show("Danh sách phụ huynh trống. Vui lòng thêm phụ huynh trước.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Tạo form dialog đơn giản
+            Form dialogForm = new Form
+            {
+                Text = "Chọn phụ huynh",
+                Size = new Size(500, 400),
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false
+            };
+
+            // Tạo ListBox để hiển thị danh sách phụ huynh
+            ListBox listBox = new ListBox
+            {
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 10F)
+            };
+
+            // Thêm danh sách phụ huynh vào ListBox với format hiển thị
+            foreach (var ph in danhSachPhuHuynh)
+            {
+                listBox.Items.Add(new { ph.MaPhuHuynh, DisplayText = $"{ph.HoTen} - {ph.SoDienThoai}" });
+            }
+
+            // Chọn phụ huynh hiện tại nếu có
+            if (this.selectedMaPhuHuynh > 0)
+            {
+                for (int i = 0; i < listBox.Items.Count; i++)
+                {
+                    var item = listBox.Items[i];
+                    var maPH = item.GetType().GetProperty("MaPhuHuynh").GetValue(item);
+                    if (maPH != null && Convert.ToInt32(maPH) == this.selectedMaPhuHuynh)
+                    {
+                        listBox.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            // Panel chứa các nút
+            Panel panelButtons = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 50
+            };
+
+            Button btnOK = new Button
+            {
+                Text = "Chọn",
+                DialogResult = DialogResult.OK,
+                Size = new Size(100, 35),
+                Location = new Point(dialogForm.Width - 220, 10),
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+            };
+
+            Button btnCancel = new Button
+            {
+                Text = "Hủy",
+                DialogResult = DialogResult.Cancel,
+                Size = new Size(100, 35),
+                Location = new Point(dialogForm.Width - 110, 10),
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+            };
+
+            panelButtons.Controls.Add(btnOK);
+            panelButtons.Controls.Add(btnCancel);
+            dialogForm.Controls.Add(listBox);
+            dialogForm.Controls.Add(panelButtons);
+            dialogForm.AcceptButton = btnOK;
+            dialogForm.CancelButton = btnCancel;
+
+            // Hiển thị dialog
+            if (dialogForm.ShowDialog(this) == DialogResult.OK && listBox.SelectedItem != null)
             {
                 try
                 {
-                    int maPH = Convert.ToInt32(tablePhuHuynh.CurrentRow.Cells["MaPH"].Value);
-                    string tenPH = tablePhuHuynh.CurrentRow.Cells["HoTenPH"].Value.ToString();
+                    var selectedItem = listBox.SelectedItem;
+                    int maPH = Convert.ToInt32(selectedItem.GetType().GetProperty("MaPhuHuynh").GetValue(selectedItem));
+                    string displayText = selectedItem.GetType().GetProperty("DisplayText").GetValue(selectedItem).ToString();
+                    string hoTen = displayText.Split('-')[0].Trim();
 
                     // Lưu lại ID MỚI và hiển thị tên
                     this.selectedMaPhuHuynh = maPH;
-                    txtPhuHuynhDuocChon.Text = tenPH;
+                    txtPhuHuynhDuocChon.Text = hoTen;
                     txtPhuHuynhDuocChon.ForeColor = Color.Green;
                 }
                 catch (Exception ex)
@@ -448,40 +534,62 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     txtPhuHuynhDuocChon.ForeColor = Color.Red;
                 }
             }
-            else
+
+            dialogForm.Dispose();
+        }
+
+        /// <summary>
+        /// Load ảnh học sinh hiện tại
+        /// </summary>
+        private void LoadAnhHocSinh()
+        {
+            try
             {
-                MessageBox.Show("Không có phụ huynh nào được chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (currentHocSinh == null) return;
+                
+                // Sử dụng PictureBox đã được thêm vào form
+                if (picAnhHocSinh != null)
+                {
+                    ChinhSuaHocSinhImageHelper.LoadAnhHocSinh(picAnhHocSinh, currentHocSinh.AnhDaiDien, currentHocSinh.MaHS);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi load ảnh học sinh: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý khi người dùng click button chọn ảnh mới
+        /// </summary>
+        private void btnChonAnh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string newPath = ChinhSuaHocSinhImageHelper.ChonAnhMoi(maHocSinhToEdit);
+                if (!string.IsNullOrEmpty(newPath))
+                {
+                    newImagePath = newPath;
+                    
+                    // Cập nhật PictureBox
+                    if (picAnhHocSinh != null)
+                    {
+                        ChinhSuaHocSinhImageHelper.LoadAnhHocSinh(picAnhHocSinh, newPath, maHocSinhToEdit);
+                    }
+                    
+                    MessageBox.Show("Đã chọn ảnh mới. Nhấn 'Sửa học sinh' để lưu thay đổi.", "Thông báo", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi chọn ảnh: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         #endregion
 
         #region Hàm Style (Sao chép từ form Thêm)
-
-        private void SetupTablePhuHuynh()
-        {
-            tablePhuHuynh.Columns.Clear();
-            ApplyBaseTableStyle(tablePhuHuynh);
-
-            tablePhuHuynh.Columns.Add("MaPH", "Mã PH");
-            tablePhuHuynh.Columns.Add("HoTenPH", "Họ và Tên");
-            tablePhuHuynh.Columns.Add("Sdt", "SĐT");
-            tablePhuHuynh.Columns.Add("Email", "Email");
-            tablePhuHuynh.Columns.Add("DiaChi", "Địa chỉ");
-
-            ApplyColumnAlignmentAndWrapping(tablePhuHuynh);
-            tablePhuHuynh.Columns["HoTenPH"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            tablePhuHuynh.Columns["Email"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            tablePhuHuynh.Columns["DiaChi"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-
-            tablePhuHuynh.Columns["MaPH"].FillWeight = 10; tablePhuHuynh.Columns["MaPH"].MinimumWidth = 50;
-            tablePhuHuynh.Columns["HoTenPH"].FillWeight = 20; tablePhuHuynh.Columns["HoTenPH"].MinimumWidth = 110;
-            tablePhuHuynh.Columns["Sdt"].FillWeight = 12; tablePhuHuynh.Columns["Sdt"].MinimumWidth = 100;
-            tablePhuHuynh.Columns["Email"].FillWeight = 20; tablePhuHuynh.Columns["Email"].MinimumWidth = 170;
-            tablePhuHuynh.Columns["DiaChi"].FillWeight = 25; tablePhuHuynh.Columns["DiaChi"].MinimumWidth = 200;
-
-            tablePhuHuynh.CellDoubleClick += TablePhuHuynh_CellDoubleClick;
-        }
 
         private void LoadMasterPhuHuynhList()
         {
@@ -493,22 +601,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 MessageBox.Show("Lỗi khi tải danh sách phụ huynh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 danhSachPhuHuynh = new List<PhuHuynhDTO>();
-            }
-        }
-
-        private void RefreshPhuHuynhTable(string keyword)
-        {
-            tablePhuHuynh.Rows.Clear();
-            string keywordLower = keyword.ToLower().Trim();
-
-            var filteredList = danhSachPhuHuynh.Where(ph =>
-                ph.HoTen.ToLower().Contains(keywordLower) ||
-                ph.SoDienThoai.Contains(keyword)
-            ).ToList();
-
-            foreach (PhuHuynhDTO ph in filteredList)
-            {
-                tablePhuHuynh.Rows.Add(ph.MaPhuHuynh, ph.HoTen, ph.SoDienThoai, ph.Email, ph.DiaChi);
             }
         }
 
@@ -566,5 +658,125 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Helper class để xử lý ảnh trong form ChinhSuaHocSinh
+    /// </summary>
+    public static class ChinhSuaHocSinhImageHelper
+    {
+        /// <summary>
+        /// Load ảnh học sinh vào PictureBox
+        /// </summary>
+        public static void LoadAnhHocSinh(PictureBox picBox, string anhDaiDien, int maHS)
+        {
+            try
+            {
+                if (picBox == null) return;
+
+                string duongDanAnh = anhDaiDien;
+
+                // Nếu chưa có ảnh, tự động phân bổ dựa trên MaHS
+                if (string.IsNullOrWhiteSpace(duongDanAnh))
+                {
+                    int soAnh = ((maHS - 1) % 4) + 1;
+                    duongDanAnh = $"Images/Students/hs{soAnh}.jpg";
+                }
+
+                // Tải ảnh từ đường dẫn
+                string fullPath = Path.Combine(Application.StartupPath, duongDanAnh);
+
+                // Nếu file không tồn tại ở đường dẫn absolute, thử đường dẫn relative
+                if (!File.Exists(fullPath))
+                {
+                    fullPath = duongDanAnh;
+                }
+
+                if (File.Exists(fullPath))
+                {
+                    // Dispose ảnh cũ nếu có để tránh memory leak
+                    if (picBox.Image != null)
+                    {
+                        Image oldImage = picBox.Image;
+                        picBox.Image = null;
+                        oldImage.Dispose();
+                    }
+
+                    picBox.Image = Image.FromFile(fullPath);
+                    picBox.SizeMode = PictureBoxSizeMode.Zoom;
+                    picBox.BackColor = Color.White;
+                }
+                else
+                {
+                    // Nếu không tìm thấy ảnh, hiển thị placeholder
+                    if (picBox.Image != null)
+                    {
+                        Image oldImage = picBox.Image;
+                        picBox.Image = null;
+                        oldImage.Dispose();
+                    }
+                    picBox.Image = null;
+                    picBox.BackColor = Color.FromArgb(240, 240, 240);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi tải ảnh học sinh: {ex.Message}");
+                if (picBox != null)
+                {
+                    if (picBox.Image != null)
+                    {
+                        Image oldImage = picBox.Image;
+                        picBox.Image = null;
+                        oldImage.Dispose();
+                    }
+                    picBox.Image = null;
+                    picBox.BackColor = Color.FromArgb(240, 240, 240);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mở dialog để chọn ảnh mới và copy vào thư mục Images/Students
+        /// </summary>
+        /// <returns>Đường dẫn ảnh mới (relative path) hoặc null nếu hủy</returns>
+        public static string ChonAnhMoi(int maHS)
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp|All Files|*.*",
+                    Title = "Chọn ảnh đại diện học sinh",
+                    RestoreDirectory = true
+                };
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string sourcePath = openFileDialog.FileName;
+                    string fileName = $"hs_{maHS}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(sourcePath)}";
+                    string targetDir = Path.Combine(Application.StartupPath, "Images", "Students");
+                    string targetPath = Path.Combine(targetDir, fileName);
+
+                    // Tạo thư mục nếu chưa tồn tại
+                    if (!Directory.Exists(targetDir))
+                    {
+                        Directory.CreateDirectory(targetDir);
+                    }
+
+                    // Copy file ảnh vào thư mục Images/Students
+                    File.Copy(sourcePath, targetPath, true);
+
+                    // Trả về đường dẫn relative
+                    return $"Images/Students/{fileName}";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi chọn ảnh: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return null;
+        }
     }
 }

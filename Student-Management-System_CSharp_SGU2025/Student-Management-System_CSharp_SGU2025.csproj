@@ -284,6 +284,7 @@
     <Compile Include="Config\TimetableConfig.cs" />
     <Compile Include="bus\YeuCauChuyenLopBLL.cs" />
     <Compile Include="bus\YeuCauChuyenLopBLL.cs" />
+    <Compile Include="bus\YeuCauChuyenLopBLL.cs" />
     <Compile Include="dao\DiemSoDAO.cs" />
     <Compile Include="dao\HocSinhDAO.cs" />
     <Compile Include="dao\HocSinhPhuHuynhDAO.cs" />
@@ -448,6 +449,12 @@
     </Compile>
     <Compile Include="GUI\GiaoVien\GiaoVien.Designer.cs">
       <DependentUpon>GiaoVien.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\HocSinh\ChonPhuHuynhDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\HocSinh\ChonPhuHuynhDialog.Designer.cs">
+      <DependentUpon>ChonPhuHuynhDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\HocSinh\PhanLop.cs">
       <SubType>Form</SubType>
@@ -861,11 +868,17 @@
     <EmbeddedResource Include="GUI\HanhKiem\HanhKiem.resx">
       <DependentUpon>HanhKiem.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HocSinh\ChonPhuHuynhDialog.resx">
+      <DependentUpon>ChonPhuHuynhDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\HocSinh\HocSinh.resx">
       <DependentUpon>HocSinh.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\HocSinh\PhanLop.resx">
       <DependentUpon>PhanLop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\HocSinh\StudentCard.resx">
+      <DependentUpon>StudentCard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\HocSinh\XemChiTietHocSinh.resx">
       <DependentUpon>XemChiTietHocSinh.cs</DependentUpon>

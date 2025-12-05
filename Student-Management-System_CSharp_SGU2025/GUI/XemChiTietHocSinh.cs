@@ -100,29 +100,83 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 string duongDanAnh = hocSinh.AnhDaiDien;
                 
-                // Nếu chưa có ảnh, tự động phân bổ
+                // Nếu chưa có ảnh trong database, tự động phân bổ dựa trên MaHS
                 if (string.IsNullOrWhiteSpace(duongDanAnh))
                 {
                     int soAnh = ((hocSinh.MaHS - 1) % 4) + 1;
                     duongDanAnh = $"Images/Students/hs{soAnh}.jpg";
                 }
 
-                // Tải ảnh từ đường dẫn
+                // Tải ảnh từ đường dẫn - thử nhiều đường dẫn khác nhau
                 string fullPath = System.IO.Path.Combine(Application.StartupPath, duongDanAnh);
+                
+                // Thử nhiều đường dẫn khác nhau nếu không tìm thấy
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    // Thử đường dẫn từ BaseDirectory
+                    fullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, duongDanAnh);
+                }
+                
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    // Thử đường dẫn từ thư mục gốc project
+                    string projectPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                    fullPath = System.IO.Path.Combine(projectPath, duongDanAnh);
+                }
+                
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    // Thử đường dẫn relative
+                    fullPath = duongDanAnh;
+                }
+                
                 if (System.IO.File.Exists(fullPath))
                 {
-                    picAnhHocSinh.Image = Image.FromFile(fullPath);
+                    try
+                    {
+                        // Dispose ảnh cũ nếu có để tránh memory leak
+                        if (picAnhHocSinh.Image != null)
+                        {
+                            Image oldImage = picAnhHocSinh.Image;
+                            picAnhHocSinh.Image = null;
+                            oldImage.Dispose();
+                        }
+                        
+                        picAnhHocSinh.Image = Image.FromFile(fullPath);
+                        picAnhHocSinh.SizeMode = PictureBoxSizeMode.Zoom;
+                        picAnhHocSinh.BackColor = Color.White;
+                    }
+                    catch (Exception imgEx)
+                    {
+                        Console.WriteLine($"Lỗi khi load file ảnh: {imgEx.Message}");
+                        // Nếu lỗi, tạo placeholder
+                        picAnhHocSinh.Image = null;
+                        picAnhHocSinh.BackColor = Color.FromArgb(240, 240, 240);
+                    }
                 }
                 else
                 {
-                    // Nếu không tìm thấy ảnh, hiển thị ảnh mặc định
+                    // Nếu không tìm thấy ảnh, hiển thị placeholder
+                    if (picAnhHocSinh.Image != null)
+                    {
+                        Image oldImage = picAnhHocSinh.Image;
+                        picAnhHocSinh.Image = null;
+                        oldImage.Dispose();
+                    }
                     picAnhHocSinh.Image = null;
                     picAnhHocSinh.BackColor = Color.FromArgb(240, 240, 240);
+                    Console.WriteLine($"Không tìm thấy ảnh tại: {duongDanAnh}");
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Lỗi khi tải ảnh học sinh: {ex.Message}");
+                if (picAnhHocSinh.Image != null)
+                {
+                    Image oldImage = picAnhHocSinh.Image;
+                    picAnhHocSinh.Image = null;
+                    oldImage.Dispose();
+                }
                 picAnhHocSinh.Image = null;
                 picAnhHocSinh.BackColor = Color.FromArgb(240, 240, 240);
             }

@@ -39,11 +39,11 @@ CALL AddAnhDaiDienColumn();
 -- Xóa procedure sau khi dùng
 DROP PROCEDURE IF EXISTS AddAnhDaiDienColumn;
 
--- Cập nhật ảnh cho tất cả học sinh dựa trên MaHocSinh
+-- Cập nhật ảnh cho TẤT CẢ học sinh dựa trên MaHocSinh
 -- Sử dụng modulo để phân bổ đều: (MaHocSinh - 1) % 4 + 1
+-- Phân bổ 4 ảnh: hs1.jpg, hs2.jpg, hs3.jpg, hs4.jpg
 UPDATE HocSinh 
-SET AnhDaiDien = CONCAT('Images/Students/hs', ((MaHocSinh - 1) % 4) + 1, '.jpg')
-WHERE AnhDaiDien IS NULL OR AnhDaiDien = '';
+SET AnhDaiDien = CONCAT('Images/Students/hs', ((MaHocSinh - 1) % 4) + 1, '.jpg');
 
 -- Kiểm tra kết quả
 SELECT 
