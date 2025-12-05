@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.DTO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +14,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.GiaoVien
 {
     public partial class GiaoVien : UserControl
     {
+        private GiaoVienBUS giaoVienBUS;
+        private MonHocBUS monHocBUS;
+        private BindingList<GiaoVienDTO> bindingListGiaoVien;
+        private List<GiaoVienDTO> danhSachGiaoVienFull;
+        private List<MonHocDTO> danhSachMonHoc;
+
         public GiaoVien()
         {
             InitializeComponent();
+            giaoVienBUS = new GiaoVienBUS();
+            monHocBUS = new MonHocBUS();
+            bindingListGiaoVien = new BindingList<GiaoVienDTO>();
+            danhSachGiaoVienFull = new List<GiaoVienDTO>();
+            danhSachMonHoc = new List<MonHocDTO>();
             SetupTableGiaoVien();
         }
 
@@ -60,13 +73,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.GiaoVien
             tableGiaoVien.Columns.Add("Sdt", "Sdt");
             tableGiaoVien.Columns.Add("TrangThai", "Trạng thái");
 
-            // Căn giữa toàn bộ header và cell
-            foreach (DataGridViewColumn col in tableGiaoVien.Columns)
-            {
-                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                col.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
-            }
+            // ✅ Sử dụng LINQ to Objects để cấu hình các cột
+            tableGiaoVien.Columns.Cast<DataGridViewColumn>()
+                .ToList()
+                .ForEach(col =>
+                {
+                    col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    col.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+                });
 
             // Họ tên căn trái
             tableGiaoVien.Columns["HoTen"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -128,76 +143,270 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.GiaoVien
             tableGiaoVien.SelectionChanged += (s, e) => tableGiaoVien.ClearSelection();
         }
 
-        // === Thêm icon vào cột thao tác ===
-        private void AddRowWithIcons(string ma, string ten, string gioitinh, string chuyenmon, string sdt, string trangthai)
-        {
-            // Thêm dữ liệu dạng text vào các ô tương ứng
-            int idx = tableGiaoVien.Rows.Add(ma, ten, gioitinh, chuyenmon, sdt, trangthai, null, null);
 
-            try
-            {
-                // Gán trực tiếp ảnh từ Resources vào các ô chứa ảnh.
-                // Cách này không cần kiểm tra file tồn tại vì tài nguyên đã được nhúng vào chương trình.
-                tableGiaoVien.Rows[idx].Cells["View"].Value = Properties.Resources.icon_eye;
-                tableGiaoVien.Rows[idx].Cells["Delete"].Value = Properties.Resources.deleteicon;
-            }
-            catch (Exception ex)
-            {
-                // Khối catch vẫn nên giữ lại để xử lý các lỗi không mong muốn khác
-                MessageBox.Show("Không thể load icon thao tác: " + ex.Message);
-            }
-        }
-
-        // === Hàm xử lý click icon (hiện tại rỗng) ===
+        // === Hàm xử lý click icon ===
         private void HandleViewClick(int rowIndex)
         {
-            // TODO: Hiển thị chi tiết học sinh và chỉnh sửa
+            if (rowIndex < 0 || rowIndex >= bindingListGiaoVien.Count)
+                return;
+
+            var giaoVien = bindingListGiaoVien[rowIndex];
+            if (giaoVien == null)
+                return;
+
+            // Mở form chi tiết/sửa giáo viên
+            var formChiTiet = new ChinhSuaGiaoVien(giaoVien.MaGiaoVien);
+            if (formChiTiet.ShowDialog() == DialogResult.OK)
+            {
+                // Reload dữ liệu sau khi sửa
+                LoadData();
+            }
         }
 
         private void HandleDelClick(int rowIndex)
         {
-            // TODO: Xóa học sinh
+            if (rowIndex < 0 || rowIndex >= bindingListGiaoVien.Count)
+                return;
+
+            var giaoVien = bindingListGiaoVien[rowIndex];
+            if (giaoVien == null)
+                return;
+
+            // Xác nhận xóa
+            DialogResult result = MessageBox.Show(
+                $"Bạn có chắc chắn muốn xóa giáo viên:\n\n" +
+                $"Mã GV: {giaoVien.MaGiaoVien}\n" +
+                $"Họ tên: {giaoVien.HoTen}\n\n" +
+                $"Lưu ý: Tài khoản đăng nhập của giáo viên cũng sẽ bị xóa!",
+                "Xác nhận xóa",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    bool success = giaoVienBUS.XoaGiaoVien(giaoVien.MaGiaoVien);
+                    if (success)
+                    {
+                        MessageBox.Show("Xóa giáo viên thành công!", "Thông báo",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadData();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không thể xóa giáo viên. Có thể giáo viên đang được sử dụng trong hệ thống.",
+                            "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi xóa giáo viên: {ex.Message}", "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void GiaoVien_Load(object sender, EventArgs e)
         {
-            // chèn dữ liệu mẫu vào các thẻ thống kê
-            statCardTongGiaoVien.lbCardTitle.Text = "Tổng giáo viên";
-            statCardTongGiaoVien.lbCardValue.Text = "87";
-            statCardTongGiaoVien.lbCardNote.Text = "";
+            try
+            {
+                // Load danh sách môn học cho combobox
+                LoadDanhSachMonHoc();
 
-            statCardGiaoVienNam.lbCardTitle.Text = "Nam";
-            statCardGiaoVienNam.lbCardValue.Text = "42";
-            statCardGiaoVienNam.lbCardNote.Text = "";
+                // Load dữ liệu
+                LoadData();
 
-            statCardGiaoVienNu.lbCardTitle.Text = "Nữ";
-            statCardGiaoVienNu.lbCardValue.Text = "47";
-            statCardGiaoVienNu.lbCardNote.Text = "";
+                // Gắn sự kiện tìm kiếm và lọc
+                txtTimKiemGiaoVien.TextChanged += TxtTimKiemGiaoVien_TextChanged;
+                cbBoMon.SelectedIndexChanged += CbBoMon_SelectedIndexChanged;
+                btnThemGiaoVien.Click += BtnThemGiaoVien_Click;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
-            statCardBoMon.lbCardTitle.Text = "Bộ môn";
-            statCardBoMon.lbCardValue.Text = "12";
-            statCardBoMon.lbCardNote.Text = "";
+        private void LoadDanhSachMonHoc()
+        {
+            try
+            {
+                danhSachMonHoc = monHocBUS.DocDSMH();
+                cbBoMon.Items.Clear();
+                cbBoMon.Items.Add("Tất cả bộ môn");
+                
+                // ✅ Sử dụng LINQ to Objects để thêm tên môn học vào combobox
+                danhSachMonHoc.Select(m => m.tenMon)
+                    .ToList()
+                    .ForEach(tenMon => cbBoMon.Items.Add(tenMon));
+                cbBoMon.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải danh sách môn học: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
-            statCardTongGiaoVien.lbCardValue.ForeColor = Color.FromArgb(22, 163, 74);
-            statCardGiaoVienNam.lbCardValue.ForeColor = Color.FromArgb(30, 136, 229);
-            statCardGiaoVienNu.lbCardValue.ForeColor = Color.FromArgb(219, 39, 119);
-            statCardBoMon.lbCardValue.ForeColor = Color.FromArgb(22, 163, 74);
-            statCardBoMon.lbCardTitle.ForeColor = Color.FromArgb(220, 38, 38);
+        private void LoadData()
+        {
+            try
+            {
+                // Load dữ liệu từ database
+                danhSachGiaoVienFull = giaoVienBUS.DocDSGiaoVien();
+                
+                // Áp dụng tìm kiếm và lọc
+                ApplyFilterAndSearch();
 
-            // chèn dữ liệu mẫu vào bảng
+                // Cập nhật thống kê
+                UpdateStatistics();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu giáo viên: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ApplyFilterAndSearch()
+        {
+            try
+            {
+                var danhSachLoc = danhSachGiaoVienFull.AsEnumerable();
+
+                // Lọc theo bộ môn
+                if (cbBoMon.SelectedIndex > 0 && cbBoMon.SelectedItem != null)
+                {
+                    string tenMon = cbBoMon.SelectedItem.ToString();
+                    var monHoc = danhSachMonHoc.FirstOrDefault(m => m.tenMon == tenMon);
+                    if (monHoc != null)
+                    {
+                        danhSachLoc = danhSachLoc.Where(gv => gv.MaMonChuyenMon == monHoc.maMon);
+                    }
+                }
+
+                // Tìm kiếm
+                string keyword = txtTimKiemGiaoVien.Text.Trim();
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    keyword = keyword.ToLower();
+                    danhSachLoc = danhSachLoc.Where(gv =>
+                        (gv.HoTen != null && gv.HoTen.ToLower().Contains(keyword)) ||
+                        (gv.MaGiaoVien != null && gv.MaGiaoVien.ToLower().Contains(keyword)) ||
+                        (gv.Email != null && gv.Email.ToLower().Contains(keyword)) ||
+                        (gv.SoDienThoai != null && gv.SoDienThoai.Contains(keyword))
+                    );
+                }
+
+                // ✅ Cập nhật BindingList bằng LINQ to Objects
+                bindingListGiaoVien.Clear();
+                danhSachLoc.ToList()
+                    .ForEach(gv => bindingListGiaoVien.Add(gv));
+
+                // Cập nhật DataGridView
+                UpdateDataGridView();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi lọc dữ liệu: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void UpdateDataGridView()
+        {
             tableGiaoVien.Rows.Clear();
+            
+            // ✅ Sử dụng LINQ to Objects để xử lý và thêm dữ liệu vào DataGridView
+            bindingListGiaoVien.Select(gv => new
+            {
+                gv.MaGiaoVien,
+                gv.HoTen,
+                GioiTinh = gv.GioiTinh ?? "",
+                ChuyenMon = !string.IsNullOrEmpty(gv.TenMonChuyenMon) ? gv.TenMonChuyenMon : "Chưa phân công",
+                SoDienThoai = gv.SoDienThoai ?? "",
+                TrangThai = gv.TrangThai ?? "Đang giảng dạy"
+            })
+            .ToList()
+            .ForEach(gv =>
+            {
+                int idx = tableGiaoVien.Rows.Add(
+                    gv.MaGiaoVien,
+                    gv.HoTen,
+                    gv.GioiTinh,
+                    gv.ChuyenMon,
+                    gv.SoDienThoai,
+                    gv.TrangThai,
+                    null,
+                    null
+                );
 
-            AddRowWithIcons("GV001", "Nguyễn Văn An", "Nam", "Toán học", "0912345678", "Đang giảng dạy");
-            AddRowWithIcons("GV002", "Trần Thị Bình", "Nữ", "Ngữ văn", "0987654321", "Đang giảng dạy");
-            AddRowWithIcons("GV003", "Lê Hoàng Cường", "Nam", "Vật lý", "0905123456", "Đang giảng dạy");
-            AddRowWithIcons("GV004", "Phạm Thị Dung", "Nữ", "Hóa học", "0971234567", "Đang giảng dạy");
-            AddRowWithIcons("GV005", "Hoàng Văn Em", "Nam", "Tin học", "0934567890", "Đang giảng dạy");
-            AddRowWithIcons("GV006", "Vũ Thị Hoa", "Nữ", "Sinh học", "0945123987", "Đang giảng dạy");
-            AddRowWithIcons("GV007", "Đỗ Văn Khoa", "Nam", "Lịch sử", "0923344556", "Đang giảng dạy");
-            AddRowWithIcons("GV008", "Bùi Thị Lan", "Nữ", "Địa lý", "0967123456", "Đang giảng dạy");
-            AddRowWithIcons("GV009", "Ngô Minh Nhật", "Nam", "Tiếng Anh", "0956123789", "Nghỉ dạy");
-            AddRowWithIcons("GV010", "Phan Thị Mai", "Nữ", "Giáo dục công dân", "0938123456", "Đang giảng dạy");
+                try
+                {
+                    tableGiaoVien.Rows[idx].Cells["View"].Value = Properties.Resources.icon_eye;
+                    tableGiaoVien.Rows[idx].Cells["Delete"].Value = Properties.Resources.deleteicon;
+                }
+                catch (Exception ex)
+                {
+                    // Nếu không load được icon, bỏ qua
+                    Console.WriteLine($"Không thể load icon: {ex.Message}");
+                }
+            });
+        }
 
+        private void UpdateStatistics()
+        {
+            try
+            {
+                var thongKe = giaoVienBUS.ThongKeGiaoVien();
+
+                statCardTongGiaoVien.lbCardTitle.Text = "Tổng giáo viên";
+                statCardTongGiaoVien.lbCardValue.Text = thongKe["TongGiaoVien"].ToString();
+                statCardTongGiaoVien.lbCardNote.Text = "";
+
+                statCardGiaoVienNam.lbCardTitle.Text = "Nam";
+                statCardGiaoVienNam.lbCardValue.Text = thongKe["Nam"].ToString();
+                statCardGiaoVienNam.lbCardNote.Text = "";
+
+                statCardGiaoVienNu.lbCardTitle.Text = "Nữ";
+                statCardGiaoVienNu.lbCardValue.Text = thongKe["Nu"].ToString();
+                statCardGiaoVienNu.lbCardNote.Text = "";
+
+                statCardBoMon.lbCardTitle.Text = "Bộ môn";
+                statCardBoMon.lbCardValue.Text = thongKe["BoMon"].ToString();
+                statCardBoMon.lbCardNote.Text = "";
+
+                statCardTongGiaoVien.lbCardValue.ForeColor = Color.FromArgb(22, 163, 74);
+                statCardGiaoVienNam.lbCardValue.ForeColor = Color.FromArgb(30, 136, 229);
+                statCardGiaoVienNu.lbCardValue.ForeColor = Color.FromArgb(219, 39, 119);
+                statCardBoMon.lbCardValue.ForeColor = Color.FromArgb(22, 163, 74);
+                statCardBoMon.lbCardTitle.ForeColor = Color.FromArgb(220, 38, 38);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi cập nhật thống kê: {ex.Message}");
+            }
+        }
+
+        private void TxtTimKiemGiaoVien_TextChanged(object sender, EventArgs e)
+        {
+            ApplyFilterAndSearch();
+        }
+
+        private void CbBoMon_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ApplyFilterAndSearch();
+        }
+
+        private void BtnThemGiaoVien_Click(object sender, EventArgs e)
+        {
+            var formThem = new ThemGiaoVien();
+            if (formThem.ShowDialog() == DialogResult.OK)
+            {
+                LoadData();
+            }
         }
 
         private void tableGiaoVien_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -234,9 +443,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.GiaoVien
             {
                 e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 e.CellStyle.Font = new Font("Segoe UI", 9, FontStyle.Regular);
-                e.CellStyle.ForeColor = e.Value.ToString() == "Đang học"
-                    ? Color.FromArgb(52, 168, 83)
-                    : Color.Gray;
+                string trangThai = e.Value.ToString();
+                if (trangThai == "Đang giảng dạy")
+                {
+                    e.CellStyle.ForeColor = Color.FromArgb(52, 168, 83);
+                }
+                else
+                {
+                    e.CellStyle.ForeColor = Color.Gray;
+                }
             }
         }
     }
