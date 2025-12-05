@@ -261,6 +261,7 @@ CREATE TABLE HocSinh (
     GioiTinh NVARCHAR(10),
     SDTHS VARCHAR(15),
     Email VARCHAR(100) UNIQUE,
+    AnhDaiDien VARCHAR(255) NULL COMMENT 'Đường dẫn ảnh đại diện của học sinh',
     TrangThai VARCHAR(50) DEFAULT 'Đang học',
     TenDangNhap VARCHAR(20) UNIQUE COMMENT 'Tên đăng nhập liên kết với bảng NguoiDung',
     FOREIGN KEY (TenDangNhap) REFERENCES NguoiDung(TenDangNhap) ON DELETE SET NULL ON UPDATE CASCADE

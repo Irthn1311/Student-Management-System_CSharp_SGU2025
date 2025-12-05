@@ -197,32 +197,65 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             // --- Cập nhật các thẻ thống kê ---
             statCardTongHocSinh.lbCardTitle.Text = "Tổng học sinh";
             statCardTongHocSinh.lbCardValue.Text = tongHocSinh.ToString("N0"); // Định dạng có dấu phẩy ngăn cách
+            
+            // ✅ Cải thiện: Làm rõ thông báo "TB: 42 HS..."
             int tongLop = lopHocBUS.GetTotalLopHoc();
             if (tongLop > 0)
             {
                 double siSoTB = Math.Round((double)tongHocSinh / tongLop, 1);
-                statCardTongHocSinh.lbCardNote.Text = $"TB: {siSoTB} HS/lớp khi chia đều - Tổng lớp :{tongLop}";
+                statCardTongHocSinh.lbCardNote.Text = $"Trung bình: {siSoTB} HS/lớp | Tổng lớp: {tongLop}";
+            }
+            else
+            {
+                statCardTongHocSinh.lbCardNote.Text = "Chưa có lớp học";
             }
 
             statCardNam.lbCardTitle.Text = "Nam";
             statCardNam.lbCardValue.Text = tongHocSinhNam.ToString("N0");
-            statCardNam.lbCardNote.Text = $"{phanTramNam}% tổng số";
+            statCardNam.lbCardNote.Text = $"{phanTramNam}%";
 
             statCardNu.lbCardTitle.Text = "Nữ";
             statCardNu.lbCardValue.Text = tongHocSinhNu.ToString("N0");
-            statCardNu.lbCardNote.Text = $"{phanTramNu}% tổng số";
+            statCardNu.lbCardNote.Text = $"{phanTramNu}%";
 
             statCardDangHoc.lbCardTitle.Text = "Đang học";
             statCardDangHoc.lbCardValue.Text = tongHocSinhDangHoc.ToString("N0");
-
             statCardDangHoc.lbCardNote.Text = $"{tongHocSinhNghiHoc} nghỉ học";
 
-            // --- Gán màu sắc (giữ nguyên) ---
-            statCardTongHocSinh.lbCardNote.ForeColor = Color.FromArgb(22, 163, 74);
+            // ✅ Cải thiện: Đồng bộ màu sắc - Xanh lá cho Tổng học sinh và Đang học
+            // Màu xanh lá (#16A34A) cho Tổng học sinh và Đang học (trạng thái tích cực)
+            Color mauXanhLa = Color.FromArgb(22, 163, 74); // #16A34A
+            statCardTongHocSinh.lbCardValue.ForeColor = mauXanhLa;
+            statCardTongHocSinh.lbCardNote.ForeColor = Color.FromArgb(100, 22, 163, 74); // Màu nhạt hơn cho note
+            
+            // Màu xanh dương cho Nam
             statCardNam.lbCardValue.ForeColor = Color.FromArgb(30, 136, 229);
+            statCardNam.lbCardNote.ForeColor = Color.FromArgb(100, 30, 136, 229);
+            
+            // Màu hồng cho Nữ
             statCardNu.lbCardValue.ForeColor = Color.FromArgb(219, 39, 119);
-            statCardDangHoc.lbCardValue.ForeColor = Color.FromArgb(22, 163, 74);
-            statCardDangHoc.lbCardNote.ForeColor = Color.FromArgb(220, 38, 38);
+            statCardNu.lbCardNote.ForeColor = Color.FromArgb(100, 219, 39, 119);
+            
+            // ✅ Đồng bộ: Đang học cũng dùng màu xanh lá
+            statCardDangHoc.lbCardValue.ForeColor = mauXanhLa;
+            
+            // ✅ Cải thiện: Màu cảnh báo cho "Nghỉ học" - Vàng nếu > 0, Đỏ nếu > 5% tổng số
+            if (tongHocSinhNghiHoc > 0)
+            {
+                double tyLeNghiHoc = tongHocSinh > 0 ? (double)tongHocSinhNghiHoc / tongHocSinh * 100 : 0;
+                if (tyLeNghiHoc > 5) // Nếu > 5% thì dùng màu đỏ cảnh báo
+                {
+                    statCardDangHoc.lbCardNote.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ
+                }
+                else
+                {
+                    statCardDangHoc.lbCardNote.ForeColor = Color.FromArgb(234, 179, 8); // Vàng
+                }
+            }
+            else
+            {
+                statCardDangHoc.lbCardNote.ForeColor = mauXanhLa; // Xanh lá nếu không có nghỉ học
+            }
 
 
         }
@@ -235,9 +268,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             tableHocSinh.Columns.Clear();
             ApplyBaseTableStyle(tableHocSinh); // Áp dụng style chung
 
-            // --- Thêm cột mới (THÊM CỘT SDTHS VÀ EMAIL) ---
+            // --- Thêm cột mới (THÊM CỘT LỚP) ---
             tableHocSinh.Columns.Add("MaHS", "Mã HS");
             tableHocSinh.Columns.Add("HoTen", "Họ và tên");
+            tableHocSinh.Columns.Add("Lop", "Lớp"); // ✅ Thêm cột Lớp
             tableHocSinh.Columns.Add("NgaySinh", "Ngày sinh");
             tableHocSinh.Columns.Add("GioiTinh", "Giới tính");
             tableHocSinh.Columns.Add("SDTHS", "SĐT"); // ✅ Thêm cột SĐT
@@ -248,18 +282,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             // --- Căn chỉnh cột ---
             ApplyColumnAlignmentAndWrapping(tableHocSinh);
             tableHocSinh.Columns["HoTen"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            tableHocSinh.Columns["Lop"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             tableHocSinh.Columns["Email"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
             // --- Tùy chỉnh kích thước ---
-            tableHocSinh.Columns["MaHS"].FillWeight = 8; tableHocSinh.Columns["MaHS"].MinimumWidth = 50;
-            tableHocSinh.Columns["HoTen"].FillWeight = 25; tableHocSinh.Columns["HoTen"].MinimumWidth = 150;
-            tableHocSinh.Columns["NgaySinh"].FillWeight = 12; tableHocSinh.Columns["NgaySinh"].MinimumWidth = 100;
-            tableHocSinh.Columns["GioiTinh"].FillWeight = 10; tableHocSinh.Columns["GioiTinh"].MinimumWidth = 70;
-            tableHocSinh.Columns["SDTHS"].FillWeight = 12; tableHocSinh.Columns["SDTHS"].MinimumWidth = 100;
-            tableHocSinh.Columns["Email"].FillWeight = 18; tableHocSinh.Columns["Email"].MinimumWidth = 120;
-            tableHocSinh.Columns["TrangThai"].FillWeight = 12; tableHocSinh.Columns["TrangThai"].MinimumWidth = 90;
+            tableHocSinh.Columns["MaHS"].FillWeight = 7; tableHocSinh.Columns["MaHS"].MinimumWidth = 50;
+            tableHocSinh.Columns["HoTen"].FillWeight = 22; tableHocSinh.Columns["HoTen"].MinimumWidth = 150;
+            tableHocSinh.Columns["Lop"].FillWeight = 10; tableHocSinh.Columns["Lop"].MinimumWidth = 80; // ✅ Cột Lớp
+            tableHocSinh.Columns["NgaySinh"].FillWeight = 10; tableHocSinh.Columns["NgaySinh"].MinimumWidth = 100;
+            tableHocSinh.Columns["GioiTinh"].FillWeight = 9; tableHocSinh.Columns["GioiTinh"].MinimumWidth = 70;
+            tableHocSinh.Columns["SDTHS"].FillWeight = 11; tableHocSinh.Columns["SDTHS"].MinimumWidth = 100;
+            tableHocSinh.Columns["Email"].FillWeight = 16; tableHocSinh.Columns["Email"].MinimumWidth = 120;
+            tableHocSinh.Columns["TrangThai"].FillWeight = 11; tableHocSinh.Columns["TrangThai"].MinimumWidth = 90;
             tableHocSinh.Columns["ThaoTacHS"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            tableHocSinh.Columns["ThaoTacHS"].Width = 100; // Độ rộng cột thao tác
+            tableHocSinh.Columns["ThaoTacHS"].Width = 130; // ✅ Tăng độ rộng để chứa 3 icon (Xem, Sửa, Xóa)
 
             // --- Gắn sự kiện ---
             tableHocSinh.CellFormatting -= tableHocSinh_CellFormatting; // Gỡ sự kiện cũ (nếu có)
@@ -314,13 +350,66 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     .Take(pageSizeHocSinh)
                     .ToList();
 
+                // ✅ Lấy học kỳ hiện tại để lấy lớp của học sinh
+                int maHocKyHienTai = 0;
+                try
+                {
+                    List<HocKyDTO> dsHocKy = hocKyBUS.DocDSHocKy();
+                    if (dsHocKy != null && dsHocKy.Count > 0)
+                    {
+                        // Tìm học kỳ đang diễn ra
+                        var hocKyDangDienRa = dsHocKy.FirstOrDefault(hk => hk.TrangThai == "Đang diễn ra");
+                        if (hocKyDangDienRa != null)
+                        {
+                            maHocKyHienTai = hocKyDangDienRa.MaHocKy;
+                        }
+                        else
+                        {
+                            // Nếu không có học kỳ đang diễn ra, lấy học kỳ mới nhất
+                            var hocKyMoiNhat = dsHocKy.OrderByDescending(hk => hk.NgayBD).FirstOrDefault();
+                            if (hocKyMoiNhat != null)
+                            {
+                                maHocKyHienTai = hocKyMoiNhat.MaHocKy;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Lỗi khi lấy học kỳ hiện tại: {ex.Message}");
+                }
+
                 // Thêm vào bảng
                 foreach (HocSinhDTO hs in pagedData)
                 {
                     bindingListHocSinh.Add(hs);
+                    
+                    // ✅ Lấy tên lớp của học sinh
+                    string tenLop = "Chưa phân lớp";
+                    if (maHocKyHienTai > 0)
+                    {
+                        try
+                        {
+                            int maLop = phanLopBLL.GetLopByHocSinh(hs.MaHS, maHocKyHienTai);
+                            if (maLop > 0)
+                            {
+                                var lop = lopHocBUS.LayLopTheoId(maLop);
+                                if (lop != null)
+                                {
+                                    tenLop = lop.tenLop;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Lỗi khi lấy lớp của học sinh {hs.MaHS}: {ex.Message}");
+                        }
+                    }
+                    
                     tableHocSinh.Rows.Add(
                         hs.MaHS,
                         hs.HoTen,
+                        tenLop, // ✅ Thêm cột Lớp
                         hs.NgaySinh.ToString("dd/MM/yyyy"),
                         hs.GioiTinh,
                         hs.SdtHS ?? "", // ✅ Hiển thị SĐT
@@ -468,7 +557,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             }
         }
 
-        // Vẽ icon cho bảng Học Sinh (VÔ HIỆU HÓA NẾU KHÔNG CÓ QUYỀN)
+        // ✅ Vẽ icon cho bảng Học Sinh (Xem, Sửa, Xóa)
         private void tableHocSinh_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == tableHocSinh.Columns["ThaoTacHS"].Index)
@@ -480,26 +569,31 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                 bool canUpdate = permissions?.CanUpdate ?? true;
                 bool canDelete = permissions?.CanDelete ?? true;
 
+                // ✅ Icon Xem (luôn hiển thị - không cần quyền)
+                Image viewIcon = CreateViewIcon();
                 Image editIcon = Properties.Resources.repair;
                 Image deleteIcon = Properties.Resources.bin;
 
                 int iconSize = 18;
-                int spacing = 15;
-                int totalWidth = iconSize * 2 + spacing;
+                int spacing = 12;
+                int totalWidth = iconSize * 3 + spacing * 2; // 3 icon với 2 khoảng cách
                 int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
                 int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
 
-                Rectangle editRect = new Rectangle(startX, y, iconSize, iconSize);
-                Rectangle deleteRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
+                Rectangle viewRect = new Rectangle(startX, y, iconSize, iconSize);
+                Rectangle editRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
+                Rectangle deleteRect = new Rectangle(startX + (iconSize + spacing) * 2, y, iconSize, iconSize);
 
-                // ✅ Vẽ icon với độ mờ nếu không có quyền
+                // ✅ Vẽ icon Xem (luôn hiển thị)
+                e.Graphics.DrawImage(viewIcon, viewRect);
+
+                // ✅ Vẽ icon Sửa với độ mờ nếu không có quyền
                 if (canUpdate)
                 {
                     e.Graphics.DrawImage(editIcon, editRect);
                 }
                 else
                 {
-                    // ✅ BỎ USING CHO ColorMatrix
                     var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
                         new float[][] {
                     new float[] {0.3f, 0.3f, 0.3f, 0, 0},
@@ -508,23 +602,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     new float[] {0, 0, 0, 0.3f, 0},
                     new float[] {0, 0, 0, 0, 1}
                         });
+                    using (var attributes = new System.Drawing.Imaging.ImageAttributes())
                     {
-                        using (var attributes = new System.Drawing.Imaging.ImageAttributes())
-                        {
-                            attributes.SetColorMatrix(grayScaleMatrix);
-                            e.Graphics.DrawImage(editIcon, editRect, 0, 0, editIcon.Width, editIcon.Height,
-                                GraphicsUnit.Pixel, attributes);
-                        }
+                        attributes.SetColorMatrix(grayScaleMatrix);
+                        e.Graphics.DrawImage(editIcon, editRect, 0, 0, editIcon.Width, editIcon.Height,
+                            GraphicsUnit.Pixel, attributes);
                     }
                 }
 
+                // ✅ Vẽ icon Xóa với độ mờ nếu không có quyền
                 if (canDelete)
                 {
                     e.Graphics.DrawImage(deleteIcon, deleteRect);
                 }
                 else
                 {
-                    // ✅ BỎ USING CHO ColorMatrix
                     var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
                         new float[][] {
                     new float[] {0.3f, 0.3f, 0.3f, 0, 0},
@@ -533,18 +625,38 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                     new float[] {0, 0, 0, 0.3f, 0},
                     new float[] {0, 0, 0, 0, 1}
                         });
+                    using (var attributes = new System.Drawing.Imaging.ImageAttributes())
                     {
-                        using (var attributes = new System.Drawing.Imaging.ImageAttributes())
-                        {
-                            attributes.SetColorMatrix(grayScaleMatrix);
-                            e.Graphics.DrawImage(deleteIcon, deleteRect, 0, 0, deleteIcon.Width, deleteIcon.Height,
-                                GraphicsUnit.Pixel, attributes);
-                        }
+                        attributes.SetColorMatrix(grayScaleMatrix);
+                        e.Graphics.DrawImage(deleteIcon, deleteRect, 0, 0, deleteIcon.Width, deleteIcon.Height,
+                            GraphicsUnit.Pixel, attributes);
                     }
                 }
 
                 e.Handled = true;
             }
+        }
+
+        // ✅ Tạo icon "Xem" (eye icon) bằng code
+        private Image CreateViewIcon()
+        {
+            Bitmap bmp = new Bitmap(18, 18);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                
+                // Vẽ hình mắt đơn giản
+                // Màu xanh dương cho icon "Xem"
+                Pen pen = new Pen(Color.FromArgb(30, 136, 229), 2);
+                Brush brush = new SolidBrush(Color.FromArgb(30, 136, 229));
+                
+                // Vẽ hình oval (mắt)
+                g.DrawEllipse(pen, 2, 4, 14, 10);
+                
+                // Vẽ con ngươi
+                g.FillEllipse(brush, 7, 7, 4, 4);
+            }
+            return bmp;
         }
 
         // Xử lý click icon cho bảng Học Sinh
@@ -1073,18 +1185,35 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             int xClick = clickPosInCell.X - cellBounds.Left;
 
             int iconSize = 18;
-            int spacing = 15;
-            int totalWidth = iconSize * 2 + spacing;
+            int spacing = 12;
+            int totalWidth = iconSize * 3 + spacing * 2; // ✅ 3 icon: Xem, Sửa, Xóa
             int startXInCell = (cellBounds.Width - totalWidth) / 2;
 
-            int editIconEndX = startXInCell + iconSize;
-            int deleteIconStartX = startXInCell + iconSize + spacing;
+            // ✅ Tính toán vị trí các icon
+            int viewIconEndX = startXInCell + iconSize;
+            int editIconStartX = startXInCell + iconSize + spacing;
+            int editIconEndX = editIconStartX + iconSize;
+            int deleteIconStartX = editIconStartX + iconSize + spacing;
             int deleteIconEndX = deleteIconStartX + iconSize;
 
             string idValueStr = dgv.Rows[rowIndex].Cells[idColumnName].Value?.ToString();
 
-            // ✅ Click Sửa
-            if (xClick >= startXInCell && xClick < editIconEndX)
+            // ✅ Click Xem chi tiết (icon đầu tiên)
+            if (dgv == tableHocSinh && xClick >= startXInCell && xClick < viewIconEndX)
+            {
+                int maHS;
+                if (int.TryParse(idValueStr, out maHS))
+                {
+                    // Mở form xem chi tiết
+                    GUI.XemChiTietHocSinh frmChiTiet = new GUI.XemChiTietHocSinh(maHS);
+                    frmChiTiet.StartPosition = FormStartPosition.CenterParent;
+                    frmChiTiet.ShowDialog();
+                }
+                return;
+            }
+
+            // ✅ Click Sửa (icon thứ hai)
+            if (xClick >= editIconStartX && xClick < editIconEndX)
             {
                 // Kiểm tra quyền
                 if (!PermissionHelper.CheckDataGridIconPermission(dgv, "edit", "Quản lý học sinh"))
@@ -1119,9 +1248,48 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                                     danhSachHocSinhFull[index] = updatedHS;
                                 }
 
+                                // ✅ Lấy tên lớp của học sinh
+                                string tenLop = "Chưa phân lớp";
+                                try
+                                {
+                                    int maHocKyHienTai = 0;
+                                    List<HocKyDTO> dsHocKy = hocKyBUS.DocDSHocKy();
+                                    if (dsHocKy != null && dsHocKy.Count > 0)
+                                    {
+                                        var hocKyDangDienRa = dsHocKy.FirstOrDefault(hk => hk.TrangThai == "Đang diễn ra");
+                                        if (hocKyDangDienRa != null)
+                                        {
+                                            maHocKyHienTai = hocKyDangDienRa.MaHocKy;
+                                        }
+                                        else
+                                        {
+                                            var hocKyMoiNhat = dsHocKy.OrderByDescending(hk => hk.NgayBD).FirstOrDefault();
+                                            if (hocKyMoiNhat != null)
+                                            {
+                                                maHocKyHienTai = hocKyMoiNhat.MaHocKy;
+                                            }
+                                        }
+                                    }
+
+                                    if (maHocKyHienTai > 0)
+                                    {
+                                        int maLop = phanLopBLL.GetLopByHocSinh(maToEdit, maHocKyHienTai);
+                                        if (maLop > 0)
+                                        {
+                                            var lop = lopHocBUS.LayLopTheoId(maLop);
+                                            if (lop != null)
+                                            {
+                                                tenLop = lop.tenLop;
+                                            }
+                                        }
+                                    }
+                                }
+                                catch { }
+
                                 dgv.Rows[rowIndex].SetValues(
                                     updatedHS.MaHS,
                                     updatedHS.HoTen,
+                                    tenLop, // ✅ Cột Lớp
                                     updatedHS.NgaySinh.ToString("dd/MM/yyyy"),
                                     updatedHS.GioiTinh,
                                     updatedHS.SdtHS ?? "",
@@ -1344,22 +1512,40 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             }
         }
 
-        // Hàm định dạng ô Trạng thái
+        // ✅ Cải thiện: Hàm định dạng ô Trạng thái với màu sắc rõ ràng hơn
         private void FormatStatusCell(DataGridViewCellFormattingEventArgs e)
         {
             e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            e.CellStyle.Font = new Font("Segoe UI Semibold", 9, FontStyle.Bold); // Hơi đậm hơn
-            e.CellStyle.Padding = new Padding(5, 3, 5, 3); // Thêm padding nhẹ
+            e.CellStyle.Font = new Font("Segoe UI Semibold", 9, FontStyle.Bold);
+            e.CellStyle.Padding = new Padding(5, 3, 5, 3);
 
-            if (e.Value.ToString() == "Đang học")
+            string trangThai = e.Value?.ToString() ?? "";
+
+            if (trangThai == "Đang học")
             {
-                e.CellStyle.ForeColor = Color.FromArgb(22, 101, 52); // Đậm hơn
-
+                e.CellStyle.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá (#16A34A) - đồng bộ với thống kê
+                e.CellStyle.BackColor = Color.FromArgb(240, 253, 244); // Nền xanh lá nhạt
             }
-            else // Nghỉ học hoặc trạng thái khác
+            else if (trangThai == "Nghỉ học" || trangThai.Contains("Nghỉ"))
             {
-                e.CellStyle.ForeColor = Color.FromArgb(153, 27, 27); // Đậm hơn
-
+                e.CellStyle.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ (#DC2626)
+                e.CellStyle.BackColor = Color.FromArgb(254, 242, 242); // Nền đỏ nhạt
+            }
+            else if (trangThai == "Tạm dừng" || trangThai.Contains("Tạm"))
+            {
+                e.CellStyle.ForeColor = Color.FromArgb(234, 179, 8); // Vàng (#EAB308)
+                e.CellStyle.BackColor = Color.FromArgb(254, 252, 232); // Nền vàng nhạt
+            }
+            else if (trangThai == "Đã tốt nghiệp" || trangThai.Contains("Tốt nghiệp"))
+            {
+                e.CellStyle.ForeColor = Color.FromArgb(30, 136, 229); // Xanh dương (#1E88E5)
+                e.CellStyle.BackColor = Color.FromArgb(239, 246, 255); // Nền xanh dương nhạt
+            }
+            else
+            {
+                // Trạng thái khác - màu xám
+                e.CellStyle.ForeColor = Color.FromArgb(107, 114, 128); // Xám (#6B7280)
+                e.CellStyle.BackColor = Color.FromArgb(249, 250, 251); // Nền xám nhạt
             }
         }
 
@@ -1431,9 +1617,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
                         bindingListHocSinh.Add(newHS);
                         danhSachHocSinhFull.Add(newHS);
 
-                        // ✅ Thêm dòng mới vào bảng thay vì load lại toàn bộ (BỎ CỘT LỚP)
-                        tableHocSinh.Rows.Add(newHS.MaHS, newHS.HoTen, newHS.NgaySinh.ToString("dd/MM/yyyy"),
-                                             newHS.GioiTinh, newHS.TrangThai, "");
+                        // ✅ Thêm dòng mới vào bảng thay vì load lại toàn bộ (bao gồm cột Lớp)
+                        // Học sinh mới chưa phân lớp nên hiển thị "Chưa phân lớp"
+                        tableHocSinh.Rows.Add(newHS.MaHS, newHS.HoTen, "Chưa phân lớp", 
+                                             newHS.NgaySinh.ToString("dd/MM/yyyy"), newHS.GioiTinh, 
+                                             newHS.SdtHS ?? "", newHS.Email ?? "", newHS.TrangThai, "");
                     }
 
                     // Load lại bảng Mối quan hệ
@@ -2511,10 +2699,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
             }
         }
 
+
+
         #endregion
 
-       
+        private void tablePhuHuynh_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
 
+        }
     }
 }
 
