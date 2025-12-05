@@ -7,12 +7,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Student_Management_System_CSharp_SGU2025.Config;
 
 namespace Student_Management_System_CSharp_SGU2025.ConnectDatabase
 {
     internal class ConnectionDatabase
     {
-        private static string connectionString = "Server=localhost;Database=QuanLyHocSinh;Uid=root;Pwd=;";
+        /// <summary>
+        /// Lấy connection string từ file cấu hình database_config.json
+        /// </summary>
+        private static string GetConnectionString()
+        {
+            try
+            {
+                return DatabaseConfig.GetAdoNetConnectionString();
+            }
+            catch (Exception ex)
+            {
+                // Fallback về connection string mặc định nếu không đọc được file config
+                Debug.WriteLine($"⚠️ Không thể đọc cấu hình database từ file: {ex.Message}");
+                return "Server=127.0.0.1;Database=QuanLyHocSinh;Uid=root;Pwd=12345678;";
+            }
+        }
 
         /// <summary>
         /// Lấy kết nối đến cơ sở dữ liệu MySQL
@@ -21,7 +37,8 @@ namespace Student_Management_System_CSharp_SGU2025.ConnectDatabase
         {
             try
             {
-                MySqlConnection connection = new MySqlConnection(connectionString);
+                string connString = GetConnectionString();
+                MySqlConnection connection = new MySqlConnection(connString);
                 return connection;
             }
             catch (MySqlException ex)

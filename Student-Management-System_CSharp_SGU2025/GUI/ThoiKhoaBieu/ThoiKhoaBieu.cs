@@ -25,33 +25,35 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
     {
         private HocKyBUS hocKyBUS;
         private LopHocBUS lopBUS;
-        private ThoiKhoaBieuBUS tkbBUS;
-        private TKBExportService exportService;
-        private GiaoVienBUS giaoVienBUS;
-        private PhanLopBLL phanLopBLL;
-        
-        private int currentSemesterId = 0;
-        private int currentLopId = 0;
-        private string currentTeacherId = null;
-        private string currentViewMode = "Thời khóa biểu lớp"; // "Thời khóa biểu lớp" or "Thời khóa biểu giảng dạy"
-        private bool isLoading = false;
-        private bool hasTKBForSemester = false;
-        private Dictionary<string, Guna2Panel> gridPanels = new Dictionary<string, Guna2Panel>();
-        private Guna2Panel dragSourcePanel = null;
+		private ThoiKhoaBieuBUS tkbBUS;
+		private TKBExportService exportService;
+		private GiaoVienBUS giaoVienBUS;
+		private PhanLopBLL phanLopBLL;
+		
+		private int currentSemesterId = 0;
+		private int currentLopId = 0;
+		private string currentTeacherId = null;
+		private string currentViewMode = "Thời khóa biểu lớp"; // "Thời khóa biểu lớp" or "Thời khóa biểu giảng dạy"
+		private bool isLoading = false;
+		private bool hasTKBForSemester = false;
+		private Dictionary<string, Guna2Panel> gridPanels = new Dictionary<string, Guna2Panel>();
+		private Guna2Panel dragSourcePanel = null;
+		private ToolTip toolTipSlots;
 
-        public ThoiKhoaBieu()
-        {
-            InitializeComponent();
-            hocKyBUS = new HocKyBUS();
-            lopBUS = new LopHocBUS();
-            tkbBUS = new ThoiKhoaBieuBUS();
-            giaoVienBUS = new GiaoVienBUS();
-            phanLopBLL = new PhanLopBLL();
-            exportService = new TKBExportService();
-            
-            // Wire up export button
-            btnXuatExcel.Click += BtnXuatExcel_Click;
-        }
+		public ThoiKhoaBieu()
+		{
+			InitializeComponent();
+			hocKyBUS = new HocKyBUS();
+			lopBUS = new LopHocBUS();
+			tkbBUS = new ThoiKhoaBieuBUS();
+			giaoVienBUS = new GiaoVienBUS();
+			phanLopBLL = new PhanLopBLL();
+			exportService = new TKBExportService();
+			toolTipSlots = new ToolTip();
+			
+			// Wire up export button
+			btnXuatExcel.Click += BtnXuatExcel_Click;
+		}
 
         private void ThoiKhoaBieu_Load(object sender, EventArgs e)
         {
@@ -78,7 +80,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                 // ✅ Áp dụng phân quyền chi tiết cho các button
                 PermissionHelper.ApplyPermissionThoiKhoaBieu(
                     btnSapXepTuDong,
-                    btnLuuDiem,
+                    null, // btnLuuDiem đã bị xóa
                     btnXoa
                 );
             }
@@ -117,13 +119,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                 ApplyRoleBasedTimetableView();
 
                 // Disable action buttons initially
-                btnLuuDiem.Enabled = false;
                 btnXoa.Enabled = false;
                 btnSapXepTuDong.Enabled = false;
 
-                // Initialize grid with Guna2Panel controls
-                InitGrid();
-                lblTenThoiKhoaBieu.Text = "Thời khóa biểu";
+				// Initialize grid with Guna2Panel controls
+				InitGrid();
+				lblContextInfo.Text = string.Empty;
 
                 isLoading = false;
             }
@@ -426,8 +427,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                     btnSapXepTuDong.Enabled = false;
                     btnXoa.Visible = false;
                     btnXoa.Enabled = false;
-                    btnLuuDiem.Visible = false;
-                    btnLuuDiem.Enabled = false;
 
                     // Will pre-select student's class when semester is selected
                 }
@@ -507,6 +506,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                 var selectedHK = dsHocKy[selectedIndex - 1];
                 currentSemesterId = selectedHK.MaHocKy;
                 string tenHocKy = selectedHK.TenHocKy;
+				lblContextInfo.Text = tenHocKy;
 
                 // Kiểm tra xem học kỳ này đã có TKB chưa
                 hasTKBForSemester = tkbBUS.HasScheduleForSemester(currentSemesterId);
@@ -540,9 +540,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                         btnXoa.Enabled = true;
                     }
 
-                    string viewHint = currentViewMode == "Thời khóa biểu giảng dạy" ? "Chọn giáo viên để xem" : "Chọn lớp để xem";
-                    lblTenThoiKhoaBieu.Text = $"✓ {tenHocKy} (Đã có TKB - {viewHint})";
-                    lblTenThoiKhoaBieu.ForeColor = Color.FromArgb(22, 163, 74);
+                    
                 }
                 else
                 {
@@ -555,13 +553,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                         btnSapXepTuDong.Text = "Sắp xếp tự động";
                     }
 
-                    if (btnLuuDiem.Visible)
-                        btnLuuDiem.Enabled = false;
                     if (btnXoa.Visible)
                         btnXoa.Enabled = false;
 
-                    lblTenThoiKhoaBieu.Text = $"⚠ {tenHocKy} (Chưa có TKB)";
-                    lblTenThoiKhoaBieu.ForeColor = Color.FromArgb(234, 88, 12);
+                   
 
                     MessageBox.Show(
                         $"Học kỳ '{tenHocKy}' chưa có Thời khóa biểu.\n\n" +
@@ -585,14 +580,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
         {
             currentSemesterId = 0;
             hasTKBForSemester = false;
-            lblTenThoiKhoaBieu.Text = "Thời khóa biểu";
-            lblTenThoiKhoaBieu.ForeColor = Color.Black;
+         
             cbLop.Enabled = false;
             cbLop.SelectedIndex = 0;
             btnSapXepTuDong.Enabled = false;
             
-            if (btnLuuDiem.Visible)
-                btnLuuDiem.Enabled = false;
             if (btnXoa.Visible)
                 btnXoa.Enabled = false;
         }
@@ -619,7 +611,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                     currentLopId = 0;
                     
                     var selectedHK = GetSelectedHocKy();
-                    lblTenThoiKhoaBieu.Text = $"Thời khóa biểu - {selectedHK?.TenHocKy ?? ""} (Chọn lớp để xem)";
+                    
                     return;
                 }
 
@@ -634,8 +626,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                 var selectedLop = dsLop[selectedIndex - 1];
                 currentLopId = selectedLop.maLop;
                 
-                lblTenThoiKhoaBieu.Text = $"Thời khóa biểu lớp - {selectedLop.tenLop}";
-                lblTenThoiKhoaBieu.ForeColor = Color.FromArgb(30, 41, 59);
                 
                 // Load all data and filter by class BEFORE populating grid
                 var allSlots = tkbBUS.GetTKBViewByHocKy(currentSemesterId);
@@ -729,9 +719,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
 
                 var selectedGV = dsGiaoVien[selectedIndex - 1];
                 currentTeacherId = selectedGV.MaGiaoVien;
-
-                lblTenThoiKhoaBieu.Text = $"Thời khóa biểu giảng dạy - {selectedGV.HoTen}";
-                lblTenThoiKhoaBieu.ForeColor = Color.FromArgb(30, 41, 59);
+                
+                
 
                 LoadTimetableForTeacher(currentSemesterId, currentTeacherId);
             }
@@ -788,9 +777,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                             btnXoa.Enabled = true;
                         }
 
-                        var selectedHK = GetSelectedHocKy();
-                        lblTenThoiKhoaBieu.Text = $"✓ {selectedHK?.TenHocKy} (Đã có TKB - Chọn lớp để xem)";
-                        lblTenThoiKhoaBieu.ForeColor = Color.FromArgb(22, 163, 74);
+                      
+                        
                         LoadData(currentSemesterId);
 
                         MessageBox.Show(
@@ -806,60 +794,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
             {
                 MessageBox.Show($"Lỗi khi mở Form Preview: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
-        /// Nút "Lưu thời khóa biểu" → Publish TKB (khóa không sửa được)
-        /// </summary>
-        private void btnAccept_Click(object sender, EventArgs e)
-        {
-            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLTKB, "Thời khóa biểu"))
-                return;
-
-            if (currentSemesterId == 0)
-            {
-                MessageBox.Show("Vui lòng chọn Học kỳ!", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            var confirm = MessageBox.Show(
-                "Bạn có chắc chắn muốn lưu Thời khóa biểu này vào hệ thống chính thức?\n\n" +
-                "⚠ Sau khi lưu, TKB sẽ được áp dụng và không thể chỉnh sửa dễ dàng.",
-                "Xác nhận lưu TKB",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (confirm != DialogResult.Yes) return;
-
-            try
-            {
-                Cursor.Current = Cursors.WaitCursor;
-                var service = new SchedulingService();
-                service.AcceptToOfficial(currentSemesterId, 1);
-
-                btnLuuDiem.Enabled = false;
-                btnXoa.Enabled = false;
-
-                MessageBox.Show(
-                    "✅ Đã lưu Thời khóa biểu chính thức!\n\n" +
-                    "TKB đã được publish và có thể xem/in ấn.",
-                    "Thành công",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"Không thể lưu lịch chính thức:\n\n{ex.Message}",
-                    "Lỗi",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
             }
         }
 
@@ -919,13 +853,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                 cbLop.SelectedIndex = 0;
                 ClearAllPanels();
                 
-                var selectedHK = GetSelectedHocKy();
-                lblTenThoiKhoaBieu.Text = $"⚠ {selectedHK?.TenHocKy} (Chưa có TKB)";
-                lblTenThoiKhoaBieu.ForeColor = Color.FromArgb(234, 88, 12);
+               
 
                 btnSapXepTuDong.Text = "Sắp xếp tự động";
-                if (btnLuuDiem.Visible)
-                    btnLuuDiem.Enabled = false;
                 if (btnXoa.Visible)
                     btnXoa.Enabled = false;
             }
@@ -954,11 +884,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
             {
                 gridPanels.Clear();
                 
-                // Clear existing panels
+                // Clear existing panels (except spacer panel)
                 var controlsToRemove = new List<Control>();
                 foreach (Control ctrl in tableThoiKhoaBieu.Controls)
                 {
-                    if (ctrl is Guna2Panel)
+                    if (ctrl is Guna2Panel && ctrl.Name != "pnl_Spacer")
                     {
                         controlsToRemove.Add(ctrl);
                     }
@@ -969,7 +899,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                     ctrl.Dispose();
                 }
 
-                // Create panels for each slot: Days 2-7 (columns 1-6), Periods 1-10 (rows 1-10)
+                // Remove spacer panel if exists (will be recreated)
+                var spacerPanel = tableThoiKhoaBieu.Controls.Cast<Control>().FirstOrDefault(c => c.Name == "pnl_Spacer");
+                if (spacerPanel != null)
+                {
+                    tableThoiKhoaBieu.Controls.Remove(spacerPanel);
+                    spacerPanel.Dispose();
+                }
+
+                // Create panels for each slot: Days 2-7 (columns 1-6), Periods 1-10
+                // Row mapping: Header (row 0), Tiết 1-5 (rows 1-5), Spacer row (row 6), Tiết 6-10 (rows 7-11)
+                // So actual row indices: Tiết 1=1, Tiết 2=2, Tiết 3=3, Tiết 4=4, Tiết 5=5, Tiết 6=7, Tiết 7=8, Tiết 8=9, Tiết 9=10, Tiết 10=11
+                int[] rowMapping = { 1, 2, 3, 4, 5, 7, 8, 9, 10, 11 }; // Map tiet 1-10 to actual table rows (skip spacer row 6)
+                
                 for (int thu = 2; thu <= 7; thu++)
                 {
                     for (int tiet = 1; tiet <= 10; tiet++)
@@ -981,26 +923,31 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                         var panel = new Guna2Panel
                         {
                             Name = $"pnl_Thu{thu}_Tiet{tiet}",
-                            BorderRadius = 6,
+                            BorderRadius = 4,
                             FillColor = Color.White,
-                            BorderColor = Color.FromArgb(213, 218, 223),
+                            BorderColor = Color.FromArgb(229, 231, 235),
                             BorderThickness = 1,
                             AllowDrop = canEdit,
                             Dock = DockStyle.Fill,
-                            Margin = new Padding(3)
+                            Margin = new Padding(2)
                         };
 
-                        panel.ShadowDecoration.Enabled = true;
-                        panel.ShadowDecoration.Depth = 2;
-                        panel.ShadowDecoration.Color = Color.FromArgb(0, 0, 0, 20);
+                        // Add subtle visual separator after period 5 (between morning and afternoon)
+                        if (tiet == 6)
+                        {
+                            panel.BorderThickness = 2;
+                            panel.BorderColor = Color.FromArgb(203, 213, 225); // Slightly darker border for visual separation
+                        }
+
+                        panel.ShadowDecoration.Enabled = false; // Disable shadow for cleaner look
 
                         var label = new Guna2HtmlLabel
                         {
                             Name = $"lbl_Thu{thu}_Tiet{tiet}",
-                            Text = "",
+                            Text = "<span style='color:#CCCCCC; font-size:10pt'>...</span>",
                             AutoSize = false,
                             Dock = DockStyle.Fill,
-                            Padding = new Padding(5),
+                            Padding = new Padding(8, 5, 8, 5),
                             TextAlignment = ContentAlignment.MiddleCenter,
                             AllowDrop = false
                         };
@@ -1016,12 +963,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                         }
 
                         int col = thu - 1;
-                        int row = tiet;
+                        int row = rowMapping[tiet - 1]; // Direct mapping: Tiết 1-10 to rows 1-10
 
                         tableThoiKhoaBieu.Controls.Add(panel, col, row);
                         gridPanels[panel.Name] = panel;
                     }
                 }
+
+                // Create spacer panel for row 6 (between morning and afternoon sessions)
+                // Span across all columns (0-6) to create a clean separator without borders
+                var spacerPanelNew = new Guna2Panel
+                {
+                    Name = "pnl_Spacer",
+                    BorderRadius = 0,
+                    FillColor = Color.Transparent,
+                    BorderColor = Color.Transparent,
+                    BorderThickness = 0,
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(0)
+                };
+                spacerPanelNew.ShadowDecoration.Enabled = false;
+                tableThoiKhoaBieu.Controls.Add(spacerPanelNew, 0, 6);
+                tableThoiKhoaBieu.SetColumnSpan(spacerPanelNew, 7); // Span all 7 columns (Tiết + 6 days)
             }
             catch (Exception ex)
             {
@@ -1111,20 +1074,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                     {
                         if (isTeacherView)
                         {
-                            // Teacher view: Show Subject (bold) and Class (gray)
-                            label.Text = $"<b>{slot.TenMon}</b><br>" +
-                                        $"<span style='font-size:9pt; color:gray'>{slot.TenLop}</span>";
+                            // Teacher view: Lớp (bold) + Môn (nhỏ, xám)
+                            label.Text = $"<b style='font-size:11pt; color:#1F2937'>{slot.TenLop}</b><br>" +
+                                         $"<span style='font-size:9pt; color:#6B7280'>{slot.TenMon}</span>";
                         }
                         else
                         {
-                            // Class view: Show Subject (bold), Teacher (gray), Class (small)
-                            label.Text = $"<b>{slot.TenMon}</b><br>" +
-                                        $"<span style='font-size:9pt; color:gray'>{slot.TenGiaoVien}</span><br>" +
-                                        $"<span style='font-size:8pt; color:#666'>{slot.TenLop}</span>";
+                            // Class view: Môn (bold) + Giáo viên (nhỏ, xám) – KHÔNG lặp lại tên lớp
+                            label.Text = $"<b style='font-size:11pt; color:#1F2937'>{slot.TenMon}</b><br>" +
+                                         $"<span style='font-size:9pt; color:#6B7280'>{slot.TenGiaoVien}</span>";
                         }
+
+                        // Tooltip chi tiết
+                        string tooltipText = isTeacherView
+                            ? $"Lớp: {slot.TenLop}\nMôn: {slot.TenMon}\nGiáo viên: {slot.TenGiaoVien}"
+                            : $"Môn: {slot.TenMon}\nGiáo viên: {slot.TenGiaoVien}\nLớp: {slot.TenLop}";
+
+                        toolTipSlots.SetToolTip(panel, tooltipText);
                     }
 
                     panel.FillColor = GetColorForSubject(slot.TenMon);
+                    panel.BorderColor = Color.FromArgb(229, 231, 235);
+                    panel.BorderThickness = 1;
                 }
             }
         }
@@ -1168,14 +1139,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
             foreach (var panel in gridPanels.Values)
             {
                 panel.Tag = null;
-                panel.FillColor = Color.White;
+                panel.FillColor = Color.White; // White background for empty slot
                 panel.Visible = true;
                 
                 var label = panel.Controls.OfType<Guna2HtmlLabel>().FirstOrDefault();
                 if (label != null)
                 {
-                    label.Text = "";
+                    label.Text = "<span style='color:#CCCCCC; font-size:10pt'>...</span>";
                 }
+
+                toolTipSlots.SetToolTip(panel, "Trống");
             }
         }
 
@@ -1349,20 +1322,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
                 { "toán", Color.FromArgb(239, 246, 255) },
                 { "toán học", Color.FromArgb(239, 246, 255) },
                 { "vật lý", Color.FromArgb(255, 247, 237) },
+                { "vật lí", Color.FromArgb(255, 247, 237) },
                 { "hóa học", Color.FromArgb(253, 242, 248) },
                 { "sinh học", Color.FromArgb(240, 253, 250) },
+                { "sinh", Color.FromArgb(240, 253, 250) },
                 { "ngữ văn", Color.FromArgb(240, 253, 244) },
                 { "tiếng anh", Color.FromArgb(245, 243, 255) },
+                { "anh văn", Color.FromArgb(245, 243, 255) },
                 { "lịch sử", Color.FromArgb(254, 252, 232) },
                 { "địa lý", Color.FromArgb(238, 242, 255) },
+                { "địa lí", Color.FromArgb(238, 242, 255) },
                 { "gdcd", Color.FromArgb(254, 242, 242) },
                 { "giáo dục công dân", Color.FromArgb(254, 242, 242) },
                 { "thể dục", Color.FromArgb(220, 252, 231) },
                 { "giáo dục thể chất", Color.FromArgb(220, 252, 231) },
                 { "quốc phòng", Color.FromArgb(241, 245, 249) },
+                { "gdqp", Color.FromArgb(241, 245, 249) },
                 { "giáo dục quốc phòng và an ninh", Color.FromArgb(241, 245, 249) },
                 { "tin học", Color.FromArgb(241, 245, 249) },
-                { "công nghệ", Color.FromArgb(241, 245, 249) }
+                { "công nghệ", Color.FromArgb(241, 245, 249) },
+                { "cn", Color.FromArgb(241, 245, 249) },
+                { "khtn", Color.FromArgb(240, 253, 250) },
+                { "chào cờ", Color.FromArgb(254, 252, 232) },
+                { "shl", Color.FromArgb(254, 252, 232) },
+                { "hđtn", Color.FromArgb(245, 243, 255) }
             };
 
             if (colorMap.TryGetValue(normalized, out Color predefinedColor))
@@ -1494,5 +1477,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThoiKhoaBieu
         private void guna2HtmlLabel25_Click(object sender, EventArgs e) { }
         private void guna2HtmlLabel6_Click(object sender, EventArgs e) { }
         private void guna2Panel1_Paint(object sender, PaintEventArgs e) { }
+
+        private void lblBuoiChieu_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2HtmlLabel26_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableThoiKhoaBieu_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

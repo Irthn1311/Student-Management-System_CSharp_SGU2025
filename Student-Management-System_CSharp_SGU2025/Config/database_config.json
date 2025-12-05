@@ -1,0 +1,11 @@
+{
+  "Database": {
+    "Server": "127.0.0.1",
+    "Database": "QuanLyHocSinh",
+    "UserId": "root",
+    "Password": "12345678",
+    "Port": 3306,
+    "ConnectionTimeout": 30
+  }
+}
+
