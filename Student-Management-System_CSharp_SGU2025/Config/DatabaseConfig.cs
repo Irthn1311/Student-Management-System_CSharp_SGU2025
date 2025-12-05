@@ -135,20 +135,26 @@ namespace Student_Management_System_CSharp_SGU2025.Config
 
         /// <summary>
         /// Lấy connection string cho ADO.NET (format: Server=...;Database=...;Uid=...;Pwd=...;)
+        /// Note: Port is included in Server parameter (Server=host:port) as MySQL connector doesn't support separate Port parameter
         /// </summary>
         public static string GetAdoNetConnectionString()
         {
             var db = GetConfig().Database;
-            return $"Server={db.Server};Database={db.Database};Uid={db.UserId};Pwd={db.Password};Port={db.Port};Connection Timeout={db.ConnectionTimeout};";
+            // Include port in Server parameter: Server=host:port
+            string serverWithPort = db.Port != 3306 ? $"{db.Server}:{db.Port}" : db.Server;
+            return $"Server={serverWithPort};Database={db.Database};Uid={db.UserId};Pwd={db.Password};Connection Timeout={db.ConnectionTimeout};";
         }
 
         /// <summary>
         /// Lấy connection string cho Entity Framework (format: server=...;database=...;user id=...;password=...;)
+        /// Note: Port is included in Server parameter (server=host:port) as MySQL connector doesn't support separate port parameter
         /// </summary>
         public static string GetEntityFrameworkConnectionString()
         {
             var db = GetConfig().Database;
-            return $"server={db.Server};database={db.Database};user id={db.UserId};password={db.Password};port={db.Port};Connection Timeout={db.ConnectionTimeout};";
+            // Include port in Server parameter: server=host:port
+            string serverWithPort = db.Port != 3306 ? $"{db.Server}:{db.Port}" : db.Server;
+            return $"server={serverWithPort};database={db.Database};user id={db.UserId};password={db.Password};Connection Timeout={db.ConnectionTimeout};";
         }
 
         /// <summary>

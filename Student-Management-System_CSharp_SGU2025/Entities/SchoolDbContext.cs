@@ -12,6 +12,7 @@ namespace Student_Management_System_CSharp_SGU2025.Entities
     /// Có thể mở rộng thêm các bảng khác khi cần
     /// Các bảng khác vẫn sử dụng ADO.NET
     /// </summary>
+    [DbConfigurationType(typeof(MySqlDbConfiguration))]
     public class SchoolDbContext : DbContext
     {
         /// <summary>
