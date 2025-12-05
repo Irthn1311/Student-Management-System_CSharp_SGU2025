@@ -1,4 +1,4 @@
-﻿namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
+namespace Student_Management_System_CSharp_SGU2025.GUI.HocSinh
 {
     partial class HocSinh
     {
@@ -843,6 +843,7 @@
         private StatCardQuanLiHocSinh statCardNam;
         private StatCardQuanLiHocSinh statCardNu;
         private StatCardQuanLiHocSinh statCardDangHoc;
+        private HeaderQuanLiHocSinh headerQuanLiHocSinh;
         private Guna.UI2.WinForms.Guna2Button btnThemPhuHuynh;
         private Guna.UI2.WinForms.Guna2DataGridView tablePhuHuynh;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
