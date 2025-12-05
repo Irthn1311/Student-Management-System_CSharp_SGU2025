@@ -56,7 +56,7 @@ namespace Student_Management_System_CSharp_SGU2025
             // ========================================
             // ✅ CHẠY ỨNG DỤNG - MỞ FORM ĐĂNG NHẬP TRƯỚC
             // ========================================
-            Application.Run(new GUI.MainForm());
+            Application.Run(new GUI.FrmDangNhap());
         }
     }
 }

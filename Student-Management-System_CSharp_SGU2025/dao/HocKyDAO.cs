@@ -358,6 +358,53 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
+        /// <summary>
+        /// Tìm học kỳ theo tên học kỳ và mã năm học.
+        /// </summary>
+        /// <param name="tenHocKy">Tên học kỳ (ví dụ: "Học kỳ I", "Học kỳ II")</param>
+        /// <param name="maNamHoc">Mã năm học (ví dụ: "2024-2025")</param>
+        /// <returns>HocKyDTO nếu tìm thấy, null nếu không tìm thấy</returns>
+        public HocKyDTO LayHocKyTheoTenVaNamHoc(string tenHocKy, string maNamHoc)
+        {
+            HocKyDTO hocKy = null;
+            string query = "SELECT MaHocKy, TenHocKy, MaNamHoc, NgayBD, NgayKT, TrangThai FROM HocKy WHERE TenHocKy = @TenHocKy AND MaNamHoc = @MaNamHoc";
+
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@TenHocKy", tenHocKy);
+                        cmd.Parameters.AddWithValue("@MaNamHoc", maNamHoc);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                hocKy = new HocKyDTO
+                                {
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    TenHocKy = reader.GetString("TenHocKy"),
+                                    MaNamHoc = reader.GetString("MaNamHoc"),
+                                    NgayBD = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? (DateTime?)null : reader.GetDateTime("NgayBD"),
+                                    NgayKT = reader.IsDBNull(reader.GetOrdinal("NgayKT")) ? (DateTime?)null : reader.GetDateTime("NgayKT"),
+                                    TrangThai = reader.GetString("TrangThai")
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayHocKyTheoTenVaNamHoc: {ex.Message}");
+                throw;
+            }
+
+            return hocKy;
+        }
+
         // === KẾT THÚC HÀM MỚI ===
     }
 }

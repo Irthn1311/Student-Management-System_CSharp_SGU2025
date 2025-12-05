@@ -33,7 +33,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
                 AND ds.MaMonHoc = @MaMonHoc 
                 AND ds.MaHocKy = @MaHocKy
-            WHERE hs.TrangThai = 'Đang học'
+            WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
             ORDER BY hs.MaHocSinh";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
@@ -97,7 +97,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
                 AND ds.MaMonHoc = @MaMonHoc 
                 AND ds.MaHocKy = @MaHocKy
-            WHERE pl.MaLop = @MaLop AND hs.TrangThai = 'Đang học'
+            WHERE pl.MaLop = @MaLop AND (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
             ORDER BY hs.MaHocSinh";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
@@ -268,7 +268,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
                 AND ds.MaHocKy = @MaHocKy
             LEFT JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
-            WHERE hs.TrangThai = 'Đang học'
+            WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
             GROUP BY hs.MaHocSinh, hs.HoTen
             ORDER BY hs.MaHocSinh";
 
@@ -466,7 +466,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 WHERE ds.MaHocKy = @MaHocKy
                 GROUP BY ds.MaHocSinh
             ) as DiemTBChung ON hs.MaHocSinh = DiemTBChung.MaHocSinh
-            WHERE hs.TrangThai = 'Đang học'";
+            WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
@@ -681,7 +681,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
                 AND ds.MaHocKy = @MaHocKy
             LEFT JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
-            WHERE hs.TrangThai = 'Đang học'
+            WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
             GROUP BY hs.MaHocSinh, hs.HoTen
             ORDER BY hs.MaHocSinh";
 

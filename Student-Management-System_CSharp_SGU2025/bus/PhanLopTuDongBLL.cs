@@ -54,6 +54,15 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
                 Console.WriteLine($"=== BẮT ĐẦU PHÂN LỚP CHO {hocKyCanPhanLop.TenHocKy} - {hocKyCanPhanLop.MaNamHoc} ===");
 
+                // 1.5. KIỂM TRA HỌC KỲ ĐÃ PHÂN LỚP CHƯA
+                List<(int maHocSinh, int maLop, int maHocKy)> allPhanLopCheck = phanLopBLL.GetAllPhanLop();
+                bool daPhanLop = allPhanLopCheck.Any(p => p.maHocKy == maHocKyCanPhanLop);
+                
+                if (daPhanLop && !boQuaKiemTra)
+                {
+                    return (false, $"Học kỳ '{hocKyCanPhanLop.TenHocKy} - {hocKyCanPhanLop.MaNamHoc}' đã được phân lớp tự động.\nKhông thể phân lớp lại!\n\nNếu muốn phân lớp lại, vui lòng xóa dữ liệu phân lớp cũ trước.", 0);
+                }
+
                 // 2. XÁC ĐỊNH KỊCH BẢN & TÌM HỌC KỲ NGUỒN
                 string kichBan = "";
                 HocKyDTO hocKyNguon = null; // Học kỳ nguồn để lấy dữ liệu
@@ -102,9 +111,9 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 }
 
                 // 3. LẤY DỮ LIỆU CẦN THIẾT
-                // Lấy học sinh "Đang học" HOẶC "Nghỉ học" (cho phép phân lớp)
+                // Lấy học sinh "Đang học", "Đang học(CT)" (chuyển trường) HOẶC "Nghỉ học" (cho phép phân lớp)
                 List<HocSinhDTO> danhSachHocSinhDangHoc = hocSinhBLL.GetAllHocSinh()
-                    .Where(hs => hs.TrangThai == "Đang học" || hs.TrangThai == "Nghỉ học")
+                    .Where(hs => hs.TrangThai == "Đang học" || hs.TrangThai == "Đang học(CT)" || hs.TrangThai == "Nghỉ học")
                     .ToList();
                 List<(int maHocSinh, int maLop, int maHocKy)> allPhanLopHist = phanLopBLL.GetAllPhanLop();
                 List<LopDTO> allLop = lopHocBUS.DocDSLop();
@@ -698,8 +707,8 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
                 // 5. KẾT QUẢ
                 Console.WriteLine("\n╔══════════════════════════════════════════════════════════╗");
-                Console.WriteLine("║                   KẾT QUẢ PHÂN LỚP                      ║");
-                Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
+                Console.WriteLine("  ║                   KẾT QUẢ PHÂN LỚP                       ║");
+                Console.WriteLine("  ╚══════════════════════════════════════════════════════════╝");
                 Console.WriteLine($"✓ Đã phân lớp thành công: {soHocSinhDaPhanLop} học sinh");
 
                 if (danhSachLoi.Count > 0)
@@ -718,8 +727,8 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
                 // TẠO THÔNG BÁO CHI TIẾT
                 string thongBao = $"╔════════════════════════════════════════════════╗\n";
-                thongBao += $"║        KẾT QUẢ PHÂN LỚP TỰ ĐỘNG               ║\n";
-                thongBao += $"╚════════════════════════════════════════════════╝\n\n";
+                thongBao +=       $"║        KẾT QUẢ PHÂN LỚP TỰ ĐỘNG                ║\n";
+                thongBao +=       $"╚════════════════════════════════════════════════╝\n\n";
 
                 // Thông tin học kỳ
                 thongBao += $"📅 Học kỳ: {hocKyCanPhanLop.TenHocKy} - {hocKyCanPhanLop.MaNamHoc}\n\n";
@@ -1071,9 +1080,9 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 }
 
                 // 3. LẤY DỮ LIỆU
-                // Lấy học sinh "Đang học" HOẶC "Nghỉ học" (cho phép phân lớp)
+                // Lấy học sinh "Đang học", "Đang học(CT)" (chuyển trường) HOẶC "Nghỉ học" (cho phép phân lớp)
                 List<HocSinhDTO> danhSachHocSinhDangHoc = hocSinhBLL.GetAllHocSinh()
-                    .Where(hs => hs.TrangThai == "Đang học" || hs.TrangThai == "Nghỉ học")
+                    .Where(hs => hs.TrangThai == "Đang học" || hs.TrangThai == "Đang học(CT)" || hs.TrangThai == "Nghỉ học")
                     .ToList();
 
                 List<(int maHocSinh, int maLop, int maHocKy)> allPhanLopHist = phanLopBLL.GetAllPhanLop();

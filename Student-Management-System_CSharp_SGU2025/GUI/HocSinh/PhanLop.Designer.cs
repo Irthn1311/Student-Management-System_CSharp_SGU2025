@@ -28,45 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.txtTimKiem = new Guna.UI2.WinForms.Guna2TextBox();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.btnHuy = new Guna.UI2.WinForms.Guna2Button();
-            this.btnThemPhanLop = new Guna.UI2.WinForms.Guna2Button();
             this.tablePhanLop = new Guna.UI2.WinForms.Guna2DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnChon = new Guna.UI2.WinForms.Guna2Button();
+            this.btnThemPhanLop = new Guna.UI2.WinForms.Guna2Button();
+            this.txtTimKiem = new Guna.UI2.WinForms.Guna2TextBox();
+            this.btnPhanLopChuyenTruong = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.tablePhanLop)).BeginInit();
             this.SuspendLayout();
-            // 
-            // txtTimKiem
-            // 
-            this.txtTimKiem.BorderRadius = 7;
-            this.txtTimKiem.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtTimKiem.DefaultText = "";
-            this.txtTimKiem.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txtTimKiem.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.txtTimKiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtTimKiem.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtTimKiem.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtTimKiem.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtTimKiem.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.search1;
-            this.txtTimKiem.IconLeftOffset = new System.Drawing.Point(10, 0);
-            this.txtTimKiem.Location = new System.Drawing.Point(609, 25);
-            this.txtTimKiem.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.PlaceholderText = "Tìm học sinh  ...";
-            this.txtTimKiem.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtTimKiem.SelectedText = "";
-            this.txtTimKiem.Size = new System.Drawing.Size(242, 32);
-            this.txtTimKiem.TabIndex = 57;
             // 
             // cbHocKyNamHoc
             // 
@@ -128,47 +106,28 @@
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnHuy.ForeColor = System.Drawing.Color.Red;
             this.btnHuy.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnHuy.Location = new System.Drawing.Point(798, 533);
+            this.btnHuy.Location = new System.Drawing.Point(631, 529);
             this.btnHuy.Margin = new System.Windows.Forms.Padding(2);
             this.btnHuy.Name = "btnHuy";
-            this.btnHuy.Size = new System.Drawing.Size(53, 29);
+            this.btnHuy.Size = new System.Drawing.Size(60, 33);
             this.btnHuy.TabIndex = 74;
             this.btnHuy.Text = "Hủy";
             this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
-            // 
-            // btnThemPhanLop
-            // 
-            this.btnThemPhanLop.BorderRadius = 7;
-            this.btnThemPhanLop.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemPhanLop.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemPhanLop.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnThemPhanLop.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnThemPhanLop.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnThemPhanLop.ForeColor = System.Drawing.Color.White;
-            this.btnThemPhanLop.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
-            this.btnThemPhanLop.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThemPhanLop.Location = new System.Drawing.Point(870, 533);
-            this.btnThemPhanLop.Margin = new System.Windows.Forms.Padding(2);
-            this.btnThemPhanLop.Name = "btnThemPhanLop";
-            this.btnThemPhanLop.Size = new System.Drawing.Size(122, 29);
-            this.btnThemPhanLop.TabIndex = 73;
-            this.btnThemPhanLop.Text = "Phân lớp tự động";
-            this.btnThemPhanLop.Click += new System.EventHandler(this.btnThemPhanLop_Click);
             // 
             // tablePhanLop
             // 
             this.tablePhanLop.AllowUserToAddRows = false;
             this.tablePhanLop.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            this.tablePhanLop.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tablePhanLop.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.White;
+            this.tablePhanLop.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tablePhanLop.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this.tablePhanLop.ColumnHeadersHeight = 19;
             this.tablePhanLop.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tablePhanLop.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -176,14 +135,14 @@
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewTextBoxColumn3,
             this.Column4});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tablePhanLop.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tablePhanLop.DefaultCellStyle = dataGridViewCellStyle9;
             this.tablePhanLop.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tablePhanLop.Location = new System.Drawing.Point(23, 77);
             this.tablePhanLop.Margin = new System.Windows.Forms.Padding(2);
@@ -256,12 +215,74 @@
             this.btnChon.Text = "Tìm kiếm";
             this.btnChon.Click += new System.EventHandler(this.btnChon_Click);
             // 
+            // btnThemPhanLop
+            // 
+            this.btnThemPhanLop.BorderRadius = 7;
+            this.btnThemPhanLop.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemPhanLop.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemPhanLop.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnThemPhanLop.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnThemPhanLop.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnThemPhanLop.ForeColor = System.Drawing.Color.White;
+            this.btnThemPhanLop.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
+            this.btnThemPhanLop.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnThemPhanLop.Location = new System.Drawing.Point(870, 529);
+            this.btnThemPhanLop.Margin = new System.Windows.Forms.Padding(2);
+            this.btnThemPhanLop.Name = "btnThemPhanLop";
+            this.btnThemPhanLop.Size = new System.Drawing.Size(122, 33);
+            this.btnThemPhanLop.TabIndex = 73;
+            this.btnThemPhanLop.Text = "Phân lớp tự động";
+            this.btnThemPhanLop.Click += new System.EventHandler(this.btnThemPhanLop_Click);
+            // 
+            // txtTimKiem
+            // 
+            this.txtTimKiem.BorderRadius = 7;
+            this.txtTimKiem.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtTimKiem.DefaultText = "";
+            this.txtTimKiem.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtTimKiem.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtTimKiem.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtTimKiem.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtTimKiem.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtTimKiem.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtTimKiem.IconLeft = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.search1;
+            this.txtTimKiem.IconLeftOffset = new System.Drawing.Point(10, 0);
+            this.txtTimKiem.Location = new System.Drawing.Point(609, 25);
+            this.txtTimKiem.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.txtTimKiem.Name = "txtTimKiem";
+            this.txtTimKiem.PlaceholderText = "Tìm học sinh  ...";
+            this.txtTimKiem.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtTimKiem.SelectedText = "";
+            this.txtTimKiem.Size = new System.Drawing.Size(242, 32);
+            this.txtTimKiem.TabIndex = 57;
+            // 
+            // btnPhanLopChuyenTruong
+            // 
+            this.btnPhanLopChuyenTruong.BorderRadius = 7;
+            this.btnPhanLopChuyenTruong.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnPhanLopChuyenTruong.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnPhanLopChuyenTruong.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnPhanLopChuyenTruong.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnPhanLopChuyenTruong.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnPhanLopChuyenTruong.ForeColor = System.Drawing.Color.White;
+            this.btnPhanLopChuyenTruong.Image = global::Student_Management_System_CSharp_SGU2025.Properties.Resources.plus;
+            this.btnPhanLopChuyenTruong.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnPhanLopChuyenTruong.Location = new System.Drawing.Point(698, 529);
+            this.btnPhanLopChuyenTruong.Margin = new System.Windows.Forms.Padding(2);
+            this.btnPhanLopChuyenTruong.Name = "btnPhanLopChuyenTruong";
+            this.btnPhanLopChuyenTruong.Size = new System.Drawing.Size(168, 33);
+            this.btnPhanLopChuyenTruong.TabIndex = 80;
+            this.btnPhanLopChuyenTruong.Text = "Phân lớp chuyển trường";
+            this.btnPhanLopChuyenTruong.Click += new System.EventHandler(this.btnPhanLopChuyenTruong_Click);
+            // 
             // PhanLop
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1016, 584);
             this.ControlBox = false;
+            this.Controls.Add(this.btnPhanLopChuyenTruong);
             this.Controls.Add(this.tablePhanLop);
             this.Controls.Add(this.btnHuy);
             this.Controls.Add(this.btnThemPhanLop);
@@ -289,5 +310,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private Guna.UI2.WinForms.Guna2Button btnChon;
+        private Guna.UI2.WinForms.Guna2Button btnPhanLopChuyenTruong;
     }
 }
