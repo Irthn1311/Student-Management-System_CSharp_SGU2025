@@ -839,7 +839,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
-        private HeaderQuanLiHocSinh headerQuanLiHocSinh;
         private StatCardQuanLiHocSinh statCardTongHocSinh;
         private StatCardQuanLiHocSinh statCardNam;
         private StatCardQuanLiHocSinh statCardNu;

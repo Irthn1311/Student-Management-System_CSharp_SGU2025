@@ -36,8 +36,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                 {
                                     MaHocSinh = reader.GetInt32("MaHocSinh"),
                                     MaHocKy = reader.GetInt32("MaHocKy"),
-                                    XepLoai = reader.GetString("XepLoai"),
-                                    NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet")
+                                    XepLoai = reader.IsDBNull(reader.GetOrdinal("XepLoai")) ? null : reader.GetString("XepLoai"),
+                                    NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? null : reader.GetString("NhanXet")
                                 };
                             }
                         }
@@ -76,7 +76,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     {
                         cmd.Parameters.AddWithValue("@maHS", hk.MaHocSinh);
                         cmd.Parameters.AddWithValue("@maHK", hk.MaHocKy);
-                        cmd.Parameters.AddWithValue("@xepLoai", hk.XepLoai);
+                        cmd.Parameters.AddWithValue("@xepLoai", (object)hk.XepLoai ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@nhanXet", (object)hk.NhanXet ?? DBNull.Value);
 
                         int result = cmd.ExecuteNonQuery();
@@ -97,17 +97,19 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         /// <summary>
         /// Lấy danh sách hạnh kiểm theo học kỳ và lớp (Trả về BindingList)
+        /// Hiển thị TẤT CẢ học sinh trong lớp, kể cả chưa có hạnh kiểm
         /// </summary>
         public BindingList<HanhKiemDTO> LayDanhSachHanhKiemBindingList(int maHocKy, int? maLop = null)
         {
             BindingList<HanhKiemDTO> ds = new BindingList<HanhKiemDTO>();
 
-            string sql = @"SELECT DISTINCT hk.MaHocSinh, hk.MaHocKy, hk.XepLoai, hk.NhanXet
-                      FROM HanhKiem hk
-                      INNER JOIN PhanLop pl ON hk.MaHocSinh = pl.MaHocSinh AND hk.MaHocKy = pl.MaHocKy
-                      WHERE hk.MaHocKy = @maHK
-                      AND hk.XepLoai IS NOT NULL 
-                      AND hk.XepLoai != ''";
+            string sql = @"SELECT DISTINCT hs.MaHocSinh, @maHK as MaHocKy, 
+                      hk.XepLoai, 
+                      hk.NhanXet
+                      FROM HocSinh hs
+                      INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh AND pl.MaHocKy = @maHK
+                      LEFT JOIN HanhKiem hk ON hs.MaHocSinh = hk.MaHocSinh AND hk.MaHocKy = @maHK
+                      WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')";
 
             if (maLop.HasValue && maLop.Value > 0)
             {
@@ -135,8 +137,9 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                 {
                                     MaHocSinh = reader.GetInt32("MaHocSinh"),
                                     MaHocKy = reader.GetInt32("MaHocKy"),
-                                    XepLoai = reader.GetString("XepLoai"),
-                                    NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet")
+                                    XepLoai = reader.IsDBNull(reader.GetOrdinal("XepLoai")) || string.IsNullOrEmpty(reader["XepLoai"]?.ToString()) 
+                                        ? null : reader.GetString("XepLoai"),
+                                    NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? null : reader.GetString("NhanXet")
                                 });
                             }
                         }
@@ -186,7 +189,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                                 {
                                     MaHocSinh = reader.GetInt32("MaHocSinh"),
                                     MaHocKy = reader.GetInt32("MaHocKy"),
-                                    XepLoai = reader.GetString("XepLoai"),
+                                    XepLoai = reader.IsDBNull(reader.GetOrdinal("XepLoai")) ? "" : reader.GetString("XepLoai"),
                                     NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? "" : reader.GetString("NhanXet")
                                 });
                             }

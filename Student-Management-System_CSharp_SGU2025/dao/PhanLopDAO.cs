@@ -435,6 +435,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         /// <summary>
         /// Lấy danh sách học sinh chưa được phân lớp trong học kỳ cụ thể.
+        /// Bao gồm học sinh có trạng thái "Đang học" và "Đang học(CT)" (chuyển trường).
         /// </summary>
         /// <param name="maHocKy">Mã học kỳ.</param>
         /// <returns>Danh sách các đối tượng HocSinhDTO chưa được phân lớp.</returns>
@@ -444,7 +445,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             string sql = @"SELECT hs.* 
                           FROM HocSinh hs 
                           LEFT JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh AND pl.MaHocKy = @maHK
-                          WHERE pl.MaHocSinh IS NULL AND hs.TrangThai = 'Đang học'";
+                          WHERE pl.MaHocSinh IS NULL AND (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')";
             
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
@@ -501,7 +502,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                            hs.GioiTinh, hs.SDTHS, hs.Email, hs.TrangThai
                     FROM HocSinh hs
                     INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh
-                    WHERE pl.MaLop = @MaLop AND hs.TrangThai = 'Đang học'
+                    WHERE pl.MaLop = @MaLop AND (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
                     ORDER BY hs.MaHocSinh";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
