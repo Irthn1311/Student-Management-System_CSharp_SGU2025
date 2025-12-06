@@ -66,12 +66,85 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
 		/// <summary>
 		/// Lấy danh sách thời khóa biểu theo học kỳ với đầy đủ thông tin
+		/// Tự động thêm Chào Cờ và SHL (môn ngoài bắt buộc, không có trong database)
 		/// </summary>
 		/// <param name="maHocKy">Mã học kỳ</param>
 		/// <returns>Danh sách các ô thời khóa biểu</returns>
 		public List<TimeTableSlotDTO> GetTKBViewByHocKy(int maHocKy)
 		{
-			return _dao.GetTKBViewByHocKy(maHocKy);
+			var result = _dao.GetTKBViewByHocKy(maHocKy);
+			
+			// ✅ Tự động thêm Chào Cờ và SHL cho tất cả lớp
+			AddChaoCoAndSHL(result, maHocKy);
+			
+			return result;
+		}
+		
+		/// <summary>
+		/// Thêm Chào Cờ (tiết 1 thứ 2) và SHL (tiết cuối buổi chính thứ 6) cho tất cả lớp
+		/// </summary>
+		private void AddChaoCoAndSHL(List<TimeTableSlotDTO> slots, int maHocKy)
+		{
+			// Lấy danh sách tất cả lớp có phân công trong học kỳ này
+			var allPhanCong = _phanCongDAO.LayPhanCongTheoHocKy(maHocKy);
+			var allLopIds = allPhanCong?.Select(pc => pc.MaLop).Distinct().ToList() ?? new List<int>();
+			
+			// Nếu không có phân công, lấy từ danh sách lớp có trong slots
+			if (allLopIds.Count == 0)
+			{
+				allLopIds = slots.Select(s => s.MaLop).Distinct().ToList();
+			}
+			
+			foreach (var maLop in allLopIds)
+			{
+				// Kiểm tra xem đã có Chào Cờ chưa
+				bool hasChaoCo = slots.Any(s => s.MaLop == maLop && s.Thu == 2 && s.Tiet == 1);
+				if (!hasChaoCo)
+				{
+					// Lấy tên lớp
+					var lop = _lopDAO.LayLopTheoId(maLop);
+					string tenLop = lop != null ? lop.tenLop : $"Lớp {maLop}";
+					
+					slots.Add(new TimeTableSlotDTO
+					{
+						MaThoiKhoaBieu = 0, // Không có trong database
+						MaPhanCong = 0, // Không có phân công
+						Thu = 2, // Thứ 2
+						Tiet = 1, // Tiết 1 buổi sáng
+						TenLop = tenLop,
+						TenMon = "Chào cờ",
+						TenGiaoVien = "", // Không có giáo viên
+						MaGiaoVien = "",
+						MaLop = maLop
+					});
+				}
+				
+				// Kiểm tra xem đã có SHL chưa
+				// Xác định khối để biết buổi chính
+				var lopForKhoi = _lopDAO.LayLopTheoId(maLop);
+				int khoi = lopForKhoi != null ? lopForKhoi.MaKhoi : 10;
+				bool isMainSessionMorning = (khoi == 11 || khoi == 12);
+				int tietSHL = isMainSessionMorning ? 5 : 10; // Tiết cuối buổi chính
+				
+				bool hasSHL = slots.Any(s => s.MaLop == maLop && s.Thu == 6 && s.Tiet == tietSHL);
+				if (!hasSHL)
+				{
+					string tenLop = lopForKhoi != null ? lopForKhoi.tenLop : $"Lớp {maLop}";
+					
+					slots.Add(new TimeTableSlotDTO
+					{
+						MaThoiKhoaBieu = 0, // Không có trong database
+						MaPhanCong = 0, // Không có phân công
+						Thu = 6, // Thứ 6
+						Tiet = tietSHL, // Tiết cuối buổi chính
+						TenLop = tenLop,
+						TenMon = "Sinh hoạt lớp",
+						TenGiaoVien = "", // Không có giáo viên
+						MaGiaoVien = "",
+						MaLop = maLop
+					});
+				}
+			}
 		}
 
 		/// <summary>

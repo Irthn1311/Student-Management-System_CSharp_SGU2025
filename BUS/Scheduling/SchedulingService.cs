@@ -792,12 +792,29 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 			// Determine success status based on missing periods threshold
 			int missingPeriods = result.MissingPeriods;
 			
-			if (missingPeriods == 0)
+			// ✅ Nếu totalPlaced > totalRequired (do Chào Cờ và SHL), coi như không thiếu
+			if (missingPeriods < 0)
+			{
+				missingPeriods = 0; // Không thiếu, chỉ có thêm Chào Cờ và SHL
+			}
+			
+			if (missingPeriods == 0 && missingSubjectsCount == 0)
 			{
 				// Perfect success - all periods placed
-				result.Success = true;
-				result.IsAcceptable = true;
-				result.Message = $"✅ Tạo thành công: {totalPlaced}/{totalRequired} tiết đã xếp. Tất cả các môn đã được xếp đủ số tiết. Chi phí: {result.FinalCost}.";
+				int extraPeriods = totalPlaced - totalRequired;
+				if (extraPeriods > 0)
+				{
+					// Có thêm Chào Cờ và SHL
+					result.Success = true;
+					result.IsAcceptable = true;
+					result.Message = $"✅ Tạo thành công: {totalPlaced}/{totalRequired} tiết đã xếp (bao gồm {extraPeriods} tiết Chào Cờ và Sinh hoạt lớp). Tất cả các môn đã được xếp đủ số tiết. Chi phí: {result.FinalCost}.";
+				}
+				else
+				{
+					result.Success = true;
+					result.IsAcceptable = true;
+					result.Message = $"✅ Tạo thành công: {totalPlaced}/{totalRequired} tiết đã xếp. Tất cả các môn đã được xếp đủ số tiết. Chi phí: {result.FinalCost}.";
+				}
 			}
 			else if (missingPeriods <= MAX_MISSING_PERIODS_ACCEPTABLE)
 			{
@@ -865,19 +882,74 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 		{
 			var sol = new ScheduleSolution();
 			
+			// ✅ BƯỚC 1: Thêm Chào cờ (tiết 1 thứ 2) và SHL (tiết cuối thứ 6 buổi chính) cho tất cả lớp
+			// Chào Cờ và SHL là môn ngoài bắt buộc, không có trong database, không có giáo viên
+			var allClasses = request.Assignments.Select(a => a.MaLop).Distinct().ToList();
+			
+			// Mã môn đặc biệt cho Chào Cờ và SHL (không có trong database)
+			const int MA_MON_CHAO_CO = 0; // Mã đặc biệt cho Chào Cờ
+			const int MA_MON_SHL = -1; // Mã đặc biệt cho Sinh hoạt lớp
+			
+			// Thêm Chào cờ vào tiết 1 thứ 2 buổi sáng cho tất cả lớp
+			foreach (var maLop in allClasses)
+			{
+				sol.Slots.Add(new AssignmentSlot
+				{
+					MaLop = maLop,
+					Thu = 2, // Thứ 2
+					Tiet = 1, // Tiết 1 buổi sáng
+					MaMon = MA_MON_CHAO_CO, // Mã đặc biệt, không có trong database
+					MaGV = "" // Không có giáo viên
+				});
+			}
+			
+			// Thêm SHL vào tiết cuối thứ 6 buổi chính khối học cho tất cả lớp
+			foreach (var maLop in allClasses)
+			{
+				// Xác định khối để biết buổi chính
+				int khoi = GetKhoiForClass(maLop);
+				bool isMainSessionMorning = (khoi == 11 || khoi == 12); // Lớp 11,12: buổi chính = sáng
+				
+				// Tiết cuối buổi chính:
+				// - Lớp 10: buổi chính = chiều → tiết 10 (tiết cuối)
+				// - Lớp 11, 12: buổi chính = sáng → tiết 5 (tiết cuối buổi sáng)
+				int tietSHL = isMainSessionMorning ? 5 : 10; // Tiết cuối buổi chính
+				
+				sol.Slots.Add(new AssignmentSlot
+				{
+					MaLop = maLop,
+					Thu = 6, // Thứ 6
+					Tiet = tietSHL, // Tiết cuối buổi chính
+					MaMon = MA_MON_SHL, // Mã đặc biệt, không có trong database
+					MaGV = "" // Không có giáo viên
+				});
+			}
+			
 			// Create a list of all periods to place (with assignment info)
+			// ✅ Bỏ qua Chào cờ và SHL vì đã thêm ở trên (chúng không có trong request.Assignments)
 			var periodsToPlace = new BindingList<AssignmentRequirement>();
 			foreach (var req in request.Assignments)
 			{
+				// Chào cờ và SHL không có trong database nên không cần bỏ qua ở đây
+				// Nhưng để an toàn, vẫn kiểm tra nếu có
+				if (IsChaoCo(req.MaMon) || IsSHL(req.MaMon))
+					continue;
+				
 				for (int i = 0; i < req.SoTietTuan; i++)
 				{
 					periodsToPlace.Add(req);
 				}
 			}
 
-			// Shuffle to avoid clustering
+			// ✅ Sắp xếp theo độ ưu tiên: Môn chính > KHTN/KHXH > Kỹ năng
+			// Sau đó mới shuffle để tránh clustering
 			var rand = new Random(42);
-			periodsToPlace = new BindingList<AssignmentRequirement>(periodsToPlace.OrderBy(x => rand.Next()).ToList());
+			periodsToPlace = new BindingList<AssignmentRequirement>(
+				periodsToPlace
+					.OrderBy(req => GetSubjectPriority(req.MaMon)) // Ưu tiên theo độ ưu tiên môn học
+					.ThenBy(x => rand.Next()) // Shuffle trong cùng độ ưu tiên
+					.ToList()
+			);
 
 			// Track how many periods of each (class, subject) are placed per day
 			var dailyCount = new Dictionary<string, int>(); // key: "{maLop}|{maMon}|{thu}"
@@ -912,9 +984,32 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 				
 				// Determine priority strategy based on how many periods are already placed
 				// Strategy: Fill main session first, then auxiliary session
+				// ✅ Tập trung dồn hết vào buổi chính trước
+				// Lớp 10: buổi chính = chiều (tiết 6-10)
+				// Lớp 11, 12: buổi chính = sáng (tiết 1-5)
+				
+				// Đếm số tiết đã xếp trong buổi chính cho môn này
+				int mainSessionPeriodsPlaced = sol.Slots.Count(s => 
+					s.MaLop == req.MaLop && s.MaMon == req.MaMon &&
+					(isMainSessionMorning ? (s.Tiet <= 5) : (s.Tiet >= 6)));
+				
+				// Kiểm tra xem buổi chính đã đầy chưa (tối đa 5 tiết/ngày × 5 ngày = 25 tiết)
+				// Nhưng thực tế mỗi môn không thể có quá nhiều tiết, nên ta kiểm tra theo từng ngày
+				bool shouldPreferMainSession = true; // Luôn ưu tiên buổi chính trước
+				
 				var candidateSlots = allTimeSlots
 					.Where(slot =>
 					{
+						// ✅ Bỏ qua tiết 1 thứ 2 (đã có Chào cờ)
+						if (slot.thu == 2 && slot.tiet == 1) return false; // Chào cờ
+						
+						// ✅ Bỏ qua tiết cuối buổi chính thứ 6 (đã có SHL)
+						// Lớp 10: buổi chính = chiều → tiết 10
+						// Lớp 11, 12: buổi chính = sáng → tiết 5
+						// Sử dụng lại biến khoi và isMainSessionMorning đã khai báo ở ngoài
+						int tietSHL = isMainSessionMorning ? 5 : 10;
+						if (slot.thu == 6 && slot.tiet == tietSHL) return false; // SHL
+						
 						// Check if teacher is busy at this time
 						bool teacherBusy = sol.Slots.Any(s => s.MaGV == req.MaGV && s.Thu == slot.thu && s.Tiet == slot.tiet);
 						// Check if class is busy at this time
@@ -923,31 +1018,118 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 					})
 					.OrderBy(slot =>
 					{
-						// Priority 1: Prefer main session (morning for 11/12, afternoon for 10)
-						bool isMainSession = isMainSessionMorning ? (slot.tiet <= 5) : (slot.tiet >= 6);
-						int priority = isMainSession ? 0 : 1; // Main session = 0 (higher priority)
+						// ✅ MỨC ƯU TIÊN: Buổi chính T2-T6 > Buổi chính T7 > Buổi phụ T2-T6 > Buổi phụ T7
 						
-						// Priority 2: Prefer days with fewer periods of this subject already placed
+						// Xác định buổi chính/phụ
+						bool isMainSession = isMainSessionMorning ? (slot.tiet <= 5) : (slot.tiet >= 6);
+						bool isAuxiliarySession = !isMainSession;
+						
+						// Xác định thứ (2-6 hay 7)
+						bool isWeekday = (slot.thu >= 2 && slot.thu <= 6); // Thứ 2-6
+						bool isSaturday = (slot.thu == 7); // Thứ 7
+						
+						// Tính điểm ưu tiên theo mức độ
+						// ✅ Ưu tiên điền slot trống ở thứ 7 trước
+						// Mức 1 (ưu tiên cao nhất): Buổi chính T7 = -500 (ưu tiên điền thứ 7 trước)
+						// Mức 2: Buổi chính T2-T6 = 0
+						// Mức 3: Buổi phụ T7 = 1500
+						// Mức 4 (ưu tiên thấp nhất): Buổi phụ T2-T6 = 2000
+						
+						int basePriority = 0;
+						                        // Mức 1 (ưu tiên cao nhất): Buổi chính T2-T6 = 0
+                        // Mức 2: Buổi chính T7 = 1000
+                        // Mức 3: Buổi phụ T2-T6 = 2000
+                        // Mức 4 (ưu tiên thấp nhất): Buổi phụ T7 = 3000
+                        if (isMainSession && isWeekday)
+                            basePriority = 0; // Mức 1: Buổi chính T2-T6
+                        else if (isMainSession && isSaturday)
+                            basePriority = 1000; // Mức 2: Buổi chính T7
+                        else if (isAuxiliarySession && isWeekday)
+                            basePriority = 2000; // Mức 3: Buổi phụ T2-T6
+                        else // isAuxiliarySession && isSaturday
+                            basePriority = 3000; // Mức 4: Buổi phụ T7
+						
+						// Nếu đang ở buổi phụ nhưng buổi chính chưa đầy, penalty rất lớn
+						if (isAuxiliarySession && shouldPreferMainSession)
+						{
+							// Kiểm tra xem buổi chính trong ngày này đã đầy chưa
+							int mainSessionPeriodsOnDay = sol.Slots.Count(s => 
+								s.MaLop == req.MaLop && s.Thu == slot.thu && 
+								(isMainSessionMorning ? s.Tiet <= 5 : s.Tiet >= 6));
+							int maxMainSessionPeriodsPerDay = 5; // Tối đa 5 tiết/ngày cho buổi chính
+							
+							if (mainSessionPeriodsOnDay < maxMainSessionPeriodsPerDay)
+							{
+								basePriority += 10000; // Penalty rất lớn nếu buổi chính chưa đầy
+							}
+						}
+						
+						int priority = basePriority;
+						
+						// Priority 2: Nếu ở buổi phụ, gom lại thành 1-2 ngày (hạn chế rải rác)
+						int auxiliaryConcentrationBonus = 0;
+						if (isAuxiliarySession)
+						{
+							// Lấy danh sách các ngày đã có tiết buổi phụ cho môn này
+							var auxiliaryDays = new List<int>();
+							foreach (var existingSlot in sol.Slots.Where(s => s.MaLop == req.MaLop && s.MaMon == req.MaMon))
+							{
+								bool isAuxSlot = isMainSessionMorning ? (existingSlot.Tiet >= 6) : (existingSlot.Tiet <= 5);
+								if (isAuxSlot && !auxiliaryDays.Contains(existingSlot.Thu))
+								{
+									auxiliaryDays.Add(existingSlot.Thu);
+								}
+							}
+							
+							// Nếu đã có tiết buổi phụ ở ngày này, ưu tiên cao (gom vào cùng ngày)
+							if (auxiliaryDays.Contains(slot.thu))
+							{
+								auxiliaryConcentrationBonus = -200; // Ưu tiên rất cao để gom vào ngày đã có
+							}
+							// Nếu chưa có tiết buổi phụ nào, ưu tiên tạo ngày mới
+							else if (auxiliaryDays.Count == 0)
+							{
+								auxiliaryConcentrationBonus = 0; // Có thể tạo ngày mới
+							}
+							// Nếu chỉ có 1 ngày, vẫn có thể thêm ngày thứ 2
+							else if (auxiliaryDays.Count == 1)
+							{
+								auxiliaryConcentrationBonus = 50; // Penalty nhẹ cho việc tạo ngày thứ 2
+							}
+							// Nếu đã có 2 ngày trở lên, penalty lớn cho việc tạo ngày mới (rải rác)
+							else
+							{
+								auxiliaryConcentrationBonus = 1000; // Penalty lớn cho việc rải rác quá nhiều ngày
+							}
+						}
+						
+						// Priority 3: Prefer days with fewer periods of this subject already placed
 						string key = $"{req.MaLop}|{req.MaMon}|{slot.thu}";
 						int countOnDay = dailyCount.ContainsKey(key) ? dailyCount[key] : 0;
 						
-						// Priority 3: Within main session, prefer to fill one day first before spreading
-						// Count how many periods of this subject-class are already on this day
+						// Priority 4: Count how many periods of this subject-class are already on this day
 						int periodsOnThisDay = sol.Slots.Count(s => 
 							s.MaLop == req.MaLop && s.MaMon == req.MaMon && s.Thu == slot.thu);
 						
-						// Priority 4: Ưu tiên đặt consecutive periods trong CÙNG BUỔI (liên tiếp) - CHÍNH SÁCH MỚI
+						// Priority 5: ✅ BẮT BUỘC đặt consecutive periods từ tiết 1 của buổi chính
 						int consecutiveBonus = 0;
-						if (periodsOnThisDay > 0 && periodsOnThisDay < 4)
+						
+						// Xác định tiết bắt đầu của buổi chính
+						int tietBatDauBuoiChinh = isMainSessionMorning ? 1 : 6;
+						
+						if (periodsOnThisDay > 0)
 						{
-							// Đã có tiết trên ngày này → ưu tiên đặt liên tiếp trong CÙNG BUỔI
+							// Đã có tiết trên ngày này → BẮT BUỘC đặt liên tiếp từ tiết đầu đã có
 							var existingPeriods = sol.Slots
 								.Where(s => s.MaLop == req.MaLop && s.MaMon == req.MaMon && s.Thu == slot.thu)
 								.Select(s => s.Tiet)
 								.OrderBy(t => t)
 								.ToList();
 							
-							// Kiểm tra xem slot này có tạo thành consecutive trong CÙNG BUỔI không
+							int tietDauTien = existingPeriods.Min();
+							int tietCuoiCung = existingPeriods.Max();
+							
+							// Kiểm tra xem slot này có tạo thành consecutive từ tiết đầu không
 							var testPeriods = existingPeriods.Concat(new[] { slot.tiet }).OrderBy(t => t).ToList();
 							bool wouldBeConsecutive = ArePeriodsConsecutive(testPeriods);
 							
@@ -955,77 +1137,63 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 							string slotSession = GetSessionForPeriod(slot.tiet);
 							bool sameSessionAsExisting = existingPeriods.All(p => GetSessionForPeriod(p) == slotSession);
 							
-							if (wouldBeConsecutive && sameSessionAsExisting)
+							// ✅ BẮT BUỘC: Tiết đầu tiên phải là tiết 1 của buổi chính
+							if (tietDauTien == tietBatDauBuoiChinh)
 							{
-								consecutiveBonus = -50; // Ưu tiên cao cho consecutive trong cùng buổi
-							}
-							else if (sameSessionAsExisting && !wouldBeConsecutive)
-							{
-								consecutiveBonus = 10; // Penalty nhẹ cho cùng buổi nhưng không liên tiếp
-							}
-							else
-							{
-								consecutiveBonus = 30; // Penalty cao cho khác buổi (rời rạc)
-							}
-						}
-						
-						// Priority 5: Gom các tiết trái buổi vào cùng 1 buổi (tránh rời rạc)
-						int sessionConcentrationBonus = 0;
-						if (!isMainSession && periodsOnThisDay == 0)
-						{
-							// Đang ở buổi phụ và chưa có tiết nào trong ngày này
-							// Kiểm tra xem có ngày nào khác đã có tiết ở buổi phụ chưa
-							var auxiliaryPeriodsInOtherDays = sol.Slots
-								.Where(s => s.MaLop == req.MaLop && s.MaMon == req.MaMon && s.Thu != slot.thu)
-								.Select(s => s.Tiet)
-								.Where(t => GetSessionForPeriod(t) == (isMainSessionMorning ? "afternoon" : "morning"))
-								.ToList();
-							
-							if (auxiliaryPeriodsInOtherDays.Count > 0)
-							{
-								// Đã có tiết buổi phụ ở ngày khác → ưu tiên gom vào ngày đó
-								sessionConcentrationBonus = 20; // Penalty cho việc tạo buổi phụ mới
-							}
-						}
-						else if (!isMainSession && periodsOnThisDay > 0)
-						{
-							// Đang ở buổi phụ và đã có tiết trong ngày này
-							// Kiểm tra xem các tiết đã có có ở buổi phụ không
-							var existingPeriodsInDay = sol.Slots
-								.Where(s => s.MaLop == req.MaLop && s.MaMon == req.MaMon && s.Thu == slot.thu)
-								.Select(s => s.Tiet)
-								.ToList();
-							
-							bool allInAuxiliary = existingPeriodsInDay.All(t => GetSessionForPeriod(t) == (isMainSessionMorning ? "afternoon" : "morning"));
-							
-							if (allInAuxiliary)
-							{
-								sessionConcentrationBonus = -30; // Ưu tiên gom vào cùng buổi phụ
-							}
-						}
-						
-						// If we're in auxiliary session and main session is not full, prefer to fill main session first
-						if (!isMainSession)
-						{
-							// Check if main session is already full for this class on this day
-							int mainSessionPeriodsOnDay = sol.Slots.Count(s => 
-								s.MaLop == req.MaLop && s.Thu == slot.thu && 
-								(isMainSessionMorning ? s.Tiet <= 5 : s.Tiet >= 6));
-							int maxMainSessionPeriods = isMainSessionMorning ? 5 : 5; // 5 periods per day for main session
-							
-							if (mainSessionPeriodsOnDay < maxMainSessionPeriods)
-							{
-								priority += 100; // Heavily penalize auxiliary session if main session not full
+								// Đã bắt đầu đúng từ tiết 1 → ưu tiên liên tiếp
+								if (wouldBeConsecutive && sameSessionAsExisting)
+								{
+									// Liên tiếp và cùng buổi → ưu tiên cao nhất
+									consecutiveBonus = -100; // Ưu tiên rất cao
+								}
+								else if (sameSessionAsExisting && !wouldBeConsecutive)
+								{
+									// Cùng buổi nhưng không liên tiếp → penalty lớn
+									consecutiveBonus = 1000; // Penalty lớn
+								}
+								else
+								{
+									// Khác buổi → penalty rất lớn
+									consecutiveBonus = 2000; // Penalty rất lớn
+								}
 							}
 							else
 							{
-								// Main session is full, now prefer to concentrate auxiliary periods on one day
-								priority += periodsOnThisDay > 0 ? 0 : 10; // Prefer days that already have auxiliary periods
+								// Tiết đầu không phải tiết 1 của buổi chính → penalty cực lớn
+								consecutiveBonus = 5000; // Penalty cực lớn
+							}
+						}
+						else
+						{
+							// Chưa có tiết nào trong ngày này → BẮT BUỘC bắt đầu từ tiết 1 của buổi chính
+							// Kiểm tra xem tiết 1 của buổi chính có còn trống không
+							bool tiet1Trong = !sol.Slots.Any(s => 
+								s.MaLop == req.MaLop && s.Thu == slot.thu && s.Tiet == tietBatDauBuoiChinh);
+							
+							if (slot.tiet == tietBatDauBuoiChinh && tiet1Trong)
+							{
+								consecutiveBonus = -200; // Ưu tiên cực cao cho tiết 1 buổi chính (còn trống)
+							}
+							else if (slot.tiet == tietBatDauBuoiChinh && !tiet1Trong)
+							{
+								// Tiết 1 đã bị chiếm bởi môn khác → không thể dùng
+								consecutiveBonus = 10000; // Penalty cực lớn
+							}
+							else if (isMainSession && slot.tiet == tietBatDauBuoiChinh + 1)
+							{
+								// Tiết 2 của buổi chính (chấp nhận được nếu tiết 1 đã bị chiếm bởi môn khác)
+								consecutiveBonus = -50;
+							}
+							else
+							{
+								// Không phải tiết 1 hoặc 2 của buổi chính → penalty lớn
+								consecutiveBonus = 1000;
 							}
 						}
 						
-						// Combine all priorities: session priority > consecutive bonus > session concentration > daily count > periods on day
-						return priority * 100000 + consecutiveBonus * 10000 + sessionConcentrationBonus * 1000 + countOnDay * 100 + periodsOnThisDay;
+						// Combine all priorities: consecutive (bắt buộc) > base priority > auxiliary concentration > daily count > periods on day
+						// ✅ Consecutive bonus được nhân với hệ số lớn để đảm bảo ưu tiên cao nhất
+						return consecutiveBonus * 100 + priority + auxiliaryConcentrationBonus + countOnDay + periodsOnThisDay;
 					})
 					.ThenBy(slot => rand.Next()) // Add some randomness for ties
 					.ToList();
@@ -1696,6 +1864,97 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 			
 			// Default: Assume khối 10 if cannot determine
 			return 10;
+		}
+
+		/// <summary>
+		/// Xác định số tuần trong học kỳ (18 tuần cho HK1, 17 tuần cho HK2)
+		/// Tuần cuối cùng (tuần thi) sẽ không xếp TKB
+		/// </summary>
+		private int GetWeeksInSemester(int semesterId)
+		{
+			var hocKyBUS = new HocKyBUS();
+			var hocKy = hocKyBUS.LayHocKyTheoMa(semesterId);
+			
+			if (hocKy == null)
+				return 18; // Default
+			
+			// Xác định học kỳ 1 hay 2 từ TenHocKy
+			string tenHocKy = hocKy.TenHocKy?.ToLower() ?? "";
+			bool isSemester1 = (tenHocKy.Contains("i") && !tenHocKy.Contains("ii")) ||
+							   (tenHocKy.Contains("1") && !tenHocKy.Contains("2"));
+			
+			return isSemester1 ? 18 : 17; // HK1: 18 tuần, HK2: 17 tuần
+		}
+
+		/// <summary>
+		/// Xác định độ ưu tiên của môn học
+		/// 1 = Môn chính (ưu tiên cao nhất)
+		/// 2 = Khoa học tự nhiên / Khoa học xã hội (ưu tiên trung bình)
+		/// 3 = Kỹ năng khác (ưu tiên thấp nhất)
+		/// </summary>
+		private int GetSubjectPriority(int maMon)
+		{
+			var monHocDAO = new MonHocDAO();
+			var monHoc = monHocDAO.LayDSMonHocTheoId(maMon);
+			
+			if (monHoc == null)
+				return 3; // Default: ưu tiên thấp
+			
+			string tenMon = monHoc.tenMon?.ToLower() ?? "";
+			
+			// Môn chính: Toán, Ngữ văn, Tiếng Anh
+			if (tenMon.Contains("toán") || tenMon.Contains("ngữ văn") || 
+				tenMon.Contains("tiếng anh") || tenMon.Contains("anh văn"))
+			{
+				return 1; // Ưu tiên cao nhất
+			}
+			
+			// Khoa học tự nhiên: Vật lý, Hóa học, Sinh học
+			// Khoa học xã hội: Lịch sử, Địa lý, GDCD
+			if (tenMon.Contains("vật lý") || tenMon.Contains("vật lí") ||
+				tenMon.Contains("hóa học") || tenMon.Contains("sinh học") ||
+				tenMon.Contains("lịch sử") || tenMon.Contains("địa lý") || tenMon.Contains("địa lí") ||
+				tenMon.Contains("gdcd") || tenMon.Contains("giáo dục công dân"))
+			{
+				return 2; // Ưu tiên trung bình
+			}
+			
+			// Kỹ năng khác: Thể dục, Tin học, Công nghệ, GDQP-AN, v.v.
+			return 3; // Ưu tiên thấp nhất
+		}
+
+		/// <summary>
+		/// Kiểm tra xem môn học có phải là Chào cờ không
+		/// </summary>
+		private bool IsChaoCo(int maMon)
+		{
+			// Mã đặc biệt cho Chào Cờ (không có trong database)
+			if (maMon == 0) return true;
+			
+			// Kiểm tra trong database (nếu có)
+			var monHocDAO = new MonHocDAO();
+			var monHoc = monHocDAO.LayDSMonHocTheoId(maMon);
+			if (monHoc == null) return false;
+			
+			string tenMon = monHoc.tenMon?.ToLower() ?? "";
+			return tenMon.Contains("chào cờ");
+		}
+
+		/// <summary>
+		/// Kiểm tra xem môn học có phải là SHL (Sinh hoạt lớp) không
+		/// </summary>
+		private bool IsSHL(int maMon)
+		{
+			// Mã đặc biệt cho SHL (không có trong database)
+			if (maMon == -1) return true;
+			
+			// Kiểm tra trong database (nếu có)
+			var monHocDAO = new MonHocDAO();
+			var monHoc = monHocDAO.LayDSMonHocTheoId(maMon);
+			if (monHoc == null) return false;
+			
+			string tenMon = monHoc.tenMon?.ToLower() ?? "";
+			return tenMon.Contains("shl") || tenMon.Contains("sinh hoạt");
 		}
 	}
 }

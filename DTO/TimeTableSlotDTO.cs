@@ -56,10 +56,11 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return _maPhanCong; }
             set
             {
-                if (value > 0)
+                // Cho phép 0 cho các môn đặc biệt (Chào Cờ, Sinh hoạt lớp) không có trong database
+                if (value >= 0)
                     _maPhanCong = value;
                 else
-                    throw new ArgumentException("Mã phân công phải lớn hơn 0");
+                    throw new ArgumentException("Mã phân công phải lớn hơn hoặc bằng 0");
             }
         }
 
@@ -111,10 +112,8 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return _maGiaoVien ?? string.Empty; }
             set
             {
-                if (!string.IsNullOrWhiteSpace(value))
-                    _maGiaoVien = value;
-                else
-                    throw new ArgumentException("Mã giáo viên không được để trống");
+                // Cho phép empty string cho các môn đặc biệt (Chào Cờ, Sinh hoạt lớp) không có giáo viên
+                _maGiaoVien = value ?? string.Empty;
             }
         }
 

@@ -21,19 +21,19 @@ INSERT INTO KhoiLop (MaKhoi, TenKhoi) VALUES
 
 -- Môn học (13 môn theo chương trình THPT)
 INSERT INTO MonHoc (MaMonHoc, TenMonHoc, SoTiet, GhiChu) VALUES
-(1, 'Ngữ văn', 50, 'Môn chính'),
-(2, 'Toán', 60, 'Môn chính'),
-(3, 'Tiếng Anh', 41, 'Môn chính'),
-(4, 'Lịch sử', 36, 'Khoa học xã hội'),
-(5, 'Địa lý', 50, 'Khoa học xã hội'),
+(1, 'Ngữ văn', 52, 'Môn chính'),
+(2, 'Toán', 52, 'Môn chính'),
+(3, 'Tiếng Anh', 52, 'Môn chính'),
+(4, 'Lịch sử', 35, 'Khoa học xã hội'),
+(5, 'Địa lý', 35, 'Khoa học xã hội'),
 (6, 'GD Kinh tế & Pháp luật', 35, 'Khoa học xã hội'),
 (7, 'Vật lý', 35, 'Khoa học tự nhiên'),
-(8, 'Hóa học', 41, 'Khoa học tự nhiên'),
-(9, 'Sinh học', 23, 'Khoa học tự nhiên'),
-(10, 'Công nghệ', 41, 'Khoa học xã hội'),
-(11, 'Tin học', 53, 'Kỹ năng khác'),
+(8, 'Hóa học', 35, 'Khoa học tự nhiên'),
+(9, 'Sinh học', 35, 'Khoa học tự nhiên'),
+(10, 'Công nghệ', 35, 'Khoa học xã hội'),
+(11, 'Tin học', 35, 'Kỹ năng khác'),
 (12, 'Giáo dục thể chất', 35, 'Kỹ năng khác'),
-(13, 'GDQP-AN', 26, 'Kỹ năng khác');
+(13, 'GDQP-AN', 18, 'Kỹ năng khác');
 
 -- Vai trò hệ thống
 INSERT IGNORE INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES

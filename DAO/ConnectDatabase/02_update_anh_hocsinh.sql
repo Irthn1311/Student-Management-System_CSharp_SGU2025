@@ -43,7 +43,7 @@ DROP PROCEDURE IF EXISTS AddAnhDaiDienColumn;
 -- Sử dụng modulo để phân bổ đều: (MaHocSinh - 1) % 4 + 1
 -- Phân bổ 4 ảnh: hs1.jpg, hs2.jpg, hs3.jpg, hs4.jpg
 UPDATE HocSinh 
-SET AnhDaiDien = CONCAT('Images/Students/hs', ((MaHocSinh - 1) % 4) + 1, '.jpg');
+SET AnhDaiDien = CONCAT('Images/hs', ((MaHocSinh - 1) % 4) + 1, '.jpg');
 
 -- Kiểm tra kết quả
 SELECT 

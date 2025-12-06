@@ -148,31 +148,110 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// Load danh sách Học kỳ vào ComboBox
+        /// Load danh sách Học kỳ vào ComboBox (group theo năm học, giống PhanCongGiangDay)
         /// </summary>
         private void LoadHocKyComboBox()
         {
             try
             {
+                // Gỡ event handler tạm thời để tránh trigger khi đang load
+                cbHocKyNamHoc.SelectedIndexChanged -= cbHocKyNamHoc_SelectedIndexChanged;
+                
                 var dsHocKy = hocKyBUS.DocDSHocKy();
                 cbHocKyNamHoc.Items.Clear();
-                cbHocKyNamHoc.Items.Add("-- Chọn học kỳ --");
+                cbHocKyNamHoc.Items.Add(new ComboBoxItem { Text = "-- Chọn học kỳ --", Value = null });
 
                 if (dsHocKy != null && dsHocKy.Count > 0)
                 {
-                    foreach (var hk in dsHocKy)
+                    // Group theo MaNamHoc
+                    var namHocGroups = dsHocKy
+                        .Select(hk => hk.MaNamHoc)
+                        .Distinct()
+                        .OrderByDescending(nh => nh)
+                        .ToList();
+
+                    foreach (var namHoc in namHocGroups)
                     {
-                        cbHocKyNamHoc.Items.Add(hk.TenHocKy);
+                        if (!string.IsNullOrEmpty(namHoc))
+                        {
+                            // Thêm option "Cả năm"
+                            cbHocKyNamHoc.Items.Add(new ComboBoxItem 
+                            { 
+                                Text = $"📅 Cả năm {namHoc}", 
+                                Value = $"NAM_{namHoc}" // Đánh dấu là năm học
+                            });
+
+                            // Thêm từng học kỳ trong năm (filter theo MaNamHoc)
+                            var hocKyTrongNam = dsHocKy
+                                .Where(hk => hk.MaNamHoc == namHoc)
+                                .OrderBy(hk => hk.TenHocKy)
+                                .ToList();
+
+                            foreach (var hk in hocKyTrongNam)
+                            {
+                                // Kiểm tra trạng thái TKB
+                                bool hasTKB = tkbBUS.HasScheduleForSemester(hk.MaHocKy);
+                                string statusText = hasTKB ? " (ĐÃ CÓ TKB)" : " (CHƯA CÓ TKB)";
+                                
+                                cbHocKyNamHoc.Items.Add(new ComboBoxItem 
+                                { 
+                                    Text = $"   {hk.TenHocKy}{statusText}", // Indent + status
+                                    Value = hk.MaHocKy 
+                                });
+                            }
+                        }
                     }
+                    
                     cbHocKyNamHoc.Tag = dsHocKy;
                 }
 
+                // Custom DrawItem để hiển thị ComboBoxItem đúng
+                cbHocKyNamHoc.DrawItem -= CbHocKyNamHoc_DrawItem;
+                cbHocKyNamHoc.DrawMode = DrawMode.OwnerDrawFixed;
+                cbHocKyNamHoc.DrawItem += CbHocKyNamHoc_DrawItem;
+
                 cbHocKyNamHoc.SelectedIndex = 0;
+                
+                // Gắn lại event handler sau khi đã set SelectedIndex
+                cbHocKyNamHoc.SelectedIndexChanged += cbHocKyNamHoc_SelectedIndexChanged;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi load học kỳ: {ex.Message}", "Lỗi", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Custom DrawItem cho Guna2ComboBox để hiển thị ComboBoxItem đúng
+        /// </summary>
+        private void CbHocKyNamHoc_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            try
+            {
+                if (e.Index < 0 || e.Index >= cbHocKyNamHoc.Items.Count)
+                    return;
+
+                e.DrawBackground();
+                
+                var item = cbHocKyNamHoc.Items[e.Index] as ComboBoxItem;
+                string text = item != null ? item.Text : cbHocKyNamHoc.Items[e.Index]?.ToString() ?? "";
+                
+                // Vẽ text với màu phù hợp
+                Color textColor = (e.State & DrawItemState.Selected) == DrawItemState.Selected 
+                    ? Color.White 
+                    : e.ForeColor;
+                
+                using (Brush brush = new SolidBrush(textColor))
+                {
+                    e.Graphics.DrawString(text, e.Font, brush, e.Bounds);
+                }
+                
+                e.DrawFocusRectangle();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi CbHocKyNamHoc_DrawItem: {ex.Message}");
             }
         }
 
@@ -495,25 +574,54 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                // Lấy học kỳ từ Tag
-                var dsHocKy = cbHocKyNamHoc.Tag as List<HocKyDTO>;
-                if (dsHocKy == null || selectedIndex > dsHocKy.Count)
+                // Lấy ComboBoxItem từ Items[SelectedIndex]
+                var item = cbHocKyNamHoc.Items[selectedIndex] as ComboBoxItem;
+                if (item == null || item.Value == null)
                 {
-                    MessageBox.Show("Lỗi: Không tìm thấy dữ liệu học kỳ.", "Lỗi");
+                    ResetState();
                     return;
                 }
 
-                var selectedHK = dsHocKy[selectedIndex - 1];
-                currentSemesterId = selectedHK.MaHocKy;
+                string valueStr = item.Value.ToString();
+                
+                // Nếu là năm học (NAM_xxx), không xử lý
+                if (valueStr.StartsWith("NAM_"))
+                {
+                    ResetState();
+                    lblContextInfo.Text = item.Text.Replace("📅 ", "");
+                    return;
+                }
+
+                // Parse MaHocKy từ Value
+                if (!int.TryParse(valueStr, out int maHocKy))
+                {
+                    MessageBox.Show("Lỗi: Không thể xác định mã học kỳ.", "Lỗi");
+                    ResetState();
+                    return;
+                }
+
+                // Lấy học kỳ từ Tag để lấy thông tin chi tiết
+                var dsHocKy = cbHocKyNamHoc.Tag as List<HocKyDTO>;
+                var selectedHK = dsHocKy?.FirstOrDefault(hk => hk.MaHocKy == maHocKy);
+                
+                if (selectedHK == null)
+                {
+                    MessageBox.Show("Lỗi: Không tìm thấy dữ liệu học kỳ.", "Lỗi");
+                    ResetState();
+                    return;
+                }
+
+                currentSemesterId = maHocKy;
                 string tenHocKy = selectedHK.TenHocKy;
-				lblContextInfo.Text = tenHocKy;
+                lblContextInfo.Text = tenHocKy;
 
                 // Kiểm tra xem học kỳ này đã có TKB chưa
                 hasTKBForSemester = tkbBUS.HasScheduleForSemester(currentSemesterId);
 
                 if (hasTKBForSemester)
                 {
-                    LoadData(currentSemesterId);
+                    // ✅ FIX: Chỉ enable lớp, KHÔNG load TKB ngay (chờ chọn lớp)
+                    cbLop.Enabled = true;
                     
                     // Apply role-based restrictions after semester is selected
                     ApplyRoleBasedTimetableView();
@@ -526,7 +634,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         {
                             SelectClassInComboBox(studentClassId.Value);
                             cbLop.Enabled = false; // Lock to student's class
+                            // Load TKB cho lớp của học sinh
+                            LoadData(currentSemesterId);
                         }
+                    }
+                    // ✅ FIX: Chỉ load TKB khi đã chọn lớp (trong class view mode)
+                    // Nếu là teacher view mode, sẽ load khi chọn giáo viên
+                    else if (currentViewMode == "Thời khóa biểu giảng dạy" && !string.IsNullOrEmpty(currentTeacherId))
+                    {
+                        // Teacher view: load ngay nếu đã chọn giáo viên
+                        LoadData(currentSemesterId);
+                    }
+                    // Class view mode: KHÔNG load TKB, chờ chọn lớp
+                    else
+                    {
+                        // Clear panels và hiển thị thông báo
+                        ClearAllPanels();
                     }
                     
                     if (PermissionHelper.HasPermission(PermissionHelper.QLTKB, PermissionHelper.CREATE))
@@ -539,8 +662,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     {
                         btnXoa.Enabled = true;
                     }
-
-                    
                 }
                 else
                 {
@@ -555,8 +676,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     if (btnXoa.Visible)
                         btnXoa.Enabled = false;
-
-                   
 
                     MessageBox.Show(
                         $"Học kỳ '{tenHocKy}' chưa có Thời khóa biểu.\n\n" +
@@ -604,14 +723,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Index 0 = placeholder
                 if (selectedIndex <= 0)
                 {
-                    foreach (var panel in gridPanels.Values)
-                    {
-                        panel.Visible = true;
-                    }
+                    // Chưa chọn lớp, clear panels
+                    ClearAllPanels();
                     currentLopId = 0;
-                    
-                    var selectedHK = GetSelectedHocKy();
-                    
                     return;
                 }
 
@@ -626,16 +740,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 var selectedLop = dsLop[selectedIndex - 1];
                 currentLopId = selectedLop.maLop;
                 
-                
-                // Load all data and filter by class BEFORE populating grid
-                var allSlots = tkbBUS.GetTKBViewByHocKy(currentSemesterId);
-                if (allSlots != null && allSlots.Count > 0)
-                {
-                    ClearAllPanels();
-                    // Filter slots by selected class BEFORE populating
-                    var filteredSlots = allSlots.Where(s => s.MaLop == currentLopId).ToList();
-                    PopulateGridFromSlots(filteredSlots);
-                }
+                // ✅ Gọi LoadData() để load TKB cho lớp đã chọn
+                LoadData(currentSemesterId);
             }
             catch (Exception ex)
             {
@@ -732,17 +838,32 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// Helper: Lấy HocKyDTO đang chọn
+        /// Helper: Lấy HocKyDTO đang chọn (sử dụng ComboBoxItem)
         /// </summary>
         private HocKyDTO GetSelectedHocKy()
         {
             int selectedIndex = cbHocKyNamHoc.SelectedIndex;
             if (selectedIndex <= 0) return null;
 
-            var dsHocKy = cbHocKyNamHoc.Tag as List<HocKyDTO>;
-            if (dsHocKy == null || selectedIndex > dsHocKy.Count) return null;
+            // Lấy ComboBoxItem từ Items[SelectedIndex]
+            var item = cbHocKyNamHoc.Items[selectedIndex] as ComboBoxItem;
+            if (item == null || item.Value == null) return null;
 
-            return dsHocKy[selectedIndex - 1];
+            string valueStr = item.Value.ToString();
+            
+            // Nếu là năm học (NAM_xxx), không trả về học kỳ cụ thể
+            if (valueStr.StartsWith("NAM_"))
+                return null;
+
+            // Parse MaHocKy từ Value
+            if (!int.TryParse(valueStr, out int maHocKy))
+                return null;
+
+            // Tìm HocKyDTO từ Tag
+            var dsHocKy = cbHocKyNamHoc.Tag as List<HocKyDTO>;
+            if (dsHocKy == null) return null;
+
+            return dsHocKy.FirstOrDefault(hk => hk.MaHocKy == maHocKy);
         }
 
         /// <summary>
@@ -1008,21 +1129,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                // Class view mode: Load all data, but filter by selected class if one is selected
-                var slots = tkbBUS.GetTKBViewByHocKy(maHocKy);
-                
-                if (slots == null || slots.Count == 0)
+                // ✅ FIX: Class view mode - CHỈ hiển thị khi đã chọn lớp
+                if (currentViewMode == "Thời khóa biểu lớp")
                 {
-                    return;
-                }
+                    if (currentLopId <= 0)
+                    {
+                        // Chưa chọn lớp, không hiển thị gì
+                        ClearAllPanels();
+                        return;
+                    }
 
-                // If a class is selected, filter slots by that class BEFORE populating
-                if (currentViewMode == "Thời khóa biểu lớp" && currentLopId > 0)
-                {
+                    // Đã chọn lớp, load và filter theo lớp
+                    var slots = tkbBUS.GetTKBViewByHocKy(maHocKy);
+                    
+                    if (slots == null || slots.Count == 0)
+                    {
+                        return;
+                    }
+
+                    // Filter slots by selected class
                     slots = slots.Where(s => s.MaLop == currentLopId).ToList();
+                    PopulateGridFromSlots(slots);
                 }
-
-                PopulateGridFromSlots(slots);
             }
             catch (Exception ex)
             {
@@ -1345,6 +1473,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 { "khtn", Color.FromArgb(240, 253, 250) },
                 { "chào cờ", Color.FromArgb(254, 252, 232) },
                 { "shl", Color.FromArgb(254, 252, 232) },
+                { "sinh hoạt lớp", Color.FromArgb(254, 252, 232) },
                 { "hđtn", Color.FromArgb(245, 243, 255) }
             };
 
@@ -1491,6 +1620,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void tableThoiKhoaBieu_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// Helper class cho ComboBox items
+        /// </summary>
+        private class ComboBoxItem
+        {
+            public string Text { get; set; }
+            public object Value { get; set; }
+
+            public override string ToString()
+            {
+                return Text;
+            }
         }
     }
 }

@@ -372,16 +372,99 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 progressBar.Value = 10;
                 Application.DoEvents();
 
-                // Generate schedule using new SchedulingService
+                // ✅ Xác định số tuần cần tạo TKB (18 tuần HK1, 17 tuần HK2, bỏ tuần cuối)
+                var hocKyBUS = new HocKyBUS();
+                var hocKy = hocKyBUS.LayHocKyTheoMa(_semesterId);
+                int totalWeeks = 18; // Default
+                
+                if (hocKy != null)
+                {
+                    string tenHocKy = hocKy.TenHocKy?.ToLower() ?? "";
+                    bool isSemester1 = (tenHocKy.Contains("i") && !tenHocKy.Contains("ii")) ||
+                                       (tenHocKy.Contains("1") && !tenHocKy.Contains("2"));
+                    totalWeeks = isSemester1 ? 18 : 17; // HK1: 18 tuần, HK2: 17 tuần
+                }
+                
+                // Tuần cuối cùng (tuần thi) không xếp TKB
+                int weeksToGenerate = totalWeeks - 1;
+                
+                txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] Tạo TKB cố định cho {weeksToGenerate} tuần (bỏ tuần cuối - tuần thi)...\r\n");
                 txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] Chạy Greedy Initialization + Tabu Search Optimization...\r\n");
+                
+                // ✅ Tạo TKB 1 lần (cho tuần 1), sau đó áp dụng cho tất cả các tuần
+                progressBar.Value = 10;
+                Application.DoEvents();
+                
+                // Tạo TKB cho tuần 1
                 currentResult = await _schedulingService.GenerateToTempWithConfigAsync(
                     _semesterId,
-                    _weekNo,
+                    1, // Chỉ tạo cho tuần 1
                     _config,
                     _cts.Token,
                     progress);
-
-                progressBar.Value = 90;
+                
+                if (currentResult.Success)
+                {
+                    txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] ✅ TKB đã được tạo thành công cho tuần 1 ({currentResult.TotalSlots} tiết)\r\n");
+                    txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] 📋 Đang áp dụng TKB cố định cho tất cả các tuần (1-{weeksToGenerate})...\r\n");
+                    
+                    // Lấy TKB từ tuần 1
+                    var tkbBUS = new ThoiKhoaBieuBUS();
+                    var slots = tkbBUS.GetWeek(_semesterId, 1);
+                    
+                    if (slots != null && slots.Count > 0)
+                    {
+                        // Áp dụng TKB này cho tất cả các tuần (2 đến weeksToGenerate)
+                        int appliedCount = 0;
+                        for (int week = 2; week <= weeksToGenerate; week++)
+                        {
+                            if (_cts.Token.IsCancellationRequested)
+                            {
+                                txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] ⚠️ Đã hủy áp dụng TKB.\r\n");
+                                break;
+                            }
+                            
+                            progressBar.Value = 50 + (int)((week - 2) * 40.0 / (weeksToGenerate - 1));
+                            Application.DoEvents();
+                            
+                            // ✅ Clear TKB_Temp cho tuần này trước khi insert (tránh duplicate)
+                            tkbBUS.ClearTempForSemester(_semesterId, week);
+                            
+                            // ✅ Remove duplicate slots (cùng MaLop, Thu, Tiet) trước khi insert
+                            var uniqueSlots = new List<AssignmentSlot>();
+                            var seenSlots = new HashSet<string>(); // Key: "{MaLop}-{Thu}-{Tiet}"
+                            
+                            foreach (var slot in slots)
+                            {
+                                string key = $"{slot.MaLop}-{slot.Thu}-{slot.Tiet}";
+                                if (!seenSlots.Contains(key))
+                                {
+                                    seenSlots.Add(key);
+                                    uniqueSlots.Add(slot);
+                                }
+                            }
+                            
+                            // Lưu TKB cho tuần này (copy từ tuần 1)
+                            var solution = new ScheduleSolution 
+                            { 
+                                Slots = new BindingList<AssignmentSlot>(uniqueSlots) 
+                            };
+                            tkbBUS.InsertTemp(_semesterId, week, solution);
+                            appliedCount++;
+                        }
+                        
+                        txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] ✅ Đã áp dụng TKB cố định cho {appliedCount + 1} tuần (tuần 1-{weeksToGenerate})\r\n");
+                        progressBar.Value = 90;
+                    }
+                    else
+                    {
+                        txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] ⚠️ Không thể lấy TKB từ tuần 1 để áp dụng cho các tuần khác.\r\n");
+                    }
+                }
+                else
+                {
+                    progressBar.Value = 90;
+                }
 
                 if (!currentResult.Success)
                 {
