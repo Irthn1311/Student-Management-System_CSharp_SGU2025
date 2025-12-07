@@ -18,6 +18,8 @@ using Student_Management_System_CSharp_SGU2025.BUS.Services;
 using Student_Management_System_CSharp_SGU2025.DAO.ConnectDatabase;
 using Guna.UI2.WinForms;
 using System.Text.RegularExpressions;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
@@ -77,12 +79,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                // ✅ Áp dụng phân quyền chi tiết cho các button
-                PermissionHelper.ApplyPermissionThoiKhoaBieu(
-                    btnSapXepTuDong,
-                    null, // btnLuuDiem đã bị xóa
-                    btnXoa
-                );
+                // ✅ Áp dụng phân quyền chi tiết cho các button (không có btnXoa nữa)
+                // Chỉ áp dụng cho nút Sắp xếp tự động
+                if (PermissionHelper.HasPermission(PermissionHelper.QLTKB, PermissionHelper.CREATE))
+                {
+                    btnSapXepTuDong.Visible = true;
+                }
+                else
+                {
+                    btnSapXepTuDong.Visible = false;
+                }
             }
             catch (Exception ex)
             {
@@ -106,6 +112,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Load Học kỳ
                 LoadHocKyComboBox();
 
+                // ✅ Tự động chọn học kỳ hiện tại
+                SelectCurrentSemester();
+
                 // Load Lớp (disabled initially)
                 LoadLopComboBox();
                 cbLop.Enabled = false;
@@ -118,8 +127,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Apply role-based UI restrictions
                 ApplyRoleBasedTimetableView();
 
+                
+
                 // Disable action buttons initially
-                btnXoa.Enabled = false;
                 btnSapXepTuDong.Enabled = false;
 
 				// Initialize grid with Guna2Panel controls
@@ -132,6 +142,46 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 MessageBox.Show($"Lỗi khi khởi tạo giao diện: {ex.Message}", "Lỗi", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// ✅ Tự động chọn học kỳ hiện tại khi vào trang
+        /// </summary>
+        private void SelectCurrentSemester()
+        {
+            try
+            {
+                var hocKyHienTai = SemesterHelper.GetCurrentSemester();
+                
+                if (hocKyHienTai != null && cbHocKyNamHoc.Items.Count > 0)
+                {
+                    for (int i = 0; i < cbHocKyNamHoc.Items.Count; i++)
+                    {
+                        var item = cbHocKyNamHoc.Items[i] as ComboBoxItem;
+                        if (item != null && item.Value != null)
+                        {
+                            string valueStr = item.Value.ToString();
+                            // Bỏ qua các item là năm học (NAM_xxx)
+                            if (!valueStr.StartsWith("NAM_") && valueStr == hocKyHienTai.MaHocKy.ToString())
+                            {
+                                // Tạm thời gỡ event handler để tránh trigger khi đang set
+                                cbHocKyNamHoc.SelectedIndexChanged -= cbHocKyNamHoc_SelectedIndexChanged;
+                                cbHocKyNamHoc.SelectedIndex = i;
+                                cbHocKyNamHoc.SelectedIndexChanged += cbHocKyNamHoc_SelectedIndexChanged;
+                                
+                                // Trigger event để load dữ liệu
+                                cbHocKyNamHoc_SelectedIndexChanged(cbHocKyNamHoc, EventArgs.Empty);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Không hiển thị lỗi, chỉ log để không làm gián đoạn quá trình load
+                Console.WriteLine($"Lỗi khi tự động chọn học kỳ hiện tại: {ex.Message}");
             }
         }
 
@@ -483,11 +533,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         cbGiaoVien.Visible = true;
                     }
 
-                    // Disable auto-generate and delete for teachers
+                    // Disable auto-generate for teachers
                     btnSapXepTuDong.Visible = false;
                     btnSapXepTuDong.Enabled = false;
-                    btnXoa.Visible = false;
-                    btnXoa.Enabled = false;
                     return;
                 }
 
@@ -504,8 +552,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     // Disable all editing features for students/parents
                     btnSapXepTuDong.Visible = false;
                     btnSapXepTuDong.Enabled = false;
-                    btnXoa.Visible = false;
-                    btnXoa.Enabled = false;
 
                     // Will pre-select student's class when semester is selected
                 }
@@ -652,15 +698,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         ClearAllPanels();
                     }
                     
+                    // ✅ Disable nút Sắp xếp tự động khi đã có TKB (không cho tạo lại)
                     if (PermissionHelper.HasPermission(PermissionHelper.QLTKB, PermissionHelper.CREATE))
                     {
-                        btnSapXepTuDong.Enabled = true;
-                        btnSapXepTuDong.Text = "Tạo lại TKB";
-                    }
-                    
-                    if (PermissionHelper.HasPermission(PermissionHelper.QLTKB, PermissionHelper.DELETE))
-                    {
-                        btnXoa.Enabled = true;
+                        btnSapXepTuDong.Enabled = false;
+                        btnSapXepTuDong.Text = "Đã có TKB";
                     }
                 }
                 else
@@ -673,16 +715,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         btnSapXepTuDong.Enabled = true;
                         btnSapXepTuDong.Text = "Sắp xếp tự động";
                     }
-
-                    if (btnXoa.Visible)
-                        btnXoa.Enabled = false;
-
-                    MessageBox.Show(
-                        $"Học kỳ '{tenHocKy}' chưa có Thời khóa biểu.\n\n" +
-                        $"📌 Vui lòng nhấn nút 'Sắp xếp tự động' để tạo TKB.",
-                        "Thông báo",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -703,9 +735,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             cbLop.Enabled = false;
             cbLop.SelectedIndex = 0;
             btnSapXepTuDong.Enabled = false;
-            
-            if (btnXoa.Visible)
-                btnXoa.Enabled = false;
         }
 
         /// <summary>
@@ -891,14 +920,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         // Refresh UI sau khi tạo TKB thành công
                         hasTKBForSemester = true;
                         cbLop.Enabled = true;
-                        btnSapXepTuDong.Text = "Tạo lại TKB";
-
-                        if (PermissionHelper.HasPermission(PermissionHelper.QLTKB, PermissionHelper.DELETE))
-                        {
-                            btnXoa.Enabled = true;
-                        }
-
-                      
+                        
+                        // ✅ Disable nút Sắp xếp tự động sau khi đã tạo TKB
+                        btnSapXepTuDong.Enabled = false;
+                        btnSapXepTuDong.Text = "Đã có TKB";
                         
                         LoadData(currentSemesterId);
 
@@ -919,79 +944,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// Nút "Xóa" → Xóa toàn bộ TKB của học kỳ
+        /// ✅ Event handler cho nút Xóa TKB - đã bị vô hiệu hóa
         /// </summary>
         private void btnRollback_Click(object sender, EventArgs e)
         {
-            if (!PermissionHelper.CheckDeletePermission(PermissionHelper.QLTKB, "Thời khóa biểu"))
-                return;
-
-            if (currentSemesterId == 0)
-            {
-                MessageBox.Show("Vui lòng chọn Học kỳ trước!",
-                    "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var confirm = MessageBox.Show(
-                "Bạn có chắc chắn muốn xóa toàn bộ thời khóa biểu của học kỳ này?\n\n" +
-                "⚠ Thao tác này không thể hoàn tác!",
-                "Xác nhận xóa TKB",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
-
-            if (confirm != DialogResult.Yes) return;
-
-            try
-            {
-                Cursor.Current = Cursors.WaitCursor;
-
-                // Delete all TKB records for this semester
-                const string deleteSql = @"
-                    DELETE tkb FROM ThoiKhoaBieu tkb
-                    JOIN PhanCongGiangDay pc ON tkb.MaPhanCong = pc.MaPhanCong
-                    WHERE pc.MaHocKy = @MaHocKy";
-
-                using (var conn = ConnectionDatabase.GetConnection())
-                {
-                    conn.Open();
-                    using (var cmd = new MySqlCommand(deleteSql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaHocKy", currentSemesterId);
-                        int rowsDeleted = cmd.ExecuteNonQuery();
-                        
-                        MessageBox.Show(
-                            $"✅ Đã xóa {rowsDeleted} bản ghi thời khóa biểu.",
-                            "Thành công",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                    }
-                }
-
-                // Refresh UI
-                hasTKBForSemester = false;
-                cbLop.Enabled = false;
-                cbLop.SelectedIndex = 0;
-                ClearAllPanels();
-                
-               
-
-                btnSapXepTuDong.Text = "Sắp xếp tự động";
-                if (btnXoa.Visible)
-                    btnXoa.Enabled = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"Không thể xóa thời khóa biểu:\n\n{ex.Message}",
-                    "Lỗi",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
+            // Không cho phép xóa TKB đã tạo
+            MessageBox.Show(
+                "Thời khóa biểu đã được tạo không thể xóa.\n\n" +
+                "Vui lòng liên hệ quản trị viên nếu cần hỗ trợ.",
+                "Thông báo",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
 
         #region Grid Initialization & Data Loading
@@ -1513,14 +1476,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
 
             var contextMenu = new ContextMenuStrip();
-            var menuItemClass = new ToolStripMenuItem("Xuất theo Lớp");
-            var menuItemTeacher = new ToolStripMenuItem("Xuất theo Giáo viên");
+            var menuItemExcelClass = new ToolStripMenuItem("Xuất Excel theo Lớp");
+            var menuItemExcelTeacher = new ToolStripMenuItem("Xuất Excel theo Giáo viên");
+            var menuItemPDFClass = new ToolStripMenuItem("Xuất PDF theo Lớp");
+            var menuItemPDFTeacher = new ToolStripMenuItem("Xuất PDF theo Giáo viên");
 
-            menuItemClass.Click += (s, args) => ExportToExcel("Class");
-            menuItemTeacher.Click += (s, args) => ExportToExcel("Teacher");
+            menuItemExcelClass.Click += (s, args) => ExportToExcel("Class");
+            menuItemExcelTeacher.Click += (s, args) => ExportToExcel("Teacher");
+            menuItemPDFClass.Click += (s, args) => ExportToPDF("Class");
+            menuItemPDFTeacher.Click += (s, args) => ExportToPDF("Teacher");
 
-            contextMenu.Items.Add(menuItemClass);
-            contextMenu.Items.Add(menuItemTeacher);
+            contextMenu.Items.Add(menuItemExcelClass);
+            contextMenu.Items.Add(menuItemExcelTeacher);
+            contextMenu.Items.Add(new ToolStripSeparator());
+            contextMenu.Items.Add(menuItemPDFClass);
+            contextMenu.Items.Add(menuItemPDFTeacher);
 
             var button = sender as Guna2Button;
             if (button != null)
@@ -1590,6 +1560,76 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 MessageBox.Show(
                     $"Lỗi khi xuất Excel:\n\n{ex.Message}",
+                    "Lỗi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        /// <summary>
+        /// ✅ Xuất thời khóa biểu ra PDF với thiết kế đẹp mắt
+        /// </summary>
+        private void ExportToPDF(string exportType)
+        {
+            try
+            {
+                using (var saveDialog = new SaveFileDialog())
+                {
+                    saveDialog.Filter = "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*";
+                    saveDialog.FilterIndex = 1;
+                    saveDialog.FileName = $"ThoiKhoaBieu_{exportType}_{currentSemesterId}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+                    saveDialog.DefaultExt = "pdf";
+                    saveDialog.AddExtension = true;
+
+                    if (saveDialog.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    Cursor.Current = Cursors.WaitCursor;
+
+                    if (exportType == "Class")
+                    {
+                        exportService.ExportClassScheduleToPDF(currentSemesterId, saveDialog.FileName);
+                    }
+                    else if (exportType == "Teacher")
+                    {
+                        exportService.ExportTeacherScheduleToPDF(currentSemesterId, saveDialog.FileName);
+                    }
+
+                    MessageBox.Show(
+                        $"Đã xuất thời khóa biểu PDF thành công!\n\n" +
+                        $"File: {saveDialog.FileName}\n" +
+                        $"Loại: {(exportType == "Class" ? "Theo Lớp" : "Theo Giáo viên")}",
+                        "Xuất PDF thành công",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+            }
+            catch (IOException ioEx)
+            {
+                MessageBox.Show(
+                    $"Không thể lưu file. File có thể đang được mở bởi ứng dụng khác.\n\nChi tiết: {ioEx.Message}",
+                    "Lỗi xuất file",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show(
+                    "Không có quyền truy cập thư mục được chọn.\n\nVui lòng chọn thư mục khác.",
+                    "Lỗi quyền truy cập",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Lỗi khi xuất PDF:\n\n{ex.Message}",
                     "Lỗi",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using Student_Management_System_CSharp_SGU2025.DAO.ConnectDatabase;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
@@ -553,6 +553,47 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Lấy danh sách tất cả khối lớp
+        /// </summary>
+        public List<KhoiLop> LayDanhSachKhoiLop()
+        {
+            List<KhoiLop> danhSach = new List<KhoiLop>();
+            string query = "SELECT MaKhoi, TenKhoi FROM KhoiLop ORDER BY MaKhoi";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                danhSach.Add(new KhoiLop
+                                {
+                                    MaKhoi = reader.GetInt32("MaKhoi"),
+                                    TenKhoi = reader.GetString("TenKhoi")
+                                });
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Lỗi khi lấy danh sách khối lớp: " + ex.Message);
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+
+            return danhSach;
         }
 
     }

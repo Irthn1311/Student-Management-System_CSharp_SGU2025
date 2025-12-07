@@ -4,6 +4,8 @@ using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.GUI;
 using Student_Management_System_CSharp_SGU2025.GUI.ThemSua_Phuc_;
 using Student_Management_System_CSharp_SGU2025.BUS.Utils;
+
+using Student_Management_System_CSharp_SGU2025.BUS.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,6 +19,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private LopHocBUS lopHocBUS;
         private GiaoVienBUS giaoVienBUS;
         private NamHocBUS namHocBUS;
+        private PhanLopBLL phanLopBLL;
         private List<LopDTO> danhSachLopGoc;
         private List<NamHocDTO> danhSachNamHoc;
         private bool dangNapNamHoc;
@@ -29,6 +32,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             lopHocBUS = new LopHocBUS();
             giaoVienBUS = new GiaoVienBUS();
             namHocBUS = new NamHocBUS();
+            phanLopBLL = new PhanLopBLL();
             danhSachLopGoc = new List<LopDTO>();
             danhSachGiaoVien = new List<GiaoVienDTO>();
             danhSachNamHoc = new List<NamHocDTO>();
@@ -83,7 +87,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // --- Gắn sự kiện ---
             dgvLop.CellPainting += dgvLop_CellPainting;
             dgvLop.CellClick += dgvLop_CellClick;
-            PermissionHelper.ApplyPermissionLopHoc(btnThem, dgvLop);
+            dgvLop.CellFormatting += dgvLop_CellFormatting;
+            //PermissionHelper.ApplyPermissionLopHoc(btnThem, dgvLop);
             
             // 🆕 Thêm button "Quản lý yêu cầu chuyển lớp" cho ADMIN
             ThemButtonQuanLyYeuCau();
@@ -482,25 +487,50 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     }
                 }
 
-                // Filter theo sĩ số
+                // Filter theo sĩ số (lọc theo sĩ số hiện tại, không phải sĩ số tối đa)
                 string selectedSiSo = cbSiSo?.SelectedItem?.ToString();
                 if (!string.IsNullOrEmpty(selectedSiSo) && selectedSiSo != "Tất cả sĩ số")
                 {
-                    switch (selectedSiSo)
+                    // Lấy học kỳ hiện tại để tính sĩ số
+                    var hocKyHienTai = SemesterHelper.GetCurrentSemester();
+                    int maHocKy = hocKyHienTai?.MaHocKy ?? 0;
+
+                    danhSachLoc = danhSachLoc.Where(l =>
                     {
-                        case "Dưới 30":
-                            danhSachLoc = danhSachLoc.Where(l => l.siSo < 30).ToList();
-                            break;
-                        case "30 - 40":
-                            danhSachLoc = danhSachLoc.Where(l => l.siSo >= 30 && l.siSo <= 40).ToList();
-                            break;
-                        case "41 - 50":
-                            danhSachLoc = danhSachLoc.Where(l => l.siSo >= 41 && l.siSo <= 50).ToList();
-                            break;
-                        case "Trên 50":
-                            danhSachLoc = danhSachLoc.Where(l => l.siSo > 50).ToList();
-                            break;
-                    }
+                        // Tính sĩ số hiện tại
+                        int siSoHienTai = 0;
+                        if (maHocKy > 0)
+                        {
+                            try
+                            {
+                                siSoHienTai = phanLopBLL.CountHocSinhInLop(l.maLop, maHocKy);
+                            }
+                            catch
+                            {
+                                // Nếu không lấy được, dùng sĩ số từ DTO
+                                siSoHienTai = l.siSo;
+                            }
+                        }
+                        else
+                        {
+                            siSoHienTai = l.siSo;
+                        }
+
+                        // Lọc theo sĩ số hiện tại
+                        switch (selectedSiSo)
+                        {
+                            case "Dưới 30":
+                                return siSoHienTai < 30;
+                            case "30 - 40":
+                                return siSoHienTai >= 30 && siSoHienTai <= 40;
+                            case "41 - 50":
+                                return siSoHienTai >= 41 && siSoHienTai <= 50;
+                            case "Trên 50":
+                                return siSoHienTai > 50;
+                            default:
+                                return true;
+                        }
+                    }).ToList();
                 }
 
                 // Tìm kiếm theo text
@@ -544,6 +574,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             dgvLop.Rows.Clear();
 
+            // Lấy học kỳ hiện tại để tính sĩ số
+            var hocKyHienTai = SemesterHelper.GetCurrentSemester();
+            int maHocKy = hocKyHienTai?.MaHocKy ?? 0;
+
             foreach (LopDTO lop in danhSach)
             {
                 string tenGVCN = "Chưa phân công";
@@ -568,7 +602,39 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     }
                 }
 
-                dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", lop.siSo, tenGVCN, "Xem", "");
+                // Tính sĩ số hiện tại
+                int siSoHienTai = 0;
+                if (maHocKy > 0)
+                {
+                    try
+                    {
+                        siSoHienTai = phanLopBLL.CountHocSinhInLop(lop.maLop, maHocKy);
+                    }
+                    catch
+                    {
+                        // Nếu không lấy được, dùng sĩ số từ DTO
+                        siSoHienTai = lop.siSo;
+                    }
+                }
+                else
+                {
+                    // Nếu không có học kỳ, dùng sĩ số từ DTO
+                    siSoHienTai = lop.siSo;
+                }
+
+                // Sĩ số tối đa: nếu lop.siSo = 0 hoặc < sĩ số hiện tại, thì set = sĩ số hiện tại
+                int siSoToiDa = lop.siSo;
+                if (siSoToiDa <= 0 || siSoToiDa < siSoHienTai)
+                {
+                    siSoToiDa = siSoHienTai;
+                }
+
+                // Hiển thị dạng "sĩ số hiện tại / sĩ số tối đa"
+                string siSoDisplay = $"{siSoHienTai}/{siSoToiDa}";
+
+                // Lưu thông tin sĩ số vào Tag để dùng cho CellFormatting
+                int rowIndex = dgvLop.Rows.Add(lop.maLop, lop.tenLop, $"Khối {lop.maKhoi}", siSoDisplay, tenGVCN, "Xem", "");
+                dgvLop.Rows[rowIndex].Tag = new { SiSoHienTai = siSoHienTai, SiSoToiDa = siSoToiDa };
             }
         }
 
@@ -831,6 +897,61 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         }
 
+        // ✅ ĐỊNH DẠNG MÀU CHO CỘT SĨ SỐ: Cảnh báo khi sĩ số thấp
+        private void dgvLop_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Chỉ xử lý cột "SiSo"
+            if (e.ColumnIndex == dgvLop.Columns["SiSo"].Index && e.RowIndex >= 0)
+            {
+                var row = dgvLop.Rows[e.RowIndex];
+                if (row.Tag != null)
+                {
+                    try
+                    {
+                        dynamic tagData = row.Tag;
+                        int siSoHienTai = tagData.SiSoHienTai;
+                        int siSoToiDa = tagData.SiSoToiDa;
+
+                        // Tính tỷ lệ sĩ số
+                        double tyLe = siSoToiDa > 0 ? (double)siSoHienTai / siSoToiDa : 0;
+
+                        // Màu cảnh báo:
+                        // - Đỏ: sĩ số < 30 hoặc tỷ lệ < 0.6 (60%)
+                        // - Cam: 30 <= sĩ số < 40 hoặc 0.6 <= tỷ lệ < 0.8
+                        // - Vàng: 40 <= sĩ số < 50 hoặc 0.8 <= tỷ lệ < 0.9
+                        // - Xanh lá: sĩ số >= 50 và tỷ lệ >= 0.9
+                        if (siSoHienTai < 30 || tyLe < 0.6)
+                        {
+                            // Màu đỏ - sĩ số rất thấp
+                            e.CellStyle.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ
+                            e.CellStyle.Font = new Font(dgvLop.DefaultCellStyle.Font, FontStyle.Bold);
+                        }
+                        else if (siSoHienTai < 40 || tyLe < 0.8)
+                        {
+                            // Màu cam - sĩ số thấp
+                            e.CellStyle.ForeColor = Color.FromArgb(249, 115, 22); // Cam
+                            e.CellStyle.Font = new Font(dgvLop.DefaultCellStyle.Font, FontStyle.Bold);
+                        }
+                        else if (siSoHienTai < 50 || tyLe < 0.9)
+                        {
+                            // Màu vàng - sĩ số trung bình
+                            e.CellStyle.ForeColor = Color.FromArgb(234, 179, 8); // Vàng
+                        }
+                        else
+                        {
+                            // Màu xanh lá - sĩ số tốt
+                            e.CellStyle.ForeColor = Color.FromArgb(34, 197, 94); // Xanh lá
+                        }
+                    }
+                    catch
+                    {
+                        // Nếu có lỗi, giữ màu mặc định
+                        e.CellStyle.ForeColor = dgvLop.DefaultCellStyle.ForeColor;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// 🆕 Thêm button "Quản lý yêu cầu chuyển lớp" cho ADMIN
         /// </summary>
@@ -848,15 +969,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 btnQuanLyYeuCau.BorderRadius = 8;
                 btnQuanLyYeuCau.Cursor = Cursors.Hand;
 
-                // Đặt vị trí button (bên cạnh button "Thêm")
-                if (btnThem != null)
-                {
-                    btnQuanLyYeuCau.Location = new Point(btnThem.Location.X + btnThem.Width + 10, btnThem.Location.Y);
-                }
-                else
-                {
+                
                     btnQuanLyYeuCau.Location = new Point(30, 20);
-                }
+                
 
                 // Gắn sự kiện click
                 btnQuanLyYeuCau.Click += BtnQuanLyYeuCau_Click;

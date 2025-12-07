@@ -570,6 +570,12 @@
     <Compile Include="GUIClass\ThoiKhoaBieu\ThoiKhoaBieu.Designer.cs">
       <DependentUpon>ThoiKhoaBieu.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUIClass\ThongBao\FrmChiTietThongBao.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\ThongBao\FrmThemThongBao.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GUIClass\ThongBao\ThongBao.cs">
       <SubType>UserControl</SubType>
     </Compile>

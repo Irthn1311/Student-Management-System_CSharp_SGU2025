@@ -1,4 +1,4 @@
-﻿using Student_Management_System_CSharp_SGU2025.DAO;
+using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
@@ -427,6 +427,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         public bool Success { get; set; }
         public string Message { get; set; }
         public bool IsWarning { get; set; } = false;
+        public object Data { get; set; }
     }
 
     #endregion

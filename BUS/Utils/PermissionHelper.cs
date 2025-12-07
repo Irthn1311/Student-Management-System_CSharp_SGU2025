@@ -468,5 +468,56 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Utils
 
             return true;
         }
+
+        /// <summary>
+        /// ✅ Áp dụng phân quyền cho module Thông Báo
+        /// </summary>
+        public static void ApplyPermissionThongBao(
+            Control btnThemThongBao,
+            DataGridView dgvThongBao)
+        {
+            // Ẩn/hiện nút Thêm thông báo
+            // Admin + Giáo viên có quyền tạo
+            if (btnThemThongBao != null)
+            {
+                bool canCreate = HasPermission(QLTHONGBAO, CREATE);
+                btnThemThongBao.Visible = canCreate;
+                btnThemThongBao.Enabled = canCreate;
+            }
+
+            // ✅ Set Tag cho DataGridView để kiểm tra quyền Sửa/Xóa
+            if (dgvThongBao != null)
+            {
+                dgvThongBao.Tag = new
+                {
+                    CanUpdate = HasPermission(QLTHONGBAO, UPDATE),
+                    CanDelete = HasPermission(QLTHONGBAO, DELETE)
+                };
+            }
+        }
+
+        /// <summary>
+        /// ✅ Kiểm tra quyền gửi thông báo theo phạm vi
+        /// </summary>
+        public static bool CanSendNotificationTo(string phamVi)
+        {
+            if (!SessionManager.IsLoggedIn())
+                return false;
+
+            var vaiTros = new PhanQuyenBUS().GetVaiTroByNguoiDung(SessionManager.TenDangNhap);
+
+            // Admin có toàn quyền
+            if (vaiTros.Contains("admin"))
+                return true;
+
+            // Giáo viên chỉ gửi được theo lớp hoặc vai trò student
+            if (vaiTros.Contains("teacher"))
+            {
+                return phamVi == "LOP" || phamVi == "VAI_TRO";
+            }
+
+            // Học sinh và phụ huynh không được gửi
+            return false;
+        }
     }
 }

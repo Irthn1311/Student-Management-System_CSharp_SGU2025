@@ -24,6 +24,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private GiaoVienBUS giaoVienBUS;
         private ThongTinNguoiDung thongTinHienTai;
         private CaiDatBUS caiDatBUS;
+        private PhanLopBLL phanLopBLL;
+        private LopHocBUS lopHocBUS;
+        private HocKyBUS hocKyBUS;
         public CaiDat()
         {
             InitializeComponent();
@@ -32,6 +35,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             phuHuynhBLL = new PhuHuynhBLL();
             giaoVienBUS = new GiaoVienBUS();
             caiDatBUS = new CaiDatBUS();
+            phanLopBLL = new PhanLopBLL();
+            lopHocBUS = new LopHocBUS();
+            hocKyBUS = new HocKyBUS();
 
         }
 
@@ -53,6 +59,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             if (txtVeriNewPW != null)
                 txtVeriNewPW.PasswordChar = '●';
+
+            // ✅ Hiển thị nút "Gửi yêu cầu chuyển lớp" chỉ khi người dùng là học sinh
+            if (btnGuiYeuCauChuyenLop != null)
+            {
+                bool isStudent = SessionManager.IsLoggedIn() && 
+                                !string.IsNullOrEmpty(SessionManager.TenDangNhap) &&
+                                SessionManager.TenDangNhap.StartsWith("HS", StringComparison.OrdinalIgnoreCase);
+                btnGuiYeuCauChuyenLop.Visible = isStudent;
+            }
         }
 
 
@@ -998,6 +1013,122 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     MessageBox.Show($"Lỗi khi đổi mật khẩu:\n{ex.Message}",
                         "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        private void btnGuiYeuCauChuyenLop_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Kiểm tra đăng nhập
+                if (!SessionManager.IsLoggedIn())
+                {
+                    MessageBox.Show("Bạn chưa đăng nhập!",
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string tenDangNhap = SessionManager.TenDangNhap;
+                if (string.IsNullOrEmpty(tenDangNhap) || !tenDangNhap.StartsWith("HS", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("Chức năng này chỉ dành cho học sinh!",
+                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Lấy mã học sinh từ tên đăng nhập (HS101 → 101)
+                string maHocSinhStr = tenDangNhap.Substring(2);
+                if (!int.TryParse(maHocSinhStr, out int maHocSinh))
+                {
+                    MessageBox.Show("Không thể xác định mã học sinh từ tên đăng nhập.",
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Lấy thông tin học sinh
+                var hocSinh = hocSinhBLL.GetHocSinhById(maHocSinh);
+                if (hocSinh == null)
+                {
+                    MessageBox.Show("Không tìm thấy thông tin học sinh.",
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Lấy học kỳ hiện tại
+                int maHocKy = 0;
+                var dsHocKy = hocKyBUS.DocDSHocKy();
+                if (dsHocKy != null && dsHocKy.Count > 0)
+                {
+                    // Tìm học kỳ đang diễn ra
+                    var hocKyDangDienRa = dsHocKy.FirstOrDefault(hk => 
+                        hk.TrangThai == "Đang diễn ra" ||
+                        (hk.NgayBD.HasValue && hk.NgayKT.HasValue &&
+                         hk.NgayBD.Value.Date <= DateTime.Today && 
+                         hk.NgayKT.Value.Date >= DateTime.Today));
+                    
+                    if (hocKyDangDienRa != null)
+                    {
+                        maHocKy = hocKyDangDienRa.MaHocKy;
+                    }
+                    else
+                    {
+                        // Lấy học kỳ mới nhất
+                        var hocKyMoiNhat = dsHocKy.OrderByDescending(hk => hk.NgayBD ?? DateTime.MinValue).FirstOrDefault();
+                        if (hocKyMoiNhat != null)
+                        {
+                            maHocKy = hocKyMoiNhat.MaHocKy;
+                        }
+                    }
+                }
+
+                if (maHocKy <= 0)
+                {
+                    MessageBox.Show("Không tìm thấy học kỳ hiện tại. Vui lòng liên hệ nhà trường.",
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Lấy lớp hiện tại của học sinh
+                int maLopHienTai = phanLopBLL.GetLopByHocSinh(maHocSinh, maHocKy);
+                if (maLopHienTai <= 0)
+                {
+                    MessageBox.Show("Bạn chưa được phân lớp trong học kỳ này.\n\n" +
+                        "Không thể gửi yêu cầu chuyển lớp.",
+                        "Không thể gửi yêu cầu",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Lấy thông tin lớp
+                var lopHienTai = lopHocBUS.LayLopTheoId(maLopHienTai);
+                if (lopHienTai == null)
+                {
+                    MessageBox.Show("Không tìm thấy thông tin lớp hiện tại.",
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Mở form gửi yêu cầu chuyển lớp
+                FormGuiYeuCauChuyenLop form = new FormGuiYeuCauChuyenLop(
+                    maHocSinh,
+                    maLopHienTai,
+                    maHocKy,
+                    hocSinh.HoTen,
+                    lopHienTai.tenLop,
+                    tenDangNhap
+                );
+
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    // Có thể thêm thông báo hoặc refresh dữ liệu nếu cần
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Lỗi khi mở form yêu cầu chuyển lớp: {ex.Message}");
+                MessageBox.Show($"Lỗi khi mở form yêu cầu chuyển lớp:\n{ex.Message}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

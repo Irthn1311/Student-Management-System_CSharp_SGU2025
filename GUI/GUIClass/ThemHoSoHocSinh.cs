@@ -1,10 +1,12 @@
-﻿using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.BUS.Utils;
 using System;
 
 using System.Collections.Generic;
 
 using System.Drawing; // Cần cho Color
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -30,6 +32,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         
         // Thông tin phụ huynh mới (nếu nhập mới)
         private PhuHuynhDTO phuHuynhMoi = null;
+
+        // ✅ Biến để lưu đường dẫn ảnh đã chọn
+        private string selectedImagePath = null;
 
         // ✅ Property để trả về học sinh vừa tạo
         public HocSinhDTO NewHocSinh { get; private set; }
@@ -64,6 +69,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
 
             LoadMasterPhuHuynhList(); // Tải danh sách phụ huynh gốc để dùng khi chọn
+            
+            // ✅ Khởi tạo folder ảnh nếu chưa có
+            ImageHelper.InitializeImageFolder();
             
             // ✅ Thiết lập Tab Order
             SetupTabOrder();
@@ -193,6 +201,39 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // Mặc định chọn "Chọn phụ huynh có sẵn"
             rbChonPhuHuynh.Checked = true;
             UpdatePhuHuynhUI();
+            
+            // ✅ Khởi tạo PictureBox với placeholder
+            InitializePictureBox();
+        }
+
+        /// <summary>
+        /// ✅ Khởi tạo PictureBox với placeholder khi chưa có ảnh
+        /// </summary>
+        private void InitializePictureBox()
+        {
+            picBoxAnhDaiDien.BackColor = Color.FromArgb(245, 247, 250);
+            picBoxAnhDaiDien.BorderStyle = BorderStyle.FixedSingle;
+            
+            // Tạo placeholder text nếu chưa có ảnh
+            if (picBoxAnhDaiDien.Image == null)
+            {
+                // Vẽ placeholder
+                using (Bitmap bmp = new Bitmap(picBoxAnhDaiDien.Width, picBoxAnhDaiDien.Height))
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.Clear(Color.FromArgb(245, 247, 250));
+                    using (Font font = new Font("Segoe UI", 9F, FontStyle.Regular))
+                    using (SolidBrush brush = new SolidBrush(Color.FromArgb(150, 150, 150)))
+                    {
+                        string text = "Chưa có ảnh";
+                        SizeF textSize = g.MeasureString(text, font);
+                        g.DrawString(text, font, brush, 
+                            (bmp.Width - textSize.Width) / 2, 
+                            (bmp.Height - textSize.Height) / 2);
+                    }
+                    picBoxAnhDaiDien.Image = new Bitmap(bmp);
+                }
+            }
         }
 
         /// <summary>
@@ -474,6 +515,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     hs.MaHS = newMaHocSinh;
                     this.NewHocSinh = hs;
 
+                    // ✅ Lưu ảnh đại diện nếu có
+                    if (!string.IsNullOrEmpty(selectedImagePath))
+                    {
+                        try
+                        {
+                            string relativeImagePath = ImageHelper.SaveStudentAvatar(selectedImagePath, newMaHocSinh);
+                            if (!string.IsNullOrEmpty(relativeImagePath))
+                            {
+                                // Cập nhật đường dẫn ảnh vào database
+                                hs.AnhDaiDien = relativeImagePath;
+                                hocSinhBLL.UpdateHocSinh(hs);
+                            }
+                        }
+                        catch (Exception exImg)
+                        {
+                            // Log lỗi nhưng không chặn việc thêm học sinh
+                            Console.WriteLine($"Lỗi khi lưu ảnh: {exImg.Message}");
+                        }
+                    }
+
                     bool allSuccess = true;
                     string warningMessage = "";
 
@@ -578,6 +639,45 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void groupBoxGioiTinh_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// ✅ Xử lý khi click nút chọn ảnh
+        /// </summary>
+        private void btnChonAnh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Mở dialog chọn ảnh
+                string imagePath = ImageHelper.SelectImageFile();
+                
+                if (!string.IsNullOrEmpty(imagePath))
+                {
+                    selectedImagePath = imagePath;
+                    
+                    // Hiển thị preview ảnh
+                    if (File.Exists(imagePath))
+                    {
+                        // Dispose ảnh cũ nếu có
+                        if (picBoxAnhDaiDien.Image != null)
+                        {
+                            Image oldImage = picBoxAnhDaiDien.Image;
+                            picBoxAnhDaiDien.Image = null;
+                            oldImage.Dispose();
+                        }
+                        
+                        // Load ảnh mới
+                        picBoxAnhDaiDien.Image = Image.FromFile(imagePath);
+                        picBoxAnhDaiDien.SizeMode = PictureBoxSizeMode.Zoom;
+                        picBoxAnhDaiDien.BackColor = Color.White;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi chọn ảnh: {ex.Message}", "Lỗi", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
