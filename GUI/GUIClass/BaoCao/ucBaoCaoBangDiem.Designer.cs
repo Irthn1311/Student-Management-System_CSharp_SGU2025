@@ -1,4 +1,4 @@
-﻿namespace Student_Management_System_CSharp_SGU2025.GUI
+namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     partial class ucBaoCaoBangDiem
     {
@@ -37,10 +37,86 @@
             this.btnExportExcelGrade = new Guna.UI2.WinForms.Guna2Button();
             this.cboClassSelect = new Guna.UI2.WinForms.Guna2ComboBox();
             this.lblGradeTableTitle = new System.Windows.Forms.Label();
+            this.pnlCharts = new Guna.UI2.WinForms.Guna2Panel();
+            this.chartLine = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chartBar = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.pnlChartsHeader = new Guna.UI2.WinForms.Guna2Panel();
+            this.lblChartsTitle = new System.Windows.Forms.Label();
             this.pnlGradeTable.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGrades)).BeginInit();
             this.pnlGradeTableHeader.SuspendLayout();
+            this.pnlCharts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartLine)).BeginInit();
+            this.pnlChartsHeader.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // pnlCharts
+            // 
+            this.pnlCharts.BackColor = System.Drawing.Color.White;
+            this.pnlCharts.BorderColor = System.Drawing.Color.White;
+            this.pnlCharts.BorderRadius = 12;
+            this.pnlCharts.BorderThickness = 1;
+            this.pnlCharts.Controls.Add(this.chartLine);
+            this.pnlCharts.Controls.Add(this.chartBar);
+            this.pnlCharts.Controls.Add(this.pnlChartsHeader);
+            this.pnlCharts.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlCharts.Location = new System.Drawing.Point(0, 0);
+            this.pnlCharts.Name = "pnlCharts";
+            this.pnlCharts.Padding = new System.Windows.Forms.Padding(20);
+            this.pnlCharts.ShadowDecoration.BorderRadius = 12;
+            this.pnlCharts.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(13)))));
+            this.pnlCharts.ShadowDecoration.Depth = 5;
+            this.pnlCharts.ShadowDecoration.Enabled = true;
+            this.pnlCharts.Size = new System.Drawing.Size(1120, 340);
+            this.pnlCharts.TabIndex = 1;
+            // 
+            // chartLine
+            // 
+            this.chartLine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chartLine.BackColor = System.Drawing.Color.Transparent;
+            this.chartLine.BorderlineColor = System.Drawing.Color.Transparent;
+            this.chartLine.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+            this.chartLine.Location = new System.Drawing.Point(566, 62);
+            this.chartLine.Name = "chartLine";
+            this.chartLine.Size = new System.Drawing.Size(534, 258);
+            this.chartLine.TabIndex = 2;
+            this.chartLine.Text = "chartLine";
+            // 
+            // chartBar
+            // 
+            this.chartBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chartBar.BackColor = System.Drawing.Color.Transparent;
+            this.chartBar.BorderlineColor = System.Drawing.Color.Transparent;
+            this.chartBar.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+            this.chartBar.Location = new System.Drawing.Point(20, 62);
+            this.chartBar.Name = "chartBar";
+            this.chartBar.Size = new System.Drawing.Size(534, 258);
+            this.chartBar.TabIndex = 1;
+            this.chartBar.Text = "chartBar";
+            // 
+            // pnlChartsHeader
+            // 
+            this.pnlChartsHeader.BackColor = System.Drawing.Color.White;
+            this.pnlChartsHeader.Controls.Add(this.lblChartsTitle);
+            this.pnlChartsHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlChartsHeader.Location = new System.Drawing.Point(20, 20);
+            this.pnlChartsHeader.Name = "pnlChartsHeader";
+            this.pnlChartsHeader.Size = new System.Drawing.Size(1080, 42);
+            this.pnlChartsHeader.TabIndex = 0;
+            // 
+            // lblChartsTitle
+            // 
+            this.lblChartsTitle.AutoSize = true;
+            this.lblChartsTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblChartsTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.lblChartsTitle.Location = new System.Drawing.Point(16, 11);
+            this.lblChartsTitle.Name = "lblChartsTitle";
+            this.lblChartsTitle.Size = new System.Drawing.Size(156, 21);
+            this.lblChartsTitle.TabIndex = 0;
+            this.lblChartsTitle.Text = "Thống kê điểm lớp";
             // 
             // pnlGradeTable
             // 
@@ -51,13 +127,13 @@
             this.pnlGradeTable.Controls.Add(this.dgvGrades);
             this.pnlGradeTable.Controls.Add(this.pnlGradeTableHeader);
             this.pnlGradeTable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlGradeTable.Location = new System.Drawing.Point(0, 0);
+            this.pnlGradeTable.Location = new System.Drawing.Point(0, 340);
             this.pnlGradeTable.Name = "pnlGradeTable";
             this.pnlGradeTable.ShadowDecoration.BorderRadius = 12;
             this.pnlGradeTable.ShadowDecoration.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(13)))));
             this.pnlGradeTable.ShadowDecoration.Depth = 5;
             this.pnlGradeTable.ShadowDecoration.Enabled = true;
-            this.pnlGradeTable.Size = new System.Drawing.Size(1120, 657);
+            this.pnlGradeTable.Size = new System.Drawing.Size(1120, 317);
             this.pnlGradeTable.TabIndex = 0;
             this.pnlGradeTable.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlGradeTable_Paint);
             // 
@@ -192,12 +268,18 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.pnlGradeTable);
+            this.Controls.Add(this.pnlCharts);
             this.Name = "ucBaoCaoBangDiem";
             this.Size = new System.Drawing.Size(1120, 657);
             this.pnlGradeTable.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvGrades)).EndInit();
             this.pnlGradeTableHeader.ResumeLayout(false);
             this.pnlGradeTableHeader.PerformLayout();
+            this.pnlCharts.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartLine)).EndInit();
+            this.pnlChartsHeader.ResumeLayout(false);
+            this.pnlChartsHeader.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -210,5 +292,10 @@
         private Guna.UI2.WinForms.Guna2Button btnExportExcelGrade;
         private Guna.UI2.WinForms.Guna2ComboBox cboClassSelect;
         private System.Windows.Forms.Label lblGradeTableTitle;
+        private Guna.UI2.WinForms.Guna2Panel pnlCharts;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartBar;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartLine;
+        private Guna.UI2.WinForms.Guna2Panel pnlChartsHeader;
+        private System.Windows.Forms.Label lblChartsTitle;
     }
 }
