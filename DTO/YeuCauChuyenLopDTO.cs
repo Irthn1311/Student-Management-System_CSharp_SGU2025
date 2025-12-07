@@ -17,6 +17,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         public string NguoiXuLy { get; set; }     // Nullable - chưa xử lý thì null
         public string GhiChuAdmin { get; set; }   // Nullable
         public int? MaLopDuocDuyet { get; set; }  // Nullable - admin có thể duyệt lớp khác
+        public string DuongDanPDF { get; set; }   // Nullable - đường dẫn file PDF
 
         // Các thuộc tính mở rộng để hiển thị (không map trực tiếp từ DB)
         public string TenHocSinh { get; set; }

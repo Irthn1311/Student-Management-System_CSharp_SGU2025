@@ -46,9 +46,7 @@
             this.panelButtons = new Guna.UI2.WinForms.Guna2Panel();
             this.btnHuy = new Guna.UI2.WinForms.Guna2Button();
             this.btnLuu = new Guna.UI2.WinForms.Guna2Button();
-            this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
             this.btnSua = new Guna.UI2.WinForms.Guna2Button();
-            this.btnThemMonHoc = new Guna.UI2.WinForms.Guna2Button();
             this.dgvMonHoc = new Guna.UI2.WinForms.Guna2DataGridView();
             this.MaMon = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TenMon = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -237,9 +235,7 @@
             // 
             this.panelButtons.Controls.Add(this.btnHuy);
             this.panelButtons.Controls.Add(this.btnLuu);
-            this.panelButtons.Controls.Add(this.btnXoa);
             this.panelButtons.Controls.Add(this.btnSua);
-            this.panelButtons.Controls.Add(this.btnThemMonHoc);
             this.panelButtons.Location = new System.Drawing.Point(20, 210);
             this.panelButtons.Name = "panelButtons";
             this.panelButtons.Size = new System.Drawing.Size(1128, 50);
@@ -259,7 +255,7 @@
             this.btnHuy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
             this.btnHuy.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.cancel;
             this.btnHuy.ImageSize = new System.Drawing.Size(18, 18);
-            this.btnHuy.Location = new System.Drawing.Point(913, 5);
+            this.btnHuy.Location = new System.Drawing.Point(717, 5);
             this.btnHuy.Name = "btnHuy";
             this.btnHuy.Size = new System.Drawing.Size(120, 40);
             this.btnHuy.TabIndex = 4;
@@ -278,31 +274,12 @@
             this.btnLuu.ForeColor = System.Drawing.Color.White;
             this.btnLuu.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.save;
             this.btnLuu.ImageSize = new System.Drawing.Size(18, 18);
-            this.btnLuu.Location = new System.Drawing.Point(709, 5);
+            this.btnLuu.Location = new System.Drawing.Point(460, 5);
             this.btnLuu.Name = "btnLuu";
             this.btnLuu.Size = new System.Drawing.Size(120, 40);
             this.btnLuu.TabIndex = 3;
             this.btnLuu.Text = "Lưu";
             this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
-            // 
-            // btnXoa
-            // 
-            this.btnXoa.BorderRadius = 8;
-            this.btnXoa.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnXoa.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnXoa.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnXoa.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnXoa.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.btnXoa.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
-            this.btnXoa.ForeColor = System.Drawing.Color.White;
-            this.btnXoa.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.delete_icon;
-            this.btnXoa.ImageSize = new System.Drawing.Size(18, 18);
-            this.btnXoa.Location = new System.Drawing.Point(460, 5);
-            this.btnXoa.Name = "btnXoa";
-            this.btnXoa.Size = new System.Drawing.Size(120, 40);
-            this.btnXoa.TabIndex = 2;
-            this.btnXoa.Text = "Xóa";
-            this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
             // 
             // btnSua
             // 
@@ -322,25 +299,6 @@
             this.btnSua.TabIndex = 1;
             this.btnSua.Text = "Sửa";
             this.btnSua.Click += new System.EventHandler(this.btnSua_Click);
-            // 
-            // btnThemMonHoc
-            // 
-            this.btnThemMonHoc.BorderRadius = 8;
-            this.btnThemMonHoc.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemMonHoc.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemMonHoc.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnThemMonHoc.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnThemMonHoc.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
-            this.btnThemMonHoc.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
-            this.btnThemMonHoc.ForeColor = System.Drawing.Color.White;
-            this.btnThemMonHoc.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.plus;
-            this.btnThemMonHoc.ImageSize = new System.Drawing.Size(18, 18);
-            this.btnThemMonHoc.Location = new System.Drawing.Point(30, 5);
-            this.btnThemMonHoc.Name = "btnThemMonHoc";
-            this.btnThemMonHoc.Size = new System.Drawing.Size(120, 40);
-            this.btnThemMonHoc.TabIndex = 0;
-            this.btnThemMonHoc.Text = "Thêm";
-            this.btnThemMonHoc.Click += new System.EventHandler(this.btnThemMonHoc_Click);
             // 
             // dgvMonHoc
             // 
@@ -473,9 +431,7 @@
         private Guna.UI2.WinForms.Guna2TextBox txtSoTiet;
         private Guna.UI2.WinForms.Guna2ComboBox cboLoaiMon;
         private Guna.UI2.WinForms.Guna2Panel panelButtons;
-        private Guna.UI2.WinForms.Guna2Button btnThemMonHoc;
         private Guna.UI2.WinForms.Guna2Button btnSua;
-        private Guna.UI2.WinForms.Guna2Button btnXoa;
         private Guna.UI2.WinForms.Guna2Button btnLuu;
         private Guna.UI2.WinForms.Guna2Button btnHuy;
         private System.Windows.Forms.ErrorProvider errorProvider1;
