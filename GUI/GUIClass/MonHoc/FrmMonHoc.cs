@@ -1,4 +1,4 @@
-﻿using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.BUS.Utils;
 using System;
@@ -47,11 +47,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.AutoValidate = AutoValidate.EnableAllowFocusChange;
 
             PermissionHelper.ApplyPermissionMonHoc(
-             btnThemMonHoc,
-             btnSua,
-             btnXoa
-         );
+                btnThemMonHoc,
+                btnSua,
+                btnXoa
+);
         }
+        private Button btnXoa;
+        private Button btnThemMonHoc;
 
         // =======================================================
         // === PHẦN CHUẨN BỊ VÀ HỖ TRỢ ===
@@ -156,15 +158,37 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             btnHuy.Enabled = true;
         }
 
+        // ✅ KÍCH HOẠT CONTROLS CHỈ ĐỂ SỬA SỐ TIẾT
+        private void KichHoatControlsSua()
+        {
+            txtTenMon.Enabled = false;  // Không cho sửa tên môn
+            txtSoTiet.Enabled = true;   // Chỉ cho sửa số tiết
+            cboLoaiMon.Enabled = false; // Không cho sửa loại môn
+            btnLuu.Enabled = true;
+            btnHuy.Enabled = true;
+        }
+
         private bool KiemTraDuLieu()
         {
+            // Khi đang sửa (không phải thêm), chỉ validate số tiết
+            if (!dangThem)
+            {
+                if (!int.TryParse(txtSoTiet.Text, out int soTiet) || soTiet <= 0)
+                {
+                    MessageBox.Show("Số tiết phải là số nguyên dương!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+                return true;
+            }
+
+            // Khi đang thêm mới, validate tất cả
             if (string.IsNullOrWhiteSpace(txtTenMon.Text))
             {
                 MessageBox.Show("Vui lòng nhập tên môn học!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
-            if (!int.TryParse(txtSoTiet.Text, out int soTiet) || soTiet <= 0)
+            if (!int.TryParse(txtSoTiet.Text, out int soTietThem) || soTietThem <= 0)
             {
                 MessageBox.Show("Số tiết phải là số nguyên dương!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
@@ -208,7 +232,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
-        // ✅ SỬA MÔN HỌC
+        // ✅ SỬA MÔN HỌC - CHỈ SỬA SỐ TIẾT
         private void SuaMonHoc()
         {
             if (monHocDangChon == null)
@@ -217,18 +241,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 return;
             }
 
-            monHocDangChon.tenMon = txtTenMon.Text.Trim();
+            // Chỉ cập nhật số tiết, giữ nguyên tên môn và loại môn
             monHocDangChon.soTiet = int.Parse(txtSoTiet.Text);
-            monHocDangChon.ghiChu = cboLoaiMon.Text;
 
             if (monHocBUS.UpdateMonHoc(monHocDangChon))
             {
                 bindingListMonHoc.ResetBindings();
-                MessageBox.Show("Cập nhật môn học thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Cập nhật số tiết thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                MessageBox.Show("Không thể cập nhật môn học!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Không thể cập nhật số tiết!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -278,7 +301,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             txtMaMon.Text = "Tự động";
             txtTenMon.Focus();
 
-            btnThemMonHoc.Enabled = btnSua.Enabled = btnXoa.Enabled = false;
+           btnSua.Enabled =  false;
         }
 
         private void btnSua_Click(object sender, EventArgs e)
@@ -292,8 +315,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
 
             dangThem = false;
-            KichHoatControls();
-            btnThemMonHoc.Enabled = btnSua.Enabled = btnXoa.Enabled = false;
+            KichHoatControlsSua(); // ✅ Chỉ cho phép sửa số tiết
+            btnSua.Enabled = false;
         }
 
         private void btnXoa_Click(object sender, EventArgs e)
@@ -314,14 +337,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             dangThem = false;
             VoHieuHoaControls();
-            btnThemMonHoc.Enabled = btnSua.Enabled = btnXoa.Enabled = true;
+            btnSua.Enabled= true;
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
         {
             dangThem = false;
             VoHieuHoaControls();
-            btnThemMonHoc.Enabled = btnSua.Enabled = btnXoa.Enabled = true;
+              btnSua.Enabled = true;
 
             if (monHocDangChon != null)
                 HienThiThongTinMonHoc(monHocDangChon);
@@ -331,6 +354,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void txtTenMon_Validating(object sender, CancelEventArgs e)
         {
+            // Khi đang sửa (không phải thêm), không validate tên môn
+            if (!dangThem)
+            {
+                e.Cancel = false;
+                errorProvider1.SetError(txtTenMon, null);
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(txtTenMon.Text))
             {
                 e.Cancel = true;

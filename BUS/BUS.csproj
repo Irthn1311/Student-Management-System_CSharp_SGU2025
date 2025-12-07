@@ -194,6 +194,7 @@
     <Compile Include="Services\SemesterHelper.cs" />
     <Compile Include="Services\TimetableHybridService.cs" />
     <Compile Include="Services\TKBExportService.cs" />
+    <Compile Include="Services\YeuCauChuyenLopPDFService.cs" />
     <Compile Include="Utils\ImageHelper.cs" />
     <Compile Include="Utils\PermissionHelper.cs" />
     <Compile Include="Utils\SessionManager.cs" />

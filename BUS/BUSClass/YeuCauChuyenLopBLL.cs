@@ -1,6 +1,7 @@
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DAO.ConnectDatabase;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.BUS.Services;
 using System;
 using System.Collections.Generic;
 
@@ -100,8 +101,61 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 }
             }
 
-            // Thêm yêu cầu
-            return yeuCauDAO.ThemYeuCau(yeuCau);
+            // Thêm yêu cầu và lấy MaYeuCau vừa tạo
+            int maYeuCau = yeuCauDAO.ThemYeuCau(yeuCau);
+            if (maYeuCau <= 0)
+            {
+                return false;
+            }
+
+            // Tạo PDF cho yêu cầu
+            // ... (previous code unchanged)
+
+            // Tạo PDF cho yêu cầu
+            try
+            {
+                // Lấy thông tin đầy đủ để tạo PDF
+                yeuCau.MaYeuCau = maYeuCau;
+                LopDTO lopHienTaiDto = lopDAO.LayLopTheoId(yeuCau.MaLopHienTai);
+                HocKyDTO hocKy = new HocKyDAO().LayHocKyTheoMa(yeuCau.MaHocKy);
+                NamHocDTO namHoc = hocKy != null ? new NamHocDAO().LayNamHocTheoMa(hocKy.MaNamHoc) : null;
+
+                string tenHocSinh = hocSinhDAO.TimHocSinhTheoMa(yeuCau.MaHocSinh)?.HoTen ?? "N/A";
+                string tenLopHienTai = lopHienTaiDto?.tenLop ?? "N/A";
+                string tenLopMongMuon = null;
+                if (yeuCau.MaLopMongMuon.HasValue)
+                {
+                    LopDTO lopMongMuon = lopDAO.LayLopTheoId(yeuCau.MaLopMongMuon.Value);
+                    tenLopMongMuon = lopMongMuon?.tenLop;
+                }
+                string tenHocKy = hocKy?.TenHocKy ?? "N/A";
+                string tenNamHoc = namHoc?.TenNamHoc ?? "N/A";
+                int khoiHienTai = lopHienTaiDto?.maKhoi ?? 0;
+
+                // Tạo PDF
+                string duongDanPDF = YeuCauChuyenLopPDFService.TaoPDFYeuCauChuyenLop(
+                    yeuCau,
+                    tenHocSinh,
+                    tenLopHienTai,
+                    tenLopMongMuon,
+                    tenHocKy,
+                    tenNamHoc,
+                    khoiHienTai
+                );
+
+                // Cập nhật đường dẫn PDF vào database
+                yeuCauDAO.CapNhatDuongDanPDF(maYeuCau, duongDanPDF);
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nhưng không fail việc tạo yêu cầu
+                Console.WriteLine($"Lỗi khi tạo PDF yêu cầu chuyển lớp: {ex.Message}");
+                // Không throw để yêu cầu vẫn được tạo thành công
+            }
+
+            // ... (rest of code unchanged)
+
+            return true;
         }
 
         /// <summary>

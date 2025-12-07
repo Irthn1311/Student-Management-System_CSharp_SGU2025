@@ -38,16 +38,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                lblHocSinh.Text = $"Học sinh: {yeuCau.TenHocSinh}";
-                lblLopHienTai.Text = $"Lớp hiện tại: {yeuCau.TenLopHienTai}";
-                lblHocKy.Text = $"Học kỳ: {yeuCau.TenHocKy} - {yeuCau.TenNamHoc}";
-                lblLopMongMuon.Text = $"Lớp mong muốn: {yeuCau.TenLopMongMuon ?? "Không chỉ định"}";
+                // Hiển thị thông tin học sinh
+                lblHocSinhValue.Text = yeuCau.TenHocSinh;
+                lblLopHienTaiValue.Text = yeuCau.TenLopHienTai;
+                lblHocKyValue.Text = $"{yeuCau.TenHocKy} - {yeuCau.TenNamHoc}";
+                lblLopMongMuonValue.Text = yeuCau.TenLopMongMuon ?? "Không chỉ định";
+                
+                // Hiển thị lý do
                 txtLyDoYeuCau.Text = yeuCau.LyDoYeuCau;
                 txtLyDoYeuCau.ReadOnly = true;
 
                 // Lấy khối hiện tại
                 var lopHienTai = lopHocBUS.LayLopTheoId(yeuCau.MaLopHienTai);
                 khoiHienTai = lopHienTai?.maKhoi ?? 0;
+                
+                // Hiển thị mã yêu cầu
+                lblMaYeuCau.Text = $"Mã yêu cầu: #{yeuCau.MaYeuCau}";
             }
             catch (Exception ex)
             {
@@ -288,6 +294,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             public object Tag { get; set; }
             public override string ToString() => Text;
         }
+
+        private void cbLopDuocDuyet_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtLyDoYeuCau_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
-
