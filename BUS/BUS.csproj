@@ -178,6 +178,7 @@
     <Compile Include="BUSClass\PhuHuynhBLL.cs" />
     <Compile Include="BUSClass\ThemDiemBUS.cs" />
     <Compile Include="BUSClass\ThoiKhoaBieuBUS.cs" />
+    <Compile Include="BUSClass\ThongBaoBUS.cs" />
     <Compile Include="BUSClass\XepLoaiBUS.cs" />
     <Compile Include="BUSClass\YeuCauChuyenLopBLL.cs" />
     <Compile Include="Config\TimetableConfig.cs" />
