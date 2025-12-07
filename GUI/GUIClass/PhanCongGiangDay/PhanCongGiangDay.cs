@@ -954,21 +954,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 try
                 {
-                    // ✅ Lấy permission từ Tag - Sử dụng cách an toàn hơn
-                    bool canDelete = true; // Mặc định true
-                    
-                    if (dgvPhanCong.Tag != null)
-                    {
-                        try
-                        {
-                            dynamic permissions = dgvPhanCong.Tag;
-                            canDelete = permissions?.CanDelete ?? true;
-                        }
-                        catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
-                        {
-                            canDelete = true;
-                        }
-                    }
+                    // ✅ Lấy quyền trực tiếp từ PermissionHelper
+                    bool canDelete = PermissionHelper.HasPermission(PermissionHelper.QLPHANCONG, PermissionHelper.DELETE);
 
                     Image editIcon = Properties.Resources.icon_eye;
                     Image deleteIcon = Properties.Resources.delete_icon;
