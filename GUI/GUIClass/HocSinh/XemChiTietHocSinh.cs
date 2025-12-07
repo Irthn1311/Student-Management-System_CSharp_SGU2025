@@ -1,6 +1,7 @@
 using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.GUI;
+using Student_Management_System_CSharp_SGU2025.GUI.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -32,6 +33,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             lopHocBUS = new LopHocBUS();
             phanLopBLL = new PhanLopBLL();
             hocKyBUS = new HocKyBUS();
+
+            // Khởi động web server để phục vụ QR code
+            try
+            {
+                StudentWebServerManager.Instance.StartServer();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Không thể khởi động web server: {ex.Message}");
+            }
 
             LoadThongTinHocSinh();
         }
@@ -220,6 +231,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void btnDong_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            base.OnFormClosed(e);
+            // Không dừng server ở đây vì có thể có form khác đang sử dụng
+            // Server sẽ tự động dừng khi ứng dụng đóng
         }
     }
 }

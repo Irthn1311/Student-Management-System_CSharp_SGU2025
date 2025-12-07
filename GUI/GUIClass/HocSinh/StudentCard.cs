@@ -1,7 +1,9 @@
 using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.BUS.Utils;
+using Student_Management_System_CSharp_SGU2025.GUI.Services;
 using QRCoder;
 using System;
+using System.Configuration;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -296,32 +298,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                // Tạo hình ảnh thẻ học sinh
-                Bitmap cardImage = RenderStudentCardImage();
-                
-                // Convert ảnh thẻ học sinh sang base64 với chất lượng nén tốt
-                string cardImageBase64 = ConvertCardImageToBase64(cardImage);
-                
-                // Tạo data URL với hình ảnh thẻ học sinh (dùng JPEG vì đã convert sang JPEG)
-                string dataUrl = $"data:image/jpeg;base64,{cardImageBase64}";
-                
-                System.Diagnostics.Debug.WriteLine($"QR Data URL Length: {dataUrl.Length}");
-                
-                // Kiểm tra độ dài và điều chỉnh ECC level
-                QRCodeGenerator.ECCLevel eccLevel = QRCodeGenerator.ECCLevel.M; // Dùng M để cân bằng
-                
-                // Nếu quá dài, giảm chất lượng ảnh
-                if (dataUrl.Length > 2950)
+                if (hocSinh == null)
                 {
-                    System.Diagnostics.Debug.WriteLine("QR quá dài, giảm chất lượng ảnh");
-                    cardImage = RenderStudentCardImage(smaller: true);
-                    cardImageBase64 = ConvertCardImageToBase64(cardImage, quality: 60);
-                    dataUrl = $"data:image/jpeg;base64,{cardImageBase64}";
+                    CreateErrorQR();
+                    return;
                 }
+
+                // Lấy URL từ web server (nếu có) hoặc tạo URL mặc định
+                string qrUrl = GetQRCodeUrl();
                 
-                // Tạo QR code
+                System.Diagnostics.Debug.WriteLine($"QR Code URL: {qrUrl}");
+                
+                // Tạo QR code với URL
                 QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(dataUrl, eccLevel);
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.M);
                 QRCode qrCode = new QRCode(qrCodeData);
                 
                 // Tạo QR code lớn và rõ
@@ -333,19 +323,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 );
                 
                 picQR.Image = qrBitmap;
-                
-                // Dispose ảnh tạm
-                cardImage?.Dispose();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Lỗi tạo QR code: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 
-                // Thử tạo QR code đơn giản chỉ với text
+                // Fallback: Tạo QR code với text đơn giản
                 try
                 {
-                    string simpleText = $"Mã HS: {hocSinh.MaHS:D6}\nHọ tên: {hocSinh.HoTen}\nLớp: {tenLop}";
+                    string simpleText = $"Mã HS: {hocSinh?.MaHS:D6 ?? 0}\nHọ tên: {hocSinh?.HoTen ?? "N/A"}\nLớp: {tenLop ?? "N/A"}";
                     QRCodeGenerator qrGenerator = new QRCodeGenerator();
                     QRCodeData qrCodeData = qrGenerator.CreateQrCode(simpleText, QRCodeGenerator.ECCLevel.Q);
                     QRCode qrCode = new QRCode(qrCodeData);
@@ -354,18 +341,58 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
                 catch
                 {
-                    Bitmap placeholder = new Bitmap(130, 130);
-                    using (Graphics g = Graphics.FromImage(placeholder))
-                    {
-                        g.Clear(Color.White);
-                        using (Font font = new Font("Segoe UI", 9))
-                        {
-                            g.DrawString("QR\nLỗi", font, Brushes.Red, 40, 50);
-                        }
-                    }
-                    picQR.Image = placeholder;
+                    CreateErrorQR();
                 }
             }
+        }
+
+        /// <summary>
+        /// Lấy URL cho QR code từ UrlResolver
+        /// </summary>
+        private string GetQRCodeUrl()
+        {
+            try
+            {
+                // Đảm bảo server đang chạy
+                StudentWebServerManager.Instance?.StartServer();
+                
+                // Lấy URL từ UrlResolver
+                string baseUrl = UrlResolver.ResolveBaseUrl();
+                
+                if (string.IsNullOrEmpty(baseUrl))
+                {
+                    // Fallback: Tạo URL mặc định
+                    int port = int.Parse(ConfigurationManager.AppSettings["WebServerPort"] ?? "8080");
+                    baseUrl = $"http://localhost:{port}";
+                }
+                
+                // Tạo URL đầy đủ với mã học sinh
+                return $"{baseUrl.TrimEnd('/')}/student/{hocSinh.MaHS}";
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting QR URL: {ex.Message}");
+                // Fallback: Tạo URL mặc định
+                int port = int.Parse(ConfigurationManager.AppSettings["WebServerPort"] ?? "8080");
+                return $"http://localhost:{port}/student/{hocSinh.MaHS}";
+            }
+        }
+
+        /// <summary>
+        /// Tạo QR code lỗi
+        /// </summary>
+        private void CreateErrorQR()
+        {
+            Bitmap placeholder = new Bitmap(130, 130);
+            using (Graphics g = Graphics.FromImage(placeholder))
+            {
+                g.Clear(Color.White);
+                using (Font font = new Font("Segoe UI", 9))
+                {
+                    g.DrawString("QR\nLỗi", font, Brushes.Red, 40, 50);
+                }
+            }
+            picQR.Image = placeholder;
         }
         
         /// <summary>

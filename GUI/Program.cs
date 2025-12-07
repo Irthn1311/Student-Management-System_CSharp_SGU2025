@@ -1,4 +1,5 @@
 ﻿using Student_Management_System_CSharp_SGU2025.DAO.ConnectDatabase;
+using Student_Management_System_CSharp_SGU2025.GUI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // ========================================
             // ✅ CHẠY ỨNG DỤNG - MỞ FORM ĐĂNG NHẬP TRƯỚC
             // ========================================
+            
+            // Đăng ký event để dừng web server khi ứng dụng đóng
+            Application.ApplicationExit += (sender, e) =>
+            {
+                try
+                {
+                    StudentWebServerManager.Instance.StopServer();
+                }
+                catch { }
+            };
+
             Application.Run(new FrmDangNhap());
         }
     }

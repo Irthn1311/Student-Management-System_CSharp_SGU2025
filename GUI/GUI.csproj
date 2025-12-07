@@ -354,6 +354,9 @@
     <Compile Include="GUIClass\HocSinh\XemChiTietHocSinh.Designer.cs">
       <DependentUpon>XemChiTietHocSinh.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\StudentWebServer.cs" />
+    <Compile Include="Services\StudentWebServerManager.cs" />
+    <Compile Include="Services\UrlResolver.cs" />
     <Compile Include="GUIClass\LopKhoi\ChiTietLop.cs">
       <SubType>Form</SubType>
     </Compile>
