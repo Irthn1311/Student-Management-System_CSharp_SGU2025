@@ -7,6 +7,8 @@ using OfficeOpenXml.Style;
 using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS.Services
 {
@@ -326,6 +328,278 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Services
             {
                 worksheet.Column(col).Width = 20; // Day columns
             }
+        }
+
+        /// <summary>
+        /// ✅ Xuất thời khóa biểu theo lớp ra PDF với thiết kế đẹp mắt
+        /// </summary>
+        public void ExportClassScheduleToPDF(int maHocKy, string savePath)
+        {
+            // Load data
+            var allSlots = _tkbBUS.GetTKBViewByHocKy(maHocKy);
+            var classes = _lopBUS.DocDSLop();
+            var hocKy = _hocKyBUS.LayHocKyTheoMa(maHocKy);
+
+            if (allSlots == null || allSlots.Count == 0)
+            {
+                throw new Exception("Không có dữ liệu thời khóa biểu cho học kỳ này.");
+            }
+
+            // Get unique classes that have TKB data
+            var classesWithTKB = allSlots
+                .Select(s => s.MaLop)
+                .Distinct()
+                .Join(classes, maLop => maLop, lop => lop.maLop, (maLop, lop) => lop)
+                .OrderBy(l => l.tenLop)
+                .ToList();
+
+            if (classesWithTKB.Count == 0)
+            {
+                throw new Exception("Không tìm thấy lớp nào có dữ liệu thời khóa biểu.");
+            }
+
+            string hocKyName = hocKy != null ? hocKy.TenHocKy : $"Học kỳ {maHocKy}";
+
+            // Create PDF document (Landscape orientation for better table display)
+            Document document = new Document(PageSize.A4.Rotate(), 20, 20, 30, 30);
+            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(savePath, FileMode.Create));
+            document.Open();
+
+            // Font hỗ trợ tiếng Việt
+            string fontPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "arial.ttf");
+            BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            
+            Font titleFont = new Font(bf, 18, Font.BOLD, BaseColor.WHITE);
+            Font headerFont = new Font(bf, 12, Font.BOLD, BaseColor.BLACK);
+            Font normalFont = new Font(bf, 10, Font.NORMAL, BaseColor.BLACK);
+            Font boldFont = new Font(bf, 10, Font.BOLD, BaseColor.BLACK);
+
+            // Create one page per class
+            foreach (var lop in classesWithTKB)
+            {
+                var slots = allSlots.Where(s => s.MaLop == lop.maLop).ToList();
+                
+                // Header với màu đẹp
+                PdfPTable headerTable = new PdfPTable(1);
+                headerTable.WidthPercentage = 100;
+                PdfPCell headerCell = new PdfPCell(new Phrase($"THỜI KHÓA BIỂU LỚP {lop.tenLop.ToUpper()} - {hocKyName.ToUpper()}", titleFont));
+                headerCell.BackgroundColor = new BaseColor(59, 130, 246); // Blue
+                headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                headerCell.Padding = 15;
+                headerCell.Border = Rectangle.NO_BORDER;
+                headerTable.AddCell(headerCell);
+                document.Add(headerTable);
+                document.Add(new Paragraph("\n"));
+
+                // Create timetable table: 7 columns (Tiết + 6 days)
+                PdfPTable table = new PdfPTable(7);
+                table.WidthPercentage = 100;
+                table.SetWidths(new float[] { 1.2f, 1f, 1f, 1f, 1f, 1f, 1f });
+
+                // Header row
+                string[] headers = { "Tiết", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7" };
+                foreach (string header in headers)
+                {
+                    PdfPCell cell = new PdfPCell(new Phrase(header, headerFont));
+                    cell.BackgroundColor = new BaseColor(59, 130, 246); // Blue
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    cell.Padding = 8;
+                    cell.Border = Rectangle.BOX;
+                    cell.BorderColor = BaseColor.WHITE;
+                    table.AddCell(cell);
+                }
+
+                // Data rows (Tiết 1-10)
+                for (int tiet = 1; tiet <= 10; tiet++)
+                {
+                    // Tiết column
+                    PdfPCell tietCell = new PdfPCell(new Phrase($"Tiết {tiet}", boldFont));
+                    tietCell.BackgroundColor = new BaseColor(243, 244, 246); // Light gray
+                    tietCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tietCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    tietCell.Padding = 8;
+                    tietCell.Border = Rectangle.BOX;
+                    tietCell.BorderColor = BaseColor.WHITE;
+                    table.AddCell(tietCell);
+
+                    // Day columns (Thứ 2-7)
+                    for (int thu = 2; thu <= 7; thu++)
+                    {
+                        var slot = slots.FirstOrDefault(s => s.Thu == thu && s.Tiet == tiet);
+                        PdfPCell cell = new PdfPCell();
+                        
+                        if (slot != null)
+                        {
+                            // Add content with line break
+                            Phrase phrase = new Phrase();
+                            phrase.Add(new Chunk(slot.TenMon, boldFont));
+                            phrase.Add(new Chunk("\n", normalFont));
+                            phrase.Add(new Chunk(slot.TenGiaoVien, normalFont));
+                            cell.AddElement(phrase);
+                            cell.BackgroundColor = new BaseColor(239, 246, 255); // Light blue
+                        }
+                        else
+                        {
+                            cell.BackgroundColor = BaseColor.WHITE;
+                        }
+
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        cell.Padding = 8;
+                        cell.Border = Rectangle.BOX;
+                        cell.BorderColor = BaseColor.WHITE;
+                        cell.FixedHeight = 50f;
+                        table.AddCell(cell);
+                    }
+                }
+
+                document.Add(table);
+
+                // Add page break if not last class
+                if (lop != classesWithTKB.Last())
+                {
+                    document.NewPage();
+                }
+            }
+
+            document.Close();
+        }
+
+        /// <summary>
+        /// ✅ Xuất thời khóa biểu theo giáo viên ra PDF với thiết kế đẹp mắt
+        /// </summary>
+        public void ExportTeacherScheduleToPDF(int maHocKy, string savePath)
+        {
+            // Load data
+            var allSlots = _tkbBUS.GetTKBViewByHocKy(maHocKy);
+            var teachers = _giaoVienBUS.DocDSGiaoVien();
+            var hocKy = _hocKyBUS.LayHocKyTheoMa(maHocKy);
+
+            if (allSlots == null || allSlots.Count == 0)
+            {
+                throw new Exception("Không có dữ liệu thời khóa biểu cho học kỳ này.");
+            }
+
+            // Get unique teachers that have TKB data
+            var teachersWithTKB = allSlots
+                .Select(s => s.MaGiaoVien)
+                .Distinct()
+                .Join(teachers, maGV => maGV, gv => gv.MaGiaoVien, (maGV, gv) => gv)
+                .OrderBy(gv => gv.HoTen)
+                .ToList();
+
+            if (teachersWithTKB.Count == 0)
+            {
+                throw new Exception("Không tìm thấy giáo viên nào có dữ liệu thời khóa biểu.");
+            }
+
+            string hocKyName = hocKy != null ? hocKy.TenHocKy : $"Học kỳ {maHocKy}";
+
+            // Create PDF document (Landscape orientation)
+            Document document = new Document(PageSize.A4.Rotate(), 20, 20, 30, 30);
+            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(savePath, FileMode.Create));
+            document.Open();
+
+            // Font hỗ trợ tiếng Việt
+            string fontPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "arial.ttf");
+            BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            
+            Font titleFont = new Font(bf, 18, Font.BOLD, BaseColor.WHITE);
+            Font headerFont = new Font(bf, 12, Font.BOLD, BaseColor.BLACK);
+            Font normalFont = new Font(bf, 10, Font.NORMAL, BaseColor.BLACK);
+            Font boldFont = new Font(bf, 10, Font.BOLD, BaseColor.BLACK);
+
+            // Create one page per teacher
+            foreach (var gv in teachersWithTKB)
+            {
+                var slots = allSlots.Where(s => s.MaGiaoVien == gv.MaGiaoVien).ToList();
+                
+                // Header với màu đẹp (màu xanh lá)
+                PdfPTable headerTable = new PdfPTable(1);
+                headerTable.WidthPercentage = 100;
+                PdfPCell headerCell = new PdfPCell(new Phrase($"THỜI KHÓA BIỂU GIẢNG DẠY\n{gv.HoTen.ToUpper()} ({gv.MaGiaoVien}) - {hocKyName.ToUpper()}", titleFont));
+                headerCell.BackgroundColor = new BaseColor(34, 197, 94); // Green
+                headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                headerCell.Padding = 15;
+                headerCell.Border = Rectangle.NO_BORDER;
+                headerTable.AddCell(headerCell);
+                document.Add(headerTable);
+                document.Add(new Paragraph("\n"));
+
+                // Create timetable table: 7 columns (Tiết + 6 days)
+                PdfPTable table = new PdfPTable(7);
+                table.WidthPercentage = 100;
+                table.SetWidths(new float[] { 1.2f, 1f, 1f, 1f, 1f, 1f, 1f });
+
+                // Header row
+                string[] headers = { "Tiết", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7" };
+                foreach (string header in headers)
+                {
+                    PdfPCell cell = new PdfPCell(new Phrase(header, headerFont));
+                    cell.BackgroundColor = new BaseColor(34, 197, 94); // Green
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    cell.Padding = 8;
+                    cell.Border = Rectangle.BOX;
+                    cell.BorderColor = BaseColor.WHITE;
+                    table.AddCell(cell);
+                }
+
+                // Data rows (Tiết 1-10)
+                for (int tiet = 1; tiet <= 10; tiet++)
+                {
+                    // Tiết column
+                    PdfPCell tietCell = new PdfPCell(new Phrase($"Tiết {tiet}", boldFont));
+                    tietCell.BackgroundColor = new BaseColor(243, 244, 246); // Light gray
+                    tietCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tietCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    tietCell.Padding = 8;
+                    tietCell.Border = Rectangle.BOX;
+                    tietCell.BorderColor = BaseColor.WHITE;
+                    table.AddCell(tietCell);
+
+                    // Day columns (Thứ 2-7)
+                    for (int thu = 2; thu <= 7; thu++)
+                    {
+                        var slot = slots.FirstOrDefault(s => s.Thu == thu && s.Tiet == tiet);
+                        PdfPCell cell = new PdfPCell();
+                        
+                        if (slot != null)
+                        {
+                            // Add content with line break
+                            Phrase phrase = new Phrase();
+                            phrase.Add(new Chunk(slot.TenLop, boldFont));
+                            phrase.Add(new Chunk("\n", normalFont));
+                            phrase.Add(new Chunk(slot.TenMon, normalFont));
+                            cell.AddElement(phrase);
+                            cell.BackgroundColor = new BaseColor(240, 253, 244); // Light green
+                        }
+                        else
+                        {
+                            cell.BackgroundColor = BaseColor.WHITE;
+                        }
+
+                        cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        cell.Padding = 8;
+                        cell.Border = Rectangle.BOX;
+                        cell.BorderColor = BaseColor.WHITE;
+                        cell.FixedHeight = 50f;
+                        table.AddCell(cell);
+                    }
+                }
+
+                document.Add(table);
+
+                // Add page break if not last teacher
+                if (gv != teachersWithTKB.Last())
+                {
+                    document.NewPage();
+                }
+            }
+
+            document.Close();
         }
     }
 }
