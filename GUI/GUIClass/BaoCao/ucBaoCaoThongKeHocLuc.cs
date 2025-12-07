@@ -924,5 +924,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
 
         }
+
+        private void pnlKhoi10_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

@@ -202,23 +202,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 e.PaintBackground(e.ClipBounds, true);
                 e.PaintContent(e.ClipBounds);
 
-                // ✅ Lấy thông tin quyền từ Tag - Sử dụng cách an toàn hơn
-                bool canUpdate = false; // Mặc định false
-                bool canDelete = false; // Mặc định false
-                
-                if (tbTaiKhoan.Tag != null)
+                // ✅ Lấy quyền trực tiếp từ PermissionHelper thay vì từ Tag
+                bool canUpdate = PermissionHelper.HasPermission(PermissionHelper.QLTAIKHOAN, PermissionHelper.UPDATE);
+                bool canDelete = PermissionHelper.HasPermission(PermissionHelper.QLTAIKHOAN, PermissionHelper.DELETE);
+
+                // ✅ DEBUG
+                if (e.RowIndex == 0) // Chỉ in ra 1 lần cho dòng đầu tiên
                 {
-                    try
-                    {
-                        dynamic permissions = tbTaiKhoan.Tag;
-                        canUpdate = permissions?.CanUpdate ?? false;
-                        canDelete = permissions?.CanDelete ?? false;
-                    }
-                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
-                    {
-                        canUpdate = false;
-                        canDelete = false;
-                    }
+                    Console.WriteLine($"[PAINT] CanUpdate: {canUpdate}, CanDelete: {canDelete}");
                 }
 
                 int iconSize = 16;
@@ -228,18 +219,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 int xBin = xLock + iconSize + 3 * padding;
                 int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
 
-                // ✅ Vẽ icon shield (UPDATE) - chỉ hiển thị nếu có quyền
+                // ✅ Vẽ icon shield (UPDATE)
                 Image shield = Image.FromFile(@"..\..\Images\shield.png");
                 if (canUpdate)
                 {
+                    // Hiển thị rõ nét
                     e.Graphics.DrawImage(shield, new Rectangle(xShield, y, iconSize, iconSize));
                 }
                 else
                 {
-                    // Vẽ icon mờ 30%
+                    // Vẽ mờ 30%
                     System.Drawing.Imaging.ImageAttributes imageAttr = new System.Drawing.Imaging.ImageAttributes();
                     System.Drawing.Imaging.ColorMatrix colorMatrix = new System.Drawing.Imaging.ColorMatrix();
-                    colorMatrix.Matrix33 = 0.3f; // Độ mờ 30%
+                    colorMatrix.Matrix33 = 0.3f;
                     imageAttr.SetColorMatrix(colorMatrix);
 
                     e.Graphics.DrawImage(shield,
@@ -249,7 +241,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         imageAttr);
                 }
 
-                // ✅ Vẽ icon lock (UPDATE) - luôn hiển thị
+                // ✅ Vẽ icon lock (UPDATE)
                 Image lockIcon = Image.FromFile(@"..\..\Images\lock.png");
                 if (canUpdate)
                 {
@@ -257,7 +249,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
                 else
                 {
-                    // Vẽ icon mờ 30%
                     System.Drawing.Imaging.ImageAttributes imageAttr = new System.Drawing.Imaging.ImageAttributes();
                     System.Drawing.Imaging.ColorMatrix colorMatrix = new System.Drawing.Imaging.ColorMatrix();
                     colorMatrix.Matrix33 = 0.3f;
@@ -270,7 +261,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         imageAttr);
                 }
 
-                // ✅ Vẽ icon bin (DELETE) - chỉ hiển thị nếu có quyền
+                // ✅ Vẽ icon bin (DELETE)
                 Image bin = Image.FromFile(@"..\..\Images\bin.png");
                 if (canDelete)
                 {
@@ -278,7 +269,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
                 else
                 {
-                    // Vẽ icon mờ 30%
                     System.Drawing.Imaging.ImageAttributes imageAttr = new System.Drawing.Imaging.ImageAttributes();
                     System.Drawing.Imaging.ColorMatrix colorMatrix = new System.Drawing.Imaging.ColorMatrix();
                     colorMatrix.Matrix33 = 0.3f;
@@ -300,24 +290,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == tbTaiKhoan.Columns["thaoTac"].Index)
             {
-                // ✅ Lấy thông tin quyền từ Tag - Sử dụng cách an toàn hơn
-                bool canUpdate = false; // Mặc định false
-                bool canDelete = false; // Mặc định false
-                
-                if (tbTaiKhoan.Tag != null)
-                {
-                    try
-                    {
-                        dynamic permissions = tbTaiKhoan.Tag;
-                        canUpdate = permissions?.CanUpdate ?? false;
-                        canDelete = permissions?.CanDelete ?? false;
-                    }
-                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
-                    {
-                        canUpdate = false;
-                        canDelete = false;
-                    }
-                }
+                // ✅ Lấy quyền trực tiếp từ PermissionHelper
+                bool canUpdate = PermissionHelper.HasPermission(PermissionHelper.QLTAIKHOAN, PermissionHelper.UPDATE);
+                bool canDelete = PermissionHelper.HasPermission(PermissionHelper.QLTAIKHOAN, PermissionHelper.DELETE);
 
                 var cell = tbTaiKhoan.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
                 int x = tbTaiKhoan.PointToClient(Cursor.Position).X - cell.X;
@@ -335,9 +310,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // ✅ 1. ICON SHIELD - SỬA VAI TRÒ (UPDATE)
                 if (x < shieldRight)
                 {
-                    // Kiểm tra quyền UPDATE
-                    if (!PermissionHelper.CheckUpdatePermission(PermissionHelper.QLTAIKHOAN, "Quản lý tài khoản"))
+                    if (!canUpdate)
+                    {
+                        MessageBox.Show("Bạn không có quyền chỉnh sửa trong chức năng 'Quản lý tài khoản'!",
+                            "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
+                    }
 
                     try
                     {
@@ -385,12 +363,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                // ✅ 2. ICON LOCK - KHÓA/MỞ KHÓA TÀI KHOẢN (UPDATE)
+                // ✅ 2. ICON LOCK - KHÓA/MỞ KHÓA (UPDATE)
                 else if (x > lockLeft && x < lockRight)
                 {
-                    // Kiểm tra quyền UPDATE
-                    if (!PermissionHelper.CheckUpdatePermission(PermissionHelper.QLTAIKHOAN, "Quản lý tài khoản"))
+                    if (!canUpdate)
+                    {
+                        MessageBox.Show("Bạn không có quyền chỉnh sửa trong chức năng 'Quản lý tài khoản'!",
+                            "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
+                    }
 
                     try
                     {
@@ -428,12 +409,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                // ✅ 3. ICON BIN - XÓA TÀI KHOẢN (DELETE)
+                // ✅ 3. ICON BIN - XÓA (DELETE)
                 else if (x > binLeft && x < binLeft + iconSize)
                 {
-                    // Kiểm tra quyền DELETE
-                    if (!PermissionHelper.CheckDeletePermission(PermissionHelper.QLTAIKHOAN, "Quản lý tài khoản"))
+                    if (!canDelete)
+                    {
+                        MessageBox.Show("Bạn không có quyền xóa trong chức năng 'Quản lý tài khoản'!",
+                            "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
+                    }
 
                     try
                     {

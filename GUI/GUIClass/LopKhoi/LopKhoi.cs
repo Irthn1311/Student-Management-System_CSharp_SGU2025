@@ -617,25 +617,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             e.Paint(e.CellBounds, DataGridViewPaintParts.All);
 
-            // ✅ Lấy thông tin quyền từ Tag - Sử dụng cách an toàn hơn
-            bool canUpdate = true; // Mặc định true
-            bool canDelete = true; // Mặc định true
-            
-            if (dgvLop.Tag != null)
-            {
-                try
-                {
-                    dynamic permissions = dgvLop.Tag;
-                    canUpdate = permissions?.CanUpdate ?? true;
-                    canDelete = permissions?.CanDelete ?? true;
-                }
-                catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
-                {
-                    // Nếu Tag không có thuộc tính CanUpdate/CanDelete, giữ giá trị mặc định
-                    canUpdate = true;
-                    canDelete = true;
-                }
-            }
+            // ✅ Lấy quyền trực tiếp từ PermissionHelper thay vì từ Tag
+            bool canUpdate = PermissionHelper.HasPermission(PermissionHelper.QLLOPHOC, PermissionHelper.UPDATE);
+            bool canDelete = PermissionHelper.HasPermission(PermissionHelper.QLLOPHOC, PermissionHelper.DELETE);
 
             Image editIcon = Properties.Resources.edit_icon;
             Image deleteIcon = Properties.Resources.delete_icon;
@@ -645,14 +629,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             int startX = e.CellBounds.Left + (e.CellBounds.Width - iconSize * 2 - spacing) / 2;
             int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
 
-            // ✅ Vẽ icon Edit (với opacity nếu không có quyền)
+            // ✅ Vẽ icon Edit (mờ nếu không có quyền UPDATE)
             if (canUpdate)
             {
+                // Hiển thị rõ nét
                 e.Graphics.DrawImage(editIcon, new Rectangle(startX, y, iconSize, iconSize));
             }
             else
             {
-                // Vẽ icon mờ (disabled)
+                // Vẽ icon mờ 30%
                 using (var attributes = new System.Drawing.Imaging.ImageAttributes())
                 {
                     float[][] matrixItems = {
@@ -670,15 +655,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
             }
 
-            // ✅ Vẽ icon Delete (với opacity nếu không có quyền)
+            // ✅ Vẽ icon Delete (mờ nếu không có quyền DELETE)
             int deleteX = startX + iconSize + spacing;
             if (canDelete)
             {
+                // Hiển thị rõ nét
                 e.Graphics.DrawImage(deleteIcon, new Rectangle(deleteX, y, iconSize, iconSize));
             }
             else
             {
-                // Vẽ icon mờ (disabled)
+                // Vẽ icon mờ 30%
                 using (var attributes = new System.Drawing.Imaging.ImageAttributes())
                 {
                     float[][] matrixItems = {

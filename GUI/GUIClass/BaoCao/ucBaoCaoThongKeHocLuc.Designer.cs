@@ -33,16 +33,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnExportStatistics = new Guna.UI2.WinForms.Guna2Button();
             this.pnlStatisticsContent = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlKhoi10 = new Guna.UI2.WinForms.Guna2Panel();
+            this.baoCaoKhoi1 = new Student_Management_System_CSharp_SGU2025.GUI.BaoCaoKhoi();
             this.lblKhoi10Title = new System.Windows.Forms.Label();
             this.pnlKhoi11 = new Guna.UI2.WinForms.Guna2Panel();
+            this.baoCaoKhoi2 = new Student_Management_System_CSharp_SGU2025.GUI.BaoCaoKhoi();
             this.lblKhoi11Title = new System.Windows.Forms.Label();
             this.pnlKhoi12 = new Guna.UI2.WinForms.Guna2Panel();
+            this.baoCaoKhoi3 = new Student_Management_System_CSharp_SGU2025.GUI.BaoCaoKhoi();
             this.lblKhoi12Title = new System.Windows.Forms.Label();
             this.pnlStatisticsHeader = new Guna.UI2.WinForms.Guna2Panel();
             this.lblStatisticsTitle = new System.Windows.Forms.Label();
-            this.baoCaoKhoi1 = new Student_Management_System_CSharp_SGU2025.GUI.BaoCaoKhoi();
-            this.baoCaoKhoi2 = new Student_Management_System_CSharp_SGU2025.GUI.BaoCaoKhoi();
-            this.baoCaoKhoi3 = new Student_Management_System_CSharp_SGU2025.GUI.BaoCaoKhoi();
             this.pnlStatistics.SuspendLayout();
             this.pnlStatisticsFooter.SuspendLayout();
             this.pnlStatisticsContent.SuspendLayout();
@@ -125,6 +125,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.pnlKhoi10.Name = "pnlKhoi10";
             this.pnlKhoi10.Size = new System.Drawing.Size(1096, 143);
             this.pnlKhoi10.TabIndex = 0;
+            this.pnlKhoi10.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlKhoi10_Paint);
+            // 
+            // baoCaoKhoi1
+            // 
+            this.baoCaoKhoi1.Location = new System.Drawing.Point(0, 40);
+            this.baoCaoKhoi1.Name = "baoCaoKhoi1";
+            this.baoCaoKhoi1.Size = new System.Drawing.Size(1096, 100);
+            this.baoCaoKhoi1.SoGioi = "98";
+            this.baoCaoKhoi1.SoKha = "192";
+            this.baoCaoKhoi1.SoTrungBinh = "154";
+            this.baoCaoKhoi1.SoYeu = "36";
+            this.baoCaoKhoi1.TabIndex = 1;
+            this.baoCaoKhoi1.Load += new System.EventHandler(this.baoCaoKhoi1_Load);
             // 
             // lblKhoi10Title
             // 
@@ -148,6 +161,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.pnlKhoi11.Size = new System.Drawing.Size(1096, 140);
             this.pnlKhoi11.TabIndex = 1;
             // 
+            // baoCaoKhoi2
+            // 
+            this.baoCaoKhoi2.Location = new System.Drawing.Point(0, 37);
+            this.baoCaoKhoi2.Name = "baoCaoKhoi2";
+            this.baoCaoKhoi2.Size = new System.Drawing.Size(1096, 100);
+            this.baoCaoKhoi2.SoGioi = "98";
+            this.baoCaoKhoi2.SoKha = "192";
+            this.baoCaoKhoi2.SoTrungBinh = "154";
+            this.baoCaoKhoi2.SoYeu = "36";
+            this.baoCaoKhoi2.TabIndex = 2;
+            // 
             // lblKhoi11Title
             // 
             this.lblKhoi11Title.AutoSize = true;
@@ -169,6 +193,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.pnlKhoi12.Name = "pnlKhoi12";
             this.pnlKhoi12.Size = new System.Drawing.Size(1096, 140);
             this.pnlKhoi12.TabIndex = 2;
+            // 
+            // baoCaoKhoi3
+            // 
+            this.baoCaoKhoi3.Location = new System.Drawing.Point(0, 37);
+            this.baoCaoKhoi3.Name = "baoCaoKhoi3";
+            this.baoCaoKhoi3.Size = new System.Drawing.Size(1096, 100);
+            this.baoCaoKhoi3.SoGioi = "98";
+            this.baoCaoKhoi3.SoKha = "192";
+            this.baoCaoKhoi3.SoTrungBinh = "154";
+            this.baoCaoKhoi3.SoYeu = "36";
+            this.baoCaoKhoi3.TabIndex = 2;
             // 
             // lblKhoi12Title
             // 
@@ -202,40 +237,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.lblStatisticsTitle.Size = new System.Drawing.Size(218, 21);
             this.lblStatisticsTitle.TabIndex = 0;
             this.lblStatisticsTitle.Text = "Thống kê học lực theo khối";
-            // 
-            // baoCaoKhoi1
-            // 
-            this.baoCaoKhoi1.Location = new System.Drawing.Point(0, 40);
-            this.baoCaoKhoi1.Name = "baoCaoKhoi1";
-            this.baoCaoKhoi1.Size = new System.Drawing.Size(1096, 100);
-            this.baoCaoKhoi1.SoGioi = "98";
-            this.baoCaoKhoi1.SoKha = "192";
-            this.baoCaoKhoi1.SoTrungBinh = "154";
-            this.baoCaoKhoi1.SoYeu = "36";
-            this.baoCaoKhoi1.TabIndex = 1;
-            this.baoCaoKhoi1.Load += new System.EventHandler(this.baoCaoKhoi1_Load);
-            // 
-            // baoCaoKhoi2
-            // 
-            this.baoCaoKhoi2.Location = new System.Drawing.Point(0, 37);
-            this.baoCaoKhoi2.Name = "baoCaoKhoi2";
-            this.baoCaoKhoi2.Size = new System.Drawing.Size(1096, 100);
-            this.baoCaoKhoi2.SoGioi = "98";
-            this.baoCaoKhoi2.SoKha = "192";
-            this.baoCaoKhoi2.SoTrungBinh = "154";
-            this.baoCaoKhoi2.SoYeu = "36";
-            this.baoCaoKhoi2.TabIndex = 2;
-            // 
-            // baoCaoKhoi3
-            // 
-            this.baoCaoKhoi3.Location = new System.Drawing.Point(0, 37);
-            this.baoCaoKhoi3.Name = "baoCaoKhoi3";
-            this.baoCaoKhoi3.Size = new System.Drawing.Size(1096, 100);
-            this.baoCaoKhoi3.SoGioi = "98";
-            this.baoCaoKhoi3.SoKha = "192";
-            this.baoCaoKhoi3.SoTrungBinh = "154";
-            this.baoCaoKhoi3.SoYeu = "36";
-            this.baoCaoKhoi3.TabIndex = 2;
             // 
             // ucBaoCaoThongKeHocLuc
             // 
