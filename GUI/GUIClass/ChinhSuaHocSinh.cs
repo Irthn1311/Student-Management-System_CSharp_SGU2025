@@ -1,4 +1,4 @@
-﻿using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.BUS;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
@@ -430,112 +430,38 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// Hiển thị dialog đơn giản để chọn phụ huynh
+        /// Hiển thị dialog đầy đủ để chọn phụ huynh với tùy chọn thêm mới (giống form thêm học sinh)
         /// </summary>
         private void ChonPhuHuynhTuDialog()
         {
-            if (danhSachPhuHuynh == null || danhSachPhuHuynh.Count == 0)
+            // ✅ Sử dụng ChonPhuHuynhDialog giống như form thêm học sinh
+            using (ChonPhuHuynhDialog dialog = new ChonPhuHuynhDialog(this.selectedMaPhuHuynh))
             {
-                MessageBox.Show("Danh sách phụ huynh trống. Vui lòng thêm phụ huynh trước.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Tạo form dialog đơn giản
-            Form dialogForm = new Form
-            {
-                Text = "Chọn phụ huynh",
-                Size = new Size(500, 400),
-                StartPosition = FormStartPosition.CenterParent,
-                FormBorderStyle = FormBorderStyle.FixedDialog,
-                MaximizeBox = false,
-                MinimizeBox = false
-            };
-
-            // Tạo ListBox để hiển thị danh sách phụ huynh
-            ListBox listBox = new ListBox
-            {
-                Dock = DockStyle.Fill,
-                Font = new Font("Segoe UI", 10F)
-            };
-
-            // Thêm danh sách phụ huynh vào ListBox với format hiển thị
-            foreach (var ph in danhSachPhuHuynh)
-            {
-                listBox.Items.Add(new { ph.MaPhuHuynh, DisplayText = $"{ph.HoTen} - {ph.SoDienThoai}" });
-            }
-
-            // Chọn phụ huynh hiện tại nếu có
-            if (this.selectedMaPhuHuynh > 0)
-            {
-                for (int i = 0; i < listBox.Items.Count; i++)
+                if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    var item = listBox.Items[i];
-                    var maPH = item.GetType().GetProperty("MaPhuHuynh").GetValue(item);
-                    if (maPH != null && Convert.ToInt32(maPH) == this.selectedMaPhuHuynh)
+                    // Xử lý phụ huynh đã chọn
+                    if (dialog.SelectedPhuHuynh != null)
                     {
-                        listBox.SelectedIndex = i;
-                        break;
+                        this.selectedMaPhuHuynh = dialog.SelectedPhuHuynh.MaPhuHuynh;
+                        
+                        // Cập nhật TextBox hiển thị tên phụ huynh
+                        txtPhuHuynhDuocChon.Text = dialog.SelectedPhuHuynh.HoTen;
+                        txtPhuHuynhDuocChon.ForeColor = Color.Green;
+                    }
+                    
+                    // Xử lý phụ huynh vừa thêm mới (nếu có)
+                    if (dialog.NewPhuHuynh != null)
+                    {
+                        // Reload lại danh sách phụ huynh để có phụ huynh mới
+                        LoadMasterPhuHuynhList();
+                        
+                        // Phụ huynh mới đã được chọn tự động trong dialog
+                        this.selectedMaPhuHuynh = dialog.NewPhuHuynh.MaPhuHuynh;
+                        txtPhuHuynhDuocChon.Text = dialog.NewPhuHuynh.HoTen;
+                        txtPhuHuynhDuocChon.ForeColor = Color.Green;
                     }
                 }
             }
-
-            // Panel chứa các nút
-            Panel panelButtons = new Panel
-            {
-                Dock = DockStyle.Bottom,
-                Height = 50
-            };
-
-            Button btnOK = new Button
-            {
-                Text = "Chọn",
-                DialogResult = DialogResult.OK,
-                Size = new Size(100, 35),
-                Location = new Point(dialogForm.Width - 220, 10),
-                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
-            };
-
-            Button btnCancel = new Button
-            {
-                Text = "Hủy",
-                DialogResult = DialogResult.Cancel,
-                Size = new Size(100, 35),
-                Location = new Point(dialogForm.Width - 110, 10),
-                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
-            };
-
-            panelButtons.Controls.Add(btnOK);
-            panelButtons.Controls.Add(btnCancel);
-            dialogForm.Controls.Add(listBox);
-            dialogForm.Controls.Add(panelButtons);
-            dialogForm.AcceptButton = btnOK;
-            dialogForm.CancelButton = btnCancel;
-
-            // Hiển thị dialog
-            if (dialogForm.ShowDialog(this) == DialogResult.OK && listBox.SelectedItem != null)
-            {
-                try
-                {
-                    var selectedItem = listBox.SelectedItem;
-                    int maPH = Convert.ToInt32(selectedItem.GetType().GetProperty("MaPhuHuynh").GetValue(selectedItem));
-                    string displayText = selectedItem.GetType().GetProperty("DisplayText").GetValue(selectedItem).ToString();
-                    string hoTen = displayText.Split('-')[0].Trim();
-
-                    // Lưu lại ID MỚI và hiển thị tên
-                    this.selectedMaPhuHuynh = maPH;
-                    txtPhuHuynhDuocChon.Text = hoTen;
-                    txtPhuHuynhDuocChon.ForeColor = Color.Green;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi khi chọn phụ huynh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    this.selectedMaPhuHuynh = -1;
-                    txtPhuHuynhDuocChon.Text = "Chưa chọn";
-                    txtPhuHuynhDuocChon.ForeColor = Color.Red;
-                }
-            }
-
-            dialogForm.Dispose();
         }
 
         /// <summary>

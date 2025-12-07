@@ -364,32 +364,35 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // ✅ Load tất cả từ DB
             danhSachHocSinhFull = hocSinhBLL.GetAllHocSinh();
 
-            // ✅ Lấy học kỳ hiện tại để lấy lớp của học sinh
+            // ✅ Lấy học kỳ hiện tại để lấy lớp của học sinh - CHỈ lấy học kỳ "Đang diễn ra"
             try
             {
                 List<HocKyDTO> dsHocKy = hocKyBUS.DocDSHocKy();
                 if (dsHocKy != null && dsHocKy.Count > 0)
                 {
-                    // Tìm học kỳ đang diễn ra
+                    // ✅ CHỈ tìm học kỳ đang diễn ra - không fallback sang học kỳ khác
                     var hocKyDangDienRa = dsHocKy.FirstOrDefault(hk => hk.TrangThai == "Đang diễn ra");
                     if (hocKyDangDienRa != null)
                     {
                         maHocKyHienTai = hocKyDangDienRa.MaHocKy;
+                        Console.WriteLine($"[DEBUG] Đã tìm thấy học kỳ đang diễn ra: MaHocKy={maHocKyHienTai}, TenHocKy={hocKyDangDienRa.TenHocKy}");
                     }
                     else
                     {
-                        // Nếu không có học kỳ đang diễn ra, lấy học kỳ mới nhất
-                        var hocKyMoiNhat = dsHocKy.OrderByDescending(hk => hk.NgayBD).FirstOrDefault();
-                        if (hocKyMoiNhat != null)
-                        {
-                            maHocKyHienTai = hocKyMoiNhat.MaHocKy;
-                        }
+                        // ✅ Không có học kỳ đang diễn ra - để maHocKyHienTai = 0 để hiển thị trống
+                        maHocKyHienTai = 0;
+                        Console.WriteLine("[WARNING] Không tìm thấy học kỳ có trạng thái 'Đang diễn ra'. Cột lớp sẽ để trống.");
                     }
+                }
+                else
+                {
+                    maHocKyHienTai = 0;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Lỗi khi lấy học kỳ hiện tại: {ex.Message}");
+                maHocKyHienTai = 0;
             }
 
             // ✅ Áp dụng lọc theo lớp nếu có
@@ -434,8 +437,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 {
                     bindingListHocSinh.Add(hs);
                     
-                    // ✅ Lấy tên lớp của học sinh
-                    string tenLop = "Chưa phân lớp";
+                    // ✅ Lấy tên lớp của học sinh - để trống nếu chưa phân lớp trong học kỳ đang diễn ra
+                    string tenLop = ""; // Mặc định để trống
                     if (maHocKyHienTai > 0)
                     {
                         try
@@ -449,10 +452,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                                     tenLop = lop.tenLop;
                                 }
                             }
+                            // Nếu không tìm thấy lớp (maLop <= 0), giữ nguyên tenLop = "" (để trống)
                         }
                         catch (Exception ex)
                         {
                             Console.WriteLine($"Lỗi khi lấy lớp của học sinh {hs.MaHS}: {ex.Message}");
+                            // Giữ nguyên tenLop = "" khi có lỗi
                         }
                     }
                     
@@ -815,6 +820,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tablePhuHuynh.Columns["ThaoTacPH"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             tablePhuHuynh.Columns["ThaoTacPH"].Width = 80;
 
+            // --- Cấu hình thanh cuộn ---
+            tablePhuHuynh.ScrollBars = ScrollBars.Vertical;
+            
             // --- Gắn sự kiện ---
             tablePhuHuynh.CellPainting += tablePhuHuynh_CellPainting;
             tablePhuHuynh.CellClick += tablePhuHuynh_CellClick;
@@ -1393,25 +1401,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                                     danhSachHocSinhFull[index] = updatedHS;
                                 }
 
-                                // ✅ Lấy tên lớp của học sinh
-                                string tenLop = "Chưa phân lớp";
+                                // ✅ Lấy tên lớp của học sinh - sử dụng lại biến class-level maHocKyHienTai - để trống nếu chưa phân lớp
+                                string tenLop = ""; // Mặc định để trống
                                 try
                                 {
-                                    int maHocKyHienTai = 0;
-                                    List<HocKyDTO> dsHocKy = hocKyBUS.DocDSHocKy();
-                                    if (dsHocKy != null && dsHocKy.Count > 0)
+                                    // ✅ Nếu chưa có maHocKyHienTai, lấy lại học kỳ đang diễn ra
+                                    if (maHocKyHienTai <= 0)
                                     {
-                                        var hocKyDangDienRa = dsHocKy.FirstOrDefault(hk => hk.TrangThai == "Đang diễn ra");
-                                        if (hocKyDangDienRa != null)
+                                        List<HocKyDTO> dsHocKy = hocKyBUS.DocDSHocKy();
+                                        if (dsHocKy != null && dsHocKy.Count > 0)
                                         {
-                                            maHocKyHienTai = hocKyDangDienRa.MaHocKy;
-                                        }
-                                        else
-                                        {
-                                            var hocKyMoiNhat = dsHocKy.OrderByDescending(hk => hk.NgayBD).FirstOrDefault();
-                                            if (hocKyMoiNhat != null)
+                                            // ✅ CHỈ lấy học kỳ đang diễn ra
+                                            var hocKyDangDienRa = dsHocKy.FirstOrDefault(hk => hk.TrangThai == "Đang diễn ra");
+                                            if (hocKyDangDienRa != null)
                                             {
-                                                maHocKyHienTai = hocKyMoiNhat.MaHocKy;
+                                                maHocKyHienTai = hocKyDangDienRa.MaHocKy;
                                             }
                                         }
                                     }
@@ -1427,6 +1431,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                                                 tenLop = lop.tenLop;
                                             }
                                         }
+                                        // Nếu không tìm thấy lớp (maLop <= 0), giữ nguyên tenLop = "" (để trống)
                                     }
                                 }
                                 catch { }
@@ -1808,7 +1813,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         if (currentIndex >= startIndex && currentIndex < endIndex)
                         {
                             bindingListHocSinh.Add(newHS);
-                            tableHocSinh.Rows.Add(newHS.MaHS, newHS.HoTen, newHS.NgaySinh.ToString("dd/MM/yyyy"),
+                            // ✅ Thứ tự cột: MaHS, HoTen, Lop (để trống vì chưa phân lớp), NgaySinh, GioiTinh, SDTHS, Email, TrangThai, ThaoTacHS
+                            tableHocSinh.Rows.Add(newHS.MaHS, newHS.HoTen, "", newHS.NgaySinh.ToString("dd/MM/yyyy"),
                                                  newHS.GioiTinh, newHS.SdtHS ?? "", newHS.Email ?? "", newHS.TrangThai, "");
                         }
                         
@@ -2231,18 +2237,42 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                         ImportAllDataFromExcelWithBinding(ofd.FileName);
 
-                        // ✅ Chỉ load lại mối quan hệ và cập nhật thống kê (không reload toàn bộ)
-                        LoadMoiQuanHeForCurrentPageHocSinh();
-                        SetupHeaderAndStats();
+                        // ✅ Reload lại TẤT CẢ dữ liệu từ DB để cập nhật số lượng chính xác
+                        // (Sau khi nhập Excel thành công, có thể có học sinh mới, phụ huynh mới, mối quan hệ mới)
                         
-                        // ✅ Cập nhật lại số trang
-                        ForceUpdatePaginationLabel();
+                        // 1. Reload danh sách học sinh đầy đủ từ DB
+                        LoadSampleDataHocSinh();
+                        
+                        // 2. Reload danh sách phụ huynh đầy đủ từ DB
+                        LoadSampleDataPhuHuynh();
+                        
+                        // 3. Reload danh sách mối quan hệ đầy đủ từ DB
+                        LoadSampleDataMoiQuanHe();
+                        
+                        // 4. Cập nhật lại các thẻ thống kê (số lượng học sinh, phụ huynh, etc.)
+                        SetupHeaderAndStats();
 
-                        // ✅ Scroll xuống cuối để hiển thị học sinh mới
-                        if (tableHocSinh.Rows.Count > 0)
+                        // ✅ Chuyển đến trang cuối để hiển thị học sinh mới
+                        if (danhSachHocSinhFiltered.Count > 0)
                         {
-                            tableHocSinh.FirstDisplayedScrollingRowIndex = Math.Max(0, tableHocSinh.Rows.Count - 1);
-                            tableHocSinh.Rows[tableHocSinh.Rows.Count - 1].Selected = true;
+                            int totalPages = (int)Math.Ceiling((double)danhSachHocSinhFiltered.Count / pageSizeHocSinh);
+                            if (totalPages > 0)
+                            {
+                                currentPageHocSinh = totalPages; // Chuyển đến trang cuối
+                                LoadPagedDataHocSinh(); // Load lại dữ liệu trang cuối (sẽ tự động cập nhật label phân trang)
+                                
+                                // Scroll xuống cuối để hiển thị học sinh mới
+                                if (tableHocSinh.Rows.Count > 0)
+                                {
+                                    tableHocSinh.FirstDisplayedScrollingRowIndex = Math.Max(0, tableHocSinh.Rows.Count - 1);
+                                    tableHocSinh.Rows[tableHocSinh.Rows.Count - 1].Selected = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Nếu không có học sinh nào, vẫn cập nhật label phân trang
+                            ForceUpdatePaginationLabel();
                         }
 
                         MessageBox.Show(
@@ -2708,7 +2738,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             if (currentIndex >= startIndex && currentIndex < endIndex)
                             {
                                 bindingListHocSinh.Add(hs);
-                                tableHocSinh.Rows.Add(hs.MaHS, hs.HoTen, hs.NgaySinh.ToString("dd/MM/yyyy"),
+                                // ✅ Thứ tự cột: MaHS, HoTen, Lop (để trống vì chưa phân lớp), NgaySinh, GioiTinh, SDTHS, Email, TrangThai, ThaoTacHS
+                                tableHocSinh.Rows.Add(hs.MaHS, hs.HoTen, "", hs.NgaySinh.ToString("dd/MM/yyyy"),
                                                      hs.GioiTinh, hs.SdtHS ?? "", hs.Email ?? "", hs.TrangThai, "");
                             }
                         }

@@ -67,7 +67,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnThemHocSinh = new Guna.UI2.WinForms.Guna2Button();
             this.btnTim = new Guna.UI2.WinForms.Guna2Button();
             this.txtTimKiem = new Guna.UI2.WinForms.Guna2TextBox();
-            this.cboLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.btnTrangSau = new Guna.UI2.WinForms.Guna2Button();
             this.btnTrangTruoc = new Guna.UI2.WinForms.Guna2Button();
             this.lblTrangHienTai = new System.Windows.Forms.Label();
@@ -82,6 +81,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.statCardNam = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardTongHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.headerQuanLiHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
+            this.cboLop = new Guna.UI2.WinForms.Guna2ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.tableHocSinh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tablePhuHuynh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tableMoiQuanHe)).BeginInit();
@@ -237,7 +237,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.tablePhuHuynh.RowHeadersVisible = false;
             this.tablePhuHuynh.RowHeadersWidth = 51;
             this.tablePhuHuynh.RowTemplate.Height = 24;
-            this.tablePhuHuynh.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.tablePhuHuynh.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tablePhuHuynh.Size = new System.Drawing.Size(1090, 450);
             this.tablePhuHuynh.TabIndex = 17;
             this.tablePhuHuynh.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
@@ -558,25 +558,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.txtTimKiem.Size = new System.Drawing.Size(305, 46);
             this.txtTimKiem.TabIndex = 54;
             // 
-            // cboLop
-            // 
-            this.cboLop.BackColor = System.Drawing.Color.Transparent;
-            this.cboLop.BorderRadius = 7;
-            this.cboLop.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cboLop.DropDownHeight = 250;
-            this.cboLop.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboLop.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cboLop.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cboLop.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.cboLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
-            this.cboLop.ItemHeight = 30;
-            this.cboLop.Location = new System.Drawing.Point(204, 12);
-            this.cboLop.Margin = new System.Windows.Forms.Padding(2);
-            this.cboLop.Name = "cboLop";
-            this.cboLop.Size = new System.Drawing.Size(200, 36);
-            this.cboLop.TabIndex = 63;
-            this.cboLop.SelectedIndexChanged += new System.EventHandler(this.cboLop_SelectedIndexChanged);
-            // 
             // btnTrangSau
             // 
             this.btnTrangSau.BorderRadius = 7;
@@ -794,6 +775,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.headerQuanLiHocSinh.TabIndex = 13;
             this.headerQuanLiHocSinh.Visible = false;
             this.headerQuanLiHocSinh.Load += new System.EventHandler(this.headerQuanLiHocSinh_Load);
+            // 
+            // cboLop
+            // 
+            this.cboLop.BackColor = System.Drawing.Color.Transparent;
+            this.cboLop.BorderRadius = 7;
+            this.cboLop.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cboLop.DropDownHeight = 250;
+            this.cboLop.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLop.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cboLop.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cboLop.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cboLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cboLop.IntegralHeight = false;
+            this.cboLop.ItemHeight = 30;
+            this.cboLop.Location = new System.Drawing.Point(204, 12);
+            this.cboLop.Margin = new System.Windows.Forms.Padding(2);
+            this.cboLop.Name = "cboLop";
+            this.cboLop.Size = new System.Drawing.Size(200, 36);
+            this.cboLop.TabIndex = 63;
+            this.cboLop.SelectedIndexChanged += new System.EventHandler(this.cboLop_SelectedIndexChanged);
             // 
             // HocSinh
             // 

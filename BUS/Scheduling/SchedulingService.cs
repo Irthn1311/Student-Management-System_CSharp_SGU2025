@@ -1029,25 +1029,20 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 						bool isSaturday = (slot.thu == 7); // Thứ 7
 						
 						// Tính điểm ưu tiên theo mức độ
-						// ✅ Ưu tiên điền slot trống ở thứ 7 trước
-						// Mức 1 (ưu tiên cao nhất): Buổi chính T7 = -500 (ưu tiên điền thứ 7 trước)
-						// Mức 2: Buổi chính T2-T6 = 0
-						// Mức 3: Buổi phụ T7 = 1500
-						// Mức 4 (ưu tiên thấp nhất): Buổi phụ T2-T6 = 2000
+						// Mức 1 (ưu tiên cao nhất): Buổi chính T2-T6 = 0
+						// Mức 2: Buổi chính T7 = 1000
+						// Mức 3: Buổi phụ T2-T6 = 2000
+						// Mức 4 (ưu tiên thấp nhất): Buổi phụ T7 = 3000
 						
 						int basePriority = 0;
-						                        // Mức 1 (ưu tiên cao nhất): Buổi chính T2-T6 = 0
-                        // Mức 2: Buổi chính T7 = 1000
-                        // Mức 3: Buổi phụ T2-T6 = 2000
-                        // Mức 4 (ưu tiên thấp nhất): Buổi phụ T7 = 3000
-                        if (isMainSession && isWeekday)
-                            basePriority = 0; // Mức 1: Buổi chính T2-T6
-                        else if (isMainSession && isSaturday)
-                            basePriority = 1000; // Mức 2: Buổi chính T7
-                        else if (isAuxiliarySession && isWeekday)
-                            basePriority = 2000; // Mức 3: Buổi phụ T2-T6
-                        else // isAuxiliarySession && isSaturday
-                            basePriority = 3000; // Mức 4: Buổi phụ T7
+						if (isMainSession && isWeekday)
+							basePriority = 0; // Mức 1: Buổi chính T2-T6
+						else if (isMainSession && isSaturday)
+							basePriority = 1000; // Mức 2: Buổi chính T7
+						else if (isAuxiliarySession && isWeekday)
+							basePriority = 2000; // Mức 3: Buổi phụ T2-T6
+						else // isAuxiliarySession && isSaturday
+							basePriority = 3000; // Mức 4: Buổi phụ T7
 						
 						// Nếu đang ở buổi phụ nhưng buổi chính chưa đầy, penalty rất lớn
 						if (isAuxiliarySession && shouldPreferMainSession)
@@ -1111,25 +1106,18 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 						int periodsOnThisDay = sol.Slots.Count(s => 
 							s.MaLop == req.MaLop && s.MaMon == req.MaMon && s.Thu == slot.thu);
 						
-						// Priority 5: ✅ BẮT BUỘC đặt consecutive periods từ tiết 1 của buổi chính
+						// Priority 5: Ưu tiên đặt consecutive periods trong CÙNG BUỔI (liên tiếp)
 						int consecutiveBonus = 0;
-						
-						// Xác định tiết bắt đầu của buổi chính
-						int tietBatDauBuoiChinh = isMainSessionMorning ? 1 : 6;
-						
-						if (periodsOnThisDay > 0)
+						if (periodsOnThisDay > 0 && periodsOnThisDay < 4)
 						{
-							// Đã có tiết trên ngày này → BẮT BUỘC đặt liên tiếp từ tiết đầu đã có
+							// Đã có tiết trên ngày này → ưu tiên đặt liên tiếp trong CÙNG BUỔI
 							var existingPeriods = sol.Slots
 								.Where(s => s.MaLop == req.MaLop && s.MaMon == req.MaMon && s.Thu == slot.thu)
 								.Select(s => s.Tiet)
 								.OrderBy(t => t)
 								.ToList();
 							
-							int tietDauTien = existingPeriods.Min();
-							int tietCuoiCung = existingPeriods.Max();
-							
-							// Kiểm tra xem slot này có tạo thành consecutive từ tiết đầu không
+							// Kiểm tra xem slot này có tạo thành consecutive trong CÙNG BUỔI không
 							var testPeriods = existingPeriods.Concat(new[] { slot.tiet }).OrderBy(t => t).ToList();
 							bool wouldBeConsecutive = ArePeriodsConsecutive(testPeriods);
 							
@@ -1137,63 +1125,22 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 							string slotSession = GetSessionForPeriod(slot.tiet);
 							bool sameSessionAsExisting = existingPeriods.All(p => GetSessionForPeriod(p) == slotSession);
 							
-							// ✅ BẮT BUỘC: Tiết đầu tiên phải là tiết 1 của buổi chính
-							if (tietDauTien == tietBatDauBuoiChinh)
+							if (wouldBeConsecutive && sameSessionAsExisting)
 							{
-								// Đã bắt đầu đúng từ tiết 1 → ưu tiên liên tiếp
-								if (wouldBeConsecutive && sameSessionAsExisting)
-								{
-									// Liên tiếp và cùng buổi → ưu tiên cao nhất
-									consecutiveBonus = -100; // Ưu tiên rất cao
-								}
-								else if (sameSessionAsExisting && !wouldBeConsecutive)
-								{
-									// Cùng buổi nhưng không liên tiếp → penalty lớn
-									consecutiveBonus = 1000; // Penalty lớn
-								}
-								else
-								{
-									// Khác buổi → penalty rất lớn
-									consecutiveBonus = 2000; // Penalty rất lớn
-								}
+								consecutiveBonus = -50; // Ưu tiên cao cho consecutive trong cùng buổi
+							}
+							else if (sameSessionAsExisting && !wouldBeConsecutive)
+							{
+								consecutiveBonus = 10; // Penalty nhẹ cho cùng buổi nhưng không liên tiếp
 							}
 							else
 							{
-								// Tiết đầu không phải tiết 1 của buổi chính → penalty cực lớn
-								consecutiveBonus = 5000; // Penalty cực lớn
-							}
-						}
-						else
-						{
-							// Chưa có tiết nào trong ngày này → BẮT BUỘC bắt đầu từ tiết 1 của buổi chính
-							// Kiểm tra xem tiết 1 của buổi chính có còn trống không
-							bool tiet1Trong = !sol.Slots.Any(s => 
-								s.MaLop == req.MaLop && s.Thu == slot.thu && s.Tiet == tietBatDauBuoiChinh);
-							
-							if (slot.tiet == tietBatDauBuoiChinh && tiet1Trong)
-							{
-								consecutiveBonus = -200; // Ưu tiên cực cao cho tiết 1 buổi chính (còn trống)
-							}
-							else if (slot.tiet == tietBatDauBuoiChinh && !tiet1Trong)
-							{
-								// Tiết 1 đã bị chiếm bởi môn khác → không thể dùng
-								consecutiveBonus = 10000; // Penalty cực lớn
-							}
-							else if (isMainSession && slot.tiet == tietBatDauBuoiChinh + 1)
-							{
-								// Tiết 2 của buổi chính (chấp nhận được nếu tiết 1 đã bị chiếm bởi môn khác)
-								consecutiveBonus = -50;
-							}
-							else
-							{
-								// Không phải tiết 1 hoặc 2 của buổi chính → penalty lớn
-								consecutiveBonus = 1000;
+								consecutiveBonus = 30; // Penalty cao cho khác buổi (rời rạc)
 							}
 						}
 						
-						// Combine all priorities: consecutive (bắt buộc) > base priority > auxiliary concentration > daily count > periods on day
-						// ✅ Consecutive bonus được nhân với hệ số lớn để đảm bảo ưu tiên cao nhất
-						return consecutiveBonus * 100 + priority + auxiliaryConcentrationBonus + countOnDay + periodsOnThisDay;
+						// Combine all priorities: base priority > auxiliary concentration > consecutive > daily count > periods on day
+						return priority + auxiliaryConcentrationBonus + consecutiveBonus * 10 + countOnDay + periodsOnThisDay;
 					})
 					.ThenBy(slot => rand.Next()) // Add some randomness for ties
 					.ToList();

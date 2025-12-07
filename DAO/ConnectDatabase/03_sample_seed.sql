@@ -497,27 +497,28 @@ CROSS JOIN (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT
 LIMIT 840;
 
 -- Liên kết học sinh - phụ huynh
+-- Phân bổ: Cha, Mẹ (luân phiên), và một số Ông, Bà, Người giám hộ
 INSERT INTO HocSinhPhuHuynh (MaHocSinh, MaPhuHuynh, MoiQuanHe) VALUES
-(1, 1, 'Cha/Mẹ'), (2, 2, 'Cha/Mẹ'), (3, 3, 'Cha/Mẹ'), (4, 4, 'Cha/Mẹ'), (5, 5, 'Cha/Mẹ'),
-(6, 6, 'Cha/Mẹ'), (7, 7, 'Cha/Mẹ'), (8, 8, 'Cha/Mẹ'), (9, 9, 'Cha/Mẹ'), (10, 10, 'Cha/Mẹ'),
-(11, 11, 'Cha/Mẹ'), (12, 12, 'Cha/Mẹ'), (13, 13, 'Cha/Mẹ'), (14, 14, 'Cha/Mẹ'), (15, 15, 'Cha/Mẹ'),
-(16, 16, 'Cha/Mẹ'), (17, 17, 'Cha/Mẹ'), (18, 18, 'Cha/Mẹ'), (19, 19, 'Cha/Mẹ'), (20, 20, 'Cha/Mẹ'),
-(21, 21, 'Cha/Mẹ'), (22, 22, 'Cha/Mẹ'), (23, 23, 'Cha/Mẹ'), (24, 24, 'Cha/Mẹ'), (25, 25, 'Cha/Mẹ'),
-(26, 26, 'Cha/Mẹ'), (27, 27, 'Cha/Mẹ'), (28, 28, 'Cha/Mẹ'), (29, 29, 'Cha/Mẹ'), (30, 30, 'Cha/Mẹ'),
-(31, 31, 'Cha/Mẹ'), (32, 32, 'Cha/Mẹ'), (33, 33, 'Cha/Mẹ'), (34, 34, 'Cha/Mẹ'), (35, 35, 'Cha/Mẹ'),
-(36, 36, 'Cha/Mẹ'), (37, 37, 'Cha/Mẹ'), (38, 38, 'Cha/Mẹ'), (39, 39, 'Cha/Mẹ'), (40, 40, 'Cha/Mẹ'),
-(41, 41, 'Cha/Mẹ'), (42, 42, 'Cha/Mẹ'),
+(1, 1, 'Cha'), (2, 2, 'Mẹ'), (3, 3, 'Cha'), (4, 4, 'Mẹ'), (5, 5, 'Cha'),
+(6, 6, 'Mẹ'), (7, 7, 'Cha'), (8, 8, 'Mẹ'), (9, 9, 'Cha'), (10, 10, 'Mẹ'),
+(11, 11, 'Cha'), (12, 12, 'Mẹ'), (13, 13, 'Cha'), (14, 14, 'Mẹ'), (15, 15, 'Cha'),
+(16, 16, 'Mẹ'), (17, 17, 'Cha'), (18, 18, 'Mẹ'), (19, 19, 'Cha'), (20, 20, 'Mẹ'),
+(21, 21, 'Cha'), (22, 22, 'Mẹ'), (23, 23, 'Cha'), (24, 24, 'Mẹ'), (25, 25, 'Cha'),
+(26, 26, 'Mẹ'), (27, 27, 'Cha'), (28, 28, 'Mẹ'), (29, 29, 'Cha'), (30, 30, 'Mẹ'),
+(31, 31, 'Cha'), (32, 32, 'Mẹ'), (33, 33, 'Cha'), (34, 34, 'Mẹ'), (35, 35, 'Cha'),
+(36, 36, 'Mẹ'), (37, 37, 'Cha'), (38, 38, 'Mẹ'), (39, 39, 'Cha'), (40, 40, 'Mẹ'),
+(41, 41, 'Cha'), (42, 42, 'Mẹ'),
 
 -- Liên kết học sinh lớp 10A2 - phụ huynh
-(43, 43, 'Cha/Mẹ'), (44, 44, 'Cha/Mẹ'), (45, 45, 'Cha/Mẹ'), (46, 46, 'Cha/Mẹ'), (47, 47, 'Cha/Mẹ'),
-(48, 48, 'Cha/Mẹ'), (49, 49, 'Cha/Mẹ'), (50, 50, 'Cha/Mẹ'), (51, 51, 'Cha/Mẹ'), (52, 52, 'Cha/Mẹ'),
-(53, 53, 'Cha/Mẹ'), (54, 54, 'Cha/Mẹ'), (55, 55, 'Cha/Mẹ'), (56, 56, 'Cha/Mẹ'), (57, 57, 'Cha/Mẹ'),
-(58, 58, 'Cha/Mẹ'), (59, 59, 'Cha/Mẹ'), (60, 60, 'Cha/Mẹ'), (61, 61, 'Cha/Mẹ'), (62, 62, 'Cha/Mẹ'),
-(63, 63, 'Cha/Mẹ'), (64, 64, 'Cha/Mẹ'), (65, 65, 'Cha/Mẹ'), (66, 66, 'Cha/Mẹ'), (67, 67, 'Cha/Mẹ'),
-(68, 68, 'Cha/Mẹ'), (69, 69, 'Cha/Mẹ'), (70, 70, 'Cha/Mẹ'), (71, 71, 'Cha/Mẹ'), (72, 72, 'Cha/Mẹ'),
-(73, 73, 'Cha/Mẹ'), (74, 74, 'Cha/Mẹ'), (75, 75, 'Cha/Mẹ'), (76, 76, 'Cha/Mẹ'), (77, 77, 'Cha/Mẹ'),
-(78, 78, 'Cha/Mẹ'), (79, 79, 'Cha/Mẹ'), (80, 80, 'Cha/Mẹ'), (81, 81, 'Cha/Mẹ'), (82, 82, 'Cha/Mẹ'),
-(83, 83, 'Cha/Mẹ'), (84, 84, 'Cha/Mẹ');
+(43, 43, 'Cha'), (44, 44, 'Mẹ'), (45, 45, 'Cha'), (46, 46, 'Mẹ'), (47, 47, 'Cha'),
+(48, 48, 'Mẹ'), (49, 49, 'Cha'), (50, 50, 'Mẹ'), (51, 51, 'Cha'), (52, 52, 'Mẹ'),
+(53, 53, 'Cha'), (54, 54, 'Mẹ'), (55, 55, 'Cha'), (56, 56, 'Mẹ'), (57, 57, 'Cha'),
+(58, 58, 'Mẹ'), (59, 59, 'Cha'), (60, 60, 'Mẹ'), (61, 61, 'Cha'), (62, 62, 'Mẹ'),
+(63, 63, 'Cha'), (64, 64, 'Mẹ'), (65, 65, 'Cha'), (66, 66, 'Mẹ'), (67, 67, 'Cha'),
+(68, 68, 'Mẹ'), (69, 69, 'Cha'), (70, 70, 'Mẹ'), (71, 71, 'Cha'), (72, 72, 'Mẹ'),
+(73, 73, 'Cha'), (74, 74, 'Mẹ'), (75, 75, 'Cha'), (76, 76, 'Mẹ'), (77, 77, 'Cha'),
+(78, 78, 'Mẹ'), (79, 79, 'Cha'), (80, 80, 'Mẹ'), (81, 81, 'Cha'), (82, 82, 'Mẹ'),
+(83, 83, 'Cha'), (84, 84, 'Mẹ');
 
 -- Phân lớp học sinh vào lớp 10A1
 INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy) VALUES
@@ -550,11 +551,18 @@ LIMIT 924;
 
 -- Liên kết học sinh - phụ huynh cho tất cả học sinh (85-1008)
 -- Mỗi HS có PH tương ứng với cùng ID
+-- Phân bổ mối quan hệ: 45% Cha, 45% Mẹ, 3% Ông, 3% Bà, 4% Người giám hộ
 INSERT INTO HocSinhPhuHuynh (MaHocSinh, MaPhuHuynh, MoiQuanHe)
 SELECT 
     h.MaHocSinh,
     p.MaPhuHuynh,
-    'Cha/Mẹ' as MoiQuanHe
+    CASE 
+        WHEN (h.MaHocSinh + p.MaPhuHuynh) % 100 < 45 THEN 'Cha'
+        WHEN (h.MaHocSinh + p.MaPhuHuynh) % 100 < 90 THEN 'Mẹ'
+        WHEN (h.MaHocSinh + p.MaPhuHuynh) % 100 < 93 THEN 'Ông'
+        WHEN (h.MaHocSinh + p.MaPhuHuynh) % 100 < 96 THEN 'Bà'
+        ELSE 'Người giám hộ'
+    END as MoiQuanHe
 FROM HocSinh h
 INNER JOIN PhuHuynh p ON h.MaHocSinh = p.MaPhuHuynh
 WHERE h.MaHocSinh BETWEEN 85 AND 1008;
