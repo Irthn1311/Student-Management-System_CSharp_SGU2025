@@ -14,6 +14,7 @@ using OfficeOpenXml;
 using Student_Management_System_CSharp_SGU2025.BUS.Services;
 using System.IO;
 using Student_Management_System_CSharp_SGU2025.DAO;
+using MySql.Data.MySqlClient;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
@@ -72,17 +73,34 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void LoadComboBox()
         {
-            // Load ComboBox Học Kỳ 
+            // ✅ Load ComboBox Học Kỳ - Tự động chọn học kỳ "Đang diễn ra"
             danhSachHocKy = hocKyBus.DocDSHocKy();
             cbHocKyNamHoc.Items.Clear();
-            cbHocKyNamHoc.Items.Add("Chọn học kỳ");
+            
+            // Không thêm "Chọn học kỳ" nữa, chỉ thêm các học kỳ
             foreach (var hk in danhSachHocKy)
             {
                 cbHocKyNamHoc.Items.Add(hk.TenHocKy + "-" + hk.MaNamHoc);
             }
-            if (cbHocKyNamHoc.Items.Count > 0)
+            
+            // ✅ Tự động chọn học kỳ có trạng thái "Đang diễn ra"
+            int selectedIndex = -1;
+            for (int i = 0; i < danhSachHocKy.Count; i++)
             {
-                cbHocKyNamHoc.SelectedIndex = 0; // Chọn mục đầu tiên làm mặc định
+                if (danhSachHocKy[i].TrangThai == "Đang diễn ra")
+                {
+                    selectedIndex = i;
+                    break;
+                }
+            }
+            
+            if (selectedIndex >= 0 && selectedIndex < cbHocKyNamHoc.Items.Count)
+            {
+                cbHocKyNamHoc.SelectedIndex = selectedIndex;
+            }
+            else if (cbHocKyNamHoc.Items.Count > 0)
+            {
+                cbHocKyNamHoc.SelectedIndex = 0; // Nếu không có "Đang diễn ra", chọn học kỳ đầu tiên
             }
 
             // Gắn sự kiện cho ComboBox Học Kỳ
@@ -122,10 +140,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 // btnThemPhanLop giờ là btnPhanLopTuDong - Phân lớp tự động
                 
-                // Kiểm tra đã chọn học kỳ chưa
-                if (cbHocKyNamHoc.SelectedIndex <= 0)
+                // ✅ Kiểm tra đã chọn học kỳ chưa (giờ không có "Chọn học kỳ" nữa nên chỉ cần check null)
+                if (cbHocKyNamHoc.SelectedItem == null)
                 {
-                    MessageBox.Show("Vui lòng chọn học kỳ hiện tại để phân lớp tự động.", "Thông báo",
+                    MessageBox.Show("Không có học kỳ để phân lớp tự động.", "Thông báo",
                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -268,8 +286,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         // Sử dụng ScrollableMessageBox để xem đầy đủ thông tin
                         ScrollableMessageBox.Show("Thành công", thongBaoThanhCong, MessageBoxIcon.Information);
 
-                        // Refresh lại bảng phân lớp
-                        LoadTablePhanLop();
+                        // ✅ Chỉ refresh lại bảng phân lớp của học kỳ vừa phân lớp (không load tất cả)
+                        FilterTablePhanLop(); // FilterTablePhanLop sẽ chỉ load học kỳ đã chọn
                         
                         // Tự động chuyển sang tab Phân lớp để xem kết quả
                         btnPhanLop_Click(null, null);
@@ -373,12 +391,46 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void LoadData()
         {
-            LoadTablePhanLop();
+            // ✅ Load dữ liệu phân lớp của học kỳ đã chọn (tự động là học kỳ "Đang diễn ra")
+            FilterTablePhanLop(); // FilterTablePhanLop sẽ chỉ load học kỳ đã chọn trong comboBox
         }
 
         private void LoadTablePhanLop()
         {
-            danhSachPhanLop = phanLopBLL.GetAllPhanLop();
+            // ✅ Chỉ load dữ liệu phân lớp của học kỳ đã chọn trong comboBox
+            string selectedHocKy = cbHocKyNamHoc.SelectedItem?.ToString();
+            
+            if (string.IsNullOrEmpty(selectedHocKy))
+            {
+                // Nếu chưa chọn học kỳ, để trống
+                danhSachPhanLop = new List<(int, int, int)>();
+                danhSachPhanLopGoc = new List<(int, int, int)>();
+                RefreshTablePhanLop(danhSachPhanLop);
+                return;
+            }
+            
+            // Tìm mã học kỳ từ tên học kỳ đã chọn
+            int maHocKySelected = -1;
+            foreach (var hk in danhSachHocKy)
+            {
+                if ((hk.TenHocKy + "-" + hk.MaNamHoc) == selectedHocKy)
+                {
+                    maHocKySelected = hk.MaHocKy;
+                    break;
+                }
+            }
+            
+            if (maHocKySelected > 0)
+            {
+                // ✅ Chỉ load phân lớp của học kỳ đã chọn (tối ưu hơn)
+                var allPhanLop = phanLopBLL.GetAllPhanLop();
+                danhSachPhanLop = allPhanLop.Where(pl => pl.maHocKy == maHocKySelected).ToList();
+            }
+            else
+            {
+                danhSachPhanLop = new List<(int, int, int)>();
+            }
+            
             danhSachPhanLopGoc = new List<(int, int, int)>(danhSachPhanLop); // Lưu danh sách gốc để tìm kiếm
             RefreshTablePhanLop(danhSachPhanLop);
         }
@@ -477,28 +529,36 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             string selectedHocKy = cbHocKyNamHoc.SelectedItem?.ToString();
             string selectedLop = cbLop.SelectedItem?.ToString();
 
-            // Lấy tất cả phân lớp
-            List<(int maHocSinh, int maLop, int maHocKy)> allPhanLop = phanLopBLL.GetAllPhanLop();
-            
-            // Lọc theo điều kiện
-            var filteredPhanLop = allPhanLop.Where(pl =>
+            // ✅ Tìm mã học kỳ từ tên học kỳ đã chọn (nếu có)
+            int maHocKySelected = -1;
+            if (!string.IsNullOrEmpty(selectedHocKy))
             {
-                // Kiểm tra học kỳ
-                bool hocKyMatch = true;
-                if (selectedHocKy != "Chọn học kỳ" && !string.IsNullOrEmpty(selectedHocKy))
+                foreach (var hk in danhSachHocKy)
                 {
-                    string tenHocKy = "";
-                    foreach (var hk in danhSachHocKy)
+                    if ((hk.TenHocKy + "-" + hk.MaNamHoc) == selectedHocKy)
                     {
-                        if (hk.MaHocKy == pl.maHocKy)
-                        {
-                            tenHocKy = hk.TenHocKy + "-" + hk.MaNamHoc;
-                            break;
-                        }
+                        maHocKySelected = hk.MaHocKy;
+                        break;
                     }
-                    hocKyMatch = tenHocKy == selectedHocKy;
                 }
+            }
+            
+            // ✅ Nếu không có học kỳ được chọn, để trống
+            if (maHocKySelected <= 0)
+            {
+                danhSachPhanLop = new List<(int, int, int)>();
+                danhSachPhanLopGoc = new List<(int, int, int)>();
+                RefreshTablePhanLop(danhSachPhanLop);
+                return;
+            }
 
+            // ✅ Chỉ lấy phân lớp của học kỳ đã chọn (tối ưu hơn - không load tất cả)
+            var allPhanLop = phanLopBLL.GetAllPhanLop();
+            var phanLopByHocKy = allPhanLop.Where(pl => pl.maHocKy == maHocKySelected).ToList();
+            
+            // Lọc thêm theo lớp nếu có
+            var filteredPhanLop = phanLopByHocKy.Where(pl =>
+            {
                 // Kiểm tra lớp
                 bool lopMatch = true;
                 if (selectedLop != "Chọn lớp" && !string.IsNullOrEmpty(selectedLop))
@@ -515,10 +575,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     lopMatch = tenLop == selectedLop;
                 }
 
-                return hocKyMatch && lopMatch;
+                return lopMatch;
             }).ToList();
 
-            // Cập nhật bảng
+            // Cập nhật danh sách gốc và bảng
+            danhSachPhanLop = filteredPhanLop;
+            danhSachPhanLopGoc = new List<(int, int, int)>(filteredPhanLop);
             RefreshTablePhanLop(filteredPhanLop);
         }
 
@@ -585,8 +647,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             MessageBox.Show("Đã xóa phân lớp thành công.", "Thành công", 
                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                             
-                            // Cập nhật lại bảng phân lớp
-                            LoadTablePhanLop();
+                            // ✅ Chỉ cập nhật lại bảng phân lớp của học kỳ hiện tại (không load tất cả)
+                            FilterTablePhanLop();
                         }
                         else
                         {
@@ -790,8 +852,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 this.Cursor = Cursors.Default;
 
-                // Refresh lại bảng phân lớp
-                LoadTablePhanLop();
+                // ✅ Chỉ refresh lại bảng phân lớp của học kỳ vừa nhập Excel (không load tất cả)
+                FilterTablePhanLop(); // FilterTablePhanLop sẽ chỉ load học kỳ đã chọn
             }
             catch (Exception ex)
             {
@@ -856,8 +918,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 // 2. Chỉ nhập Phụ Huynh của học sinh đã nhập thành công
                 // Nếu phụ huynh lỗi thì rollback học sinh và DỪNG LẠI
+                HashSet<int> phuHuynhMoiTao = new HashSet<int>();
                 Dictionary<string, (int maPH, int excelRow)> phuHuynhThanhCong = 
-                    ImportPhuHuynhFromWorksheetChuyenTruong(wsPhuHuynh, hocSinhThanhCong);
+                    ImportPhuHuynhFromWorksheetChuyenTruong(wsPhuHuynh, hocSinhThanhCong, out phuHuynhMoiTao);
 
                 // ✅ KIỂM TRA: Nếu sau khi nhập phụ huynh, không còn học sinh nào thì DỪNG LẠI
                 if (hocSinhThanhCong.Count == 0)
@@ -1086,6 +1149,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         continue;
                     }
 
+                    // ✅ VALIDATE: Kiểm tra khối và nguyện vọng chuyển lớp phải khớp nhau
+                    if (!string.IsNullOrWhiteSpace(nguyenVong) && !string.IsNullOrWhiteSpace(khoi))
+                    {
+                        // Kiểm tra format: Nguyện vọng phải bắt đầu bằng khối
+                        // Ví dụ: Khối 10 -> Nguyện vọng phải là "10A1", "10A2", etc.
+                        // Ví dụ: Khối 11 -> Nguyện vọng phải là "11A1", "11B1", etc.
+                        if (!nguyenVong.StartsWith(khoi))
+                        {
+                            errors.AppendLine($"Dòng {row - 1}: Khối '{khoi}' không khớp với nguyện vọng chuyển lớp '{nguyenVong}'. Nguyện vọng phải bắt đầu bằng khối (ví dụ: Khối 10 -> 10A1, 10A2...)");
+                            errorCount++;
+                            continue;
+                        }
+                    }
+
                     // Parse ngày chuyển vào
                     DateTime ngayChuyenVao = DateTime.MinValue;
                     bool parsedNgayChuyenVao = false;
@@ -1224,8 +1301,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         /// </summary>
         private Dictionary<string, (int maPH, int excelRow)> ImportPhuHuynhFromWorksheetChuyenTruong(
             ExcelWorksheet ws, 
-            Dictionary<string, (int maHS, int excelRow, string khoi, DateTime ngayChuyenVao, string nguyenVong)> hocSinhThanhCong)
+            Dictionary<string, (int maHS, int excelRow, string khoi, DateTime ngayChuyenVao, string nguyenVong)> hocSinhThanhCong,
+            out HashSet<int> phuHuynhMoiTao)
         {
+            // ✅ Khởi tạo HashSet cho phụ huynh mới tạo
+            phuHuynhMoiTao = new HashSet<int>();
+            
             int rowCount = ws.Dimension?.Rows ?? 0;
             if (rowCount < 2) return new Dictionary<string, (int, int)>();
 
@@ -1260,8 +1341,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             var errors = new StringBuilder();
             var skipped = new StringBuilder();
             Dictionary<string, (int maPH, int excelRow)> phuHuynhThanhCong = new Dictionary<string, (int, int)>();
-            // ✅ Track phụ huynh mới tạo (không phải đã tồn tại) để rollback sau này
-            HashSet<int> phuHuynhMoiTao = new HashSet<int>();
             List<int> hocSinhCanRollback = new List<int>();
             HashSet<string> sdtDaNhap = new HashSet<string>();
             HashSet<string> emailDaNhap = new HashSet<string>();
@@ -3035,7 +3114,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // ✅ Hiển thị kết quả kiểm tra chi tiết
             StringBuilder resultKiemTra = new StringBuilder();
             resultKiemTra.AppendLine("╔════════════════════════════════════════════════╗");
-            resultKiemTra.AppendLine("║   KẾT QUẢ KIỂM TRA ĐIỀU KIỆN CHUYỂN TRƯỜNG    ║");
+            resultKiemTra.AppendLine("║   KẾT QUẢ KIỂM TRA ĐIỀU KIỆN CHUYỂN TRƯỜNG     ║");
             resultKiemTra.AppendLine("╚════════════════════════════════════════════════╝");
             resultKiemTra.AppendLine();
             
@@ -3169,6 +3248,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // ✅ Dictionary để lưu thông tin lớp đã phân cho từng học sinh
             Dictionary<int, (string tenLop, string nguyenVong, bool laNguyenVong)> lopDaPhan = 
                 new Dictionary<int, (string, string, bool)>();
+            // ✅ HashSet để track học sinh KHÔNG phân lớp được (cần rollback)
+            HashSet<int> hocSinhKhongPhanLopDuoc = new HashSet<int>();
 
             foreach (var kvp in hocSinhThanhCong)
             {
@@ -3184,6 +3265,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     {
                         errors.AppendLine($"Học sinh {tenHS}: Khối không hợp lệ ({khoi})");
                         errorCount++;
+                        hocSinhKhongPhanLopDuoc.Add(maHS); // ✅ Đánh dấu cần rollback
                         continue;
                     }
 
@@ -3193,6 +3275,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     {
                         errors.AppendLine($"Học sinh {tenHS}: Không tìm thấy lớp nào trong khối {khoi}");
                         errorCount++;
+                        hocSinhKhongPhanLopDuoc.Add(maHS); // ✅ Đánh dấu cần rollback
                         continue;
                     }
 
@@ -3205,7 +3288,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         var lopNguyenVong = lopHocBus.LayLopTheoTen(nguyenVong);
                         if (lopNguyenVong != null)
                         {
-                            // Kiểm tra lớp nguyện vọng cùng khối
+                            // ✅ Kiểm tra lớp nguyện vọng cùng khối - BÁO LỖI nếu không khớp
                             if (lopNguyenVong.maKhoi == maKhoi)
                             {
                                 // Kiểm tra sĩ số
@@ -3221,7 +3304,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             }
                             else
                             {
-                                warnings.AppendLine($"Học sinh {tenHS}: Lớp nguyện vọng '{nguyenVong}' không cùng khối ({lopNguyenVong.maKhoi} != {maKhoi}) - Tự động phân lớp");
+                                // ✅ BÁO LỖI nếu khối và nguyện vọng không khớp - sẽ rollback học sinh
+                                errors.AppendLine($"Học sinh {tenHS}: Khối '{khoi}' không khớp với nguyện vọng chuyển lớp '{nguyenVong}' (Lớp {nguyenVong} thuộc khối {lopNguyenVong.maKhoi}, không phải khối {maKhoi})");
+                                errorCount++;
+                                hocSinhKhongPhanLopDuoc.Add(maHS); // ✅ Đánh dấu cần rollback
+                                continue;
                             }
                         }
                         else
@@ -3253,6 +3340,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         {
                             errors.AppendLine($"Học sinh {tenHS}: Khối {khoi} đã đầy, không thể phân lớp");
                             errorCount++;
+                            hocSinhKhongPhanLopDuoc.Add(maHS); // ✅ Đánh dấu cần rollback
                             continue;
                         }
                     }
@@ -3280,25 +3368,162 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         {
                             errors.AppendLine($"Học sinh {tenHS}: Không thể phân lớp vào {lopDuocPhan.tenLop}");
                             errorCount++;
+                            hocSinhKhongPhanLopDuoc.Add(maHS); // ✅ Đánh dấu cần rollback
                         }
                     }
                     catch (Exception ex)
                     {
                         errors.AppendLine($"Học sinh {tenHS}: Lỗi khi phân lớp - {ex.Message}");
                         errorCount++;
+                        hocSinhKhongPhanLopDuoc.Add(maHS); // ✅ Đánh dấu cần rollback
                     }
                 }
                 catch (Exception ex)
                 {
                     errors.AppendLine($"Học sinh {tenHS}: {ex.Message}");
                     errorCount++;
+                    hocSinhKhongPhanLopDuoc.Add(maHS); // ✅ Đánh dấu cần rollback
                 }
+            }
+
+            // ✅ ROLLBACK các học sinh không phân lớp được
+            // Xóa học sinh, mối quan hệ, điểm, hạnh kiểm, xếp loại, phụ huynh (nếu chỉ liên quan đến học sinh này)
+            foreach (int maHS in hocSinhKhongPhanLopDuoc)
+            {
+                try
+                {
+                    // ✅ XÓA THEO THỨ TỰ: Điểm → Hạnh kiểm → Xếp loại → Mối quan hệ → Học sinh → Tài khoản
+                    
+                    // 1. Xóa điểm số (tất cả học kỳ của học sinh này)
+                    try 
+                    { 
+                        using (var conn = DAO.ConnectDatabase.ConnectionDatabase.GetConnection())
+                        {
+                            conn.Open();
+                            using (var cmd = new MySqlCommand("DELETE FROM DiemSo WHERE MaHocSinh = @maHS", conn))
+                            {
+                                cmd.Parameters.AddWithValue("@maHS", maHS);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    } 
+                    catch (Exception exDelDiem) 
+                    { 
+                        System.Diagnostics.Debug.WriteLine($"⚠️ Lỗi xóa điểm của học sinh {maHS}: {exDelDiem.Message}"); 
+                    }
+                    
+                    // 2. Xóa hạnh kiểm (tất cả học kỳ của học sinh này)
+                    try 
+                    { 
+                        using (var conn = DAO.ConnectDatabase.ConnectionDatabase.GetConnection())
+                        {
+                            conn.Open();
+                            using (var cmd = new MySqlCommand("DELETE FROM HanhKiem WHERE MaHocSinh = @maHS", conn))
+                            {
+                                cmd.Parameters.AddWithValue("@maHS", maHS);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    } 
+                    catch (Exception exDelHK) 
+                    { 
+                        System.Diagnostics.Debug.WriteLine($"⚠️ Lỗi xóa hạnh kiểm của học sinh {maHS}: {exDelHK.Message}"); 
+                    }
+                    
+                    // 3. Xóa xếp loại (tất cả học kỳ của học sinh này)
+                    try 
+                    { 
+                        using (var conn = DAO.ConnectDatabase.ConnectionDatabase.GetConnection())
+                        {
+                            conn.Open();
+                            using (var cmd = new MySqlCommand("DELETE FROM XepLoai WHERE MaHocSinh = @maHS", conn))
+                            {
+                                cmd.Parameters.AddWithValue("@maHS", maHS);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    } 
+                    catch (Exception exDelXL) 
+                    { 
+                        System.Diagnostics.Debug.WriteLine($"⚠️ Lỗi xóa xếp loại của học sinh {maHS}: {exDelXL.Message}"); 
+                    }
+                    
+                    // 4. Xóa phân lớp (nếu có)
+                    try 
+                    { 
+                        using (var conn = DAO.ConnectDatabase.ConnectionDatabase.GetConnection())
+                        {
+                            conn.Open();
+                            using (var cmd = new MySqlCommand("DELETE FROM PhanLop WHERE MaHocSinh = @maHS", conn))
+                            {
+                                cmd.Parameters.AddWithValue("@maHS", maHS);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    } 
+                    catch (Exception exDelPL) 
+                    { 
+                        System.Diagnostics.Debug.WriteLine($"⚠️ Lỗi xóa phân lớp của học sinh {maHS}: {exDelPL.Message}"); 
+                    }
+                    
+                    // 5. Xóa mối quan hệ phụ huynh
+                    try { hocSinhPhuHuynhBLL.DeleteQuanHeByHocSinh(maHS); } 
+                    catch (Exception exDelQH) 
+                    { 
+                        System.Diagnostics.Debug.WriteLine($"⚠️ Lỗi xóa mối quan hệ của học sinh {maHS}: {exDelQH.Message}"); 
+                    }
+                    
+                    // 6. Xóa học sinh
+                    bool deleteSuccess = false;
+                    try 
+                    { 
+                        deleteSuccess = hocSinhBus.DeleteHocSinh(maHS);
+                        if (!deleteSuccess)
+                        {
+                            errors.AppendLine($"⚠️ Không thể xóa học sinh (Mã HS: {maHS}) - Có thể học sinh không tồn tại hoặc đã bị xóa trước đó.");
+                        }
+                    } 
+                    catch (Exception exDelHS) 
+                    { 
+                        errors.AppendLine($"Lỗi khi xóa học sinh (Mã HS: {maHS}): {exDelHS.Message}");
+                    }
+                    
+                    // 7. Xóa tài khoản người dùng (nếu học sinh đã bị xóa thành công)
+                    if (deleteSuccess)
+                    {
+                        string username = $"HS{maHS:D3}";
+                        try { nguoiDungBLL.DeleteNguoiDung(username); } 
+                        catch (Exception exDelTK) 
+                        { 
+                            // Không cần báo lỗi nếu tài khoản không tồn tại
+                            System.Diagnostics.Debug.WriteLine($"⚠️ Lỗi xóa tài khoản {username}: {exDelTK.Message}"); 
+                        }
+                    }
+                    
+                    // ✅ Xóa khỏi dictionary để không hiển thị trong kết quả thành công
+                    var keyToRemove = hocSinhThanhCong.FirstOrDefault(kvp => kvp.Value.maHS == maHS);
+                    if (!string.IsNullOrEmpty(keyToRemove.Key))
+                    {
+                        hocSinhThanhCong.Remove(keyToRemove.Key);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errors.AppendLine($"Lỗi khi rollback học sinh (Mã HS: {maHS}): {ex.Message}");
+                }
+            }
+            
+            // ✅ Nếu có học sinh bị rollback, thêm thông báo vào errors
+            if (hocSinhKhongPhanLopDuoc.Count > 0)
+            {
+                errors.AppendLine();
+                errors.AppendLine($"⚠️ LƯU Ý: {hocSinhKhongPhanLopDuoc.Count} học sinh không phân lớp được đã bị xóa khỏi hệ thống (không có lớp phù hợp).");
             }
 
             // ✅ Hiển thị kết quả phân lớp chi tiết
             StringBuilder result = new StringBuilder();
             result.AppendLine("╔════════════════════════════════════════════════╗");
-            result.AppendLine("║      KẾT QUẢ PHÂN LỚP CHUYỂN TRƯỜNG         ║");
+            result.AppendLine("║      KẾT QUẢ PHÂN LỚP CHUYỂN TRƯỜNG            ║");
             result.AppendLine("╚════════════════════════════════════════════════╝");
             result.AppendLine();
             
@@ -3306,6 +3531,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             result.AppendLine($"   ✓ Thành công: {successCount} học sinh");
             if (errorCount > 0)
                 result.AppendLine($"   ✗ Lỗi: {errorCount} học sinh");
+            if (hocSinhKhongPhanLopDuoc.Count > 0)
+                result.AppendLine($"   ⚠️ Đã xóa: {hocSinhKhongPhanLopDuoc.Count} học sinh (không phân lớp được)");
             result.AppendLine();
             
             // ✅ Danh sách học sinh được phân lớp thành công (với lớp được phân)
