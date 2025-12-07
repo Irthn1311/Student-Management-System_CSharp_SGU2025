@@ -40,6 +40,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private List<DTO.HocKyDTO> danhSachHocKy;
         private List<(int maHocSinh, int maLop, int maHocKy)> danhSachPhanLop;
         private List<(int maHocSinh, int maLop, int maHocKy)> danhSachPhanLopGoc; // Danh sách phân lớp gốc để tìm kiếm
+        private Dictionary<string, (HocKyDTO hk1, HocKyDTO hk2)> danhSachNamHoc; // Map từ chuỗi hiển thị năm học đến (HK1, HK2)
 
         public PhanLop()
         {
@@ -64,6 +65,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             danhSachHocKy = new List<DTO.HocKyDTO>();
             danhSachPhanLop = new List<(int maHocSinh, int maLop, int maHocKy)>();
             danhSachPhanLopGoc = new List<(int, int, int)>();
+            danhSachNamHoc = new Dictionary<string, (HocKyDTO hk1, HocKyDTO hk2)>();
 
             LoadComboBox();
             SetupTables();
@@ -73,23 +75,48 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void LoadComboBox()
         {
-            // ✅ Load ComboBox Học Kỳ - Tự động chọn học kỳ "Đang diễn ra"
+            // ✅ Load ComboBox theo NĂM HỌC (gộp cả HK1 và HK2) - Tự động chọn năm học "Đang diễn ra"
             danhSachHocKy = hocKyBus.DocDSHocKy();
             cbHocKyNamHoc.Items.Clear();
             
-            // Không thêm "Chọn học kỳ" nữa, chỉ thêm các học kỳ
-            foreach (var hk in danhSachHocKy)
+            // Nhóm học kỳ theo năm học
+            var hocKyTheoNamHoc = danhSachHocKy
+                .GroupBy(hk => hk.MaNamHoc)
+                .OrderByDescending(g => g.Key) // Sắp xếp năm học mới nhất trước
+                .ToList();
+            
+            // Thêm từng năm học vào ComboBox (dạng "Học kỳ I & II - 2025-2026")
+            foreach (var nhomNamHoc in hocKyTheoNamHoc)
             {
-                cbHocKyNamHoc.Items.Add(hk.TenHocKy + "-" + hk.MaNamHoc);
+                string maNamHoc = nhomNamHoc.Key;
+                var danhSachHK = nhomNamHoc.OrderBy(hk => hk.TenHocKy).ToList();
+                
+                // Tìm HK1 và HK2 của năm học này
+                HocKyDTO hk1 = danhSachHK.FirstOrDefault(hk => 
+                    (hk.TenHocKy.ToLower().Contains("i") && !hk.TenHocKy.ToLower().Contains("ii")) ||
+                    (hk.TenHocKy.ToLower().Contains("1") && !hk.TenHocKy.ToLower().Contains("2")));
+                HocKyDTO hk2 = danhSachHK.FirstOrDefault(hk => 
+                    hk.TenHocKy.ToLower().Contains("ii") || hk.TenHocKy.ToLower().Contains("2"));
+                
+                // Tạo chuỗi hiển thị: "Học kỳ I & II - 2025-2026"
+                string hienThiNamHoc = $"Học kỳ I & II - {maNamHoc}";
+                cbHocKyNamHoc.Items.Add(hienThiNamHoc);
+                
+                // Lưu mapping để dễ dàng lấy HK1 và HK2 khi chọn
+                if (hk1 != null && hk2 != null)
+                {
+                    danhSachNamHoc[hienThiNamHoc] = (hk1, hk2);
+                }
             }
             
-            // ✅ Tự động chọn học kỳ có trạng thái "Đang diễn ra"
+            // ✅ Tự động chọn năm học có học kỳ "Đang diễn ra"
             int selectedIndex = -1;
-            for (int i = 0; i < danhSachHocKy.Count; i++)
+            foreach (var nhomNamHoc in hocKyTheoNamHoc)
             {
-                if (danhSachHocKy[i].TrangThai == "Đang diễn ra")
+                bool coHocKyDangDienRa = nhomNamHoc.Any(hk => hk.TrangThai == "Đang diễn ra");
+                if (coHocKyDangDienRa)
                 {
-                    selectedIndex = i;
+                    selectedIndex = hocKyTheoNamHoc.IndexOf(nhomNamHoc);
                     break;
                 }
             }
@@ -100,7 +127,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
             else if (cbHocKyNamHoc.Items.Count > 0)
             {
-                cbHocKyNamHoc.SelectedIndex = 0; // Nếu không có "Đang diễn ra", chọn học kỳ đầu tiên
+                cbHocKyNamHoc.SelectedIndex = 0; // Nếu không có "Đang diễn ra", chọn năm học đầu tiên
             }
 
             // Gắn sự kiện cho ComboBox Học Kỳ
@@ -148,45 +175,44 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                // Lấy mã học kỳ hiện tại
-                string tenHocKyChon = cbHocKyNamHoc.SelectedItem.ToString();
-                int maHocKyHienTai = -1;
-
-                foreach (var hk in danhSachHocKy)
+                // ✅ Lấy năm học được chọn (dạng "Học kỳ I & II - 2025-2026")
+                string namHocChon = cbHocKyNamHoc.SelectedItem?.ToString();
+                if (string.IsNullOrEmpty(namHocChon))
                 {
-                    if ((hk.TenHocKy + "-" + hk.MaNamHoc) == tenHocKyChon)
-                    {
-                        maHocKyHienTai = hk.MaHocKy;
-                        break;
-                    }
-                }
-
-                if (maHocKyHienTai == -1)
-                {
-                    MessageBox.Show("Không tìm thấy học kỳ được chọn.", "Lỗi",
+                    MessageBox.Show("Không có năm học được chọn.", "Lỗi",
                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // *** KIỂM TRA HỌC KỲ ĐƯỢC CHỌN ĐÃ ĐƯỢC PHÂN LỚP CHƯA ***
-                int soHocSinhDaPhanLop = phanLopBLL.CountHocSinhInHocKy(maHocKyHienTai);
-                if (soHocSinhDaPhanLop > 0)
+                // Lấy HK1 và HK2 của năm học được chọn
+                if (!danhSachNamHoc.ContainsKey(namHocChon))
                 {
-                    // Lấy tên học kỳ để hiển thị
-                    string tenHocKyHienTai = "";
-                    foreach (var hk in danhSachHocKy)
-                    {
-                        if (hk.MaHocKy == maHocKyHienTai)
-                        {
-                            tenHocKyHienTai = hk.TenHocKy + " " + hk.MaNamHoc;
-                            break;
-                        }
-                    }
+                    MessageBox.Show("Không tìm thấy thông tin học kỳ cho năm học được chọn.", "Lỗi",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-                    string thongBao = $"⚠️ HỌC KỲ ĐÃ ĐƯỢC PHÂN LỚP!\n\n";
-                    thongBao += $"Học kỳ: {tenHocKyHienTai}\n\n";
-                    thongBao += $"Số học sinh đã được phân lớp: {soHocSinhDaPhanLop}\n\n";
-                    thongBao += "❌ Không thể phân lớp tự động lại!\n\n";
+                var (hk1, hk2) = danhSachNamHoc[namHocChon];
+                if (hk1 == null || hk2 == null)
+                {
+                    MessageBox.Show($"Năm học {namHocChon} phải có đầy đủ HK1 và HK2!", "Lỗi",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // *** KIỂM TRA NĂM HỌC ĐÃ ĐƯỢC PHÂN LỚP CHƯA (kiểm tra cả HK1 và HK2) ***
+                int soHocSinhDaPhanLopHK1 = phanLopBLL.CountHocSinhInHocKy(hk1.MaHocKy);
+                int soHocSinhDaPhanLopHK2 = phanLopBLL.CountHocSinhInHocKy(hk2.MaHocKy);
+                
+                if (soHocSinhDaPhanLopHK1 > 0 || soHocSinhDaPhanLopHK2 > 0)
+                {
+                    string thongBao = $"⚠️ NĂM HỌC ĐÃ ĐƯỢC PHÂN LỚP!\n\n";
+                    thongBao += $"Năm học: {namHocChon}\n\n";
+                    if (soHocSinhDaPhanLopHK1 > 0)
+                        thongBao += $"   • HK1 ({hk1.TenHocKy}): {soHocSinhDaPhanLopHK1} học sinh\n";
+                    if (soHocSinhDaPhanLopHK2 > 0)
+                        thongBao += $"   • HK2 ({hk2.TenHocKy}): {soHocSinhDaPhanLopHK2} học sinh\n";
+                    thongBao += "\n❌ Không thể phân lớp tự động lại!\n\n";
                     thongBao += "Nếu muốn phân lớp lại, bạn cần xóa dữ liệu phân lớp cũ trước.";
                     
                     MessageBox.Show(thongBao, "Không thể phân lớp lại",
@@ -194,8 +220,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return; // CHẶN NGAY, KHÔNG CHO PHÂN LỚP LẠI
                 }
 
+                // ✅ Truyền HK1 để phân lớp (logic sẽ tự động phân cho cả HK1 và HK2)
                 // Hiển thị preview trước khi thực hiện
-                var preview = phanLopTuDongBLL.TaoPreviewPhanLop(maHocKyHienTai);
+                var preview = phanLopTuDongBLL.TaoPreviewPhanLop(hk1.MaHocKy);
 
                 // Kiểm tra lỗi
                 if (preview.ContainsKey("Loi"))
@@ -222,7 +249,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 previewMessage += $"👥 Tổng số học sinh 'Đang học': {preview["TongSoHocSinh"]}\n\n";
 
                 // Hiển thị theo kịch bản
-                if (preview.ContainsKey("SoHSLenLop")) // Kịch bản HK2→HK1
+                if (preview.ContainsKey("SoHSLenLop")) // Kịch bản NEXT_YEAR
                 {
                     int soHSLenLop = (int)preview["SoHSLenLop"];
                     int soHSOLai = (int)preview["SoHSOLai"];
@@ -231,27 +258,46 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     previewMessage += "📊 DỰ KIẾN:\n";
                     previewMessage += $"   ✓ Lên lớp: {soHSLenLop} học sinh\n";
                     previewMessage += $"   ⚠️ Ở lại (học lại): {soHSOLai} học sinh\n";
-                    previewMessage += $"   → Tỷ lệ lên lớp: {tyLe:0.0}%\n\n";
+                    previewMessage += $"   → Tỷ lệ lên lớp: {tyLe:0.0}%\n";
+                    previewMessage += $"   → Sẽ phân lớp cho cả HK1 và HK2 năm học mới\n\n";
 
                     if (preview.ContainsKey("SoHSGapLoi") && (int)preview["SoHSGapLoi"] > 0)
                     {
                         previewMessage += $"⚠️ Thiếu dữ liệu: {preview["SoHSGapLoi"]} học sinh\n";
-                        previewMessage += "   (Không có đủ điểm HK1/HK2 hoặc hạnh kiểm)\n\n";
+                        previewMessage += "   (Không có đủ điểm HK1/HK2 hoặc hạnh kiểm năm học trước)\n\n";
                     }
                 }
-                else if (preview.ContainsKey("SoHSDuDieuKien")) // Kịch bản HK1→HK2
+                else if (preview.ContainsKey("PhuongPhapPhanLop")) // Kịch bản FIRST_TIME
                 {
-                    int duDieuKien = (int)preview["SoHSDuDieuKien"];
-                    int khongDuDieuKien = (int)preview["SoHSKhongDuDieuKien"];
-
                     previewMessage += "📊 DỰ KIẾN:\n";
-                    previewMessage += $"   ✓ Đủ dữ liệu: {duDieuKien} học sinh\n";
-                    previewMessage += $"      → Sẽ giữ nguyên lớp sang HK2\n\n";
+                    previewMessage += $"   → {preview["PhuongPhapPhanLop"]}\n\n";
 
-                    if (khongDuDieuKien > 0)
+                    if (preview.ContainsKey("HocSinhTheoKhoi"))
                     {
-                        previewMessage += $"   ⚠️ Thiếu dữ liệu: {khongDuDieuKien} học sinh\n";
-                        previewMessage += "      (Chưa có điểm, hạnh kiểm hoặc xếp loại HK1)\n\n";
+                        var hocSinhTheoKhoi = preview["HocSinhTheoKhoi"] as Dictionary<int, int>;
+                        if (hocSinhTheoKhoi != null)
+                        {
+                            foreach (var kvp in hocSinhTheoKhoi.OrderBy(x => x.Key))
+                            {
+                                previewMessage += $"   ✓ Khối {kvp.Key}: {kvp.Value} học sinh\n";
+                            }
+                            previewMessage += "\n";
+                        }
+                    }
+
+                    if (preview.ContainsKey("HocSinhTheoChuCai"))
+                    {
+                        var hocSinhTheoChuCai = preview["HocSinhTheoChuCai"] as Dictionary<char, int>;
+                        if (hocSinhTheoChuCai != null && hocSinhTheoChuCai.Count > 0)
+                        {
+                            previewMessage += "   📝 Phân bổ theo chữ cái:\n";
+                            foreach (var kvp in hocSinhTheoChuCai.OrderBy(x => x.Key == '?' ? 999 : (int)x.Key))
+                            {
+                                string chuCaiDisplay = kvp.Key == '?' ? "Ký tự đặc biệt" : $"Chữ '{kvp.Key}'";
+                                previewMessage += $"      • {chuCaiDisplay}: {kvp.Value} học sinh\n";
+                            }
+                            previewMessage += "\n";
+                        }
                     }
 
                     if (preview.ContainsKey("SoHSGapLoi") && (int)preview["SoHSGapLoi"] > 0)
@@ -268,33 +314,100 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (result == DialogResult.Yes)
                 {
-                    // Hiển thị progress
+                    // ✅ Chạy phân lớp tự động trên background thread để không block UI
+                    // Truyền HK1, logic sẽ tự động phân cho cả HK1 và HK2
+                    _ = PhanLopTuDongAsync(hk1.MaHocKy);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Cursor = Cursors.Default;
+                this.Enabled = true;
+                MessageBox.Show($"Đã xảy ra lỗi khi phân lớp tự động:\n{ex.Message}\n\nStack trace:\n{ex.StackTrace}",
+                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Phân lớp tự động trên background thread để không block UI
+        /// </summary>
+        private async Task PhanLopTuDongAsync(int maHocKyHienTai)
+        {
+            try
+            {
+                // Disable UI và hiển thị progress
+                if (this.InvokeRequired)
+                {
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        this.Enabled = false;
+                        this.Cursor = Cursors.WaitCursor;
+                    });
+                }
+                else
+                {
+                    this.Enabled = false;
                     this.Cursor = Cursors.WaitCursor;
-                    
-                    // Thực hiện phân lớp tự động
-                    var ketQua = phanLopTuDongBLL.ThucHienPhanLopTuDong(maHocKyHienTai);
-                    
+                }
+                
+                // Thực hiện phân lớp tự động trên background thread
+                var ketQua = await Task.Run(() => phanLopTuDongBLL.ThucHienPhanLopTuDong(maHocKyHienTai));
+                
+                // ✅ Update UI trên UI thread
+                if (this.InvokeRequired)
+                {
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        this.Cursor = Cursors.Default;
+                        this.Enabled = true;
+
+                        if (ketQua.success)
+                        {
+                            // ✅ Hiển thị thông báo thành công với ScrollableMessageBox nếu có nhiều thông tin
+                            string thongBaoThanhCong = $"✓ Phân lớp tự động thành công!\n\n" +
+                                           $"Đã phân lớp: {ketQua.soHocSinhDaPhanLop} học sinh\n\n" +
+                                           $"{ketQua.message}";
+                            
+                            // Sử dụng ScrollableMessageBox để xem đầy đủ thông tin
+                            ScrollableMessageBox.Show("Thành công", thongBaoThanhCong, MessageBoxIcon.Information);
+
+                            // ✅ Chỉ refresh lại bảng phân lớp của học kỳ vừa phân lớp (không load tất cả)
+                            FilterTablePhanLop(); // FilterTablePhanLop sẽ chỉ load học kỳ đã chọn
+                            
+                            // Tự động chuyển sang tab Phân lớp để xem kết quả
+                            btnPhanLop_Click(null, null);
+                        }
+                        else
+                        {
+                            // Kiểm tra nếu message quá dài (> 500 ký tự) thì dùng ScrollableMessageBox
+                            if (ketQua.message.Length > 500)
+                            {
+                                ScrollableMessageBox.Show("Lỗi", $"✗ Phân lớp tự động thất bại!\n\n{ketQua.message}", MessageBoxIcon.Error);
+                            }
+                            else
+                            {
+                                MessageBox.Show($"✗ Phân lớp tự động thất bại!\n\n{ketQua.message}",
+                                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    });
+                }
+                else
+                {
                     this.Cursor = Cursors.Default;
+                    this.Enabled = true;
 
                     if (ketQua.success)
                     {
-                        // ✅ Hiển thị thông báo thành công với ScrollableMessageBox nếu có nhiều thông tin
                         string thongBaoThanhCong = $"✓ Phân lớp tự động thành công!\n\n" +
                                        $"Đã phân lớp: {ketQua.soHocSinhDaPhanLop} học sinh\n\n" +
                                        $"{ketQua.message}";
-                        
-                        // Sử dụng ScrollableMessageBox để xem đầy đủ thông tin
                         ScrollableMessageBox.Show("Thành công", thongBaoThanhCong, MessageBoxIcon.Information);
-
-                        // ✅ Chỉ refresh lại bảng phân lớp của học kỳ vừa phân lớp (không load tất cả)
-                        FilterTablePhanLop(); // FilterTablePhanLop sẽ chỉ load học kỳ đã chọn
-                        
-                        // Tự động chuyển sang tab Phân lớp để xem kết quả
+                        FilterTablePhanLop();
                         btnPhanLop_Click(null, null);
                     }
                     else
                     {
-                        // Kiểm tra nếu message quá dài (> 500 ký tự) thì dùng ScrollableMessageBox
                         if (ketQua.message.Length > 500)
                         {
                             ScrollableMessageBox.Show("Lỗi", $"✗ Phân lớp tự động thất bại!\n\n{ketQua.message}", MessageBoxIcon.Error);
@@ -309,9 +422,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
             catch (Exception ex)
             {
-                this.Cursor = Cursors.Default;
-                MessageBox.Show($"Đã xảy ra lỗi khi phân lớp tự động:\n{ex.Message}\n\nStack trace:\n{ex.StackTrace}",
-                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // ✅ Restore UI nếu có lỗi
+                if (this.InvokeRequired)
+                {
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        this.Cursor = Cursors.Default;
+                        this.Enabled = true;
+                        MessageBox.Show($"Lỗi khi phân lớp tự động:\n\n{ex.Message}",
+                                       "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    });
+                }
+                else
+                {
+                    this.Cursor = Cursors.Default;
+                    this.Enabled = true;
+                    MessageBox.Show($"Lỗi khi phân lớp tự động:\n\n{ex.Message}",
+                                   "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -397,39 +525,33 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void LoadTablePhanLop()
         {
-            // ✅ Chỉ load dữ liệu phân lớp của học kỳ đã chọn trong comboBox
-            string selectedHocKy = cbHocKyNamHoc.SelectedItem?.ToString();
+            // ✅ Load dữ liệu phân lớp của NĂM HỌC đã chọn (cả HK1 và HK2)
+            string selectedNamHoc = cbHocKyNamHoc.SelectedItem?.ToString();
             
-            if (string.IsNullOrEmpty(selectedHocKy))
+            if (string.IsNullOrEmpty(selectedNamHoc) || !danhSachNamHoc.ContainsKey(selectedNamHoc))
             {
-                // Nếu chưa chọn học kỳ, để trống
+                // Nếu chưa chọn năm học, để trống
                 danhSachPhanLop = new List<(int, int, int)>();
                 danhSachPhanLopGoc = new List<(int, int, int)>();
                 RefreshTablePhanLop(danhSachPhanLop);
                 return;
             }
             
-            // Tìm mã học kỳ từ tên học kỳ đã chọn
-            int maHocKySelected = -1;
-            foreach (var hk in danhSachHocKy)
-            {
-                if ((hk.TenHocKy + "-" + hk.MaNamHoc) == selectedHocKy)
-                {
-                    maHocKySelected = hk.MaHocKy;
-                    break;
-                }
-            }
-            
-            if (maHocKySelected > 0)
-            {
-                // ✅ Chỉ load phân lớp của học kỳ đã chọn (tối ưu hơn)
-                var allPhanLop = phanLopBLL.GetAllPhanLop();
-                danhSachPhanLop = allPhanLop.Where(pl => pl.maHocKy == maHocKySelected).ToList();
-            }
-            else
+            // Lấy HK1 và HK2 của năm học được chọn
+            var (hk1, hk2) = danhSachNamHoc[selectedNamHoc];
+            if (hk1 == null || hk2 == null)
             {
                 danhSachPhanLop = new List<(int, int, int)>();
+                danhSachPhanLopGoc = new List<(int, int, int)>();
+                RefreshTablePhanLop(danhSachPhanLop);
+                return;
             }
+            
+            // ✅ Load phân lớp của CẢ HK1 và HK2 của năm học đã chọn
+            var allPhanLop = phanLopBLL.GetAllPhanLop();
+            danhSachPhanLop = allPhanLop
+                .Where(pl => pl.maHocKy == hk1.MaHocKy || pl.maHocKy == hk2.MaHocKy)
+                .ToList();
             
             danhSachPhanLopGoc = new List<(int, int, int)>(danhSachPhanLop); // Lưu danh sách gốc để tìm kiếm
             RefreshTablePhanLop(danhSachPhanLop);
@@ -526,25 +648,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void FilterTablePhanLop()
         {
-            string selectedHocKy = cbHocKyNamHoc.SelectedItem?.ToString();
+            // ✅ Load dữ liệu phân lớp của NĂM HỌC đã chọn (cả HK1 và HK2)
+            string selectedNamHoc = cbHocKyNamHoc.SelectedItem?.ToString();
             string selectedLop = cbLop.SelectedItem?.ToString();
 
-            // ✅ Tìm mã học kỳ từ tên học kỳ đã chọn (nếu có)
-            int maHocKySelected = -1;
-            if (!string.IsNullOrEmpty(selectedHocKy))
-            {
-                foreach (var hk in danhSachHocKy)
-                {
-                    if ((hk.TenHocKy + "-" + hk.MaNamHoc) == selectedHocKy)
-                    {
-                        maHocKySelected = hk.MaHocKy;
-                        break;
-                    }
-                }
-            }
-            
-            // ✅ Nếu không có học kỳ được chọn, để trống
-            if (maHocKySelected <= 0)
+            // ✅ Nếu không có năm học được chọn, để trống
+            if (string.IsNullOrEmpty(selectedNamHoc) || !danhSachNamHoc.ContainsKey(selectedNamHoc))
             {
                 danhSachPhanLop = new List<(int, int, int)>();
                 danhSachPhanLopGoc = new List<(int, int, int)>();
@@ -552,12 +661,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 return;
             }
 
-            // ✅ Chỉ lấy phân lớp của học kỳ đã chọn (tối ưu hơn - không load tất cả)
+            // Lấy HK1 và HK2 của năm học được chọn
+            var (hk1, hk2) = danhSachNamHoc[selectedNamHoc];
+            if (hk1 == null || hk2 == null)
+            {
+                danhSachPhanLop = new List<(int, int, int)>();
+                danhSachPhanLopGoc = new List<(int, int, int)>();
+                RefreshTablePhanLop(danhSachPhanLop);
+                return;
+            }
+
+            // ✅ Lấy phân lớp của CẢ HK1 và HK2 của năm học đã chọn
             var allPhanLop = phanLopBLL.GetAllPhanLop();
-            var phanLopByHocKy = allPhanLop.Where(pl => pl.maHocKy == maHocKySelected).ToList();
+            var phanLopByNamHoc = allPhanLop
+                .Where(pl => pl.maHocKy == hk1.MaHocKy || pl.maHocKy == hk2.MaHocKy)
+                .ToList();
             
             // Lọc thêm theo lớp nếu có
-            var filteredPhanLop = phanLopByHocKy.Where(pl =>
+            var filteredPhanLop = phanLopByNamHoc.Where(pl =>
             {
                 // Kiểm tra lớp
                 bool lopMatch = true;
@@ -812,20 +933,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                // Mở file dialog để chọn file Excel
-                OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    Filter = "Excel Files|*.xlsx;*.xls",
-                    Title = "Chọn file Excel để nhập dữ liệu phân lớp chuyển trường"
-                };
-
-                if (openFileDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return; // Người dùng hủy
-                }
-
-                string filePath = openFileDialog.FileName;
-
                 // Kiểm tra học kỳ hiện tại
                 var hocKyHienTai = SemesterHelper.GetCurrentSemester();
                 if (hocKyHienTai == null)
@@ -842,6 +949,46 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                // ✅ KIỂM TRA: Học kỳ này PHẢI đã được phân lớp tự động rồi mới cho phép phân lớp chuyển trường
+                int soHocSinhDaPhanLop = phanLopBLL.CountHocSinhInHocKy(hocKyHienTai.MaHocKy);
+                
+                // Lấy số học sinh đang học để tính ngưỡng
+                int tongSoHocSinhDangHoc = hocSinhBus.GetTotalHocSinhDangHoc();
+                
+                // Ngưỡng: Phải có ít nhất 50 học sinh được phân lớp HOẶC ít nhất 30% số học sinh đang học
+                // Điều này đảm bảo rằng đã có phân lớp tự động, không phải chỉ 1-2 học sinh chuyển trường
+                int nguongToiThieu = Math.Max(50, (int)(tongSoHocSinhDangHoc * 0.3));
+                
+                if (soHocSinhDaPhanLop < nguongToiThieu)
+                {
+                    string tenHocKyHienTai = hocKyHienTai.TenHocKy + " " + hocKyHienTai.MaNamHoc;
+                    
+                    string thongBao = $"⚠️ CHƯA THỂ PHÂN LỚP CHUYỂN TRƯỜNG!\n\n";
+                    thongBao += $"Học kỳ: {tenHocKyHienTai}\n\n";
+                    thongBao += $"Số học sinh đã được phân lớp: {soHocSinhDaPhanLop}\n";
+                    thongBao += $"Ngưỡng tối thiểu: {nguongToiThieu} học sinh\n\n";
+                    thongBao += "❌ Học kỳ này chưa được phân lớp tự động!\n\n";
+                    thongBao += "Vui lòng thực hiện 'Phân lớp tự động' trước khi phân lớp chuyển trường.";
+                    
+                    MessageBox.Show(thongBao, "Chưa thể phân lớp chuyển trường",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // CHẶN NGAY, KHÔNG CHO PHÂN LỚP CHUYỂN TRƯỜNG
+                }
+
+                // Mở file dialog để chọn file Excel
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = "Excel Files|*.xlsx;*.xls",
+                    Title = "Chọn file Excel để nhập dữ liệu phân lớp chuyển trường"
+                };
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return; // Người dùng hủy
+                }
+
+                string filePath = openFileDialog.FileName;
 
                 // Hiển thị thông báo đang xử lý
                 this.Cursor = Cursors.WaitCursor;

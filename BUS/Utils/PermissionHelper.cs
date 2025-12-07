@@ -201,14 +201,10 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Utils
         /// ✅ Áp dụng phân quyền cho form Học Sinh
         /// </summary>
         public static void ApplyPermissionHocSinh(
-            Control btnThemHocSinh,
             Control btnThemPhuHuynh,
             DataGridView tableHocSinh,
             DataGridView tablePhuHuynh)
         {
-            // Ẩn/hiện nút Thêm học sinh
-            SetButtonPermission(btnThemHocSinh, QLHOCSINH, CREATE);
-
             // Ẩn/hiện nút Thêm phụ huynh
             SetButtonPermission(btnThemPhuHuynh, QLHOCSINH, CREATE);
 

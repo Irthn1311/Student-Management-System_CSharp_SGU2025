@@ -330,25 +330,23 @@ INSERT INTO HocSinh (HoTen, NgaySinh, GioiTinh, SDTHS, Email, AnhDaiDien, TrangT
 ('Chu Minh Rồng', '2009-02-06', 'Nam', '0901235083', 'chu.rong.hs083@student.edu.vn', NULL, 'Đang học'),
 ('Đỗ Thị Sương', '2009-10-23', 'Nữ', '0901235084', 'do.suong.hs084@student.edu.vn', NULL, 'Đang học');
 
--- Lớp 10A3 - 10A8, 11A1 - 11A8, 12A1 - 12A8 (nhập tối giản)
--- Tạo thêm 636 học sinh (30 HS/lớp × 22 lớp = 660 học sinh cho 22 lớp, trừ đi 24 học sinh đã có ở 10A1 và 10A2)
--- Tổng cộng: 84 (đã tạo) + 636 (tạo thêm) = 720 học sinh (khớp với số học sinh được phân lớp)
+-- Tạo thêm 216 học sinh để có tổng cộng 300 học sinh
+-- Tổng cộng: 84 (đã tạo) + 216 (tạo thêm) = 300 học sinh
+-- Đủ để phân lớp vào 8 lớp khối 10 (khoảng 37-38 học sinh/lớp)
 
 INSERT INTO HocSinh (HoTen, NgaySinh, GioiTinh, SDTHS, Email, AnhDaiDien, TrangThai)
 SELECT 
-    CONCAT('Học sinh ', 85 + (t.n * 1) + (r.n * 30)) as HoTen,
+    CONCAT('Học sinh ', 85 + t.n) as HoTen,
     DATE_ADD('2009-01-01', INTERVAL FLOOR(RAND() * 365) DAY) as NgaySinh,
     IF(RAND() > 0.5, 'Nam', 'Nữ') as GioiTinh,
-    CONCAT('09', LPAD(585001 + t.n * 1 + r.n * 30, 7, '0')) as SDTHS,
-    CONCAT('hs', LPAD(85 + t.n * 1 + r.n * 30, 6, '0'), '@student.edu.vn') as Email,
+    CONCAT('09', LPAD(585085 + t.n, 7, '0')) as SDTHS,
+    CONCAT('hs', LPAD(85 + t.n, 6, '0'), '@student.edu.vn') as Email,
     NULL as AnhDaiDien,
     'Đang học' as TrangThai
-FROM (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29) t
-CROSS JOIN (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21) r
-WHERE (85 + t.n + r.n * 30) <= 720  -- Chỉ tạo đến HS 720
-LIMIT 636;  -- 636 học sinh (720 - 84 đã tạo)
+FROM (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30 UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40 UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50 UNION SELECT 51 UNION SELECT 52 UNION SELECT 53 UNION SELECT 54 UNION SELECT 55 UNION SELECT 56 UNION SELECT 57 UNION SELECT 58 UNION SELECT 59 UNION SELECT 60 UNION SELECT 61 UNION SELECT 62 UNION SELECT 63 UNION SELECT 64 UNION SELECT 65 UNION SELECT 66 UNION SELECT 67 UNION SELECT 68 UNION SELECT 69 UNION SELECT 70 UNION SELECT 71 UNION SELECT 72 UNION SELECT 73 UNION SELECT 74 UNION SELECT 75 UNION SELECT 76 UNION SELECT 77 UNION SELECT 78 UNION SELECT 79 UNION SELECT 80 UNION SELECT 81 UNION SELECT 82 UNION SELECT 83 UNION SELECT 84 UNION SELECT 85 UNION SELECT 86 UNION SELECT 87 UNION SELECT 88 UNION SELECT 89 UNION SELECT 90 UNION SELECT 91 UNION SELECT 92 UNION SELECT 93 UNION SELECT 94 UNION SELECT 95 UNION SELECT 96 UNION SELECT 97 UNION SELECT 98 UNION SELECT 99 UNION SELECT 100 UNION SELECT 101 UNION SELECT 102 UNION SELECT 103 UNION SELECT 104 UNION SELECT 105 UNION SELECT 106 UNION SELECT 107 UNION SELECT 108 UNION SELECT 109 UNION SELECT 110 UNION SELECT 111 UNION SELECT 112 UNION SELECT 113 UNION SELECT 114 UNION SELECT 115 UNION SELECT 116 UNION SELECT 117 UNION SELECT 118 UNION SELECT 119 UNION SELECT 120 UNION SELECT 121 UNION SELECT 122 UNION SELECT 123 UNION SELECT 124 UNION SELECT 125 UNION SELECT 126 UNION SELECT 127 UNION SELECT 128 UNION SELECT 129 UNION SELECT 130 UNION SELECT 131 UNION SELECT 132 UNION SELECT 133 UNION SELECT 134 UNION SELECT 135 UNION SELECT 136 UNION SELECT 137 UNION SELECT 138 UNION SELECT 139 UNION SELECT 140 UNION SELECT 141 UNION SELECT 142 UNION SELECT 143 UNION SELECT 144 UNION SELECT 145 UNION SELECT 146 UNION SELECT 147 UNION SELECT 148 UNION SELECT 149 UNION SELECT 150 UNION SELECT 151 UNION SELECT 152 UNION SELECT 153 UNION SELECT 154 UNION SELECT 155 UNION SELECT 156 UNION SELECT 157 UNION SELECT 158 UNION SELECT 159 UNION SELECT 160 UNION SELECT 161 UNION SELECT 162 UNION SELECT 163 UNION SELECT 164 UNION SELECT 165 UNION SELECT 166 UNION SELECT 167 UNION SELECT 168 UNION SELECT 169 UNION SELECT 170 UNION SELECT 171 UNION SELECT 172 UNION SELECT 173 UNION SELECT 174 UNION SELECT 175 UNION SELECT 176 UNION SELECT 177 UNION SELECT 178 UNION SELECT 179 UNION SELECT 180 UNION SELECT 181 UNION SELECT 182 UNION SELECT 183 UNION SELECT 184 UNION SELECT 185 UNION SELECT 186 UNION SELECT 187 UNION SELECT 188 UNION SELECT 189 UNION SELECT 190 UNION SELECT 191 UNION SELECT 192 UNION SELECT 193 UNION SELECT 194 UNION SELECT 195 UNION SELECT 196 UNION SELECT 197 UNION SELECT 198 UNION SELECT 199 UNION SELECT 200 UNION SELECT 201 UNION SELECT 202 UNION SELECT 203 UNION SELECT 204 UNION SELECT 205 UNION SELECT 206 UNION SELECT 207 UNION SELECT 208 UNION SELECT 209 UNION SELECT 210 UNION SELECT 211 UNION SELECT 212 UNION SELECT 213 UNION SELECT 214 UNION SELECT 215) t
+WHERE t.n <= 215;  -- Tạo từ HS 85 đến HS 300 (84 + 216 = 300)
 
-SELECT 'Students insertion completed (720 students)' AS Status;
+SELECT 'Students insertion completed (300 students)' AS Status;
 
 -- =====================================================================
 -- PHẦN 5B: TẠO TÀI KHOẢN ĐĂNG NHẬP CHO TẤT CẢ HỌC SINH
@@ -364,13 +362,13 @@ SELECT
 FROM HocSinh
 ORDER BY MaHocSinh;
 
-SELECT 'Student accounts created (720 accounts)' AS Status;
+SELECT 'Student accounts created (300 accounts)' AS Status;
 
 -- Cập nhật TenDangNhap cho TẤT CẢ học sinh
 UPDATE HocSinh 
 SET TenDangNhap = CONCAT('HS', MaHocSinh);
 
-SELECT 'Student TenDangNhap updated (720 students)' AS Status;
+SELECT 'Student TenDangNhap updated (300 students)' AS Status;
 
 -- Gán vai trò 'student' cho TẤT CẢ tài khoản học sinh
 INSERT INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro)
@@ -380,7 +378,7 @@ SELECT
 FROM HocSinh
 ORDER BY MaHocSinh;
 
-SELECT 'Student roles assigned (720 roles)' AS Status;
+SELECT 'Student roles assigned (300 roles)' AS Status;
 
 -- =====================================================================
 -- PHẦN 6: PHỤ HUYNH VÀ LIÊN KẾT
@@ -475,28 +473,16 @@ INSERT INTO PhuHuynh (HoTen, SoDienThoai, Email, DiaChi) VALUES
 ('Chu Minh Rồng', '0901236083', 'chu.rong.ph083@parent.edu.vn', '134 Nguyễn Du, Q1, TP.HCM'),
 ('Đỗ Thị Sương', '0901236084', 'do.suong.ph084@parent.edu.vn', '245 Lê Văn Việt, Q9, TP.HCM'),
 
--- Phụ huynh cho 636 học sinh còn lại (tạo tự động)
-('Phụ huynh HS085', '0901236085', 'ph.ph085@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS086', '0901236086', 'ph.ph086@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS087', '0901236087', 'ph.ph087@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS088', '0901236088', 'ph.ph088@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS089', '0901236089', 'ph.ph089@parent.edu.vn', 'TP.HCM'),
-('Phụ huynh HS090', '0901236090', 'ph.ph090@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS091', '0901236091', 'ph.ph091@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS092', '0901236092', 'ph.ph092@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS093', '0901236093', 'ph.ph093@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS094', '0901236094', 'ph.ph094@parent.edu.vn', 'TP.HCM'),
-('Phụ huynh HS095', '0901236095', 'ph.ph095@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS096', '0901236096', 'ph.ph096@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS097', '0901236097', 'ph.ph097@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS098', '0901236098', 'ph.ph098@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS099', '0901236099', 'ph.ph099@parent.edu.vn', 'TP.HCM'),
-('Phụ huynh HS100', '0901236100', 'ph.ph100@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS101', '0901236101', 'ph.ph101@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS102', '0901236102', 'ph.ph102@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS103', '0901236103', 'ph.ph103@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS104', '0901236104', 'ph.ph104@parent.edu.vn', 'TP.HCM'),
-('Phụ huynh HS105', '0901236105', 'ph.ph105@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS106', '0901236106', 'ph.ph106@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS107', '0901236107', 'ph.ph107@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS108', '0901236108', 'ph.ph108@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS109', '0901236109', 'ph.ph109@parent.edu.vn', 'TP.HCM'),
-('Phụ huynh HS110', '0901236110', 'ph.ph110@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS111', '0901236111', 'ph.ph111@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS112', '0901236112', 'ph.ph112@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS113', '0901236113', 'ph.ph113@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS114', '0901236114', 'ph.ph114@parent.edu.vn', 'TP.HCM'),
-('Phụ huynh HS115', '0901236115', 'ph.ph115@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS116', '0901236116', 'ph.ph116@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS117', '0901236117', 'ph.ph117@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS118', '0901236118', 'ph.ph118@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS119', '0901236119', 'ph.ph119@parent.edu.vn', 'TP.HCM'),
-('Phụ huynh HS120', '0901236120', 'ph.ph120@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS121', '0901236121', 'ph.ph121@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS122', '0901236122', 'ph.ph122@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS123', '0901236123', 'ph.ph123@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS124', '0901236124', 'ph.ph124@parent.edu.vn', 'TP.HCM'),
-('Phụ huynh HS125', '0901236125', 'ph.ph125@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS126', '0901236126', 'ph.ph126@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS127', '0901236127', 'ph.ph127@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS128', '0901236128', 'ph.ph128@parent.edu.vn', 'TP.HCM'), ('Phụ huynh HS129', '0901236129', 'ph.ph129@parent.edu.vn', 'TP.HCM');
-
--- Tạo tự động phụ huynh còn lại (507 phụ huynh)
+-- Tạo tự động phụ huynh cho 216 học sinh còn lại (từ HS 85 đến HS 300)
 INSERT INTO PhuHuynh (HoTen, SoDienThoai, Email, DiaChi)
 SELECT 
-    CONCAT('Phụ huynh HS', LPAD(130 + t.n + r.n * 30, 6, '0')) as HoTen,
-    CONCAT('09', LPAD(586130 + t.n + r.n * 30, 7, '0')) as SoDienThoai,
-    CONCAT('ph.ph', LPAD(130 + t.n + r.n * 30, 6, '0'), '@parent.edu.vn') as Email,
+    CONCAT('Phụ huynh HS', LPAD(85 + t.n, 6, '0')) as HoTen,
+    CONCAT('09', LPAD(585085 + t.n, 7, '0')) as SoDienThoai,
+    CONCAT('ph.ph', LPAD(85 + t.n, 6, '0'), '@parent.edu.vn') as Email,
     'TP.HCM' as DiaChi
-FROM (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29) t
-CROSS JOIN (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21) r
-WHERE (130 + t.n + r.n * 30) <= 720  -- Chỉ tạo đến HS 720
-LIMIT 507;  -- 507 phụ huynh (720 - 84 - 129 đã tạo = 507)
+FROM (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30 UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40 UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50 UNION SELECT 51 UNION SELECT 52 UNION SELECT 53 UNION SELECT 54 UNION SELECT 55 UNION SELECT 56 UNION SELECT 57 UNION SELECT 58 UNION SELECT 59 UNION SELECT 60 UNION SELECT 61 UNION SELECT 62 UNION SELECT 63 UNION SELECT 64 UNION SELECT 65 UNION SELECT 66 UNION SELECT 67 UNION SELECT 68 UNION SELECT 69 UNION SELECT 70 UNION SELECT 71 UNION SELECT 72 UNION SELECT 73 UNION SELECT 74 UNION SELECT 75 UNION SELECT 76 UNION SELECT 77 UNION SELECT 78 UNION SELECT 79 UNION SELECT 80 UNION SELECT 81 UNION SELECT 82 UNION SELECT 83 UNION SELECT 84 UNION SELECT 85 UNION SELECT 86 UNION SELECT 87 UNION SELECT 88 UNION SELECT 89 UNION SELECT 90 UNION SELECT 91 UNION SELECT 92 UNION SELECT 93 UNION SELECT 94 UNION SELECT 95 UNION SELECT 96 UNION SELECT 97 UNION SELECT 98 UNION SELECT 99 UNION SELECT 100 UNION SELECT 101 UNION SELECT 102 UNION SELECT 103 UNION SELECT 104 UNION SELECT 105 UNION SELECT 106 UNION SELECT 107 UNION SELECT 108 UNION SELECT 109 UNION SELECT 110 UNION SELECT 111 UNION SELECT 112 UNION SELECT 113 UNION SELECT 114 UNION SELECT 115 UNION SELECT 116 UNION SELECT 117 UNION SELECT 118 UNION SELECT 119 UNION SELECT 120 UNION SELECT 121 UNION SELECT 122 UNION SELECT 123 UNION SELECT 124 UNION SELECT 125 UNION SELECT 126 UNION SELECT 127 UNION SELECT 128 UNION SELECT 129 UNION SELECT 130 UNION SELECT 131 UNION SELECT 132 UNION SELECT 133 UNION SELECT 134 UNION SELECT 135 UNION SELECT 136 UNION SELECT 137 UNION SELECT 138 UNION SELECT 139 UNION SELECT 140 UNION SELECT 141 UNION SELECT 142 UNION SELECT 143 UNION SELECT 144 UNION SELECT 145 UNION SELECT 146 UNION SELECT 147 UNION SELECT 148 UNION SELECT 149 UNION SELECT 150 UNION SELECT 151 UNION SELECT 152 UNION SELECT 153 UNION SELECT 154 UNION SELECT 155 UNION SELECT 156 UNION SELECT 157 UNION SELECT 158 UNION SELECT 159 UNION SELECT 160 UNION SELECT 161 UNION SELECT 162 UNION SELECT 163 UNION SELECT 164 UNION SELECT 165 UNION SELECT 166 UNION SELECT 167 UNION SELECT 168 UNION SELECT 169 UNION SELECT 170 UNION SELECT 171 UNION SELECT 172 UNION SELECT 173 UNION SELECT 174 UNION SELECT 175 UNION SELECT 176 UNION SELECT 177 UNION SELECT 178 UNION SELECT 179 UNION SELECT 180 UNION SELECT 181 UNION SELECT 182 UNION SELECT 183 UNION SELECT 184 UNION SELECT 185 UNION SELECT 186 UNION SELECT 187 UNION SELECT 188 UNION SELECT 189 UNION SELECT 190 UNION SELECT 191 UNION SELECT 192 UNION SELECT 193 UNION SELECT 194 UNION SELECT 195 UNION SELECT 196 UNION SELECT 197 UNION SELECT 198 UNION SELECT 199 UNION SELECT 200 UNION SELECT 201 UNION SELECT 202 UNION SELECT 203 UNION SELECT 204 UNION SELECT 205 UNION SELECT 206 UNION SELECT 207 UNION SELECT 208 UNION SELECT 209 UNION SELECT 210 UNION SELECT 211 UNION SELECT 212 UNION SELECT 213 UNION SELECT 214 UNION SELECT 215) t
+WHERE t.n <= 215  -- Tạo từ PH 85 đến PH 300
+LIMIT 216;  -- 216 phụ huynh (300 - 84 đã tạo = 216)
 
 -- Liên kết học sinh - phụ huynh
 -- Phân bổ: Cha, Mẹ (luân phiên), và một số Ông, Bà, Người giám hộ
@@ -522,36 +508,16 @@ INSERT INTO HocSinhPhuHuynh (MaHocSinh, MaPhuHuynh, MoiQuanHe) VALUES
 (78, 78, 'Mẹ'), (79, 79, 'Cha'), (80, 80, 'Mẹ'), (81, 81, 'Cha'), (82, 82, 'Mẹ'),
 (83, 83, 'Cha'), (84, 84, 'Mẹ');
 
--- Phân lớp học sinh vào lớp 10A1 (30 học sinh thay vì 42)
-INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy) VALUES
-(1, 1, 1), (2, 1, 1), (3, 1, 1), (4, 1, 1), (5, 1, 1), (6, 1, 1), (7, 1, 1), (8, 1, 1),
-(9, 1, 1), (10, 1, 1), (11, 1, 1), (12, 1, 1), (13, 1, 1), (14, 1, 1), (15, 1, 1), (16, 1, 1),
-(17, 1, 1), (18, 1, 1), (19, 1, 1), (20, 1, 1), (21, 1, 1), (22, 1, 1), (23, 1, 1), (24, 1, 1),
-(25, 1, 1), (26, 1, 1), (27, 1, 1), (28, 1, 1), (29, 1, 1), (30, 1, 1);
+-- =====================================================================
+-- PHẦN 5C: PHÂN LỚP HỌC SINH
+-- =====================================================================
+-- ✅ LƯU Ý: KHÔNG PHÂN LỚP CHO HỌC KỲ 1 ĐỂ TEST PHÂN LỚP TỰ ĐỘNG LẦN ĐẦU
+-- Tất cả học sinh sẽ được phân lớp tự động bằng chức năng "Phân lớp tự động"
+-- 
+-- Bạn có thể sử dụng chức năng "Phân lớp tự động" cho Học kỳ I - 2025-2026
+-- để test logic phân lớp lần đầu (kịch bản FIRST_TIME)
 
--- Phân lớp học sinh vào lớp 10A2 (30 học sinh thay vì 42)
-INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy) VALUES
-(43, 2, 1), (44, 2, 1), (45, 2, 1), (46, 2, 1), (47, 2, 1), (48, 2, 1), (49, 2, 1), (50, 2, 1),
-(51, 2, 1), (52, 2, 1), (53, 2, 1), (54, 2, 1), (55, 2, 1), (56, 2, 1), (57, 2, 1), (58, 2, 1),
-(59, 2, 1), (60, 2, 1), (61, 2, 1), (62, 2, 1), (63, 2, 1), (64, 2, 1), (65, 2, 1), (66, 2, 1),
-(67, 2, 1), (68, 2, 1), (69, 2, 1), (70, 2, 1), (71, 2, 1), (72, 2, 1);
-
--- Phân lớp cho các lớp còn lại (10A3-10A8, 11A1-11A8, 12A1-12A8)
--- Mỗi lớp 30 học sinh thay vì 42 (giảm 12 học sinh/lớp để có chỗ trống cho test phân lớp)
--- Lớp 10A3-10A8: 6 lớp × 30 = 180 học sinh (HS 85-264)
--- Lớp 11A1-11A8: 8 lớp × 30 = 240 học sinh (HS 265-504)
--- Lớp 12A1-12A8: 8 lớp × 30 = 240 học sinh (HS 505-720)
-INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy)
-SELECT 
-    (85 + t.n + r.n * 30) as MaHocSinh,
-    (3 + FLOOR((85 + t.n + r.n * 30 - 85) / 30)) as MaLop,  -- 3-24: 10A3-12A8
-    1 as MaHocKy
-FROM (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29) t
-CROSS JOIN (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21) r
-WHERE (85 + t.n + r.n * 30) <= 720  -- Chỉ tạo đến HS 720 (đủ 24 lớp × 30 học sinh)
-LIMIT 636;  -- 636 học sinh (720 - 84 đã phân lớp = 636)
-
--- Liên kết học sinh - phụ huynh cho tất cả học sinh (85-720)
+-- Liên kết học sinh - phụ huynh cho tất cả học sinh (85-300)
 -- Mỗi HS có PH tương ứng với cùng ID
 -- Phân bổ mối quan hệ: 45% Cha, 45% Mẹ, 3% Ông, 3% Bà, 4% Người giám hộ
 INSERT INTO HocSinhPhuHuynh (MaHocSinh, MaPhuHuynh, MoiQuanHe)
@@ -567,7 +533,7 @@ SELECT
     END as MoiQuanHe
 FROM HocSinh h
 INNER JOIN PhuHuynh p ON h.MaHocSinh = p.MaPhuHuynh
-WHERE h.MaHocSinh BETWEEN 85 AND 720;
+WHERE h.MaHocSinh BETWEEN 85 AND 300;
 
 -- =====================================================================
 -- PHẦN 7: NGƯỜI DÙNG VÀ PHÂN QUYỀN
@@ -676,291 +642,18 @@ SELECT 'Admin and teacher roles assigned (71 roles)' AS Status;
 -- =====================================================================
 -- PHẦN 9: DỮ LIỆU TEST - ĐIỂM SỐ HỌC KỲ HIỆN TẠI (2025-2026)
 -- =====================================================================
-
--- Tạo điểm cho tất cả học sinh đã được phân lớp × 13 môn
--- ✅ LƯU Ý: Chỉ tạo điểm cho học kỳ hiện tại (MaHocKy = 1)
-
-INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, DiemThuongXuyen, DiemGiuaKy, DiemCuoiKy, DiemTrungBinh)
-SELECT 
-    pl.MaHocSinh,
-    mh.MaMonHoc,
-    1 as MaHocKy,  -- ✅ Sửa: Dùng MaHocKy = 1 (Học kỳ I, 2025-2026 - Đang diễn ra)
-    -- ✅ Cải thiện: Tăng điểm để nhiều học sinh lên lớp hơn (khoảng 65-70% lên lớp)
-    -- Phân bổ: 65% học sinh điểm tốt (6.5-9.5), 25% điểm trung bình (5.5-7.5), 10% điểm thấp (4.0-6.0)
-    CASE 
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 65 THEN ROUND(6.5 + (RAND() * 3.0), 1)  -- Điểm tốt
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 90 THEN ROUND(5.5 + (RAND() * 2.0), 1)  -- Điểm trung bình
-        ELSE ROUND(4.0 + (RAND() * 2.0), 1)  -- Điểm thấp (ít môn)
-    END as DiemThuongXuyen,
-    CASE 
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 65 THEN ROUND(6.5 + (RAND() * 3.0), 1)
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 90 THEN ROUND(5.5 + (RAND() * 2.0), 1)
-        ELSE ROUND(4.0 + (RAND() * 2.0), 1)
-    END as DiemGiuaKy,
-    CASE 
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 65 THEN ROUND(6.5 + (RAND() * 3.0), 1)
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 90 THEN ROUND(5.5 + (RAND() * 2.0), 1)
-        ELSE ROUND(4.0 + (RAND() * 2.0), 1)
-    END as DiemCuoiKy,
-    -- Điểm trung bình: tương tự phân bổ
-    CASE 
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 65 THEN ROUND(6.5 + (RAND() * 3.0), 1)  -- Điểm tốt
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 90 THEN ROUND(5.5 + (RAND() * 2.0), 1)  -- Điểm trung bình
-        ELSE ROUND(4.0 + (RAND() * 2.0), 1)  -- Điểm thấp
-    END as DiemTrungBinh
-FROM PhanLop pl
-CROSS JOIN MonHoc mh
-WHERE pl.MaHocKy = 1;  -- ✅ Chỉ tạo điểm cho học kỳ hiện tại
-
-SELECT CONCAT('Diem so HK hien tai (MaHocKy = 1) da duoc tao (', 
-    (SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 1) * 13, ' ban ghi)') AS Status;
+-- ✅ KHÔNG TẠO ĐIỂM/HẠNH KIỂM/XẾP LOẠI VÌ CHƯA CÓ PHÂN LỚP
+-- Sau khi phân lớp tự động, bạn có thể tạo điểm/hạnh kiểm/xếp loại riêng
 
 -- =====================================================================
 -- PHẦN 10: DỮ LIỆU TEST - HẠNH KIỂM HỌC KỲ HIỆN TẠI (2025-2026)
 -- =====================================================================
-
--- Tạo hạnh kiểm cho tất cả học sinh đã được phân lớp
--- ✅ LƯU Ý: Chỉ tạo hạnh kiểm cho học kỳ hiện tại (MaHocKy = 1)
-
-INSERT INTO HanhKiem (MaHocSinh, MaHocKy, XepLoai, NhanXet)
-SELECT 
-    pl.MaHocSinh,
-    1 as MaHocKy,  -- ✅ Sửa: Dùng MaHocKy = 1 (Học kỳ I, 2025-2026 - Đang diễn ra)
-    -- ✅ Cải thiện: Tăng tỷ lệ hạnh kiểm tốt để nhiều học sinh lên lớp hơn
-    -- Phân bổ: 40% Tốt, 40% Khá, 18% Trung bình, 2% Yếu
-    CASE 
-        WHEN pl.MaHocSinh % 100 < 40 THEN 'Tốt'
-        WHEN pl.MaHocSinh % 100 < 80 THEN 'Khá'
-        WHEN pl.MaHocSinh % 100 < 98 THEN 'Trung bình'
-        ELSE 'Yếu'
-    END as XepLoai,
-    'Tự động tạo' as NhanXet
-FROM PhanLop pl
-WHERE pl.MaHocKy = 1;  -- ✅ Chỉ tạo hạnh kiểm cho học kỳ hiện tại
-
-SELECT CONCAT('Hanh kiem HK hien tai (MaHocKy = 1) da duoc tao (', 
-    (SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 1), ' ban ghi)') AS Status;
+-- ✅ KHÔNG TẠO HẠNH KIỂM VÌ CHƯA CÓ PHÂN LỚP
 
 -- =====================================================================
 -- PHẦN 11: DỮ LIỆU TEST - XẾP LOẠI HỌC KỲ HIỆN TẠI (2025-2026)
 -- =====================================================================
-
--- Tạo xếp loại cho tất cả học sinh đã được phân lớp
--- ✅ LƯU Ý: Chỉ tạo xếp loại cho học kỳ hiện tại (MaHocKy = 1)
-
-INSERT INTO XepLoai (MaHocSinh, MaHocKy, HocLuc, GhiChu)
-SELECT
-    hs.MaHocSinh,
-    1 AS MaHocKy,  -- ✅ Sửa: Dùng MaHocKy = 1 (Học kỳ I, 2025-2026 - Đang diễn ra)
-    -- Xếp loại cuối cùng: lấy bậc thấp hơn giữa học lực và hạnh kiểm
-    CASE
-        WHEN
-            (CASE
-                WHEN tb_all >= 8.0 AND tb_main >= 8.0 AND min_mon >= 6.5 THEN 1
-                WHEN tb_all >= 6.5 AND tb_main >= 6.5 AND min_mon >= 5.0 THEN 2
-                WHEN tb_all >= 5.0 AND tb_main >= 5.0 AND min_mon >= 3.5 THEN 3
-                WHEN tb_all >= 3.5 AND min_mon >= 2.0 THEN 4
-                ELSE 5
-            END)
-            >
-            (CASE
-                WHEN hk.XepLoai = 'Tốt' THEN 1
-                WHEN hk.XepLoai = 'Khá' THEN 2
-                WHEN hk.XepLoai = 'Trung bình' THEN 3
-                WHEN hk.XepLoai = 'Yếu' THEN 4
-                ELSE 5
-            END)
-        THEN
-            CASE
-                WHEN hk.XepLoai = 'Tốt' THEN 'Giỏi'
-                WHEN hk.XepLoai = 'Khá' THEN 'Khá'
-                WHEN hk.XepLoai = 'Trung bình' THEN 'Trung bình'
-                WHEN hk.XepLoai = 'Yếu' THEN 'Yếu'
-                ELSE 'Kém'
-            END
-        ELSE
-            CASE
-                WHEN tb_all >= 8.0 AND tb_main >= 8.0 AND min_mon >= 6.5 THEN 'Giỏi'
-                WHEN tb_all >= 6.5 AND tb_main >= 6.5 AND min_mon >= 5.0 THEN 'Khá'
-                WHEN tb_all >= 5.0 AND tb_main >= 5.0 AND min_mon >= 3.5 THEN 'Trung bình'
-                WHEN tb_all >= 3.5 AND min_mon >= 2.0 THEN 'Yếu'
-                ELSE 'Kém'
-            END
-    END AS HocLuc,
-    'HK hien tai - Tự động tính theo quy tắc' as GhiChu
-FROM
-    PhanLop pl
-    JOIN HocSinh hs ON pl.MaHocSinh = hs.MaHocSinh
-    LEFT JOIN (
-        SELECT MaHocSinh, MaHocKy, XepLoai
-        FROM HanhKiem
-        WHERE MaHocKy = 1  -- ✅ Sửa: Chỉ lấy hạnh kiểm của học kỳ hiện tại
-    ) hk ON hk.MaHocSinh = hs.MaHocSinh
-    -- Tính điểm trung bình các môn, điểm TB Toán/Văn/Anh, điểm thấp nhất
-    JOIN (
-        SELECT
-            ds.MaHocSinh,
-            AVG(ds.DiemTrungBinh) AS tb_all,
-            AVG(CASE WHEN mh.TenMonHoc IN ('Toán', 'Ngữ văn', 'Tiếng Anh') THEN ds.DiemTrungBinh END) AS tb_main,
-            MIN(ds.DiemTrungBinh) AS min_mon
-        FROM DiemSo ds
-        JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
-        WHERE ds.MaHocKy = 1  -- ✅ Sửa: Chỉ lấy điểm của học kỳ hiện tại
-        GROUP BY ds.MaHocSinh
-    ) diem ON diem.MaHocSinh = hs.MaHocSinh
-WHERE pl.MaHocKy = 1;  -- ✅ Sửa: Chỉ tạo xếp loại cho học kỳ hiện tại
-
-SELECT CONCAT('Xep loai HK hien tai (MaHocKy = 1) da duoc tao (', 
-    (SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 1), ' ban ghi)') AS Status;
-
--- =====================================================================
--- PHẦN 12: DỮ LIỆU TEST - PHÂN LỚP HỌC KỲ II (2025-2026)
--- =====================================================================
--- ✅ Bổ sung: Tạo phân lớp cho HK2 (giống HK1) để có dữ liệu đầy đủ cho test NEXT_YEAR
-
-INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy)
-SELECT 
-    pl.MaHocSinh,
-    pl.MaLop,
-    2 as MaHocKy  -- HK2 (Học kỳ II, 2025-2026)
-FROM PhanLop pl
-WHERE pl.MaHocKy = 1;  -- Sao chép từ HK1
-
-SELECT CONCAT('Phan lop HK2 (MaHocKy = 2) da duoc tao (', 
-    (SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 2), ' ban ghi)') AS Status;
-
--- =====================================================================
--- PHẦN 13: DỮ LIỆU TEST - ĐIỂM SỐ HỌC KỲ II (2025-2026)
--- =====================================================================
-
--- Tạo điểm cho tất cả học sinh đã được phân lớp HK2 × 13 môn
-INSERT INTO DiemSo (MaHocSinh, MaMonHoc, MaHocKy, DiemThuongXuyen, DiemGiuaKy, DiemCuoiKy, DiemTrungBinh)
-SELECT 
-    pl.MaHocSinh,
-    mh.MaMonHoc,
-    2 as MaHocKy,  -- HK2 (Học kỳ II, 2025-2026)
-    -- ✅ Cải thiện: Tăng điểm để nhiều học sinh lên lớp hơn (khoảng 65-70% lên lớp)
-    -- Phân bổ: 65% học sinh điểm tốt (6.5-9.5), 25% điểm trung bình (5.5-7.5), 10% điểm thấp (4.0-6.0)
-    CASE 
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 65 THEN ROUND(6.5 + (RAND() * 3.0), 1)  -- Điểm tốt
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 90 THEN ROUND(5.5 + (RAND() * 2.0), 1)  -- Điểm trung bình
-        ELSE ROUND(4.0 + (RAND() * 2.0), 1)  -- Điểm thấp (ít môn)
-    END as DiemThuongXuyen,
-    CASE 
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 65 THEN ROUND(6.5 + (RAND() * 3.0), 1)
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 90 THEN ROUND(5.5 + (RAND() * 2.0), 1)
-        ELSE ROUND(4.0 + (RAND() * 2.0), 1)
-    END as DiemGiuaKy,
-    CASE 
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 65 THEN ROUND(6.5 + (RAND() * 3.0), 1)
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 90 THEN ROUND(5.5 + (RAND() * 2.0), 1)
-        ELSE ROUND(4.0 + (RAND() * 2.0), 1)
-    END as DiemCuoiKy,
-    CASE 
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 65 THEN ROUND(6.5 + (RAND() * 3.0), 1)  -- Điểm tốt
-        WHEN (pl.MaHocSinh + mh.MaMonHoc) % 100 < 90 THEN ROUND(5.5 + (RAND() * 2.0), 1)  -- Điểm trung bình
-        ELSE ROUND(4.0 + (RAND() * 2.0), 1)  -- Điểm thấp
-    END as DiemTrungBinh
-FROM PhanLop pl
-CROSS JOIN MonHoc mh
-WHERE pl.MaHocKy = 2;  -- Chỉ tạo điểm cho HK2
-
-SELECT CONCAT('Diem so HK2 (MaHocKy = 2) da duoc tao (', 
-    (SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 2) * 13, ' ban ghi)') AS Status;
-
--- =====================================================================
--- PHẦN 14: DỮ LIỆU TEST - HẠNH KIỂM HỌC KỲ II (2025-2026)
--- =====================================================================
-
--- Tạo hạnh kiểm cho tất cả học sinh đã được phân lớp HK2
-INSERT INTO HanhKiem (MaHocSinh, MaHocKy, XepLoai, NhanXet)
-SELECT 
-    pl.MaHocSinh,
-    2 as MaHocKy,  -- HK2 (Học kỳ II, 2025-2026)
-    -- ✅ Cải thiện: Tăng tỷ lệ hạnh kiểm tốt để nhiều học sinh lên lớp hơn (giống HK1)
-    -- Phân bổ: 40% Tốt, 40% Khá, 18% Trung bình, 2% Yếu
-    CASE 
-        WHEN pl.MaHocSinh % 100 < 40 THEN 'Tốt'
-        WHEN pl.MaHocSinh % 100 < 80 THEN 'Khá'
-        WHEN pl.MaHocSinh % 100 < 98 THEN 'Trung bình'
-        ELSE 'Yếu'
-    END as XepLoai,
-    'Tự động tạo' as NhanXet
-FROM PhanLop pl
-WHERE pl.MaHocKy = 2;  -- Chỉ tạo hạnh kiểm cho HK2
-
-SELECT CONCAT('Hanh kiem HK2 (MaHocKy = 2) da duoc tao (', 
-    (SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 2), ' ban ghi)') AS Status;
-
--- =====================================================================
--- PHẦN 15: DỮ LIỆU TEST - XẾP LOẠI HỌC KỲ II (2025-2026)
--- =====================================================================
-
--- Tạo xếp loại cho tất cả học sinh đã được phân lớp HK2
-INSERT INTO XepLoai (MaHocSinh, MaHocKy, HocLuc, GhiChu)
-SELECT
-    hs.MaHocSinh,
-    2 AS MaHocKy,  -- HK2 (Học kỳ II, 2025-2026)
-    -- Xếp loại cuối cùng: lấy bậc thấp hơn giữa học lực và hạnh kiểm
-    CASE
-        WHEN
-            (CASE
-                WHEN tb_all >= 8.0 AND tb_main >= 8.0 AND min_mon >= 6.5 THEN 1
-                WHEN tb_all >= 6.5 AND tb_main >= 6.5 AND min_mon >= 5.0 THEN 2
-                WHEN tb_all >= 5.0 AND tb_main >= 5.0 AND min_mon >= 3.5 THEN 3
-                WHEN tb_all >= 3.5 AND min_mon >= 2.0 THEN 4
-                ELSE 5
-            END)
-            >
-            (CASE
-                WHEN hk.XepLoai = 'Tốt' THEN 1
-                WHEN hk.XepLoai = 'Khá' THEN 2
-                WHEN hk.XepLoai = 'Trung bình' THEN 3
-                WHEN hk.XepLoai = 'Yếu' THEN 4
-                ELSE 5
-            END)
-        THEN
-            CASE
-                WHEN hk.XepLoai = 'Tốt' THEN 'Giỏi'
-                WHEN hk.XepLoai = 'Khá' THEN 'Khá'
-                WHEN hk.XepLoai = 'Trung bình' THEN 'Trung bình'
-                WHEN hk.XepLoai = 'Yếu' THEN 'Yếu'
-                ELSE 'Kém'
-            END
-        ELSE
-            CASE
-                WHEN tb_all >= 8.0 AND tb_main >= 8.0 AND min_mon >= 6.5 THEN 'Giỏi'
-                WHEN tb_all >= 6.5 AND tb_main >= 6.5 AND min_mon >= 5.0 THEN 'Khá'
-                WHEN tb_all >= 5.0 AND tb_main >= 5.0 AND min_mon >= 3.5 THEN 'Trung bình'
-                WHEN tb_all >= 3.5 AND min_mon >= 2.0 THEN 'Yếu'
-                ELSE 'Kém'
-            END
-    END AS HocLuc,
-    'HK2 2025-2026 - Tự động tính theo quy tắc' as GhiChu
-FROM
-    PhanLop pl
-    JOIN HocSinh hs ON pl.MaHocSinh = hs.MaHocSinh
-    LEFT JOIN (
-        SELECT MaHocSinh, MaHocKy, XepLoai
-        FROM HanhKiem
-        WHERE MaHocKy = 2  -- Chỉ lấy hạnh kiểm của HK2
-    ) hk ON hk.MaHocSinh = hs.MaHocSinh
-    -- Tính điểm trung bình các môn, điểm TB Toán/Văn/Anh, điểm thấp nhất
-    JOIN (
-        SELECT
-            ds.MaHocSinh,
-            AVG(ds.DiemTrungBinh) AS tb_all,
-            AVG(CASE WHEN mh.TenMonHoc IN ('Toán', 'Ngữ văn', 'Tiếng Anh') THEN ds.DiemTrungBinh END) AS tb_main,
-            MIN(ds.DiemTrungBinh) AS min_mon
-        FROM DiemSo ds
-        JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
-        WHERE ds.MaHocKy = 2  -- Chỉ lấy điểm của HK2
-        GROUP BY ds.MaHocSinh
-    ) diem ON diem.MaHocSinh = hs.MaHocSinh
-WHERE pl.MaHocKy = 2;  -- Chỉ tạo xếp loại cho HK2
-
-SELECT CONCAT('Xep loai HK2 (MaHocKy = 2) da duoc tao (', 
-    (SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 2), ' ban ghi)') AS Status;
+-- ✅ KHÔNG TẠO XẾP LOẠI VÌ CHƯA CÓ PHÂN LỚP
 
 -- =====================================================================
 -- HOÀN THÀNH SEED DATA
@@ -970,13 +663,5 @@ COMMIT;
 SET FOREIGN_KEY_CHECKS = 1;
 
 SELECT 'Sample seed data insertion completed successfully!' AS Final_Status;
-SELECT CONCAT((SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 1), ' hoc sinh da duoc phan lop HK1 (MaHocKy = 1)') AS PhanLop_HK1;
-SELECT CONCAT((SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 2), ' hoc sinh da duoc phan lop HK2 (MaHocKy = 2)') AS PhanLop_HK2;
-SELECT CONCAT((SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 1) * 13, ' ban ghi diem HK1 (', 
-    (SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 1), ' HS × 13 mon)') AS DiemSo_HK1;
-SELECT CONCAT((SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 2) * 13, ' ban ghi diem HK2 (', 
-    (SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 2), ' HS × 13 mon)') AS DiemSo_HK2;
-SELECT CONCAT((SELECT COUNT(*) FROM HanhKiem WHERE MaHocKy = 1), ' ban ghi hanh kiem HK1 (MaHocKy = 1)') AS HanhKiem_HK1;
-SELECT CONCAT((SELECT COUNT(*) FROM HanhKiem WHERE MaHocKy = 2), ' ban ghi hanh kiem HK2 (MaHocKy = 2)') AS HanhKiem_HK2;
-SELECT CONCAT((SELECT COUNT(*) FROM XepLoai WHERE MaHocKy = 1), ' ban ghi xep loai HK1 (MaHocKy = 1)') AS XepLoai_HK1;
-SELECT CONCAT((SELECT COUNT(*) FROM XepLoai WHERE MaHocKy = 2), ' ban ghi xep loai HK2 (MaHocKy = 2)') AS XepLoai_HK2;
+SELECT CONCAT((SELECT COUNT(*) FROM PhanLop WHERE MaHocKy = 1), ' hoc sinh da duoc phan lop HK hien tai (MaHocKy = 1)') AS PhanLop;
+SELECT CONCAT((SELECT COUNT(*) FROM HocSinh WHERE TrangThai = 'Đang học' OR TrangThai = 'Đang học(CT)'), ' hoc sinh chua duoc phan lop - San sang cho phan lop tu dong lan dau') AS HocSinhChuaPhanLop;
