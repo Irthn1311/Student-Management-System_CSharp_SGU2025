@@ -689,16 +689,40 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 				progress?.Report($"⚠️ CẢNH BÁO: Số tiết yêu cầu ({totalRequiredPeriods}) vượt quá số slot có sẵn ({totalAvailableSlots})!");
 			}
 			
+			// ✅ Load danh sách môn học để hiển thị tên môn thay vì mã môn
+			var monHocBUS = new MonHocBUS();
+			var allMonHoc = monHocBUS.DocDSMH();
+			var monHocDict = allMonHoc.ToDictionary(m => m.maMon, m => m.tenMon);
+			
 			foreach (var classGroup in byClass.Take(3)) // Show first 3 classes
 			{
 				var classId = classGroup.Key;
 				var classTotal = classGroup.Sum(a => a.SoTietTuan);
-				var subjects = classGroup.Select(a => $"Môn {a.MaMon} ({a.SoTietTuan} tiết)").ToList();
-				progress?.Report($"  - Lớp {classId}: {classTotal} tiết/tuần ({string.Join(", ", subjects.Take(5))}...)");
+				var subjects = classGroup.Select(a => 
+				{
+					string tenMon = monHocDict.ContainsKey(a.MaMon) 
+						? monHocDict[a.MaMon] 
+						: $"Môn {a.MaMon}";
+					return $"{tenMon} ({a.SoTietTuan} tiết)";
+				}).ToList();
+				progress?.Report($"  - Lớp {classId}: {classTotal} tiết/tuần ({string.Join(", ", subjects.Take(10))})");
 			}
 			if (byClass.Count > 3)
 			{
 				progress?.Report($"  ... và {byClass.Count - 3} lớp khác");
+			}
+			
+			// ✅ Log chi tiết để debug: Hiển thị tất cả môn học được phân công
+			var allSubjects = request.Assignments
+				.GroupBy(a => a.MaMon)
+				.Select(g => new { MaMon = g.Key, TenMon = monHocDict.ContainsKey(g.Key) ? monHocDict[g.Key] : $"Môn {g.Key}", SoLop = g.Count(), TongTiet = g.Sum(a => a.SoTietTuan) })
+				.OrderByDescending(x => x.TongTiet)
+				.ToList();
+			
+			progress?.Report($"📚 Danh sách môn học được phân công ({allSubjects.Count} môn):");
+			foreach (var subj in allSubjects)
+			{
+				progress?.Report($"   • {subj.TenMon} (Mã {subj.MaMon}): {subj.SoLop} lớp, {subj.TongTiet} tiết/tuần");
 			}
 			
 			progress?.Report($"Đang áp dụng cấu hình...");

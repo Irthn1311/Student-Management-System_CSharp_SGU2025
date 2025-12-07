@@ -496,22 +496,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 e.PaintBackground(e.ClipBounds, true);
                 e.PaintContent(e.ClipBounds);
 
-                // ✅ Lấy permission từ Tag - Sử dụng cách an toàn hơn
-                bool canDelete = true; // Mặc định true
-                
-                if (tbNamHoc.Tag != null)
-                {
-                    try
-                    {
-                        dynamic permissions = tbNamHoc.Tag;
-                        canDelete = permissions?.CanDelete ?? true;
-                    }
-                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
-                    {
-                        // Nếu Tag không có thuộc tính CanDelete, giữ giá trị mặc định
-                        canDelete = true;
-                    }
-                }
+                // ✅ Lấy quyền trực tiếp từ PermissionHelper
+                bool canDelete = PermissionHelper.HasPermission(PermissionHelper.QLNAMHOC, PermissionHelper.DELETE);
 
                 int iconSize = 22;
                 int iconEyeSize = 32;
@@ -740,22 +726,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 e.PaintBackground(e.ClipBounds, true);
                 e.PaintContent(e.ClipBounds);
 
-                // ✅ Lấy permission từ Tag - Sử dụng cách an toàn hơn
-                bool canDelete = true; // Mặc định true
-                
-                if (tbHocKy.Tag != null)
-                {
-                    try
-                    {
-                        dynamic permissions = tbHocKy.Tag;
-                        canDelete = permissions?.CanDelete ?? true;
-                    }
-                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
-                    {
-                        // Nếu Tag không có thuộc tính CanDelete, giữ giá trị mặc định
-                        canDelete = true;
-                    }
-                }
+                // ✅ Lấy quyền trực tiếp từ PermissionHelper
+                bool canDelete = PermissionHelper.HasPermission(PermissionHelper.QLNAMHOC, PermissionHelper.DELETE);
 
                 int iconSizeHK = 22;
                 int iconEyeSizeHK = 32;
