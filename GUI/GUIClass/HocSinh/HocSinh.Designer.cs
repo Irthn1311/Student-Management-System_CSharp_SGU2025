@@ -64,7 +64,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnNhapExcel = new Guna.UI2.WinForms.Guna2Button();
             this.btnPhanLop = new Guna.UI2.WinForms.Guna2Button();
             this.btnThemPhuHuynh = new Guna.UI2.WinForms.Guna2Button();
-            this.btnThemHocSinh = new Guna.UI2.WinForms.Guna2Button();
             this.btnTim = new Guna.UI2.WinForms.Guna2Button();
             this.txtTimKiem = new Guna.UI2.WinForms.Guna2TextBox();
             this.btnTrangSau = new Guna.UI2.WinForms.Guna2Button();
@@ -75,13 +74,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.lblTrangHienTaiPhuHuynh = new System.Windows.Forms.Label();
             this.tabControlMain = new Guna.UI2.WinForms.Guna2TabControl();
             this.tabPageHocSinh = new System.Windows.Forms.TabPage();
+            this.cboLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.tabPagePhuHuynh = new System.Windows.Forms.TabPage();
             this.statCardDangHoc = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardNu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardNam = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.statCardTongHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.headerQuanLiHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
-            this.cboLop = new Guna.UI2.WinForms.Guna2ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.tableHocSinh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tablePhuHuynh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tableMoiQuanHe)).BeginInit();
@@ -496,25 +495,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnThemPhuHuynh.Text = "Thêm phụ huynh";
             this.btnThemPhuHuynh.Click += new System.EventHandler(this.btnThemPhuHuynh_Click);
             // 
-            // btnThemHocSinh
-            // 
-            this.btnThemHocSinh.BorderRadius = 7;
-            this.btnThemHocSinh.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemHocSinh.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemHocSinh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnThemHocSinh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnThemHocSinh.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnThemHocSinh.ForeColor = System.Drawing.Color.White;
-            this.btnThemHocSinh.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.plus;
-            this.btnThemHocSinh.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThemHocSinh.Location = new System.Drawing.Point(5, 2);
-            this.btnThemHocSinh.Margin = new System.Windows.Forms.Padding(2);
-            this.btnThemHocSinh.Name = "btnThemHocSinh";
-            this.btnThemHocSinh.Size = new System.Drawing.Size(170, 46);
-            this.btnThemHocSinh.TabIndex = 1;
-            this.btnThemHocSinh.Text = "Thêm học sinh";
-            this.btnThemHocSinh.Click += new System.EventHandler(this.btnThemHocSinh_Click);
-            // 
             // btnTim
             // 
             this.btnTim.BorderRadius = 7;
@@ -697,7 +677,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.tabPageHocSinh.AutoScroll = true;
             this.tabPageHocSinh.BackColor = System.Drawing.Color.White;
             this.tabPageHocSinh.Controls.Add(this.tableHocSinh);
-            this.tabPageHocSinh.Controls.Add(this.btnThemHocSinh);
             this.tabPageHocSinh.Controls.Add(this.btnPhanLop);
             this.tabPageHocSinh.Controls.Add(this.cboLop);
             this.tabPageHocSinh.Controls.Add(this.txtTimKiem);
@@ -711,6 +690,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.tabPageHocSinh.Size = new System.Drawing.Size(1143, 569);
             this.tabPageHocSinh.TabIndex = 0;
             this.tabPageHocSinh.Text = "Học Sinh";
+            // 
+            // cboLop
+            // 
+            this.cboLop.BackColor = System.Drawing.Color.Transparent;
+            this.cboLop.BorderRadius = 7;
+            this.cboLop.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cboLop.DropDownHeight = 250;
+            this.cboLop.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLop.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cboLop.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cboLop.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cboLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cboLop.IntegralHeight = false;
+            this.cboLop.ItemHeight = 30;
+            this.cboLop.Location = new System.Drawing.Point(204, 12);
+            this.cboLop.Margin = new System.Windows.Forms.Padding(2);
+            this.cboLop.Name = "cboLop";
+            this.cboLop.Size = new System.Drawing.Size(200, 36);
+            this.cboLop.TabIndex = 63;
+            this.cboLop.SelectedIndexChanged += new System.EventHandler(this.cboLop_SelectedIndexChanged);
             // 
             // tabPagePhuHuynh
             // 
@@ -776,26 +775,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.headerQuanLiHocSinh.Visible = false;
             this.headerQuanLiHocSinh.Load += new System.EventHandler(this.headerQuanLiHocSinh_Load);
             // 
-            // cboLop
-            // 
-            this.cboLop.BackColor = System.Drawing.Color.Transparent;
-            this.cboLop.BorderRadius = 7;
-            this.cboLop.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cboLop.DropDownHeight = 250;
-            this.cboLop.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboLop.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cboLop.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cboLop.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.cboLop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
-            this.cboLop.IntegralHeight = false;
-            this.cboLop.ItemHeight = 30;
-            this.cboLop.Location = new System.Drawing.Point(204, 12);
-            this.cboLop.Margin = new System.Windows.Forms.Padding(2);
-            this.cboLop.Name = "cboLop";
-            this.cboLop.Size = new System.Drawing.Size(200, 36);
-            this.cboLop.TabIndex = 63;
-            this.cboLop.SelectedIndexChanged += new System.EventHandler(this.cboLop_SelectedIndexChanged);
-            // 
             // HocSinh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -831,7 +810,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private Guna.UI2.WinForms.Guna2TabControl tabControlMain;
         private System.Windows.Forms.TabPage tabPageHocSinh;
         private System.Windows.Forms.TabPage tabPagePhuHuynh;
-        private Guna.UI2.WinForms.Guna2Button btnThemHocSinh;
         private Guna.UI2.WinForms.Guna2DataGridView tableHocSinh;
         private System.Windows.Forms.DataGridViewTextBoxColumn MãHS;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;

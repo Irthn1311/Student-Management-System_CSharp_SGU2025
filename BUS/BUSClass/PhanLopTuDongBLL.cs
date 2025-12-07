@@ -47,66 +47,75 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 HocKyDTO hocKyCanPhanLop = hocKyBUS.LayHocKyTheoMa(maHocKyCanPhanLop);
                 if (hocKyCanPhanLop == null) return (false, "Không tìm thấy học kỳ cần phân lớp", 0);
 
-                string tenHkLower = hocKyCanPhanLop.TenHocKy.ToLower();
-                bool isHK1 = (tenHkLower.Contains("i") && !tenHkLower.Contains("ii")) ||
-                             (tenHkLower.Contains("1") && !tenHkLower.Contains("2"));
+                Console.WriteLine($"=== BẮT ĐẦU PHÂN LỚP CHO NĂM HỌC {hocKyCanPhanLop.MaNamHoc} ===");
+                Console.WriteLine($"📌 Học kỳ được chọn: {hocKyCanPhanLop.TenHocKy}");
 
-                Console.WriteLine($"=== BẮT ĐẦU PHÂN LỚP CHO {hocKyCanPhanLop.TenHocKy} - {hocKyCanPhanLop.MaNamHoc} ===");
-
-                // 1.5. KIỂM TRA HỌC KỲ ĐÃ PHÂN LỚP CHƯA
-                List<(int maHocSinh, int maLop, int maHocKy)> allPhanLopCheck = phanLopBLL.GetAllPhanLop();
-                bool daPhanLop = allPhanLopCheck.Any(p => p.maHocKy == maHocKyCanPhanLop);
+                // ✅ XÁC ĐỊNH NĂM HỌC CẦN PHÂN LỚP
+                string maNamHocCanPhanLop = hocKyCanPhanLop.MaNamHoc;
                 
-                if (daPhanLop && !boQuaKiemTra)
+                // Lấy cả HK1 và HK2 của năm học này
+                var dsHocKyNamHoc = hocKyBUS.LayDanhSachHocKyTheoNamHoc(maNamHocCanPhanLop);
+                HocKyDTO hocKy1 = dsHocKyNamHoc?.FirstOrDefault(hk =>
+                    (hk.TenHocKy.ToLower().Contains("i") && !hk.TenHocKy.ToLower().Contains("ii")) ||
+                    (hk.TenHocKy.ToLower().Contains("1") && !hk.TenHocKy.ToLower().Contains("2")));
+                HocKyDTO hocKy2 = dsHocKyNamHoc?.FirstOrDefault(hk =>
+                    hk.TenHocKy.ToLower().Contains("ii") || hk.TenHocKy.ToLower().Contains("2"));
+
+                if (hocKy1 == null || hocKy2 == null)
                 {
-                    return (false, $"Học kỳ '{hocKyCanPhanLop.TenHocKy} - {hocKyCanPhanLop.MaNamHoc}' đã được phân lớp tự động.\nKhông thể phân lớp lại!\n\nNếu muốn phân lớp lại, vui lòng xóa dữ liệu phân lớp cũ trước.", 0);
+                    return (false, $"Năm học {maNamHocCanPhanLop} phải có đầy đủ HK1 và HK2!", 0);
                 }
 
-                // 2. XÁC ĐỊNH KỊCH BẢN & TÌM HỌC KỲ NGUỒN
-                string kichBan = "";
-                HocKyDTO hocKyNguon = null; // Học kỳ nguồn để lấy dữ liệu
+                Console.WriteLine($"   → HK1: {hocKy1.TenHocKy} (MaHocKy: {hocKy1.MaHocKy})");
+                Console.WriteLine($"   → HK2: {hocKy2.TenHocKy} (MaHocKy: {hocKy2.MaHocKy})");
 
-                if (isHK1) // Phân lớp cho HK1
+                // 1.5. KIỂM TRA NĂM HỌC ĐÃ PHÂN LỚP CHƯA (kiểm tra cả HK1 và HK2)
+                List<(int maHocSinh, int maLop, int maHocKy)> allPhanLopCheck = phanLopBLL.GetAllPhanLop();
+                bool daPhanLopHK1 = allPhanLopCheck.Any(p => p.maHocKy == hocKy1.MaHocKy);
+                bool daPhanLopHK2 = allPhanLopCheck.Any(p => p.maHocKy == hocKy2.MaHocKy);
+                
+                if ((daPhanLopHK1 || daPhanLopHK2) && !boQuaKiemTra)
                 {
-                    // Tìm HK2 của năm học TRƯỚC ĐÓ để xét lên lớp
-                    string[] parts = hocKyCanPhanLop.MaNamHoc.Split('-');
-                    if (parts.Length == 2 && int.TryParse(parts[0], out int namBatDau))
+                    string thongBaoLoi = $"Năm học '{maNamHocCanPhanLop}' đã được phân lớp tự động.\n";
+                    if (daPhanLopHK1) thongBaoLoi += $"- HK1 ({hocKy1.TenHocKy}) đã có phân lớp\n";
+                    if (daPhanLopHK2) thongBaoLoi += $"- HK2 ({hocKy2.TenHocKy}) đã có phân lớp\n";
+                    thongBaoLoi += "\nKhông thể phân lớp lại!\n\nNếu muốn phân lớp lại, vui lòng xóa dữ liệu phân lớp cũ trước.";
+                    return (false, thongBaoLoi, 0);
+                }
+
+                // 2. XÁC ĐỊNH KỊCH BẢN & TÌM HỌC KỲ NGUỒN (TỪ NĂM HỌC TRƯỚC)
+                string kichBan = "";
+                HocKyDTO hocKy1NamTruoc = null; // HK1 năm trước
+                HocKyDTO hocKy2NamTruoc = null; // HK2 năm trước
+                string maNamHocTruoc = ""; // Khai báo ở scope cao hơn
+
+                // Tìm năm học trước
+                string[] partsNamHoc = maNamHocCanPhanLop.Split('-');
+                if (partsNamHoc.Length == 2 && int.TryParse(partsNamHoc[0], out int namBatDau))
+                {
+                    maNamHocTruoc = $"{namBatDau - 1}-{namBatDau}";
+                    var dsHocKyNamTruoc = hocKyBUS.LayDanhSachHocKyTheoNamHoc(maNamHocTruoc);
+                    
+                    if (dsHocKyNamTruoc != null && dsHocKyNamTruoc.Count > 0)
                     {
-                        string maNamHocTruoc = $"{namBatDau - 1}-{namBatDau}";
-                        var dsHocKyNamTruoc = hocKyBUS.LayDanhSachHocKyTheoNamHoc(maNamHocTruoc);
-                        hocKyNguon = dsHocKyNamTruoc?.FirstOrDefault(hk =>
+                        hocKy1NamTruoc = dsHocKyNamTruoc.FirstOrDefault(hk =>
+                            (hk.TenHocKy.ToLower().Contains("i") && !hk.TenHocKy.ToLower().Contains("ii")) ||
+                            (hk.TenHocKy.ToLower().Contains("1") && !hk.TenHocKy.ToLower().Contains("2")));
+                        hocKy2NamTruoc = dsHocKyNamTruoc.FirstOrDefault(hk =>
                             hk.TenHocKy.ToLower().Contains("ii") || hk.TenHocKy.ToLower().Contains("2"));
                     }
-
-                    if (hocKyNguon != null)
-                    {
-                        kichBan = "HK2_NAM_TRUOC_TO_HK1"; // Xét lên lớp từ HK2 năm trước
-                        Console.WriteLine($"📌 Kịch bản: HK2 {hocKyNguon.MaNamHoc} → HK1 {hocKyCanPhanLop.MaNamHoc} (Xét lên lớp)");
-                    }
-                    else
-                    {
-                        kichBan = "FIRST_TIME"; // Phân lớp lần đầu (theo năm sinh)
-                        Console.WriteLine($"📌 Kịch bản: Phân lớp lần đầu cho HK1 {hocKyCanPhanLop.MaNamHoc}");
-                        // Không return nữa, sẽ xử lý ở dưới
-                    }
                 }
-                else // Phân lớp cho HK2
-                {
-                    // Tìm HK1 cùng năm học
-                    var dsHocKyCungNam = hocKyBUS.LayDanhSachHocKyTheoNamHoc(hocKyCanPhanLop.MaNamHoc);
-                    hocKyNguon = dsHocKyCungNam?.FirstOrDefault(hk =>
-                        (hk.TenHocKy.ToLower().Contains("i") && !hk.TenHocKy.ToLower().Contains("ii")) ||
-                        (hk.TenHocKy.ToLower().Contains("1") && !hk.TenHocKy.ToLower().Contains("2")));
 
-                    if (hocKyNguon != null)
-                    {
-                        kichBan = "HK1_TO_HK2"; // Copy từ HK1 sang HK2
-                        Console.WriteLine($"📌 Kịch bản: HK1 → HK2 cùng năm {hocKyCanPhanLop.MaNamHoc} (Giữ nguyên lớp)");
-                    }
-                    else
-                    {
-                        return (false, $"Không tìm thấy HK1 của năm học {hocKyCanPhanLop.MaNamHoc}. Cần phân lớp HK1 trước!", 0);
-                    }
+                if (hocKy1NamTruoc != null && hocKy2NamTruoc != null)
+                {
+                    kichBan = "NEXT_YEAR"; // Phân lớp cho năm học mới dựa trên năm học trước
+                    Console.WriteLine($"📌 Kịch bản: NEXT_YEAR (Từ năm học {maNamHocTruoc} → {maNamHocCanPhanLop})");
+                    Console.WriteLine($"   → Xét điều kiện từ cả HK1 và HK2 của năm học trước");
+                }
+                else
+                {
+                    kichBan = "FIRST_TIME"; // Phân lớp lần đầu
+                    Console.WriteLine($"📌 Kịch bản: FIRST_TIME (Phân lớp lần đầu cho năm học {maNamHocCanPhanLop})");
                 }
 
                 // 3. LẤY DỮ LIỆU CẦN THIẾT
@@ -126,138 +135,28 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 List<string> danhSachLoi = new List<string>();
                 int soHocSinhDaPhanLop = 0;
 
-                if (kichBan == "HK1_TO_HK2")
+                if (kichBan == "NEXT_YEAR")
                 {
                     // =================================================================
-                    // KỊCH BẢN 1: HK1 → HK2 (COPY VỚI KIỂM TRA ĐỦ DỮ LIỆU)
+                    // KỊCH BẢN 2: PHÂN LỚP CHO NĂM HỌC MỚI (XÉT ĐIỀU KIỆN TỪ CẢ HK1 VÀ HK2 NĂM TRƯỚC)
                     // =================================================================
                     Console.WriteLine("\n╔══════════════════════════════════════════════════════════╗");
-                    Console.WriteLine("║   KỊCH BẢN 1: HK1 → HK2 (Giữ nguyên lớp)                ║");
+                    Console.WriteLine("║   KỊCH BẢN 2: NEXT_YEAR (Từ năm học trước → Năm học mới) ║");
                     Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
-
-                    // ✅ SỬA: Lấy TẤT CẢ học sinh "Đang học" (không cần kiểm tra đã phân lớp HK1)
-                    // Vì có thể HK1 đã bị xóa trước đó
-                    var hocSinhDangHocHK1 = danhSachHocSinhDangHoc.ToList();
-
-                    Console.WriteLine($"→ Tìm thấy {hocSinhDangHocHK1.Count} học sinh 'Đang học' cần kiểm tra");
-
-                    foreach (var hs in hocSinhDangHocHK1)
-                    {
-                        try
-                        {
-                            // BƯỚC 1: Kiểm tra đã có điểm chưa
-                            var diemHK1 = allDiem
-                                .Where(d => d.MaHocSinh == hs.MaHS.ToString() && d.MaHocKy == hocKyNguon.MaHocKy)
-                                .ToList();
-
-                            if (diemHK1 == null || diemHK1.Count == 0)
-                            {
-                                string loi = $"HS {hs.HoTen} (ID: {hs.MaHS}): Chưa có điểm HK1";
-                                Console.WriteLine($"  ⚠️ {loi}");
-                                danhSachLoi.Add(loi);
-                                continue;
-                            }
-
-                            // BƯỚC 2: Kiểm tra đã có hạnh kiểm chưa
-                            var hanhKiemHK1 = allHanhKiem
-                                .FirstOrDefault(hk => hk.MaHocSinh == hs.MaHS && hk.MaHocKy == hocKyNguon.MaHocKy);
-
-                            if (hanhKiemHK1 == null || string.IsNullOrEmpty(hanhKiemHK1.XepLoai))
-                            {
-                                string loi = $"HS {hs.HoTen} (ID: {hs.MaHS}): Chưa có hạnh kiểm HK1";
-                                Console.WriteLine($"  ⚠️ {loi}");
-                                danhSachLoi.Add(loi);
-                                continue;
-                            }
-
-                            // BƯỚC 3: Kiểm tra đã có xếp loại chưa
-                            var xepLoaiHK1 = allXepLoai
-                                .FirstOrDefault(xl => xl.MaHocSinh == hs.MaHS && xl.MaHocKy == hocKyNguon.MaHocKy);
-
-                            if (xepLoaiHK1 == null || string.IsNullOrEmpty(xepLoaiHK1.HocLuc))
-                            {
-                                string loi = $"HS {hs.HoTen} (ID: {hs.MaHS}): Chưa có xếp loại HK1";
-                                Console.WriteLine($"  ⚠️ {loi}");
-                                danhSachLoi.Add(loi);
-                                continue;
-                            }
-
-                            // BƯỚC 4: ĐỦ DỮ LIỆU → COPY SANG HK2
-                            var phanLopHK1 = allPhanLopHist
-                                .FirstOrDefault(p => p.maHocSinh == hs.MaHS && p.maHocKy == hocKyNguon.MaHocKy);
-
-                            if (phanLopHK1.maHocSinh == 0) // Tuple default
-                            {
-                                string loi = $"HS {hs.HoTen} (ID: {hs.MaHS}): Không tìm thấy thông tin phân lớp HK1";
-                                Console.WriteLine($"  ⚠️ {loi}");
-                                danhSachLoi.Add(loi);
-                                continue;
-                            }
-
-                            int maLopHK1 = phanLopHK1.maLop;
-                            var lopHK1 = allLop.FirstOrDefault(l => l.MaLop == maLopHK1);
-
-                            if (lopHK1 == null)
-                            {
-                                string loi = $"HS {hs.HoTen} (ID: {hs.MaHS}): Không tìm thấy lớp HK1 (ID: {maLopHK1})";
-                                Console.WriteLine($"  ⚠️ {loi}");
-                                danhSachLoi.Add(loi);
-                                continue;
-                            }
-
-                            // Thêm vào HK2 với CÙNG LỚP
-                            bool themThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, maLopHK1, maHocKyCanPhanLop);
-
-                            if (themThanhCong)
-                            {
-                                soHocSinhDaPhanLop++;
-                                Console.WriteLine($"  ✓ {hs.HoTen} → Lớp {lopHK1.TenLop} (HK2)");
-                            }
-                            else
-                            {
-                                string loi = $"HS {hs.HoTen}: Lỗi khi thêm vào lớp {lopHK1.TenLop} HK2";
-                                Console.WriteLine($"  ❌ {loi}");
-                                danhSachLoi.Add(loi);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            string loi = $"HS {hs.HoTen}: Lỗi xử lý - {ex.Message}";
-                            Console.WriteLine($"  ❌ {loi}");
-                            danhSachLoi.Add(loi);
-                        }
-                    }
-                }
-                else if (kichBan == "HK2_NAM_TRUOC_TO_HK1")
-                {
-                    // =================================================================
-                    // KỊCH BẢN 2: HK2 NĂM TRƯỚC → HK1 NĂM SAU (XÉT LÊN LỚP)
-                    // =================================================================
-                    Console.WriteLine("\n╔══════════════════════════════════════════════════════════╗");
-                    Console.WriteLine("║   KỊCH BẢN 2: HK2 năm trước → HK1 năm sau (Xét lên lớp)║");
-                    Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
-
-                    // Tìm HK1 của năm học CÙNG VỚI HK2 nguồn
-                    var dsHocKyCungNamVoiHK2 = hocKyBUS.LayDanhSachHocKyTheoNamHoc(hocKyNguon.MaNamHoc);
-                    HocKyDTO hocKy1NamTruoc = dsHocKyCungNamVoiHK2?.FirstOrDefault(hk =>
-                        (hk.TenHocKy.ToLower().Contains("i") && !hk.TenHocKy.ToLower().Contains("ii")) ||
-                        (hk.TenHocKy.ToLower().Contains("1") && !hk.TenHocKy.ToLower().Contains("2")));
-
-                    if (hocKy1NamTruoc == null)
-                    {
-                        return (false, $"Không tìm thấy HK1 của năm học {hocKyNguon.MaNamHoc} để xét lên lớp!", 0);
-                    }
 
                     Console.WriteLine($"→ HK1 năm trước: {hocKy1NamTruoc.TenHocKy} {hocKy1NamTruoc.MaNamHoc}");
-                    Console.WriteLine($"→ HK2 năm trước: {hocKyNguon.TenHocKy} {hocKyNguon.MaNamHoc}");
+                    Console.WriteLine($"→ HK2 năm trước: {hocKy2NamTruoc.TenHocKy} {hocKy2NamTruoc.MaNamHoc}");
+                    Console.WriteLine($"→ Sẽ phân lớp cho cả HK1 và HK2 năm học mới ({maNamHocCanPhanLop})");
 
-                    // ✅ SỬA: Lấy TẤT CẢ học sinh "Đang học" (không cần kiểm tra đã phân lớp HK2)
-                    // Vì có thể HK2 năm trước đã bị xóa
-                    var hocSinhDangHocHK2NamTruoc = danhSachHocSinhDangHoc.ToList();
+                    // ✅ Lấy TẤT CẢ học sinh "Đang học"
+                    var hocSinhDangHocNamTruoc = danhSachHocSinhDangHoc.ToList();
 
-                    Console.WriteLine($"→ Tìm thấy {hocSinhDangHocHK2NamTruoc.Count} học sinh 'Đang học' cần kiểm tra");
+                    Console.WriteLine($"→ Tìm thấy {hocSinhDangHocNamTruoc.Count} học sinh 'Đang học' cần kiểm tra");
 
-                    foreach (var hs in hocSinhDangHocHK2NamTruoc)
+                    // ✅ Danh sách học sinh chưa có phân lớp (mới nhập từ Excel) - sẽ phân vào khối 10
+                    List<HocSinhDTO> hocSinhChuaPhanLop = new List<HocSinhDTO>();
+
+                    foreach (var hs in hocSinhDangHocNamTruoc)
                     {
                         try
                         {
@@ -267,22 +166,31 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                                 .ToList();
 
                             var diemHK2 = allDiem
-                                .Where(d => d.MaHocSinh == hs.MaHS.ToString() && d.MaHocKy == hocKyNguon.MaHocKy)
+                                .Where(d => d.MaHocSinh == hs.MaHS.ToString() && d.MaHocKy == hocKy2NamTruoc.MaHocKy)
                                 .ToList();
 
-                            if (diemHK1 == null || diemHK1.Count == 0)
-                            {
-                                string loi = $"HS {hs.HoTen} (ID: {hs.MaHS}): Chưa có điểm HK1 năm trước";
-                                Console.WriteLine($"  ⚠️ {loi}");
-                                danhSachLoi.Add(loi);
-                                continue;
-                            }
+                            // ✅ Kiểm tra học sinh chưa có phân lớp (mới nhập từ Excel)
+                            var phanLopHK2NamTruoc = allPhanLopHist
+                                .FirstOrDefault(p => p.maHocSinh == hs.MaHS && p.maHocKy == hocKy2NamTruoc.MaHocKy);
+                            var phanLopHK1NamTruoc = allPhanLopHist
+                                .FirstOrDefault(p => p.maHocSinh == hs.MaHS && p.maHocKy == hocKy1NamTruoc.MaHocKy);
+                            
+                            bool chuaCoPhanLop = (phanLopHK2NamTruoc.maHocSinh == 0 && phanLopHK1NamTruoc.maHocSinh == 0);
 
-                            if (diemHK2 == null || diemHK2.Count == 0)
+                            if (diemHK1 == null || diemHK1.Count == 0 || diemHK2 == null || diemHK2.Count == 0 || chuaCoPhanLop)
                             {
-                                string loi = $"HS {hs.HoTen} (ID: {hs.MaHS}): Chưa có điểm HK2 năm trước";
-                                Console.WriteLine($"  ⚠️ {loi}");
-                                danhSachLoi.Add(loi);
+                                // ✅ Học sinh chưa có phân lớp (mới nhập từ Excel) - sẽ phân vào khối 10 sau
+                                if (chuaCoPhanLop)
+                                {
+                                    hocSinhChuaPhanLop.Add(hs);
+                                    Console.WriteLine($"  ℹ️ HS {hs.HoTen} (ID: {hs.MaHS}): Chưa có phân lớp trước đó → Sẽ phân vào khối 10");
+                                }
+                                else
+                                {
+                                    string loi = $"HS {hs.HoTen} (ID: {hs.MaHS}): Chưa có đủ điểm HK1/HK2 năm trước";
+                                    Console.WriteLine($"  ⚠️ {loi}");
+                                    danhSachLoi.Add(loi);
+                                }
                                 continue;
                             }
 
@@ -291,7 +199,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                                 .FirstOrDefault(hk => hk.MaHocSinh == hs.MaHS && hk.MaHocKy == hocKy1NamTruoc.MaHocKy);
 
                             var hanhKiemHK2 = allHanhKiem
-                                .FirstOrDefault(hk => hk.MaHocSinh == hs.MaHS && hk.MaHocKy == hocKyNguon.MaHocKy);
+                                .FirstOrDefault(hk => hk.MaHocSinh == hs.MaHS && hk.MaHocKy == hocKy2NamTruoc.MaHocKy);
 
                             if (hanhKiemHK1 == null || hanhKiemHK2 == null)
                             {
@@ -371,22 +279,15 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                                 lyDoKhongLenLop.Add($"Có {soMonYeu} môn Yếu (> 2)");
                             }
 
-                            // BƯỚC 7: LẤY LỚP CŨ VÀ XÁC ĐỊNH LỚP MỚI
-                            var phanLopHK2NamTruoc = allPhanLopHist
-                                .FirstOrDefault(p => p.maHocSinh == hs.MaHS && p.maHocKy == hocKyNguon.MaHocKy);
+                            // BƯỚC 7: LẤY LỚP CŨ VÀ XÁC ĐỊNH LỚP MỚI (ưu tiên lấy từ HK2 năm trước, nếu không có thì lấy từ HK1)
+                            // ✅ Biến phanLopHK2NamTruoc và phanLopHK1NamTruoc đã được khai báo ở trên (dòng 173-176)
+                            var phanLopNamTruoc = phanLopHK2NamTruoc.maHocSinh != 0 ? phanLopHK2NamTruoc : phanLopHK1NamTruoc;
 
-                            if (phanLopHK2NamTruoc.maHocSinh == 0) // Tuple default có maHocSinh = 0
-                            {
-                                string loi = $"HS {hs.HoTen}: Không tìm thấy lớp HK2 năm trước";
-                                Console.WriteLine($"  ❌ {loi}");
-                                danhSachLoi.Add(loi);
-                                continue;
-                            }
-
-                            var lopCu = allLop.FirstOrDefault(l => l.MaLop == phanLopHK2NamTruoc.maLop);
+                            // ✅ Đã kiểm tra ở trên, nên ở đây chắc chắn có phân lớp
+                            var lopCu = allLop.FirstOrDefault(l => l.MaLop == phanLopNamTruoc.maLop);
                             if (lopCu == null)
                             {
-                                string loi = $"HS {hs.HoTen}: Không tìm thấy thông tin lớp cũ (ID: {phanLopHK2NamTruoc.maLop})";
+                                string loi = $"HS {hs.HoTen}: Không tìm thấy thông tin lớp cũ (ID: {phanLopNamTruoc.maLop})";
                                 Console.WriteLine($"  ❌ {loi}");
                                 danhSachLoi.Add(loi);
                                 continue;
@@ -431,7 +332,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                                 Console.WriteLine($"       Lý do: {string.Join(", ", lyDoKhongLenLop)}");
                             }
 
-                            // BƯỚC 8: TÌM LỚP CÓ CHỖ TRỐNG Ở KHỐI MỚI (HK1 NĂM SAU)
+                            // BƯỚC 8: TÌM LỚP CÓ CHỖ TRỐNG Ở KHỐI MỚI (CHO CẢ HK1 VÀ HK2 NĂM MỚI)
                             var dsLopKhoiMoi = allLop.Where(l => l.MaKhoi == khoiMoi).ToList();
 
                             if (dsLopKhoiMoi.Count == 0)
@@ -442,24 +343,26 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                                 continue;
                             }
 
-                            // Đếm số học sinh trong từng lớp (trong HK1 năm mới)
-                            var soLuongHocSinhTrongLop = allPhanLopHist
-                                .Where(p => p.maHocKy == maHocKyCanPhanLop)
-                                .GroupBy(p => p.maLop)
-                                .ToDictionary(g => g.Key, g => g.Count());
-
-                            // Thêm số lượng tạm của học sinh vừa phân
-                            var phanLopTam = danhSachPhanLopTam
-                                .Where(p => p.maHocKy == maHocKyCanPhanLop)
-                                .GroupBy(p => p.maLop)
-                                .ToDictionary(g => g.Key, g => g.Count());
-
-                            foreach (var kvp in phanLopTam)
+                            // Đếm số học sinh trong từng lớp (tổng của cả HK1 và HK2 năm mới)
+                            var soLuongHocSinhTrongLop = new Dictionary<int, int>();
+                            
+                            // Đếm từ database (cả HK1 và HK2)
+                            var phanLopHK1Moi = allPhanLopHist.Where(p => p.maHocKy == hocKy1.MaHocKy);
+                            var phanLopHK2Moi = allPhanLopHist.Where(p => p.maHocKy == hocKy2.MaHocKy);
+                            
+                            foreach (var pl in phanLopHK1Moi.Concat(phanLopHK2Moi))
                             {
-                                if (soLuongHocSinhTrongLop.ContainsKey(kvp.Key))
-                                    soLuongHocSinhTrongLop[kvp.Key] += kvp.Value;
-                                else
-                                    soLuongHocSinhTrongLop[kvp.Key] = kvp.Value;
+                                if (!soLuongHocSinhTrongLop.ContainsKey(pl.maLop))
+                                    soLuongHocSinhTrongLop[pl.maLop] = 0;
+                                soLuongHocSinhTrongLop[pl.maLop]++;
+                            }
+
+                            // Thêm số lượng tạm của học sinh vừa phân (cả HK1 và HK2)
+                            foreach (var pl in danhSachPhanLopTam.Where(p => p.maHocKy == hocKy1.MaHocKy || p.maHocKy == hocKy2.MaHocKy))
+                            {
+                                if (!soLuongHocSinhTrongLop.ContainsKey(pl.maLop))
+                                    soLuongHocSinhTrongLop[pl.maLop] = 0;
+                                soLuongHocSinhTrongLop[pl.maLop]++;
                             }
 
                             // Tìm lớp có ít học sinh nhất
@@ -484,23 +387,37 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                                 continue;
                             }
 
-                            // BƯỚC 9: THÊM VÀO LỚP MỚI
-                            bool themThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, maHocKyCanPhanLop);
+                            // BƯỚC 9: THÊM VÀO LỚP MỚI CHO CẢ HK1 VÀ HK2 (CÙNG LỚP)
+                            bool themHK1ThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy);
+                            bool themHK2ThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy);
 
-                            if (themThanhCong)
+                            if (themHK1ThanhCong && themHK2ThanhCong)
                             {
-                                soHocSinhDaPhanLop++;
+                                soHocSinhDaPhanLop += 2; // Đếm cả HK1 và HK2
 
                                 // Thêm vào danh sách tạm để cập nhật số lượng
-                                danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, maHocKyCanPhanLop));
+                                danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy));
+                                danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy));
 
-                                Console.WriteLine($"  ✓ {hs.HoTen} → Lớp {lopPhuHop.TenLop} (Khối {khoiMoi})");
+                                Console.WriteLine($"  ✓ {hs.HoTen} → Lớp {lopPhuHop.TenLop} (Khối {khoiMoi}) - HK1 & HK2");
                             }
                             else
                             {
                                 string loi = $"HS {hs.HoTen}: Lỗi khi thêm vào lớp {lopPhuHop.TenLop}";
+                                if (!themHK1ThanhCong) loi += " (HK1 thất bại)";
+                                if (!themHK2ThanhCong) loi += " (HK2 thất bại)";
                                 Console.WriteLine($"  ❌ {loi}");
                                 danhSachLoi.Add(loi);
+                                
+                                // Rollback nếu một trong hai thất bại
+                                if (themHK1ThanhCong)
+                                {
+                                    phanLopDAO.XoaPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy);
+                                }
+                                if (themHK2ThanhCong)
+                                {
+                                    phanLopDAO.XoaPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy);
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -510,11 +427,171 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                             danhSachLoi.Add(loi);
                         }
                     }
+
+                    // ✅ XỬ LÝ HỌC SINH CHƯA CÓ PHÂN LỚP (MỚI NHẬP TỪ EXCEL) - PHÂN VÀO KHỐI 10
+                    if (hocSinhChuaPhanLop.Count > 0)
+                    {
+                        Console.WriteLine($"\n╔══════════════════════════════════════════════════════════╗");
+                        Console.WriteLine($"║   XỬ LÝ HỌC SINH CHƯA CÓ PHÂN LỚP (Phân vào Khối 10)      ║");
+                        Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
+                        Console.WriteLine($"→ Tìm thấy {hocSinhChuaPhanLop.Count} học sinh chưa có phân lớp trước đó");
+                        Console.WriteLine($"→ Tất cả học sinh này sẽ được phân vào KHỐI 10");
+                        Console.WriteLine($"→ Phân lớp theo chữ cái đầu tiên của tên, phân đều vào các lớp");
+
+                        int khoiCanPhanLop = 10;
+                        var dsLopKhoi10 = allLop
+                            .Where(l => l.MaKhoi == khoiCanPhanLop)
+                            .OrderBy(l => l.MaLop)
+                            .ToList();
+
+                        if (dsLopKhoi10.Count == 0)
+                        {
+                            string loi = $"Không có lớp nào cho Khối {khoiCanPhanLop}";
+                            Console.WriteLine($"  ❌ {loi}");
+                            foreach (var hs in hocSinhChuaPhanLop)
+                            {
+                                danhSachLoi.Add($"HS {hs.HoTen}: {loi}");
+                            }
+                        }
+                        else
+                        {
+                            // Đếm số học sinh đã có trong từng lớp (tổng cả HK1 và HK2 - bao gồm cả tạm)
+                            var soLuongHocSinhTrongLop = new Dictionary<int, int>();
+
+                            foreach (var lop in dsLopKhoi10)
+                            {
+                                int soHSHK1 = allPhanLopHist.Count(p => p.maLop == lop.MaLop && p.maHocKy == hocKy1.MaHocKy);
+                                int soHSHK2 = allPhanLopHist.Count(p => p.maLop == lop.MaLop && p.maHocKy == hocKy2.MaHocKy);
+                                soLuongHocSinhTrongLop[lop.MaLop] = soHSHK1 + soHSHK2;
+                            }
+
+                            // Cộng thêm số tạm (cả HK1 và HK2)
+                            foreach (var phanLopTam in danhSachPhanLopTam)
+                            {
+                                if (phanLopTam.maHocKy == hocKy1.MaHocKy || phanLopTam.maHocKy == hocKy2.MaHocKy)
+                                {
+                                    if (soLuongHocSinhTrongLop.ContainsKey(phanLopTam.maLop))
+                                        soLuongHocSinhTrongLop[phanLopTam.maLop]++;
+                                    else
+                                        soLuongHocSinhTrongLop[phanLopTam.maLop] = 1;
+                                }
+                            }
+
+                            // Nhóm học sinh theo chữ cái đầu tiên của tên
+                            var hocSinhTheoChuCai = new Dictionary<char, List<HocSinhDTO>>();
+
+                            foreach (var hs in hocSinhChuaPhanLop)
+                            {
+                                char chuCaiDau = '?';
+                                if (!string.IsNullOrWhiteSpace(hs.HoTen))
+                                {
+                                    string tenTrimmed = hs.HoTen.Trim();
+                                    if (tenTrimmed.Length > 0)
+                                    {
+                                        chuCaiDau = char.ToUpper(tenTrimmed[0]);
+                                        if (!char.IsLetter(chuCaiDau))
+                                        {
+                                            chuCaiDau = '?';
+                                        }
+                                    }
+                                }
+
+                                if (!hocSinhTheoChuCai.ContainsKey(chuCaiDau))
+                                {
+                                    hocSinhTheoChuCai[chuCaiDau] = new List<HocSinhDTO>();
+                                }
+                                hocSinhTheoChuCai[chuCaiDau].Add(hs);
+                            }
+
+                            Console.WriteLine($"\n→ Đã nhóm học sinh theo chữ cái đầu tiên:");
+                            foreach (var kvp in hocSinhTheoChuCai.OrderBy(x => x.Key))
+                            {
+                                Console.WriteLine($"  → Chữ '{kvp.Key}': {kvp.Value.Count} học sinh");
+                            }
+
+                            // Phân đều học sinh theo từng nhóm chữ cái vào các lớp khối 10
+                            Console.WriteLine($"\n→ Bắt đầu phân bổ học sinh vào {dsLopKhoi10.Count} lớp khối 10...");
+
+                            var danhSachChuCai = hocSinhTheoChuCai.Keys
+                                .OrderBy(c => c == '?' ? 999 : (int)c)
+                                .ToList();
+
+                            foreach (var chuCai in danhSachChuCai)
+                            {
+                                List<HocSinhDTO> dsHSTheoChuCai = hocSinhTheoChuCai[chuCai];
+
+                                Console.WriteLine($"\n  → Phân bổ {dsHSTheoChuCai.Count} học sinh tên bắt đầu bằng chữ '{chuCai}':");
+
+                                foreach (var hs in dsHSTheoChuCai)
+                                {
+                                    try
+                                    {
+                                        // Tìm lớp có ít học sinh nhất
+                                        var lopPhuHop = dsLopKhoi10
+                                            .OrderBy(lop => soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0)
+                                            .ThenBy(lop => lop.MaLop)
+                                            .First();
+
+                                        // Thêm vào lớp cho CẢ HK1 và HK2 (cùng lớp)
+                                        bool themHK1ThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy);
+                                        bool themHK2ThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy);
+
+                                        if (themHK1ThanhCong && themHK2ThanhCong)
+                                        {
+                                            soHocSinhDaPhanLop += 2; // Đếm cả HK1 và HK2
+                                            danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy));
+                                            danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy));
+
+                                            // Cập nhật số lượng (tổng cả HK1 và HK2)
+                                            if (soLuongHocSinhTrongLop.ContainsKey(lopPhuHop.MaLop))
+                                                soLuongHocSinhTrongLop[lopPhuHop.MaLop] += 2;
+                                            else
+                                                soLuongHocSinhTrongLop[lopPhuHop.MaLop] = 2;
+
+                                            Console.WriteLine($"    ✓ {hs.HoTen} → Lớp {lopPhuHop.TenLop} (HK1 & HK2 - Sĩ số: {soLuongHocSinhTrongLop[lopPhuHop.MaLop]})");
+                                        }
+                                        else
+                                        {
+                                            string loi = $"HS {hs.HoTen}: Lỗi khi thêm vào lớp {lopPhuHop.TenLop}";
+                                            if (!themHK1ThanhCong) loi += " (HK1 thất bại)";
+                                            if (!themHK2ThanhCong) loi += " (HK2 thất bại)";
+                                            Console.WriteLine($"    ❌ {loi}");
+                                            danhSachLoi.Add(loi);
+
+                                            // Rollback
+                                            if (themHK1ThanhCong)
+                                            {
+                                                phanLopDAO.XoaPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy);
+                                            }
+                                            if (themHK2ThanhCong)
+                                            {
+                                                phanLopDAO.XoaPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy);
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        string loi = $"HS {hs.HoTen}: Lỗi xử lý - {ex.Message}";
+                                        Console.WriteLine($"    ❌ {loi}");
+                                        danhSachLoi.Add(loi);
+                                    }
+                                }
+                            }
+
+                            // Hiển thị kết quả phân lớp cho khối 10
+                            Console.WriteLine($"\n  → Kết quả phân lớp Khối {khoiCanPhanLop}:");
+                            foreach (var lop in dsLopKhoi10)
+                            {
+                                int siSo = soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0;
+                                Console.WriteLine($"     • {lop.TenLop}: {siSo} học sinh");
+                            }
+                        }
+                    }
                 }
                 else if (kichBan == "FIRST_TIME")
                 {
                     // =================================================================
-                    // KỊCH BẢN 3: PHÂN LỚP LẦN ĐẦU (PHÂN ĐỀU VÀO CÁC LỚP)
+                    // KỊCH BẢN 3: PHÂN LỚP LẦN ĐẦU (PHÂN ĐỀU VÀO CÁC LỚP KHỐI 10 THEO BẢNG CHỮ CÁI)
                     // =================================================================
                     Console.WriteLine("\n╔══════════════════════════════════════════════════════════╗");
                     Console.WriteLine("║   KỊCH BẢN 3: FIRST_TIME (Phân lớp lần đầu)                ║");
@@ -524,183 +601,168 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     var hocSinhCanPhanLop = danhSachHocSinhDangHoc.ToList();
 
                     Console.WriteLine($"→ Tìm thấy {hocSinhCanPhanLop.Count} học sinh 'Đang học' cần phân lớp");
+                    Console.WriteLine($"→ Tất cả học sinh sẽ được phân vào KHỐI 10");
+                    Console.WriteLine($"→ Phân lớp theo chữ cái đầu tiên của tên, phân đều vào các lớp");
 
-                    // Xác định khối của học kỳ này (từ tên năm học)
-                    // VD: Năm 2025-2026 → Học sinh sinh năm 2010 → Khối 10
-                    string[] parts = hocKyCanPhanLop.MaNamHoc.Split('-');
-                    if (parts.Length != 2 || !int.TryParse(parts[0], out int namHocBatDau))
+                    // ✅ TẤT CẢ học sinh đều vào khối 10 (không xét năm sinh)
+                    int khoiCanPhanLop = 10;
+
+                    // Lấy danh sách lớp của khối 10 - SẮP XẾP THEO MÃ LỚP
+                    var dsLopKhoi10 = allLop
+                        .Where(l => l.MaKhoi == khoiCanPhanLop)
+                        .OrderBy(l => l.MaLop)  // Sắp xếp theo MaLop
+                        .ToList();
+
+                    if (dsLopKhoi10.Count == 0)
                     {
-                        return (false, $"Không thể xác định năm học từ '{hocKyCanPhanLop.MaNamHoc}'", 0);
+                        string loi = $"Không có lớp nào cho Khối {khoiCanPhanLop}";
+                        Console.WriteLine($"  ❌ {loi}");
+                        foreach (var hs in hocSinhCanPhanLop)
+                        {
+                            danhSachLoi.Add($"HS {hs.HoTen}: {loi}");
+                        }
+                        return (false, loi, 0);
                     }
 
-                    // Xác định năm sinh chuẩn cho từng khối
-                    // VD: Năm học 2025-2026 → Khối 10 sinh năm 2010, Khối 11 sinh 2009, Khối 12 sinh 2008
-                    int namSinhKhoi10 = namHocBatDau - 15; // Khối 10 khoảng 15 tuổi
-                    int namSinhKhoi11 = namHocBatDau - 16; // Khối 11 khoảng 16 tuổi
-                    int namSinhKhoi12 = namHocBatDau - 17; // Khối 12 khoảng 17 tuổi
+                    Console.WriteLine($"  → Số lớp khối 10: {dsLopKhoi10.Count} lớp ({string.Join(", ", dsLopKhoi10.Select(l => l.TenLop))})");
 
-                    Console.WriteLine($"→ Năm sinh chuẩn: Khối 10={namSinhKhoi10}, Khối 11={namSinhKhoi11}, Khối 12={namSinhKhoi12}");
+                    // ✅ Đếm số học sinh đã có trong từng lớp (tổng cả HK1 và HK2 - bao gồm cả tạm)
+                    var soLuongHocSinhTrongLop = new Dictionary<int, int>();
 
-                    // Nhóm học sinh theo năm sinh để xác định khối
-                    var hocSinhTheoKhoi = new Dictionary<int, List<HocSinhDTO>>();
-                    var hocSinhKhongXacDinhDuocKhoi = new List<HocSinhDTO>();
+                    // Đếm từ database (cả HK1 và HK2)
+                    foreach (var lop in dsLopKhoi10)
+                    {
+                        int soHSHK1 = allPhanLopHist.Count(p => p.maLop == lop.MaLop && p.maHocKy == hocKy1.MaHocKy);
+                        int soHSHK2 = allPhanLopHist.Count(p => p.maLop == lop.MaLop && p.maHocKy == hocKy2.MaHocKy);
+                        soLuongHocSinhTrongLop[lop.MaLop] = soHSHK1 + soHSHK2;
+                    }
+
+                    // Cộng thêm số tạm (cả HK1 và HK2)
+                    foreach (var phanLopTam in danhSachPhanLopTam)
+                    {
+                        if (phanLopTam.maHocKy == hocKy1.MaHocKy || phanLopTam.maHocKy == hocKy2.MaHocKy)
+                        {
+                            if (soLuongHocSinhTrongLop.ContainsKey(phanLopTam.maLop))
+                                soLuongHocSinhTrongLop[phanLopTam.maLop]++;
+                            else
+                                soLuongHocSinhTrongLop[phanLopTam.maLop] = 1;
+                        }
+                    }
+
+                    // ✅ Nhóm học sinh theo chữ cái đầu tiên của tên (bỏ qua khoảng trắng, lấy chữ cái đầu tiên)
+                    var hocSinhTheoChuCai = new Dictionary<char, List<HocSinhDTO>>();
 
                     foreach (var hs in hocSinhCanPhanLop)
                     {
-                        try
+                        // Lấy chữ cái đầu tiên của tên (bỏ qua khoảng trắng, chuyển thành chữ hoa)
+                        char chuCaiDau = '?';
+                        if (!string.IsNullOrWhiteSpace(hs.HoTen))
                         {
-                            int namSinh = hs.NgaySinh.Year;
-                            int khoi = 0;
-
-                            // ✅ SỬA: Xác định khối dựa vào khoảng năm sinh (cho phép sai lệch ±2 năm)
-                            // Điều này bao quát cả trường hợp học sinh nhảy lớp hoặc học lại 1-2 năm
-                            if (Math.Abs(namSinh - namSinhKhoi10) <= 2)
+                            string tenTrimmed = hs.HoTen.Trim();
+                            if (tenTrimmed.Length > 0)
                             {
-                                khoi = 10;
+                                chuCaiDau = char.ToUpper(tenTrimmed[0]);
+                                // Nếu không phải chữ cái, gán thành '?' để nhóm các ký tự đặc biệt
+                                if (!char.IsLetter(chuCaiDau))
+                                {
+                                    chuCaiDau = '?';
+                                }
                             }
-                            else if (Math.Abs(namSinh - namSinhKhoi11) <= 2)
-                            {
-                                khoi = 11;
-                            }
-                            else if (Math.Abs(namSinh - namSinhKhoi12) <= 2)
-                            {
-                                khoi = 12;
-                            }
-                            else
-                            {
-                                // Không xác định được khối → Bỏ qua hoặc gán vào khối mặc định
-                                string loi = $"HS {hs.HoTen} (sinh {namSinh}): Năm sinh không phù hợp với THPT (cần sinh từ {namSinhKhoi12 - 2} đến {namSinhKhoi10 + 2})";
-                                Console.WriteLine($"  ⚠️ {loi}");
-                                danhSachLoi.Add(loi);
-                                hocSinhKhongXacDinhDuocKhoi.Add(hs);
-                                continue;
-                            }
-
-                            if (!hocSinhTheoKhoi.ContainsKey(khoi))
-                            {
-                                hocSinhTheoKhoi[khoi] = new List<HocSinhDTO>();
-                            }
-                            hocSinhTheoKhoi[khoi].Add(hs);
-
-                            int tuoi = namHocBatDau - namSinh;
-                            Console.WriteLine($"  → {hs.HoTen} (sinh {namSinh}, {tuoi} tuổi) → Khối {khoi}");
                         }
-                        catch (Exception ex)
+
+                        if (!hocSinhTheoChuCai.ContainsKey(chuCaiDau))
                         {
-                            string loi = $"HS {hs.HoTen}: Lỗi xác định khối - {ex.Message}";
-                            Console.WriteLine($"  ❌ {loi}");
-                            danhSachLoi.Add(loi);
+                            hocSinhTheoChuCai[chuCaiDau] = new List<HocSinhDTO>();
                         }
+                        hocSinhTheoChuCai[chuCaiDau].Add(hs);
                     }
 
-                    // Thông báo nếu có học sinh không xác định được khối
-                    if (hocSinhKhongXacDinhDuocKhoi.Count > 0)
+                    Console.WriteLine($"\n→ Đã nhóm học sinh theo chữ cái đầu tiên:");
+                    foreach (var kvp in hocSinhTheoChuCai.OrderBy(x => x.Key))
                     {
-                        Console.WriteLine($"\n⚠️ Có {hocSinhKhongXacDinhDuocKhoi.Count} học sinh không xác định được khối (năm sinh không phù hợp)");
+                        Console.WriteLine($"  → Chữ '{kvp.Key}': {kvp.Value.Count} học sinh");
                     }
 
-                    // Phân bổ học sinh vào từng lớp của mỗi khối
-                    foreach (var kvp in hocSinhTheoKhoi)
+                    // ✅ Phân đều học sinh theo từng nhóm chữ cái vào các lớp khối 10
+                    Console.WriteLine($"\n→ Bắt đầu phân bổ học sinh vào {dsLopKhoi10.Count} lớp khối 10...");
+
+                    // Sắp xếp các chữ cái để xử lý theo thứ tự A-Z, sau đó là ký tự đặc biệt
+                    var danhSachChuCai = hocSinhTheoChuCai.Keys
+                        .OrderBy(c => c == '?' ? 999 : (int)c) // Ký tự đặc biệt xử lý sau cùng
+                        .ToList();
+
+                    int lopIndex = 0; // Index để phân vòng tròn cho toàn bộ quá trình
+
+                    foreach (var chuCai in danhSachChuCai)
                     {
-                        int khoi = kvp.Key;
-                        List<HocSinhDTO> dsHS = kvp.Value;
+                        List<HocSinhDTO> dsHSTheoChuCai = hocSinhTheoChuCai[chuCai];
 
-                        Console.WriteLine($"\n→ Xử lý Khối {khoi}: {dsHS.Count} học sinh");
+                        Console.WriteLine($"\n  → Phân bổ {dsHSTheoChuCai.Count} học sinh tên bắt đầu bằng chữ '{chuCai}':");
 
-                        // Lấy danh sách lớp của khối này - SẮP XẾP THEO MÃ LỚP (không phải tên)
-                        var dsLopKhoi = allLop
-                            .Where(l => l.MaKhoi == khoi)
-                            .OrderBy(l => l.MaLop)  // ✅ Sắp xếp theo MaLop thay vì TenLop
-                            .ToList();
-
-                        if (dsLopKhoi.Count == 0)
-                        {
-                            string loi = $"Không có lớp nào cho Khối {khoi}";
-                            Console.WriteLine($"  ❌ {loi}");
-                            foreach (var hs in dsHS)
-                            {
-                                danhSachLoi.Add($"HS {hs.HoTen}: {loi}");
-                            }
-                            continue;
-                        }
-
-                        Console.WriteLine($"  → Số lớp khả dụng: {dsLopKhoi.Count} lớp ({string.Join(", ", dsLopKhoi.Select(l => l.TenLop))})");
-
-                        // Đếm số học sinh đã có trong từng lớp (bao gồm cả tạm)
-                        var soLuongHocSinhTrongLop = new Dictionary<int, int>();
-
-                        // Đếm từ database
-                        foreach (var lop in dsLopKhoi)
-                        {
-                            int soHS = allPhanLopHist.Count(p => p.maLop == lop.MaLop && p.maHocKy == maHocKyCanPhanLop);
-                            soLuongHocSinhTrongLop[lop.MaLop] = soHS;
-                        }
-
-                        // Cộng thêm số tạm
-                        foreach (var phanLopTam in danhSachPhanLopTam)
-                        {
-                            if (phanLopTam.maHocKy == maHocKyCanPhanLop)
-                            {
-                                if (soLuongHocSinhTrongLop.ContainsKey(phanLopTam.maLop))
-                                    soLuongHocSinhTrongLop[phanLopTam.maLop]++;
-                                else
-                                    soLuongHocSinhTrongLop[phanLopTam.maLop] = 1;
-                            }
-                        }
-
-                        // ✅ Phân đều học sinh vào các lớp theo Round-Robin (không cần sắp xếp theo tên)
-                        Console.WriteLine($"  → Bắt đầu phân bổ {dsHS.Count} học sinh vào {dsLopKhoi.Count} lớp...");
-
-                        // ✅ Phân đều học sinh vào các lớp theo Round-Robin
-                        int lopIndex = 0; // Index để phân vòng tròn
-                        foreach (var hs in dsHS)
+                        // Phân đều nhóm chữ cái này vào các lớp
+                        foreach (var hs in dsHSTheoChuCai)
                         {
                             try
                             {
-                                // ✅ Lấy lớp theo thứ tự vòng tròn (10A1 → 10A2 → ... → 10A8 → lại 10A1)
-                                var lopPhuHop = dsLopKhoi[lopIndex % dsLopKhoi.Count];
+                                // ✅ Lấy lớp theo thứ tự vòng tròn, nhưng ưu tiên lớp có ít học sinh hơn để cân bằng sĩ số
+                                // Tìm lớp có ít học sinh nhất trong danh sách
+                                var lopPhuHop = dsLopKhoi10
+                                    .OrderBy(lop => soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0)
+                                    .ThenBy(lop => lop.MaLop) // Nếu bằng nhau thì ưu tiên MaLop nhỏ hơn
+                                    .First();
 
-                                // Thêm vào lớp
-                                bool themThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, maHocKyCanPhanLop);
+                                // ✅ Thêm vào lớp cho CẢ HK1 và HK2 (cùng lớp)
+                                bool themHK1ThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy);
+                                bool themHK2ThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy);
 
-                                if (themThanhCong)
+                                if (themHK1ThanhCong && themHK2ThanhCong)
                                 {
-                                    soHocSinhDaPhanLop++;
-                                    danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, maHocKyCanPhanLop));
+                                    soHocSinhDaPhanLop += 2; // Đếm cả HK1 và HK2
+                                    danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy));
+                                    danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy));
 
-                                    // Cập nhật số lượng
+                                    // Cập nhật số lượng (tổng cả HK1 và HK2)
                                     if (soLuongHocSinhTrongLop.ContainsKey(lopPhuHop.MaLop))
-                                        soLuongHocSinhTrongLop[lopPhuHop.MaLop]++;
+                                        soLuongHocSinhTrongLop[lopPhuHop.MaLop] += 2; // +2 vì thêm cả HK1 và HK2
                                     else
-                                        soLuongHocSinhTrongLop[lopPhuHop.MaLop] = 1;
+                                        soLuongHocSinhTrongLop[lopPhuHop.MaLop] = 2;
 
-                                    Console.WriteLine($"  ✓ {hs.HoTen} → Lớp {lopPhuHop.TenLop} (Sĩ số: {soLuongHocSinhTrongLop[lopPhuHop.MaLop]})");
-
-                                    // ✅ Chuyển sang lớp tiếp theo
-                                    lopIndex++;
+                                    Console.WriteLine($"    ✓ {hs.HoTen} → Lớp {lopPhuHop.TenLop} (HK1 & HK2 - Sĩ số: {soLuongHocSinhTrongLop[lopPhuHop.MaLop]})");
                                 }
                                 else
                                 {
                                     string loi = $"HS {hs.HoTen}: Lỗi khi thêm vào lớp {lopPhuHop.TenLop}";
-                                    Console.WriteLine($"  ❌ {loi}");
+                                    if (!themHK1ThanhCong) loi += " (HK1 thất bại)";
+                                    if (!themHK2ThanhCong) loi += " (HK2 thất bại)";
+                                    Console.WriteLine($"    ❌ {loi}");
                                     danhSachLoi.Add(loi);
+                                    
+                                    // Rollback nếu một trong hai thất bại
+                                    if (themHK1ThanhCong)
+                                    {
+                                        phanLopDAO.XoaPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy);
+                                    }
+                                    if (themHK2ThanhCong)
+                                    {
+                                        phanLopDAO.XoaPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy);
+                                    }
                                 }
                             }
                             catch (Exception ex)
                             {
                                 string loi = $"HS {hs.HoTen}: Lỗi xử lý - {ex.Message}";
-                                Console.WriteLine($"  ❌ {loi}");
+                                Console.WriteLine($"    ❌ {loi}");
                                 danhSachLoi.Add(loi);
                             }
                         }
+                    }
 
-                        // Hiển thị kết quả phân lớp cho khối này
-                        Console.WriteLine($"\n  → Kết quả phân lớp Khối {khoi}:");
-                        foreach (var lop in dsLopKhoi)
-                        {
-                            int siSo = soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0;
-                            Console.WriteLine($"     • {lop.TenLop}: {siSo} học sinh");
-                        }
+                    // Hiển thị kết quả phân lớp cho khối 10
+                    Console.WriteLine($"\n  → Kết quả phân lớp Khối {khoiCanPhanLop}:");
+                    foreach (var lop in dsLopKhoi10)
+                    {
+                        int siSo = soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0;
+                        Console.WriteLine($"     • {lop.TenLop}: {siSo} học sinh");
                     }
                 }
 
@@ -729,32 +791,43 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 thongBao +=       $"║        KẾT QUẢ PHÂN LỚP TỰ ĐỘNG                ║\n";
                 thongBao +=       $"╚════════════════════════════════════════════════╝\n\n";
 
-                // Thông tin học kỳ
-                thongBao += $"📅 Học kỳ: {hocKyCanPhanLop.TenHocKy} - {hocKyCanPhanLop.MaNamHoc}\n\n";
+                // Thông tin năm học
+                thongBao += $"📅 Năm học: {maNamHocCanPhanLop}\n";
+                thongBao += $"   → Phân lớp cho cả HK1 ({hocKy1.TenHocKy}) và HK2 ({hocKy2.TenHocKy})\n\n";
 
                 // Kịch bản
-                if (kichBan == "HK1_TO_HK2")
+                if (kichBan == "NEXT_YEAR")
                 {
-                    thongBao += $"📋 Kịch bản: HK1 → HK2 (Giữ nguyên lớp)\n";
-                    thongBao += $"   Nguồn: {hocKyNguon.TenHocKy} {hocKyNguon.MaNamHoc}\n\n";
-                }
-                else if (kichBan == "HK2_NAM_TRUOC_TO_HK1")
-                {
-                    thongBao += $"📋 Kịch bản: HK2 năm trước → HK1 năm sau (Xét lên lớp)\n";
-                    thongBao += $"   Nguồn: {hocKyNguon.TenHocKy} {hocKyNguon.MaNamHoc}\n\n";
+                    thongBao += $"📋 Kịch bản: Phân lớp cho năm học mới\n";
+                    thongBao += $"   → Xét điều kiện từ cả HK1 và HK2 năm học trước\n";
+                    if (hocKy1NamTruoc != null && hocKy2NamTruoc != null)
+                    {
+                        thongBao += $"   Nguồn: HK1 {hocKy1NamTruoc.MaNamHoc} và HK2 {hocKy2NamTruoc.MaNamHoc}\n\n";
+                    }
                 }
                 else if (kichBan == "FIRST_TIME")
                 {
-                    thongBao += $"📋 Kịch bản: Phân lớp lần đầu (Dựa vào năm sinh)\n";
-                    thongBao += $"   Phân đều học sinh vào các lớp theo khối\n\n";
+                    thongBao += $"📋 Kịch bản: Phân lớp lần đầu\n";
+                    thongBao += $"   → Tất cả học sinh vào Khối 10\n";
+                    thongBao += $"   → Phân lớp theo chữ cái đầu tiên, phân đều vào các lớp\n\n";
                 }
 
                 // Kết quả phân lớp
                 thongBao += $"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-                thongBao += $"✅ THÀNH CÔNG: {soHocSinhDaPhanLop} học sinh\n";
+                if (kichBan == "FIRST_TIME" || kichBan == "NEXT_YEAR")
+                {
+                    // Đếm số học sinh (chia 2 vì mỗi học sinh được phân cho cả HK1 và HK2)
+                    int soHocSinhThucTe = soHocSinhDaPhanLop / 2;
+                    thongBao += $"✅ THÀNH CÔNG: {soHocSinhThucTe} học sinh\n";
+                    thongBao += $"   → Đã phân lớp cho cả HK1 và HK2 ({soHocSinhDaPhanLop} bản ghi phân lớp)\n\n";
+                }
+                else
+                {
+                    thongBao += $"✅ THÀNH CÔNG: {soHocSinhDaPhanLop} học sinh\n";
+                }
 
                 // Thống kê theo kịch bản
-                if (kichBan == "HK2_NAM_TRUOC_TO_HK1")
+                if (kichBan == "NEXT_YEAR")
                 {
                     // Đếm số học sinh lên lớp / ở lại
                     int soHSLenLop = 0;
@@ -762,10 +835,15 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
                     foreach (var hs in danhSachHocSinhDangHoc)
                     {
-                        var phanLopMoi = danhSachPhanLopTam.FirstOrDefault(p => p.maHocSinh == hs.MaHS);
+                        // Lấy phân lớp mới (từ HK1 hoặc HK2 năm mới, cả hai đều cùng lớp)
+                        var phanLopMoi = danhSachPhanLopTam.FirstOrDefault(p => p.maHocSinh == hs.MaHS && (p.maHocKy == hocKy1.MaHocKy || p.maHocKy == hocKy2.MaHocKy));
                         if (phanLopMoi.maHocSinh != 0) // Đã phân lớp
                         {
-                            var phanLopCu = allPhanLopHist.FirstOrDefault(p => p.maHocSinh == hs.MaHS && p.maHocKy == hocKyNguon.MaHocKy);
+                            // Lấy phân lớp cũ từ năm học trước (ưu tiên HK2, nếu không có thì lấy HK1)
+                            var phanLopHK2Cu = allPhanLopHist.FirstOrDefault(p => p.maHocSinh == hs.MaHS && p.maHocKy == hocKy2NamTruoc.MaHocKy);
+                            var phanLopHK1Cu = allPhanLopHist.FirstOrDefault(p => p.maHocSinh == hs.MaHS && p.maHocKy == hocKy1NamTruoc.MaHocKy);
+                            var phanLopCu = phanLopHK2Cu.maHocSinh != 0 ? phanLopHK2Cu : phanLopHK1Cu;
+                            
                             if (phanLopCu.maHocSinh != 0)
                             {
                                 var lopCu = allLop.FirstOrDefault(l => l.MaLop == phanLopCu.maLop);
@@ -1024,58 +1102,56 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     return preview;
                 }
 
-                string tenHkLower = hocKyCanPhanLop.TenHocKy.ToLower();
-                bool isHK1 = (tenHkLower.Contains("i") && !tenHkLower.Contains("ii")) ||
-                             (tenHkLower.Contains("1") && !tenHkLower.Contains("2"));
+                // ✅ XÁC ĐỊNH NĂM HỌC CẦN PHÂN LỚP
+                string maNamHocCanPhanLop = hocKyCanPhanLop.MaNamHoc;
+                
+                // Lấy cả HK1 và HK2 của năm học này
+                var dsHocKyNamHoc = hocKyBUS.LayDanhSachHocKyTheoNamHoc(maNamHocCanPhanLop);
+                HocKyDTO hocKy1 = dsHocKyNamHoc?.FirstOrDefault(hk =>
+                    (hk.TenHocKy.ToLower().Contains("i") && !hk.TenHocKy.ToLower().Contains("ii")) ||
+                    (hk.TenHocKy.ToLower().Contains("1") && !hk.TenHocKy.ToLower().Contains("2")));
+                HocKyDTO hocKy2 = dsHocKyNamHoc?.FirstOrDefault(hk =>
+                    hk.TenHocKy.ToLower().Contains("ii") || hk.TenHocKy.ToLower().Contains("2"));
 
-                // 2. XÁC ĐỊNH KỊCH BẢN & TÌM HỌC KỲ NGUỒN
-                string kichBan = "";
-                HocKyDTO hocKyNguon = null;
-
-                if (isHK1)
+                if (hocKy1 == null || hocKy2 == null)
                 {
-                    // Tìm HK2 năm trước
-                    string[] parts = hocKyCanPhanLop.MaNamHoc.Split('-');
-                    if (parts.Length == 2 && int.TryParse(parts[0], out int namBatDau))
+                    preview["Loi"] = $"Năm học {maNamHocCanPhanLop} phải có đầy đủ HK1 và HK2!";
+                    return preview;
+                }
+
+                // 2. XÁC ĐỊNH KỊCH BẢN & TÌM HỌC KỲ NGUỒN (TỪ NĂM HỌC TRƯỚC)
+                string kichBan = "";
+                HocKyDTO hocKy1NamTruoc = null;
+                HocKyDTO hocKy2NamTruoc = null;
+
+                // Tìm năm học trước
+                string[] parts = maNamHocCanPhanLop.Split('-');
+                if (parts.Length == 2 && int.TryParse(parts[0], out int namBatDau))
+                {
+                    string maNamHocTruoc = $"{namBatDau - 1}-{namBatDau}";
+                    var dsHocKyNamTruoc = hocKyBUS.LayDanhSachHocKyTheoNamHoc(maNamHocTruoc);
+                    
+                    if (dsHocKyNamTruoc != null && dsHocKyNamTruoc.Count > 0)
                     {
-                        string maNamHocTruoc = $"{namBatDau - 1}-{namBatDau}";
-                        var dsHocKyNamTruoc = hocKyBUS.LayDanhSachHocKyTheoNamHoc(maNamHocTruoc);
-                        hocKyNguon = dsHocKyNamTruoc?.FirstOrDefault(hk =>
+                        hocKy1NamTruoc = dsHocKyNamTruoc.FirstOrDefault(hk =>
+                            (hk.TenHocKy.ToLower().Contains("i") && !hk.TenHocKy.ToLower().Contains("ii")) ||
+                            (hk.TenHocKy.ToLower().Contains("1") && !hk.TenHocKy.ToLower().Contains("2")));
+                        hocKy2NamTruoc = dsHocKyNamTruoc.FirstOrDefault(hk =>
                             hk.TenHocKy.ToLower().Contains("ii") || hk.TenHocKy.ToLower().Contains("2"));
                     }
-
-                    if (hocKyNguon != null)
-                    {
-                        kichBan = "HK2_NAM_TRUOC_TO_HK1";
-                        preview["LoaiPhanLop"] = $"HK2 năm trước → HK1 năm sau (Xét lên lớp)";
-                        preview["HocKyNguon"] = $"{hocKyNguon.TenHocKy} {hocKyNguon.MaNamHoc}";
-                    }
-                    else
-                    {
-                        kichBan = "FIRST_TIME";
-                        preview["LoaiPhanLop"] = "Phân lớp lần đầu (Dựa vào năm sinh)";
-                        preview["HocKyNguon"] = "Không có (Phân lớp mới)";
-                    }
                 }
-                else // HK2
-                {
-                    // Tìm HK1 cùng năm
-                    var dsHocKyCungNam = hocKyBUS.LayDanhSachHocKyTheoNamHoc(hocKyCanPhanLop.MaNamHoc);
-                    hocKyNguon = dsHocKyCungNam?.FirstOrDefault(hk =>
-                        (hk.TenHocKy.ToLower().Contains("i") && !hk.TenHocKy.ToLower().Contains("ii")) ||
-                        (hk.TenHocKy.ToLower().Contains("1") && !hk.TenHocKy.ToLower().Contains("2")));
 
-                    if (hocKyNguon != null)
-                    {
-                        kichBan = "HK1_TO_HK2";
-                        preview["LoaiPhanLop"] = $"HK1 → HK2 cùng năm (Giữ nguyên lớp)";
-                        preview["HocKyNguon"] = $"{hocKyNguon.TenHocKy} {hocKyNguon.MaNamHoc}";
-                    }
-                    else
-                    {
-                        preview["Loi"] = $"Không tìm thấy HK1 của năm học {hocKyCanPhanLop.MaNamHoc}";
-                        return preview;
-                    }
+                if (hocKy1NamTruoc != null && hocKy2NamTruoc != null)
+                {
+                    kichBan = "NEXT_YEAR";
+                    preview["LoaiPhanLop"] = "Phân lớp cho năm học mới (Xét từ năm học trước)";
+                    preview["HocKyNguon"] = $"HK1 & HK2 {hocKy1NamTruoc.MaNamHoc}";
+                }
+                else
+                {
+                    kichBan = "FIRST_TIME";
+                    preview["LoaiPhanLop"] = "Phân lớp lần đầu (Theo chữ cái, Khối 10)";
+                    preview["HocKyNguon"] = "Không có (Phân lớp mới)";
                 }
 
                 // 3. LẤY DỮ LIỆU
@@ -1096,69 +1172,20 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 int soHSOLai = 0;
                 int soHSLoiDuLieu = 0;
 
-                if (kichBan == "HK1_TO_HK2")
+                if (kichBan == "NEXT_YEAR")
                 {
-                    // KỊCH BẢN 1: Đếm số HS đủ dữ liệu trong HK1
-                    // ✅ SỬA: Lấy TẤT CẢ học sinh "Đang học" (không cần kiểm tra đã phân lớp HK1)
-                    var hocSinhDangHocHK1 = danhSachHocSinhDangHoc.ToList();
+                    // KỊCH BẢN NEXT_YEAR: Đếm số HS lên lớp / ở lại (xét từ cả HK1 và HK2 năm trước)
+                    var hocSinhDangHocNamTruoc = danhSachHocSinhDangHoc.ToList();
 
-                    foreach (var hs in hocSinhDangHocHK1)
+                    foreach (var hs in hocSinhDangHocNamTruoc)
                     {
                         try
                         {
-                            // Kiểm tra đủ dữ liệu: Điểm, Hạnh kiểm, Xếp loại
-                            var diemHK1 = allDiem.Where(d => d.MaHocSinh == hs.MaHS.ToString() && d.MaHocKy == hocKyNguon.MaHocKy).ToList();
-                            var hanhKiemHK1 = allHanhKiem.FirstOrDefault(hk => hk.MaHocSinh == hs.MaHS && hk.MaHocKy == hocKyNguon.MaHocKy);
-                            var xepLoaiHK1 = xepLoaiBUS.GetXepLoaiByStudent(hs.MaHS, hocKyNguon.MaHocKy);
-
-                            if (diemHK1 != null && diemHK1.Count > 0 &&
-                                hanhKiemHK1 != null && !string.IsNullOrEmpty(hanhKiemHK1.XepLoai) &&
-                                xepLoaiHK1 != null && !string.IsNullOrEmpty(xepLoaiHK1.HocLuc))
-                            {
-                                soHSDuDieuKien++;
-                            }
-                            else
-                            {
-                                soHSKhongDuDieuKien++;
-                            }
-                        }
-                        catch
-                        {
-                            soHSLoiDuLieu++;
-                        }
-                    }
-
-                    preview["TongSoHocSinh"] = hocSinhDangHocHK1.Count;
-                    preview["SoHSDuDieuKien"] = soHSDuDieuKien;
-                    preview["SoHSKhongDuDieuKien"] = soHSKhongDuDieuKien;
-                }
-                else if (kichBan == "HK2_NAM_TRUOC_TO_HK1")
-                {
-                    // KỊCH BẢN 2: Đếm số HS lên lớp / ở lại
-                    // Tìm HK1 năm trước
-                    var dsHocKyCungNamVoiHK2 = hocKyBUS.LayDanhSachHocKyTheoNamHoc(hocKyNguon.MaNamHoc);
-                    HocKyDTO hocKy1NamTruoc = dsHocKyCungNamVoiHK2?.FirstOrDefault(hk =>
-                        (hk.TenHocKy.ToLower().Contains("i") && !hk.TenHocKy.ToLower().Contains("ii")) ||
-                        (hk.TenHocKy.ToLower().Contains("1") && !hk.TenHocKy.ToLower().Contains("2")));
-
-                    if (hocKy1NamTruoc == null)
-                    {
-                        preview["Loi"] = "Không tìm thấy HK1 năm trước để xét lên lớp";
-                        return preview;
-                    }
-
-                    // ✅ SỬA: Lấy TẤT CẢ học sinh "Đang học" (không cần kiểm tra đã phân lớp HK2)
-                    var hocSinhDangHocHK2NamTruoc = danhSachHocSinhDangHoc.ToList();
-
-                    foreach (var hs in hocSinhDangHocHK2NamTruoc)
-                    {
-                        try
-                        {
-                            // Lấy điểm HK1 và HK2
+                            // Lấy điểm HK1 và HK2 năm trước
                             var diemHK1 = allDiem.Where(d => d.MaHocSinh == hs.MaHS.ToString() && d.MaHocKy == hocKy1NamTruoc.MaHocKy).ToList();
-                            var diemHK2 = allDiem.Where(d => d.MaHocSinh == hs.MaHS.ToString() && d.MaHocKy == hocKyNguon.MaHocKy).ToList();
+                            var diemHK2 = allDiem.Where(d => d.MaHocSinh == hs.MaHS.ToString() && d.MaHocKy == hocKy2NamTruoc.MaHocKy).ToList();
                             var hanhKiemHK1 = allHanhKiem.FirstOrDefault(hk => hk.MaHocSinh == hs.MaHS && hk.MaHocKy == hocKy1NamTruoc.MaHocKy);
-                            var hanhKiemHK2 = allHanhKiem.FirstOrDefault(hk => hk.MaHocSinh == hs.MaHS && hk.MaHocKy == hocKyNguon.MaHocKy);
+                            var hanhKiemHK2 = allHanhKiem.FirstOrDefault(hk => hk.MaHocSinh == hs.MaHS && hk.MaHocKy == hocKy2NamTruoc.MaHocKy);
 
                             if (diemHK1 == null || diemHK1.Count == 0 || diemHK2 == null || diemHK2.Count == 0 ||
                                 hanhKiemHK1 == null || hanhKiemHK2 == null)
@@ -1207,11 +1234,11 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                         }
                     }
 
-                    preview["TongSoHocSinh"] = hocSinhDangHocHK2NamTruoc.Count;
+                    preview["TongSoHocSinh"] = hocSinhDangHocNamTruoc.Count;
                     preview["SoHSLenLop"] = soHSLenLop;
                     preview["SoHSOLai"] = soHSOLai;
-                    preview["TyLeLenLop"] = (hocSinhDangHocHK2NamTruoc.Count > 0) ?
-                        ((double)soHSLenLop / hocSinhDangHocHK2NamTruoc.Count * 100) : 0;
+                    preview["TyLeLenLop"] = (hocSinhDangHocNamTruoc.Count > 0) ?
+                        ((double)soHSLenLop / hocSinhDangHocNamTruoc.Count * 100) : 0;
                 }
                 else if (kichBan == "FIRST_TIME")
                 {
@@ -1219,8 +1246,8 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     var hocSinhCanPhanLop = danhSachHocSinhDangHoc.ToList();
 
                     // Xác định năm học
-                    string[] parts = hocKyCanPhanLop.MaNamHoc.Split('-');
-                    if (parts.Length != 2 || !int.TryParse(parts[0], out int namHocBatDau))
+                    string[] partsNamHocPreview = hocKyCanPhanLop.MaNamHoc.Split('-');
+                    if (partsNamHocPreview.Length != 2 || !int.TryParse(partsNamHocPreview[0], out int namHocBatDau))
                     {
                         preview["Loi"] = $"Không thể xác định năm học từ '{hocKyCanPhanLop.MaNamHoc}'";
                         return preview;
@@ -1231,55 +1258,40 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     int namSinhKhoi11 = namHocBatDau - 16;
                     int namSinhKhoi12 = namHocBatDau - 17;
 
-                    // Nhóm học sinh theo khối
+                    // ✅ TẤT CẢ học sinh đều vào khối 10 (không xét năm sinh)
                     var hocSinhTheoKhoi = new Dictionary<int, int>();
-                    int soHSKhongPhuHop = 0;
+                    hocSinhTheoKhoi[10] = hocSinhCanPhanLop.Count;
+
+                    // Nhóm học sinh theo chữ cái đầu tiên của tên
+                    var hocSinhTheoChuCai = new Dictionary<char, int>();
 
                     foreach (var hs in hocSinhCanPhanLop)
                     {
-                        try
+                        // Lấy chữ cái đầu tiên của tên
+                        char chuCaiDau = '?';
+                        if (!string.IsNullOrWhiteSpace(hs.HoTen))
                         {
-                            int namSinh = hs.NgaySinh.Year;
-                            int khoi = 0;
-
-                            // ✅ SỬA: Xác định khối với sai lệch ±2 năm (giống logic chính)
-                            if (Math.Abs(namSinh - namSinhKhoi10) <= 2)
+                            string tenTrimmed = hs.HoTen.Trim();
+                            if (tenTrimmed.Length > 0)
                             {
-                                khoi = 10;
+                                chuCaiDau = char.ToUpper(tenTrimmed[0]);
+                                if (!char.IsLetter(chuCaiDau))
+                                {
+                                    chuCaiDau = '?';
+                                }
                             }
-                            else if (Math.Abs(namSinh - namSinhKhoi11) <= 2)
-                            {
-                                khoi = 11;
-                            }
-                            else if (Math.Abs(namSinh - namSinhKhoi12) <= 2)
-                            {
-                                khoi = 12;
-                            }
-                            else
-                            {
-                                // Năm sinh không phù hợp
-                                soHSKhongPhuHop++;
-                                continue;
-                            }
-
-                            if (!hocSinhTheoKhoi.ContainsKey(khoi))
-                                hocSinhTheoKhoi[khoi] = 0;
-
-                            hocSinhTheoKhoi[khoi]++;
                         }
-                        catch
-                        {
-                            soHSLoiDuLieu++;
-                        }
+
+                        if (!hocSinhTheoChuCai.ContainsKey(chuCaiDau))
+                            hocSinhTheoChuCai[chuCaiDau] = 0;
+
+                        hocSinhTheoChuCai[chuCaiDau]++;
                     }
 
                     preview["TongSoHocSinh"] = hocSinhCanPhanLop.Count;
                     preview["HocSinhTheoKhoi"] = hocSinhTheoKhoi;
-                    if (soHSKhongPhuHop > 0)
-                    {
-                        preview["SoHSKhongPhuHop"] = soHSKhongPhuHop;
-                        preview["CanhBao"] = $"Có {soHSKhongPhuHop} học sinh có năm sinh không phù hợp với THPT";
-                    }
+                    preview["HocSinhTheoChuCai"] = hocSinhTheoChuCai;
+                    preview["PhuongPhapPhanLop"] = "Phân lớp theo chữ cái đầu tiên của tên, phân đều vào các lớp khối 10";
                 }
 
                 if (soHSLoiDuLieu > 0)

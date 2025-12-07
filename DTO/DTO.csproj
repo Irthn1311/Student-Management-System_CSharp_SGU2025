@@ -163,6 +163,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThoiKhoaBieuDTO.cs" />
     <Compile Include="ThongKeDTO.cs" />
+    <Compile Include="ThongBaoDTO.cs" />
+    <Compile Include="NguoiNhanThongBaoDTO.cs" />
     <Compile Include="TimeTableSlotDTO.cs" />
     <Compile Include="VaiTroDTO.cs" />
     <Compile Include="XepLoaiDTO.cs" />
