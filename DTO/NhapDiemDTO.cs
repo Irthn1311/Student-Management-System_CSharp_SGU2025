@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 
 namespace Student_Management_System_CSharp_SGU2025.DTO
 {
@@ -133,12 +134,62 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
     {
         public string MaHocSinh { get; set; }
         public string HoTen { get; set; }
-        public float? DiemToan { get; set; }
-        public float? DiemVan { get; set; }
-        public float? DiemAnh { get; set; }
-        public float? DiemLy { get; set; }
-        public float? DiemHoa { get; set; }
+        
+        // Dictionary lưu điểm theo MaMonHoc (key: MaMonHoc, value: DiemTrungBinh)
+        public Dictionary<int, float?> DiemCacMon { get; set; }
+        
         public float? DiemTB { get; set; }
+        
+        // Giữ lại các property cũ để tương thích ngược (deprecated)
+        [Obsolete("Sử dụng DiemCacMon thay vì các property riêng lẻ")]
+        public float? DiemToan 
+        { 
+            get 
+            { 
+                return DiemCacMon != null && DiemCacMon.ContainsKey(2) ? DiemCacMon[2] : null; 
+            } 
+        }
+        
+        [Obsolete("Sử dụng DiemCacMon thay vì các property riêng lẻ")]
+        public float? DiemVan 
+        { 
+            get 
+            { 
+                return DiemCacMon != null && DiemCacMon.ContainsKey(1) ? DiemCacMon[1] : null; 
+            } 
+        }
+        
+        [Obsolete("Sử dụng DiemCacMon thay vì các property riêng lẻ")]
+        public float? DiemAnh 
+        { 
+            get 
+            { 
+                return DiemCacMon != null && DiemCacMon.ContainsKey(3) ? DiemCacMon[3] : null; 
+            } 
+        }
+        
+        [Obsolete("Sử dụng DiemCacMon thay vì các property riêng lẻ")]
+        public float? DiemLy 
+        { 
+            get 
+            { 
+                return DiemCacMon != null && DiemCacMon.ContainsKey(7) ? DiemCacMon[7] : null; 
+            } 
+        }
+        
+        [Obsolete("Sử dụng DiemCacMon thay vì các property riêng lẻ")]
+        public float? DiemHoa 
+        { 
+            get 
+            { 
+                return DiemCacMon != null && DiemCacMon.ContainsKey(8) ? DiemCacMon[8] : null; 
+            } 
+        }
+        
+        public XemBangDiemDTO()
+        {
+            DiemCacMon = new Dictionary<int, float?>();
+        }
     }
 
 }

@@ -38,6 +38,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private int selectedRowIndexBangDiem = -1;
         private int? selectedMaLopBD = null;
         private string searchKeyword = "";
+        
+        // Danh sách môn học để tạo cột động
+        private List<MonHocDTO> danhSachMonHoc = null;
+        // Dictionary mapping MaMonHoc -> Column Name trong DataGridView
+        private Dictionary<int, string> monHocColumnMapping = new Dictionary<int, string>();
 
         // Check khóa điểm 
         //private bool isLocked = true;
@@ -173,6 +178,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             LoadComboBoxMonHoc();
             //LoadComboBoxLopBD();
             tableXemBangDiem.CellClick += tableXemBangDiem_CellClick;
+            tableXemBangDiem.CellFormatting += tableXemBangDiem_CellFormatting;
             txtSearch.TextChanged += txtSearch_TextChanged;
             txtSearch.KeyPress += txtSearch_KeyPress;
             //// Thêm dữ liệu mẫu vào tableXemBangDiem
@@ -360,46 +366,122 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // Hàm cấu hình tableXemBangDiem
         private void ConfigureTableXemBangDiem()
         {
-            // Cấu hình header
-            tableXemBangDiem.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(243, 244, 246);
-            tableXemBangDiem.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            // Cấu hình header với màu đẹp hơn
+            tableXemBangDiem.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(59, 130, 246); // Màu xanh dương đẹp
+            tableXemBangDiem.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             tableXemBangDiem.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            tableXemBangDiem.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            tableXemBangDiem.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             tableXemBangDiem.ColumnHeadersHeight = 45;
             tableXemBangDiem.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
 
-            // Cấu hình cells
+            // Cấu hình cells với màu đẹp
             tableXemBangDiem.DefaultCellStyle.BackColor = Color.White;
             tableXemBangDiem.DefaultCellStyle.ForeColor = Color.FromArgb(31, 41, 55);
             tableXemBangDiem.DefaultCellStyle.Font = new Font("Segoe UI", 9);
-            tableXemBangDiem.DefaultCellStyle.SelectionBackColor = Color.FromArgb(243, 244, 246);
+            // Màu nổi bật khi click vào ô (xanh nhạt để phân biệt với màu nền)
+            tableXemBangDiem.DefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254); // Xanh nhạt khi chọn
             tableXemBangDiem.DefaultCellStyle.SelectionForeColor = Color.FromArgb(31, 41, 55);
             tableXemBangDiem.DefaultCellStyle.Padding = new Padding(10, 5, 10, 5);
 
-            // Cấu hình rows
+            // Cấu hình rows với alternating colors - màu nền bảng đẹp hơn
             tableXemBangDiem.RowTemplate.Height = 50;
-            tableXemBangDiem.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
+            tableXemBangDiem.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252); // Màu xám xanh nhạt cho dòng chẵn
+            tableXemBangDiem.AlternatingRowsDefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254); // Màu selection cho dòng chẵn
 
             // Cấu hình borders
             tableXemBangDiem.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             tableXemBangDiem.GridColor = Color.FromArgb(229, 231, 235);
             tableXemBangDiem.BorderStyle = BorderStyle.None;
+            
+            // Bật horizontal scroll để có thể kéo ngang và thấy đầy đủ các cột
+            tableXemBangDiem.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            tableXemBangDiem.ScrollBars = ScrollBars.Both; // Cả vertical và horizontal scroll
+            tableXemBangDiem.AllowUserToResizeColumns = true; // Cho phép resize cột
 
-            // Cấu hình columns width
-            tableXemBangDiem.Columns[0].Width = 80;  // Mã HS
-            tableXemBangDiem.Columns[1].Width = 200; // Học sinh
-            tableXemBangDiem.Columns[2].Width = 120; // Toán
-            tableXemBangDiem.Columns[3].Width = 120; // Văn
-            tableXemBangDiem.Columns[4].Width = 120; // Anh
-            tableXemBangDiem.Columns[5].Width = 120; // Lý
-            tableXemBangDiem.Columns[6].Width = 120; // Hóa
-            tableXemBangDiem.Columns[7].Width = 140; // TB Chung
+            // Xóa tất cả cột cũ
+            tableXemBangDiem.Columns.Clear();
+            monHocColumnMapping.Clear();
 
-            // Căn giữa các cột điểm (trừ cột học sinh)
-            //for (int i = 1; i <= 6; i++)
-            //{
-            //    tableXemBangDiem.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            //}
+            // Lấy danh sách môn học từ database
+            try
+            {
+                danhSachMonHoc = nhapDiemBUS.GetDanhSachMonHoc();
+                // Sắp xếp theo MaMonHoc để đảm bảo thứ tự
+                danhSachMonHoc = danhSachMonHoc.OrderBy(m => m.maMon).ToList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lấy danh sách môn học: " + ex.Message, "Lỗi",
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+                danhSachMonHoc = new List<MonHocDTO>();
+            }
+
+            // Thêm cột Học sinh (bỏ cột Mã HS)
+            var colHocSinh = new DataGridViewTextBoxColumn
+            {
+                Name = "HocSinh",
+                HeaderText = "Học sinh",
+                Width = 280, // Tăng độ rộng để hiển thị đầy đủ tên
+                ReadOnly = true,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(17, 24, 39),
+                    SelectionBackColor = Color.FromArgb(219, 234, 254), // Màu xanh nhạt khi click
+                    SelectionForeColor = Color.FromArgb(31, 41, 55),
+                    Padding = new Padding(10, 5, 10, 5),
+                    BackColor = Color.Transparent // Đặt transparent để có thể override
+                }
+            };
+            tableXemBangDiem.Columns.Add(colHocSinh);
+            
+            // Đảm bảo header cột Học sinh có màu xanh giống các cột khác
+            colHocSinh.HeaderCell.Style.BackColor = Color.FromArgb(59, 130, 246);
+            colHocSinh.HeaderCell.Style.ForeColor = Color.White;
+            colHocSinh.HeaderCell.Style.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            colHocSinh.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Thêm cột động cho tất cả môn học với màu sắc
+            foreach (var monHoc in danhSachMonHoc)
+            {
+                string columnName = $"MonHoc_{monHoc.maMon}";
+                // Tính độ rộng cột dựa trên độ dài tên môn học để header hiển thị đầy đủ
+                int columnWidth = Math.Max(100, (int)(monHoc.tenMon.Length * 8) + 20);
+                var colMonHoc = new DataGridViewTextBoxColumn
+                {
+                    Name = columnName,
+                    HeaderText = monHoc.tenMon,
+                    Width = columnWidth,
+                    MinimumWidth = 100, // Đảm bảo cột không quá hẹp
+                    ReadOnly = true,
+                    DefaultCellStyle = new DataGridViewCellStyle
+                    {
+                        Alignment = DataGridViewContentAlignment.MiddleCenter,
+                        Font = new Font("Segoe UI", 9, FontStyle.Regular),
+                        ForeColor = Color.FromArgb(55, 65, 81),
+                        SelectionBackColor = Color.FromArgb(219, 234, 254) // Màu xanh nhạt khi click
+                    }
+                };
+                tableXemBangDiem.Columns.Add(colMonHoc);
+                monHocColumnMapping[monHoc.maMon] = columnName;
+            }
+
+            // Thêm cột Điểm TB với màu nổi bật
+            var colDiemTB = new DataGridViewTextBoxColumn
+            {
+                Name = "DiemTB",
+                HeaderText = "Điểm TB",
+                Width = 120,
+                ReadOnly = true,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(30, 136, 229), // Màu xanh dương mặc định
+                    SelectionBackColor = Color.FromArgb(219, 234, 254) // Màu xanh nhạt khi click
+                }
+            };
+            tableXemBangDiem.Columns.Add(colDiemTB);
 
             // Loại bỏ selection
             tableXemBangDiem.EnableHeadersVisualStyles = false;
@@ -412,6 +494,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tableXemBangDiem.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(75, 85, 99);
 
         }
+
 
         private void LoadComboBoxHocKyBD()
         {
@@ -866,7 +949,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     // === TIÊU ĐỀ ===
                     worksheet.Cell(1, 1).Value = "BẢNG ĐIỂM HỌC SINH";
-                    worksheet.Range(1, 1, 1, 8).Merge();
+                    worksheet.Range(1, 1, 1, tableXemBangDiem.Columns.Count).Merge();
                     worksheet.Cell(1, 1).Style.Font.Bold = true;
                     worksheet.Cell(1, 1).Style.Font.FontSize = 16;
                     worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -942,12 +1025,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     // Tính số học sinh đã có điểm TB
                     int soHSDaDiem = 0;
-                    foreach (DataGridViewRow row in tableXemBangDiem.Rows)
+                    int colDiemTBIndex = -1;
+                    for (int i = 0; i < tableXemBangDiem.Columns.Count; i++)
                     {
-                        if (row.IsNewRow) continue;
-                        if (row.Cells[7].Value != null && !string.IsNullOrEmpty(row.Cells[7].Value.ToString()))
+                        if (tableXemBangDiem.Columns[i].Name == "DiemTB")
                         {
-                            soHSDaDiem++;
+                            colDiemTBIndex = i;
+                            break;
+                        }
+                    }
+                    
+                    if (colDiemTBIndex >= 0)
+                    {
+                        foreach (DataGridViewRow row in tableXemBangDiem.Rows)
+                        {
+                            if (row.IsNewRow) continue;
+                            if (row.Cells[colDiemTBIndex].Value != null && !string.IsNullOrEmpty(row.Cells[colDiemTBIndex].Value.ToString()))
+                            {
+                                soHSDaDiem++;
+                            }
                         }
                     }
 
@@ -1006,6 +1102,33 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (e.RowIndex >= 0)
             {
                 selectedRowIndexBangDiem = e.RowIndex;
+            }
+        }
+
+        /// <summary>
+        /// Event handler để format màu nền cho các ô (alternating rows)
+        /// </summary>
+        private void tableXemBangDiem_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                // Xác định màu nền dựa trên row index (chẵn/lẻ)
+                Color backColor;
+                if (e.RowIndex % 2 == 0)
+                {
+                    // Dòng chẵn - màu xám xanh nhạt
+                    backColor = Color.FromArgb(248, 250, 252);
+                }
+                else
+                {
+                    // Dòng lẻ - màu trắng
+                    backColor = Color.White;
+                }
+                
+                // Đặt màu nền
+                e.CellStyle.BackColor = backColor;
+                // Đặt SelectionBackColor thành màu nổi bật (xanh nhạt) để phân biệt khi click
+                e.CellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
             }
         }
 
@@ -1152,28 +1275,132 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             FilterTableXemBangDiem();
         }
 
-        // Thêm phương thức áp dụng màu cho bảng điểm
+        // Thêm phương thức áp dụng màu cho điểm của từng môn học
+        private void ApplyColorToDiemMonHoc(int rowIndex, XemBangDiemDTO item)
+        {
+            if (rowIndex < 0 || rowIndex >= tableXemBangDiem.Rows.Count) return;
+            if (danhSachMonHoc == null) return;
+
+            DataGridViewRow row = tableXemBangDiem.Rows[rowIndex];
+            int colIndex = 1; // Bắt đầu từ cột đầu tiên sau cột Học sinh
+
+            // Áp dụng màu cho điểm của từng môn học
+            foreach (var monHoc in danhSachMonHoc.OrderBy(m => m.maMon))
+            {
+                if (colIndex >= row.Cells.Count) break;
+
+                float? diem = null;
+                if (item.DiemCacMon != null && item.DiemCacMon.ContainsKey(monHoc.maMon))
+                {
+                    diem = item.DiemCacMon[monHoc.maMon];
+                }
+
+                if (diem.HasValue)
+                {
+                    if (diem.Value >= 8.0)
+                    {
+                        row.Cells[colIndex].Style.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
+                        row.Cells[colIndex].Style.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+                    }
+                    else if (diem.Value >= 6.5)
+                    {
+                        row.Cells[colIndex].Style.ForeColor = Color.FromArgb(30, 136, 229); // Xanh dương
+                        row.Cells[colIndex].Style.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                    }
+                    else if (diem.Value >= 5.0)
+                    {
+                        row.Cells[colIndex].Style.ForeColor = Color.FromArgb(234, 179, 8); // Vàng
+                        row.Cells[colIndex].Style.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                    }
+                    else
+                    {
+                        row.Cells[colIndex].Style.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ
+                        row.Cells[colIndex].Style.Font = new Font("Segoe UI", 9, FontStyle.Regular);
+                    }
+                }
+                else
+                {
+                    row.Cells[colIndex].Style.ForeColor = Color.FromArgb(156, 163, 175); // Xám nhạt
+                }
+                colIndex++;
+            }
+
+            // Áp dụng màu cho điểm TB
+            int colDiemTBIndex = -1;
+            for (int i = 0; i < tableXemBangDiem.Columns.Count; i++)
+            {
+                if (tableXemBangDiem.Columns[i].Name == "DiemTB")
+                {
+                    colDiemTBIndex = i;
+                    break;
+                }
+            }
+
+            if (colDiemTBIndex >= 0 && row.Cells[colDiemTBIndex].Value != null && 
+                !string.IsNullOrEmpty(row.Cells[colDiemTBIndex].Value.ToString()))
+            {
+                if (float.TryParse(row.Cells[colDiemTBIndex].Value.ToString(), out float score))
+                {
+                    if (score >= 8.0)
+                    {
+                        row.Cells[colDiemTBIndex].Style.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
+                    }
+                    else if (score >= 6.5)
+                    {
+                        row.Cells[colDiemTBIndex].Style.ForeColor = Color.FromArgb(30, 136, 229); // Xanh dương
+                    }
+                    else if (score >= 5.0)
+                    {
+                        row.Cells[colDiemTBIndex].Style.ForeColor = Color.FromArgb(234, 179, 8); // Vàng
+                    }
+                    else
+                    {
+                        row.Cells[colDiemTBIndex].Style.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ
+                    }
+                    row.Cells[colDiemTBIndex].Style.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+                }
+            }
+        }
+
+        // Thêm phương thức áp dụng màu cho bảng điểm (giữ lại để tương thích)
         private void ApplyColorToDiemTBBangDiem()
         {
+            // Tìm cột Điểm TB (cột cuối cùng)
+            int colDiemTBIndex = -1;
+            for (int i = 0; i < tableXemBangDiem.Columns.Count; i++)
+            {
+                if (tableXemBangDiem.Columns[i].Name == "DiemTB")
+                {
+                    colDiemTBIndex = i;
+                    break;
+                }
+            }
+
+            if (colDiemTBIndex < 0) return;
+
             foreach (DataGridViewRow row in tableXemBangDiem.Rows)
             {
-                if (row.Cells[7].Value != null && !string.IsNullOrEmpty(row.Cells[7].Value.ToString()))
+                if (row.Cells[colDiemTBIndex].Value != null && !string.IsNullOrEmpty(row.Cells[colDiemTBIndex].Value.ToString()))
                 {
-                    if (float.TryParse(row.Cells[7].Value.ToString(), out float score))
+                    if (float.TryParse(row.Cells[colDiemTBIndex].Value.ToString(), out float score))
                     {
                         if (score >= 8.0)
                         {
-                            row.Cells[7].Style.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
+                            row.Cells[colDiemTBIndex].Style.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
                         }
                         else if (score >= 6.5)
                         {
-                            row.Cells[7].Style.ForeColor = Color.FromArgb(30, 136, 229); // Xanh dương
+                            row.Cells[colDiemTBIndex].Style.ForeColor = Color.FromArgb(30, 136, 229); // Xanh dương
+                        }
+                        else if (score >= 5.0)
+                        {
+                            row.Cells[colDiemTBIndex].Style.ForeColor = Color.FromArgb(234, 179, 8); // Vàng
                         }
                         else
                         {
-                            row.Cells[7].Style.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ
+                            row.Cells[colDiemTBIndex].Style.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ
                         }
-                        row.Cells[7].Style.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+                        row.Cells[colDiemTBIndex].Style.Font = new Font("Segoe UI", 10, FontStyle.Bold);
                     }
                 }
             }
@@ -1307,9 +1534,29 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             try
             {
-                // Lấy mã học sinh từ dòng được chọn
+                // Lấy mã học sinh từ dòng được chọn (lấy từ dữ liệu gốc vì đã bỏ cột Mã HS)
                 DataGridViewRow row = tableXemBangDiem.Rows[selectedRowIndexBangDiem];
-                string maHocSinh = row.Cells[0].Value?.ToString();
+                string hoTen = row.Cells[0].Value?.ToString(); // Cột đầu tiên là Họ tên
+                
+                // Tìm mã học sinh từ danh sách dữ liệu gốc
+                string maHocSinh = null;
+                if (!string.IsNullOrEmpty(hoTen))
+                {
+                    // Lấy lại dữ liệu để tìm mã học sinh
+                    int? maLop = (selectedMaLopBD.HasValue && selectedMaLopBD.Value > 0)
+                        ? selectedMaLopBD
+                        : null;
+
+                    List<XemBangDiemDTO> list = nhapDiemBUS.GetBangDiemTheoHocKyVaLop(
+                        selectedMaHocKyBD.Value,
+                        maLop);
+                    
+                    var student = list.FirstOrDefault(s => s.HoTen == hoTen);
+                    if (student != null)
+                    {
+                        maHocSinh = student.MaHocSinh;
+                    }
+                }
 
                 if (string.IsNullOrEmpty(maHocSinh))
                 {
@@ -1500,6 +1747,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             try
             {
+                // Đảm bảo cột Học sinh luôn có header đúng
+                if (tableXemBangDiem.Columns.Count == 0 || 
+                    tableXemBangDiem.Columns[0].Name != "HocSinh")
+                {
+                    // Nếu cột không tồn tại, cấu hình lại bảng
+                    ConfigureTableXemBangDiem();
+                }
+                else
+                {
+                    // Đảm bảo header cột Học sinh luôn được set đúng (phòng trường hợp bị mất)
+                    tableXemBangDiem.Columns[0].HeaderText = "Học sinh";
+                    // Đảm bảo style header được giữ
+                    if (tableXemBangDiem.Columns[0].HeaderCell.Style == null)
+                    {
+                        tableXemBangDiem.Columns[0].HeaderCell.Style = new DataGridViewCellStyle();
+                    }
+                    tableXemBangDiem.Columns[0].HeaderCell.Style.BackColor = Color.FromArgb(59, 130, 246);
+                    tableXemBangDiem.Columns[0].HeaderCell.Style.ForeColor = Color.White;
+                    tableXemBangDiem.Columns[0].HeaderCell.Style.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+                    tableXemBangDiem.Columns[0].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+
                 tableXemBangDiem.Rows.Clear();
 
                 // Lấy dữ liệu với lọc theo lớp
@@ -1521,36 +1790,102 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     );
                 }
 
-                // Thêm dữ liệu vào bảng
+                // Thêm dữ liệu vào bảng (bỏ Mã HS)
                 foreach (var item in list)
                 {
-                    string diemToan = item.DiemToan.HasValue ? item.DiemToan.Value.ToString("0.0") : "";
-                    string diemVan = item.DiemVan.HasValue ? item.DiemVan.Value.ToString("0.0") : "";
-                    string diemAnh = item.DiemAnh.HasValue ? item.DiemAnh.Value.ToString("0.0") : "";
-                    string diemLy = item.DiemLy.HasValue ? item.DiemLy.Value.ToString("0.0") : "";
-                    string diemHoa = item.DiemHoa.HasValue ? item.DiemHoa.Value.ToString("0.0") : "";
-                    string diemTB = item.DiemTB.HasValue ? item.DiemTB.Value.ToString("0.0") : "";
+                    // Tạo mảng giá trị cho row (không có Mã HS)
+                    var rowValues = new List<object>();
+                    rowValues.Add(item.HoTen); // Chỉ thêm tên học sinh
 
-                    tableXemBangDiem.Rows.Add(
-                        item.MaHocSinh,
-                        item.HoTen,
-                        diemToan,
-                        diemVan,
-                        diemAnh,
-                        diemLy,
-                        diemHoa,
-                        diemTB
-                    );
+                    // Thêm điểm của từng môn học theo thứ tự MaMonHoc
+                    if (danhSachMonHoc != null)
+                    {
+                        foreach (var monHoc in danhSachMonHoc.OrderBy(m => m.maMon))
+                        {
+                            float? diem = null;
+                            if (item.DiemCacMon != null && item.DiemCacMon.ContainsKey(monHoc.maMon))
+                            {
+                                diem = item.DiemCacMon[monHoc.maMon];
+                            }
+                            rowValues.Add(diem.HasValue ? diem.Value.ToString("0.0") : "");
+                        }
+                    }
+
+                    // Thêm điểm TB
+                    string diemTB = item.DiemTB.HasValue ? item.DiemTB.Value.ToString("0.0") : "";
+                    rowValues.Add(diemTB);
+
+                    // Thêm row vào bảng
+                    int rowIndex = tableXemBangDiem.Rows.Add(rowValues.ToArray());
+                    
+                    // Áp dụng màu cho điểm số của từng môn học
+                    ApplyColorToDiemMonHoc(rowIndex, item);
+                    
+                    // Màu nền sẽ được áp dụng trong ApplyBackgroundColorToHocSinhColumn()
                 }
 
-                // Áp dụng màu cho cột điểm TB
-                ApplyColorToDiemTBBangDiem();
+                // Áp dụng màu nền cho tất cả các cell trong cột Học sinh
+                ApplyBackgroundColorToHocSinhColumn();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi tìm kiếm: " + ex.Message, "Lỗi",
                                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// Áp dụng màu nền alternating cho tất cả các cell trong cột Học sinh
+        /// </summary>
+        private void ApplyBackgroundColorToHocSinhColumn()
+        {
+            if (tableXemBangDiem.Columns.Count == 0) return;
+
+            // Cột Học sinh là cột đầu tiên (index 0)
+            int colHocSinhIndex = 0;
+
+            // Tạm dừng layout để tăng hiệu suất
+            tableXemBangDiem.SuspendLayout();
+
+            foreach (DataGridViewRow row in tableXemBangDiem.Rows)
+            {
+                if (row.IsNewRow) continue;
+                if (row.Cells.Count <= colHocSinhIndex) continue;
+
+                // Tạo style mới để đảm bảo không bị override
+                DataGridViewCellStyle cellStyle = new DataGridViewCellStyle(row.Cells[colHocSinhIndex].Style);
+                
+                // Áp dụng màu nền dựa trên row index (chẵn/lẻ)
+                Color backColor;
+                if (row.Index % 2 == 0)
+                {
+                    // Dòng chẵn - màu xám xanh nhạt
+                    backColor = Color.FromArgb(248, 250, 252);
+                }
+                else
+                {
+                    // Dòng lẻ - màu trắng
+                    backColor = Color.White;
+                }
+                
+                cellStyle.BackColor = backColor;
+                // Đặt SelectionBackColor thành màu nổi bật (xanh nhạt) để phân biệt khi click
+                cellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
+                
+                // Giữ lại các style khác
+                cellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+                cellStyle.ForeColor = Color.FromArgb(17, 24, 39);
+                cellStyle.Padding = new Padding(10, 5, 10, 5);
+                
+                // Áp dụng style mới
+                row.Cells[colHocSinhIndex].Style = cellStyle;
+            }
+
+            // Tiếp tục layout
+            tableXemBangDiem.ResumeLayout();
+            
+            // Refresh để đảm bảo hiển thị đúng
+            tableXemBangDiem.Invalidate();
         }
 
       

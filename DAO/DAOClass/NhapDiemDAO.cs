@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using MySql.Data.MySqlClient;
 using Student_Management_System_CSharp_SGU2025.DAO.ConnectDatabase;
 using Student_Management_System_CSharp_SGU2025.DTO;
@@ -232,85 +233,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         /// </summary>
         public List<XemBangDiemDTO> GetBangDiemTheoHocKy(int maHocKy)
         {
-            List<XemBangDiemDTO> list = new List<XemBangDiemDTO>();
-            MySqlConnection conn = null;
-            try
-            {
-                conn = ConnectionDatabase.GetConnection();
-                conn.Open();
-
-                // THÊM INNER JOIN với PhanLop
-                string query = @"
-            SELECT 
-                hs.MaHocSinh,
-                hs.HoTen,
-                MAX(CASE WHEN mh.TenMonHoc = 'Toán' THEN ds.DiemTrungBinh END) as DiemToan,
-                MAX(CASE WHEN mh.TenMonHoc = 'Ngữ Văn' THEN ds.DiemTrungBinh END) as DiemVan,
-                MAX(CASE WHEN mh.TenMonHoc = 'Tiếng Anh' THEN ds.DiemTrungBinh END) as DiemAnh,
-                MAX(CASE WHEN mh.TenMonHoc = 'Vật Lý' THEN ds.DiemTrungBinh END) as DiemLy,
-                MAX(CASE WHEN mh.TenMonHoc = 'Hóa Học' THEN ds.DiemTrungBinh END) as DiemHoa,
-                CASE 
-                    WHEN (SELECT COUNT(DISTINCT ds2.MaMonHoc)
-                          FROM DiemSo ds2
-                          WHERE ds2.MaHocSinh = hs.MaHocSinh 
-                            AND ds2.MaHocKy = @MaHocKy
-                            AND ds2.DiemTrungBinh IS NOT NULL) = 13
-                    THEN (SELECT AVG(ds2.DiemTrungBinh)
-                          FROM DiemSo ds2
-                          WHERE ds2.MaHocSinh = hs.MaHocSinh 
-                            AND ds2.MaHocKy = @MaHocKy
-                            AND ds2.DiemTrungBinh IS NOT NULL)
-                    ELSE NULL
-                END as DiemTB
-            FROM HocSinh hs
-            INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh 
-                AND pl.MaHocKy = @MaHocKy
-            LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
-                AND ds.MaHocKy = @MaHocKy
-            LEFT JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
-            WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
-            GROUP BY hs.MaHocSinh, hs.HoTen
-            ORDER BY hs.MaHocSinh";
-
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
-
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            XemBangDiemDTO dto = new XemBangDiemDTO
-                            {
-                                MaHocSinh = reader["MaHocSinh"].ToString(),
-                                HoTen = reader["HoTen"].ToString(),
-                                DiemToan = reader["DiemToan"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemToan"]) : (float?)null,
-                                DiemVan = reader["DiemVan"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemVan"]) : (float?)null,
-                                DiemAnh = reader["DiemAnh"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemAnh"]) : (float?)null,
-                                DiemLy = reader["DiemLy"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemLy"]) : (float?)null,
-                                DiemHoa = reader["DiemHoa"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemHoa"]) : (float?)null,
-                                DiemTB = reader["DiemTB"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemTB"]) : (float?)null
-                            };
-                            list.Add(dto);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi khi lấy bảng điểm: " + ex.Message);
-            }
-            finally
-            {
-                ConnectionDatabase.CloseConnection(conn);
-            }
-            return list;
+            // Gọi method GetBangDiemTheoHocKyVaLop với maLop = null
+            return GetBangDiemTheoHocKyVaLop(maHocKy, null);
         }
         /// <summary>
         /// Lấy chi tiết điểm đầy đủ của một học sinh theo học kỳ
@@ -645,15 +569,11 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn = ConnectionDatabase.GetConnection();
                 conn.Open();
 
-                string query = @"
+                // Query lấy danh sách học sinh và điểm TB
+                string queryHocSinh = @"
             SELECT 
                 hs.MaHocSinh,
                 hs.HoTen,
-                MAX(CASE WHEN mh.TenMonHoc = 'Toán' THEN ds.DiemTrungBinh END) as DiemToan,
-                MAX(CASE WHEN mh.TenMonHoc = 'Ngữ Văn' THEN ds.DiemTrungBinh END) as DiemVan,
-                MAX(CASE WHEN mh.TenMonHoc = 'Tiếng Anh' THEN ds.DiemTrungBinh END) as DiemAnh,
-                MAX(CASE WHEN mh.TenMonHoc = 'Vật Lý' THEN ds.DiemTrungBinh END) as DiemLy,
-                MAX(CASE WHEN mh.TenMonHoc = 'Hóa Học' THEN ds.DiemTrungBinh END) as DiemHoa,
                 CASE 
                     WHEN (SELECT COUNT(DISTINCT ds2.MaMonHoc)
                           FROM DiemSo ds2
@@ -674,18 +594,33 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 // Thêm điều kiện lọc theo lớp nếu có
                 if (maLop.HasValue && maLop.Value > 0)
                 {
-                    query += " AND pl.MaLop = @MaLop";
+                    queryHocSinh += " AND pl.MaLop = @MaLop";
                 }
 
-                query += @"
-            LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
-                AND ds.MaHocKy = @MaHocKy
-            LEFT JOIN MonHoc mh ON ds.MaMonHoc = mh.MaMonHoc
+                queryHocSinh += @"
             WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
-            GROUP BY hs.MaHocSinh, hs.HoTen
             ORDER BY hs.MaHocSinh";
 
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                // Query lấy điểm của tất cả môn học
+                string queryDiem = @"
+            SELECT 
+                ds.MaHocSinh,
+                ds.MaMonHoc,
+                ds.DiemTrungBinh
+            FROM DiemSo ds
+            INNER JOIN PhanLop pl ON ds.MaHocSinh = pl.MaHocSinh 
+                AND pl.MaHocKy = @MaHocKy
+            WHERE ds.MaHocKy = @MaHocKy";
+
+                if (maLop.HasValue && maLop.Value > 0)
+                {
+                    queryDiem += " AND pl.MaLop = @MaLop";
+                }
+
+                // Lấy danh sách học sinh
+                Dictionary<string, XemBangDiemDTO> dictHocSinh = new Dictionary<string, XemBangDiemDTO>();
+                
+                using (MySqlCommand cmd = new MySqlCommand(queryHocSinh, conn))
                 {
                     cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
                     if (maLop.HasValue && maLop.Value > 0)
@@ -697,27 +632,46 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     {
                         while (reader.Read())
                         {
+                            string maHS = reader["MaHocSinh"].ToString();
                             XemBangDiemDTO dto = new XemBangDiemDTO
                             {
-                                MaHocSinh = reader["MaHocSinh"].ToString(),
+                                MaHocSinh = maHS,
                                 HoTen = reader["HoTen"].ToString(),
-                                DiemToan = reader["DiemToan"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemToan"]) : (float?)null,
-                                DiemVan = reader["DiemVan"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemVan"]) : (float?)null,
-                                DiemAnh = reader["DiemAnh"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemAnh"]) : (float?)null,
-                                DiemLy = reader["DiemLy"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemLy"]) : (float?)null,
-                                DiemHoa = reader["DiemHoa"] != DBNull.Value ?
-                                    Convert.ToSingle(reader["DiemHoa"]) : (float?)null,
                                 DiemTB = reader["DiemTB"] != DBNull.Value ?
                                     Convert.ToSingle(reader["DiemTB"]) : (float?)null
                             };
-                            list.Add(dto);
+                            dictHocSinh[maHS] = dto;
                         }
                     }
                 }
+
+                // Lấy điểm của tất cả môn học
+                using (MySqlCommand cmd = new MySqlCommand(queryDiem, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+                    if (maLop.HasValue && maLop.Value > 0)
+                    {
+                        cmd.Parameters.AddWithValue("@MaLop", maLop.Value);
+                    }
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string maHS = reader["MaHocSinh"].ToString();
+                            int maMonHoc = Convert.ToInt32(reader["MaMonHoc"]);
+                            float? diem = reader["DiemTrungBinh"] != DBNull.Value ?
+                                Convert.ToSingle(reader["DiemTrungBinh"]) : (float?)null;
+
+                            if (dictHocSinh.ContainsKey(maHS))
+                            {
+                                dictHocSinh[maHS].DiemCacMon[maMonHoc] = diem;
+                            }
+                        }
+                    }
+                }
+
+                list = dictHocSinh.Values.ToList();
             }
             catch (Exception ex)
             {
