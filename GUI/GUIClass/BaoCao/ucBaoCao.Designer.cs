@@ -29,18 +29,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void InitializeComponent()
         {
             this.pnlMain = new Guna.UI2.WinForms.Guna2Panel();
-            this.cardBaoCaoTongHop = new Guna.UI2.WinForms.Guna2Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
-            this.cardThongKeDiem = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblThongKeDiemDesc = new System.Windows.Forms.Label();
-            this.lblThongKeDiemTitle = new System.Windows.Forms.Label();
-            this.pnlIconThongKe = new Guna.UI2.WinForms.Guna2Panel();
-            this.cardBaoCaoHocSinh = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblBaoCaoHocSinhDesc = new System.Windows.Forms.Label();
-            this.pnlIconBaoCao = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblBaoCaoHocSinhTitle = new System.Windows.Forms.Label();
             this.cboHocKy = new Guna.UI2.WinForms.Guna2ComboBox();
             this.pnlContent = new Guna.UI2.WinForms.Guna2Panel();
             this.pnlClassesContainer = new System.Windows.Forms.FlowLayoutPanel();
@@ -54,9 +42,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnBangDiem = new Guna.UI2.WinForms.Guna2Button();
             this.btnDanhSachLop = new Guna.UI2.WinForms.Guna2Button();
             this.pnlMain.SuspendLayout();
-            this.cardBaoCaoTongHop.SuspendLayout();
-            this.cardThongKeDiem.SuspendLayout();
-            this.cardBaoCaoHocSinh.SuspendLayout();
             this.pnlContent.SuspendLayout();
             this.pnlClassesContainer.SuspendLayout();
             this.pnlClassListHeader.SuspendLayout();
@@ -67,9 +52,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             this.pnlMain.AutoScroll = true;
             this.pnlMain.BackColor = System.Drawing.SystemColors.Control;
-            this.pnlMain.Controls.Add(this.cardBaoCaoTongHop);
-            this.pnlMain.Controls.Add(this.cardThongKeDiem);
-            this.pnlMain.Controls.Add(this.cardBaoCaoHocSinh);
             this.pnlMain.Controls.Add(this.cboHocKy);
             this.pnlMain.Controls.Add(this.pnlContent);
             this.pnlMain.Controls.Add(this.pnlTabs);
@@ -80,148 +62,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.pnlMain.Size = new System.Drawing.Size(1168, 768);
             this.pnlMain.TabIndex = 0;
             this.pnlMain.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlMain_Paint);
-            // 
-            // cardBaoCaoTongHop
-            // 
-            this.cardBaoCaoTongHop.BackColor = System.Drawing.Color.White;
-            this.cardBaoCaoTongHop.BorderRadius = 5;
-            this.cardBaoCaoTongHop.Controls.Add(this.label1);
-            this.cardBaoCaoTongHop.Controls.Add(this.label2);
-            this.cardBaoCaoTongHop.Controls.Add(this.guna2Panel1);
-            this.cardBaoCaoTongHop.Location = new System.Drawing.Point(775, 85);
-            this.cardBaoCaoTongHop.Name = "cardBaoCaoTongHop";
-            this.cardBaoCaoTongHop.Size = new System.Drawing.Size(358, 97);
-            this.cardBaoCaoTongHop.TabIndex = 9;
-            this.cardBaoCaoTongHop.Paint += new System.Windows.Forms.PaintEventHandler(this.cardBaoCaoTongHop_Paint);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.label1.Location = new System.Drawing.Point(96, 49);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(73, 15);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Cả năm học";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.label2.Location = new System.Drawing.Point(96, 25);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(136, 17);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Báo cáo tổng hợp";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
-            // 
-            // guna2Panel1
-            // 
-            this.guna2Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(237)))), ((int)(((byte)(213)))));
-            this.guna2Panel1.BorderRadius = 8;
-            this.guna2Panel1.Location = new System.Drawing.Point(28, 21);
-            this.guna2Panel1.Name = "guna2Panel1";
-            this.guna2Panel1.Size = new System.Drawing.Size(48, 48);
-            this.guna2Panel1.TabIndex = 6;
-            this.guna2Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.guna2Panel1_Paint);
-            // 
-            // cardThongKeDiem
-            // 
-            this.cardThongKeDiem.BackColor = System.Drawing.Color.White;
-            this.cardThongKeDiem.BorderRadius = 5;
-            this.cardThongKeDiem.Controls.Add(this.lblThongKeDiemDesc);
-            this.cardThongKeDiem.Controls.Add(this.lblThongKeDiemTitle);
-            this.cardThongKeDiem.Controls.Add(this.pnlIconThongKe);
-            this.cardThongKeDiem.Location = new System.Drawing.Point(390, 85);
-            this.cardThongKeDiem.Name = "cardThongKeDiem";
-            this.cardThongKeDiem.Size = new System.Drawing.Size(358, 97);
-            this.cardThongKeDiem.TabIndex = 4;
-            this.cardThongKeDiem.Paint += new System.Windows.Forms.PaintEventHandler(this.cardThongKeDiem_Paint_1);
-            // 
-            // lblThongKeDiemDesc
-            // 
-            this.lblThongKeDiemDesc.AutoSize = true;
-            this.lblThongKeDiemDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.lblThongKeDiemDesc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblThongKeDiemDesc.Location = new System.Drawing.Point(102, 49);
-            this.lblThongKeDiemDesc.Name = "lblThongKeDiemDesc";
-            this.lblThongKeDiemDesc.Size = new System.Drawing.Size(106, 15);
-            this.lblThongKeDiemDesc.TabIndex = 8;
-            this.lblThongKeDiemDesc.Text = "Theo lớp/môn học";
-            this.lblThongKeDiemDesc.Click += new System.EventHandler(this.lblThongKeDiemDesc_Click);
-            // 
-            // lblThongKeDiemTitle
-            // 
-            this.lblThongKeDiemTitle.AutoSize = true;
-            this.lblThongKeDiemTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.lblThongKeDiemTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblThongKeDiemTitle.Location = new System.Drawing.Point(102, 25);
-            this.lblThongKeDiemTitle.Name = "lblThongKeDiemTitle";
-            this.lblThongKeDiemTitle.Size = new System.Drawing.Size(115, 17);
-            this.lblThongKeDiemTitle.TabIndex = 7;
-            this.lblThongKeDiemTitle.Text = "Thống kê điểm";
-            this.lblThongKeDiemTitle.Click += new System.EventHandler(this.lblThongKeDiemTitle_Click);
-            // 
-            // pnlIconThongKe
-            // 
-            this.pnlIconThongKe.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(252)))), ((int)(((byte)(231)))));
-            this.pnlIconThongKe.BorderRadius = 8;
-            this.pnlIconThongKe.Location = new System.Drawing.Point(35, 21);
-            this.pnlIconThongKe.Name = "pnlIconThongKe";
-            this.pnlIconThongKe.Size = new System.Drawing.Size(48, 48);
-            this.pnlIconThongKe.TabIndex = 6;
-            this.pnlIconThongKe.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlIconThongKe_Paint);
-            // 
-            // cardBaoCaoHocSinh
-            // 
-            this.cardBaoCaoHocSinh.BackColor = System.Drawing.Color.White;
-            this.cardBaoCaoHocSinh.BorderRadius = 5;
-            this.cardBaoCaoHocSinh.Controls.Add(this.lblBaoCaoHocSinhDesc);
-            this.cardBaoCaoHocSinh.Controls.Add(this.pnlIconBaoCao);
-            this.cardBaoCaoHocSinh.Controls.Add(this.lblBaoCaoHocSinhTitle);
-            this.cardBaoCaoHocSinh.Location = new System.Drawing.Point(13, 85);
-            this.cardBaoCaoHocSinh.Name = "cardBaoCaoHocSinh";
-            this.cardBaoCaoHocSinh.Size = new System.Drawing.Size(358, 97);
-            this.cardBaoCaoHocSinh.TabIndex = 3;
-            this.cardBaoCaoHocSinh.Paint += new System.Windows.Forms.PaintEventHandler(this.cardBaoCaoHocSinh_Paint_1);
-            // 
-            // lblBaoCaoHocSinhDesc
-            // 
-            this.lblBaoCaoHocSinhDesc.AutoSize = true;
-            this.lblBaoCaoHocSinhDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.lblBaoCaoHocSinhDesc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
-            this.lblBaoCaoHocSinhDesc.Location = new System.Drawing.Point(90, 49);
-            this.lblBaoCaoHocSinhDesc.Name = "lblBaoCaoHocSinhDesc";
-            this.lblBaoCaoHocSinhDesc.Size = new System.Drawing.Size(71, 15);
-            this.lblBaoCaoHocSinhDesc.TabIndex = 2;
-            this.lblBaoCaoHocSinhDesc.Text = "Số học sinh";
-            this.lblBaoCaoHocSinhDesc.Click += new System.EventHandler(this.lblBaoCaoHocSinhDesc_Click);
-            // 
-            // pnlIconBaoCao
-            // 
-            this.pnlIconBaoCao.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(234)))), ((int)(((byte)(254)))));
-            this.pnlIconBaoCao.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnlIconBaoCao.BorderRadius = 8;
-            this.pnlIconBaoCao.Location = new System.Drawing.Point(26, 21);
-            this.pnlIconBaoCao.Name = "pnlIconBaoCao";
-            this.pnlIconBaoCao.Size = new System.Drawing.Size(48, 48);
-            this.pnlIconBaoCao.TabIndex = 0;
-            this.pnlIconBaoCao.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlIconBaoCao_Paint);
-            // 
-            // lblBaoCaoHocSinhTitle
-            // 
-            this.lblBaoCaoHocSinhTitle.AutoSize = true;
-            this.lblBaoCaoHocSinhTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.lblBaoCaoHocSinhTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblBaoCaoHocSinhTitle.Location = new System.Drawing.Point(90, 25);
-            this.lblBaoCaoHocSinhTitle.Name = "lblBaoCaoHocSinhTitle";
-            this.lblBaoCaoHocSinhTitle.Size = new System.Drawing.Size(133, 17);
-            this.lblBaoCaoHocSinhTitle.TabIndex = 1;
-            this.lblBaoCaoHocSinhTitle.Text = "Báo cáo học sinh";
-            this.lblBaoCaoHocSinhTitle.Click += new System.EventHandler(this.lblBaoCaoHocSinhTitle_Click);
             // 
             // cboHocKy
             // 
@@ -251,7 +91,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.pnlContent.BackColor = System.Drawing.Color.White;
             this.pnlContent.Controls.Add(this.pnlClassesContainer);
             this.pnlContent.Controls.Add(this.pnlClassListHeader);
-            this.pnlContent.Location = new System.Drawing.Point(13, 206);
+            this.pnlContent.Location = new System.Drawing.Point(13, 85);
             this.pnlContent.Margin = new System.Windows.Forms.Padding(0);
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(1120, 657);
@@ -434,12 +274,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.Name = "ucBaoCao";
             this.Size = new System.Drawing.Size(1168, 768);
             this.pnlMain.ResumeLayout(false);
-            this.cardBaoCaoTongHop.ResumeLayout(false);
-            this.cardBaoCaoTongHop.PerformLayout();
-            this.cardThongKeDiem.ResumeLayout(false);
-            this.cardThongKeDiem.PerformLayout();
-            this.cardBaoCaoHocSinh.ResumeLayout(false);
-            this.cardBaoCaoHocSinh.PerformLayout();
             this.pnlContent.ResumeLayout(false);
             this.pnlClassesContainer.ResumeLayout(false);
             this.pnlClassListHeader.ResumeLayout(false);
@@ -458,23 +292,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private Guna.UI2.WinForms.Guna2Button btnThongKeHocLuc;
         private Guna.UI2.WinForms.Guna2ComboBox cboHocKy;
         private Guna.UI2.WinForms.Guna2Panel pnlContent;
-        private System.Windows.Forms.Label lblBaoCaoHocSinhDesc;
-        private System.Windows.Forms.Label lblBaoCaoHocSinhTitle;
-        private Guna.UI2.WinForms.Guna2Panel pnlIconBaoCao;
         private Guna.UI2.WinForms.Guna2Panel pnlClassListHeader;
         private Guna.UI2.WinForms.Guna2Button btnExportExcel;
         private Guna.UI2.WinForms.Guna2Button btnExportPdf;
         private System.Windows.Forms.Label lblClassListTitle;
         private System.Windows.Forms.FlowLayoutPanel pnlClassesContainer;
-        private Guna.UI2.WinForms.Guna2Panel cardBaoCaoHocSinh;
-        private Guna.UI2.WinForms.Guna2Panel cardBaoCaoTongHop;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
-        private Guna.UI2.WinForms.Guna2Panel cardThongKeDiem;
-        private System.Windows.Forms.Label lblThongKeDiemDesc;
-        private System.Windows.Forms.Label lblThongKeDiemTitle;
-        private Guna.UI2.WinForms.Guna2Panel pnlIconThongKe;
         private itemLopHoc itemLopHoc1;
     }
 }

@@ -9,13 +9,14 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
     public class YeuCauChuyenLopDAO
     {
         /// <summary>
-        /// Thêm yêu cầu chuyển lớp mới
+        /// Thêm yêu cầu chuyển lớp mới và trả về MaYeuCau vừa tạo
         /// </summary>
-        public bool ThemYeuCau(YeuCauChuyenLopDTO yeuCau)
+        public int ThemYeuCau(YeuCauChuyenLopDTO yeuCau)
         {
             string sql = @"INSERT INTO YeuCauChuyenLop 
-                (MaHocSinh, MaLopHienTai, MaLopMongMuon, MaHocKy, LyDoYeuCau, NguoiTao, NgayTao, TrangThai) 
-                VALUES (@maHocSinh, @maLopHienTai, @maLopMongMuon, @maHocKy, @lyDo, @nguoiTao, @ngayTao, @trangThai)";
+                (MaHocSinh, MaLopHienTai, MaLopMongMuon, MaHocKy, LyDoYeuCau, NguoiTao, NgayTao, TrangThai, DuongDanPDF) 
+                VALUES (@maHocSinh, @maLopHienTai, @maLopMongMuon, @maHocKy, @lyDo, @nguoiTao, @ngayTao, @trangThai, @duongDanPDF);
+                SELECT LAST_INSERT_ID();";
 
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
@@ -32,13 +33,53 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                         cmd.Parameters.AddWithValue("@nguoiTao", yeuCau.NguoiTao);
                         cmd.Parameters.AddWithValue("@ngayTao", yeuCau.NgayTao);
                         cmd.Parameters.AddWithValue("@trangThai", yeuCau.TrangThai);
+                        cmd.Parameters.AddWithValue("@duongDanPDF", string.IsNullOrEmpty(yeuCau.DuongDanPDF) ? (object)DBNull.Value : yeuCau.DuongDanPDF);
+
+                        object result = cmd.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                        {
+                            return Convert.ToInt32(result);
+                        }
+                        return 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Lỗi khi thêm yêu cầu chuyển lớp: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật đường dẫn PDF cho yêu cầu
+        /// </summary>
+        public bool CapNhatDuongDanPDF(int maYeuCau, string duongDanPDF)
+        {
+            string sql = @"UPDATE YeuCauChuyenLop 
+                SET DuongDanPDF = @duongDanPDF 
+                WHERE MaYeuCau = @maYeuCau";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maYeuCau", maYeuCau);
+                        cmd.Parameters.AddWithValue("@duongDanPDF", string.IsNullOrEmpty(duongDanPDF) ? (object)DBNull.Value : duongDanPDF);
 
                         return cmd.ExecuteNonQuery() > 0;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Lỗi khi thêm yêu cầu chuyển lớp: " + ex.Message);
+                    Console.WriteLine("Lỗi khi cập nhật đường dẫn PDF: " + ex.Message);
                     throw;
                 }
                 finally
@@ -398,6 +439,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 NguoiXuLy = reader["NguoiXuLy"] != DBNull.Value ? reader["NguoiXuLy"].ToString() : null,
                 GhiChuAdmin = reader["GhiChuAdmin"] != DBNull.Value ? reader["GhiChuAdmin"].ToString() : null,
                 MaLopDuocDuyet = reader["MaLopDuocDuyet"] != DBNull.Value ? Convert.ToInt32(reader["MaLopDuocDuyet"]) : (int?)null,
+                DuongDanPDF = reader["DuongDanPDF"] != DBNull.Value ? reader["DuongDanPDF"].ToString() : null,
                 
                 // Thông tin mở rộng
                 TenHocSinh = reader["TenHocSinh"].ToString(),

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
@@ -19,6 +20,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private NhapDiemBUS nhapDiemBUS; // ✅ THÊM
         private int currentMaHocKy = 0;
         private int? currentMaLop = null; // ✅ THÊM: Lưu mã lớp hiện tại
+        private List<XemBangDiemDTO> currentBangDiemData = null; // Lưu dữ liệu bảng điểm hiện tại
 
         public ucBaoCaoBangDiem()
         {
@@ -217,8 +219,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 {
                     MessageBox.Show("Không có dữ liệu điểm cho học kỳ và lớp được chọn.",
                         "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Xóa biểu đồ nếu không có dữ liệu
+                    ClearCharts();
                     return;
                 }
+
+                // Lưu dữ liệu để sử dụng cho biểu đồ
+                currentBangDiemData = dsBangDiem;
 
                 // Đưa dữ liệu vào DataGridView
                 int stt = 1;
@@ -238,6 +245,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 // ✅ Áp dụng màu cho cột điểm trung bình
                 ApplyColorToDiemTB();
+
+                // ✅ Vẽ biểu đồ thống kê
+                VeBarChart();
+                VeLineChart();
             }
             catch (Exception ex)
             {
@@ -650,6 +661,213 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void dgvGrades_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// ✅ Vẽ bar chart cho điểm trung bình của từng học sinh
+        /// </summary>
+        private void VeBarChart()
+        {
+            try
+            {
+                chartBar.Series.Clear();
+                chartBar.ChartAreas.Clear();
+                chartBar.Legends.Clear();
+
+                // Kiểm tra có dữ liệu không
+                if (currentBangDiemData == null || currentBangDiemData.Count == 0)
+                {
+                    ClearCharts();
+                    return;
+                }
+
+                // Chỉ vẽ khi có lớp cụ thể được chọn (không phải "Tất cả lớp")
+                if (!currentMaLop.HasValue || currentMaLop.Value <= 0)
+                {
+                    ClearCharts();
+                    return;
+                }
+
+                // Tạo ChartArea
+                ChartArea chartArea = new ChartArea("ChartArea1");
+                chartArea.AxisX.Title = "Học sinh";
+                chartArea.AxisX.TitleFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                chartArea.AxisY.Title = "Điểm trung bình";
+                chartArea.AxisY.TitleFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                chartArea.AxisY.Minimum = 0;
+                chartArea.AxisY.Maximum = 10;
+                chartArea.BackColor = Color.White;
+                chartArea.AxisX.MajorGrid.Enabled = false;
+                chartArea.AxisY.MajorGrid.LineColor = Color.FromArgb(243, 244, 246);
+                chartBar.ChartAreas.Add(chartArea);
+
+                // Tạo Series
+                Series series = new Series("Điểm trung bình");
+                series.ChartType = SeriesChartType.Column;
+                series.Color = Color.FromArgb(30, 136, 229);
+                series.IsValueShownAsLabel = true;
+                series.LabelFormat = "{0:0.0}";
+                series.Font = new Font("Segoe UI", 8, FontStyle.Bold);
+                series.LabelForeColor = Color.FromArgb(17, 24, 39);
+
+                // Lọc học sinh có điểm trung bình và sắp xếp
+                var dsCoDiem = currentBangDiemData
+                    .Where(hs => hs.DiemTB.HasValue)
+                    .OrderByDescending(hs => hs.DiemTB.Value)
+                    .ToList();
+
+                if (dsCoDiem.Count == 0)
+                {
+                    ClearCharts();
+                    return;
+                }
+
+                // Thêm dữ liệu vào biểu đồ
+                int index = 0;
+                foreach (var item in dsCoDiem)
+                {
+                    if (item.DiemTB.HasValue)
+                    {
+                        DataPoint point = series.Points.Add(item.DiemTB.Value);
+                        
+                        // Rút ngắn tên học sinh nếu quá dài (chỉ hiển thị 10 ký tự đầu)
+                        string tenRutGon = item.HoTen.Length > 15 ? item.HoTen.Substring(0, 12) + "..." : item.HoTen;
+                        point.AxisLabel = tenRutGon;
+                        
+                        // Màu sắc theo điểm số
+                        if (item.DiemTB.Value >= 8.0)
+                            point.Color = Color.FromArgb(22, 163, 74); // Xanh lá - Giỏi
+                        else if (item.DiemTB.Value >= 6.5)
+                            point.Color = Color.FromArgb(30, 136, 229); // Xanh dương - Khá
+                        else if (item.DiemTB.Value >= 5.0)
+                            point.Color = Color.FromArgb(234, 179, 8); // Vàng - Trung bình
+                        else
+                            point.Color = Color.FromArgb(220, 38, 38); // Đỏ - Yếu
+
+                        point.Label = item.DiemTB.Value.ToString("0.0");
+                        index++;
+                    }
+                }
+
+                chartBar.Series.Add(series);
+                chartBar.Titles.Clear();
+                chartBar.Titles.Add("Thống kê điểm trung bình theo học sinh");
+                chartBar.Titles[0].Font = new Font("Segoe UI", 12, FontStyle.Bold);
+                chartBar.Titles[0].ForeColor = Color.FromArgb(17, 24, 39);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi vẽ bar chart: {ex.Message}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        /// <summary>
+        /// ✅ Vẽ line chart cho điểm trung bình theo thứ tự học sinh
+        /// </summary>
+        private void VeLineChart()
+        {
+            try
+            {
+                chartLine.Series.Clear();
+                chartLine.ChartAreas.Clear();
+                chartLine.Legends.Clear();
+
+                // Kiểm tra có dữ liệu không
+                if (currentBangDiemData == null || currentBangDiemData.Count == 0)
+                {
+                    return;
+                }
+
+                // Chỉ vẽ khi có lớp cụ thể được chọn (không phải "Tất cả lớp")
+                if (!currentMaLop.HasValue || currentMaLop.Value <= 0)
+                {
+                    return;
+                }
+
+                // Tạo ChartArea
+                ChartArea chartArea = new ChartArea("ChartArea1");
+                chartArea.AxisX.Title = "Thứ tự học sinh";
+                chartArea.AxisX.TitleFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                chartArea.AxisY.Title = "Điểm trung bình";
+                chartArea.AxisY.TitleFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                chartArea.AxisY.Minimum = 0;
+                chartArea.AxisY.Maximum = 10;
+                chartArea.BackColor = Color.White;
+                chartArea.AxisX.MajorGrid.Enabled = false;
+                chartArea.AxisY.MajorGrid.LineColor = Color.FromArgb(243, 244, 246);
+                chartLine.ChartAreas.Add(chartArea);
+
+                // Tạo Series
+                Series series = new Series("Điểm trung bình");
+                series.ChartType = SeriesChartType.Line;
+                series.Color = Color.FromArgb(30, 136, 229);
+                series.BorderWidth = 3;
+                series.MarkerStyle = MarkerStyle.Circle;
+                series.MarkerSize = 8;
+                series.MarkerColor = Color.FromArgb(30, 136, 229);
+                series.IsValueShownAsLabel = true;
+                series.LabelFormat = "{0:0.0}";
+                series.Font = new Font("Segoe UI", 8, FontStyle.Bold);
+                series.LabelForeColor = Color.FromArgb(17, 24, 39);
+
+                // Lọc học sinh có điểm trung bình và sắp xếp theo thứ tự trong bảng
+                var dsCoDiem = currentBangDiemData
+                    .Where(hs => hs.DiemTB.HasValue)
+                    .ToList();
+
+                if (dsCoDiem.Count == 0)
+                {
+                    return;
+                }
+
+                // Thêm dữ liệu vào biểu đồ theo thứ tự
+                int stt = 1;
+                foreach (var item in dsCoDiem)
+                {
+                    if (item.DiemTB.HasValue)
+                    {
+                        DataPoint point = series.Points.Add(item.DiemTB.Value);
+                        point.AxisLabel = stt.ToString();
+                        point.Label = item.DiemTB.Value.ToString("0.0");
+                        stt++;
+                    }
+                }
+
+                chartLine.Series.Add(series);
+                chartLine.Titles.Clear();
+                chartLine.Titles.Add("Xu hướng điểm trung bình");
+                chartLine.Titles[0].Font = new Font("Segoe UI", 12, FontStyle.Bold);
+                chartLine.Titles[0].ForeColor = Color.FromArgb(17, 24, 39);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi vẽ line chart: {ex.Message}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        /// <summary>
+        /// ✅ Xóa biểu đồ khi không có dữ liệu
+        /// </summary>
+        private void ClearCharts()
+        {
+            try
+            {
+                chartBar.Series.Clear();
+                chartBar.ChartAreas.Clear();
+                chartBar.Legends.Clear();
+                chartBar.Titles.Clear();
+
+                chartLine.Series.Clear();
+                chartLine.ChartAreas.Clear();
+                chartLine.Legends.Clear();
+                chartLine.Titles.Clear();
+            }
+            catch
+            {
+                // Bỏ qua lỗi khi xóa
+            }
         }
 
         /// <summary>

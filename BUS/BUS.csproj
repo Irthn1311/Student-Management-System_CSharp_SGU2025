@@ -178,6 +178,7 @@
     <Compile Include="BUSClass\PhuHuynhBLL.cs" />
     <Compile Include="BUSClass\ThemDiemBUS.cs" />
     <Compile Include="BUSClass\ThoiKhoaBieuBUS.cs" />
+    <Compile Include="BUSClass\ThongBaoBUS.cs" />
     <Compile Include="BUSClass\XepLoaiBUS.cs" />
     <Compile Include="BUSClass\YeuCauChuyenLopBLL.cs" />
     <Compile Include="Config\TimetableConfig.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="Services\SemesterHelper.cs" />
     <Compile Include="Services\TimetableHybridService.cs" />
     <Compile Include="Services\TKBExportService.cs" />
+    <Compile Include="Services\YeuCauChuyenLopPDFService.cs" />
     <Compile Include="Utils\ImageHelper.cs" />
     <Compile Include="Utils\PermissionHelper.cs" />
     <Compile Include="Utils\SessionManager.cs" />

@@ -354,5 +354,21 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             }
         }
 
+        /// <summary>
+        /// Lấy danh sách tất cả khối lớp
+        /// </summary>
+        public List<KhoiLop> LayDanhSachKhoiLop()
+        {
+            try
+            {
+                return lopDAO.LayDanhSachKhoiLop();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS LayDanhSachKhoiLop: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }

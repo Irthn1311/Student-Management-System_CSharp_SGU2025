@@ -205,6 +205,7 @@
     <Compile Include="DAOClass\PhanQuyenDAO.cs" />
     <Compile Include="DAOClass\PhuHuynhDAO.cs" />
     <Compile Include="DAOClass\ThoiKhoaBieuDAO.cs" />
+    <Compile Include="DAOClass\ThongBaoDAO.cs" />
     <Compile Include="DAOClass\XepLoaiDAO.cs" />
     <Compile Include="DAOClass\YeuCauChuyenLopDAO.cs" />
     <Compile Include="Entities\GiaoVienEntity.cs" />
@@ -223,6 +224,7 @@
     <Content Include="ConnectDatabase\02_unique_indexes.sql" />
     <Content Include="ConnectDatabase\02_update_anh_hocsinh.sql" />
     <Content Include="ConnectDatabase\03_sample_seed.sql" />
+    <Content Include="ConnectDatabase\04_thongbao_schema.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

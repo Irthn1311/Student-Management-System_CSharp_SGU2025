@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO; // Cần cho FileInfo
 using System.Linq;
+using System.Reflection; // ✅ Thêm để sử dụng reflection thay vì dynamic
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -119,7 +120,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             SetupHeaderAndStats();
 
             PermissionHelper.ApplyPermissionHocSinh(
-              btnThemHocSinh,
               btnThemPhuHuynh,
               tableHocSinh,
               tablePhuHuynh
@@ -619,20 +619,34 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 e.PaintBackground(e.ClipBounds, true);
 
-                // ✅ Lấy permission từ Tag - Sử dụng cách an toàn hơn
+                // ✅ Lấy permission từ Tag - Sử dụng cách an toàn hơn (không dùng dynamic)
                 bool canUpdate = true; // Mặc định true
                 bool canDelete = true; // Mặc định true
                 
                 if (tableHocSinh.Tag != null)
                 {
+                    // ✅ Sử dụng reflection thay vì dynamic để tránh RuntimeBinderException
                     try
                     {
-                        dynamic permissions = tableHocSinh.Tag;
-                        canUpdate = permissions?.CanUpdate ?? true;
-                        canDelete = permissions?.CanDelete ?? true;
+                        var tagType = tableHocSinh.Tag.GetType();
+                        var canUpdateProp = tagType.GetProperty("CanUpdate");
+                        var canDeleteProp = tagType.GetProperty("CanDelete");
+                        
+                        if (canUpdateProp != null)
+                        {
+                            var value = canUpdateProp.GetValue(tableHocSinh.Tag);
+                            if (value is bool) canUpdate = (bool)value;
+                        }
+                        
+                        if (canDeleteProp != null)
+                        {
+                            var value = canDeleteProp.GetValue(tableHocSinh.Tag);
+                            if (value is bool) canDelete = (bool)value;
+                        }
                     }
-                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+                    catch
                     {
+                        // Ignore errors - sử dụng giá trị mặc định
                         canUpdate = true;
                         canDelete = true;
                     }
@@ -916,14 +930,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 
                 if (tablePhuHuynh.Tag != null)
                 {
+                    // ✅ Sử dụng reflection thay vì dynamic để tránh RuntimeBinderException
                     try
                     {
-                        dynamic permissions = tablePhuHuynh.Tag;
-                        canUpdate = permissions?.CanUpdate ?? true;
-                        canDelete = permissions?.CanDelete ?? true;
+                        var tagType = tablePhuHuynh.Tag.GetType();
+                        var canUpdateProp = tagType.GetProperty("CanUpdate");
+                        var canDeleteProp = tagType.GetProperty("CanDelete");
+                        
+                        if (canUpdateProp != null)
+                        {
+                            var value = canUpdateProp.GetValue(tablePhuHuynh.Tag);
+                            if (value is bool) canUpdate = (bool)value;
+                        }
+                        
+                        if (canDeleteProp != null)
+                        {
+                            var value = canDeleteProp.GetValue(tablePhuHuynh.Tag);
+                            if (value is bool) canDelete = (bool)value;
+                        }
                     }
-                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+                    catch
                     {
+                        // Ignore errors - sử dụng giá trị mặc định
                         canUpdate = true;
                         canDelete = true;
                     }
@@ -2234,6 +2262,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     try
                     {
                         ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+                        // ✅ KIỂM TRA: Số lượng học sinh trong Excel phải ít hơn (không được bằng) tổng sĩ số khối 10
+                        int soHocSinhTrongExcel = CountHocSinhDangHocInExcelFile(ofd.FileName);
+                        int tongSiSoKhoi10 = GetTongSiSoKhoi10();
+
+                        if (soHocSinhTrongExcel >= tongSiSoKhoi10)
+                        {
+                            string thongBao = $"⚠️ KHÔNG THỂ NHẬP EXCEL!\n\n";
+                            thongBao += $"Số học sinh trong file Excel: {soHocSinhTrongExcel}\n";
+                            thongBao += $"Tổng sĩ số khối 10: {tongSiSoKhoi10}\n\n";
+                            thongBao += "❌ Số lượng học sinh trong file Excel phải ít hơn tổng sĩ số khối 10!\n\n";
+                            thongBao += "💡 Lý do: Khi phân lớp tự động lần đầu, các học sinh vượt quá sĩ số khối 10 sẽ không được phân lớp.\n\n";
+                            thongBao += $"Vui lòng giảm số lượng học sinh trong file Excel xuống dưới {tongSiSoKhoi10} học sinh.";
+
+                            MessageBox.Show(thongBao, "Không thể nhập Excel",
+                                           MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return; // CHẶN NGAY, KHÔNG CHO NHẬP EXCEL
+                        }
 
                         ImportAllDataFromExcelWithBinding(ofd.FileName);
 
@@ -3854,6 +3900,90 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         // ✅ ĐÃ XÓA: btnNhapExcelChuyenTruong_Click - Chuyển logic sang PhanLop.cs
+
+        /// <summary>
+        /// Đếm số lượng học sinh có trạng thái "Đang học" trong file Excel (trước khi nhập)
+        /// </summary>
+        private int CountHocSinhDangHocInExcelFile(string filePath)
+        {
+            try
+            {
+                using (var package = new ExcelPackage(new FileInfo(filePath)))
+                {
+                    // Kiểm tra xem file có ít nhất 1 worksheet không
+                    if (package.Workbook.Worksheets.Count < 1)
+                    {
+                        return 0;
+                    }
+
+                    // Đọc worksheet Học Sinh
+                    var wsHocSinh = package.Workbook.Worksheets["HocSinh"] ?? package.Workbook.Worksheets[0];
+                    int rowCount = wsHocSinh.Dimension?.Rows ?? 0;
+                    int count = 0;
+
+                    // Đếm từ dòng 2 (bỏ qua header)
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        try
+                        {
+                            // Đọc trạng thái từ cột G (cột 7)
+                            string trangThai = wsHocSinh.Cells[row, 7].Text.Trim();
+
+                            // Đếm học sinh có trạng thái "Đang học"
+                            if (!string.IsNullOrWhiteSpace(trangThai) && trangThai == "Đang học")
+                            {
+                                // Kiểm tra có ít nhất họ tên không (cột B - cột 2)
+                                string hoTen = wsHocSinh.Cells[row, 2].Text.Trim();
+                                if (!string.IsNullOrWhiteSpace(hoTen))
+                                {
+                                    count++;
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            // Bỏ qua dòng lỗi
+                            continue;
+                        }
+                    }
+
+                    return count;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi đọc file Excel để đếm học sinh: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Tính tổng sĩ số của khối 10 (tổng sĩ số của tất cả lớp khối 10)
+        /// </summary>
+        private int GetTongSiSoKhoi10()
+        {
+            try
+            {
+                // Lấy danh sách tất cả lớp
+                List<LopDTO> danhSachLop = lopHocBUS.DocDSLop();
+
+                if (danhSachLop == null || danhSachLop.Count == 0)
+                {
+                    return 0;
+                }
+
+                // Lọc lớp khối 10 và tính tổng sĩ số
+                int tongSiSo = danhSachLop
+                    .Where(lop => lop.maKhoi == 10)
+                    .Sum(lop => lop.siSo);
+
+                return tongSiSo;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi tính tổng sĩ số khối 10: {ex.Message}");
+            }
+        }
+
         private void tablePhuHuynh_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 

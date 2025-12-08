@@ -83,6 +83,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // ✅ Ẩn các cột không cần thiết, chỉ hiển thị cột quan trọng
                 AnCacCotKhongCanThiet();
 
+                // ✅ Thêm cột "Xem chi tiết" (PDF)
+                ThemCotXemChiTiet();
+
                 // Cập nhật label đếm với màu sắc
                 int soChoDuyet = 0;
                 int soDaDuyet = 0;
@@ -95,7 +98,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     else if (yc.TrangThai == "Từ chối") soTuChoi++;
                 }
 
-                lblThongKe.Text = $"📊 Tổng: {danhSachYeuCau.Count} | ⏳ Chờ duyệt: {soChoDuyet} | ✅ Đã duyệt: {soDaDuyet} | ❌ Từ chối: {soTuChoi}";
+                lblThongKe.Text = $" Tổng: {danhSachYeuCau.Count} |  Chờ duyệt: {soChoDuyet} |  Đã duyệt: {soDaDuyet} |  Từ chối: {soTuChoi}";
 
                 // Format DataGridView
                 FormatDataGridView();
@@ -208,24 +211,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ShowChiTietYeuCau(YeuCauChuyenLopDTO yeuCau)
         {
-            string message = $"📋 CHI TIẾT YÊU CẦU CHUYỂN LỚP\n\n" +
+            string message = $" CHI TIẾT YÊU CẦU CHUYỂN LỚP\n\n" +
                 $"Mã yêu cầu: {yeuCau.MaYeuCau}\n" +
                 $"Trạng thái: {yeuCau.TrangThai}\n\n" +
                 $"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
-                $"👤 Học sinh: {yeuCau.TenHocSinh}\n" +
-                $"📤 Từ lớp: {yeuCau.TenLopHienTai}\n" +
-                $"📥 Lớp mong muốn: {yeuCau.TenLopMongMuon ?? "Để admin quyết định"}\n" +
-                $"📚 Học kỳ: {yeuCau.TenHocKy} - {yeuCau.TenNamHoc}\n\n" +
-                $"📝 Lý do:\n{yeuCau.LyDoYeuCau}\n\n" +
+                $" Học sinh: {yeuCau.TenHocSinh}\n" +
+                $" Từ lớp: {yeuCau.TenLopHienTai}\n" +
+                $" Lớp mong muốn: {yeuCau.TenLopMongMuon ?? "Để admin quyết định"}\n" +
+                $" Học kỳ: {yeuCau.TenHocKy} - {yeuCau.TenNamHoc}\n\n" +
+                $" Lý do:\n{yeuCau.LyDoYeuCau}\n\n" +
                 $"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
-                $"🕐 Ngày tạo: {yeuCau.NgayTao:dd/MM/yyyy HH:mm}\n" +
-                $"👤 Người tạo: {yeuCau.NguoiTao}\n";
+                $" Ngày tạo: {yeuCau.NgayTao:dd/MM/yyyy HH:mm}\n" +
+                $" Người tạo: {yeuCau.NguoiTao}\n";
 
             if (yeuCau.TrangThai != "Chờ duyệt")
             {
                 message += $"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
-                    $"🕐 Ngày xử lý: {yeuCau.NgayXuLy?.ToString("dd/MM/yyyy HH:mm") ?? "N/A"}\n" +
-                    $"👤 Người xử lý: {yeuCau.NguoiXuLy ?? "N/A"}\n";
+                    $" Ngày xử lý: {yeuCau.NgayXuLy?.ToString("dd/MM/yyyy HH:mm") ?? "N/A"}\n" +
+                    $" Người xử lý: {yeuCau.NguoiXuLy ?? "N/A"}\n";
 
                 if (yeuCau.TrangThai == "Đã duyệt")
                 {
@@ -342,9 +345,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             var confirm = MessageBox.Show(
                 $"Xác nhận xóa yêu cầu:\n\n" +
-                $"📌 Mã yêu cầu: {yeuCau.MaYeuCau}\n" +
-                $"👤 Học sinh: {yeuCau.TenHocSinh}\n" +
-                $"📊 Trạng thái: {yeuCau.TrangThai}\n\n" +
+                $" Mã yêu cầu: {yeuCau.MaYeuCau}\n" +
+                $" Học sinh: {yeuCau.TenHocSinh}\n" +
+                $" Trạng thái: {yeuCau.TrangThai}\n\n" +
                 $"Bạn có chắc chắn?",
                 "Xác nhận xóa",
                 MessageBoxButtons.YesNo,
@@ -418,7 +421,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (dgvYeuCau.Columns["NgayTao"] != null)
             {
                 dgvYeuCau.Columns["NgayTao"].Visible = true;
-                dgvYeuCau.Columns["NgayTao"].HeaderText = "📅 Ngày tạo";
+                dgvYeuCau.Columns["NgayTao"].HeaderText = " Ngày tạo";
                 dgvYeuCau.Columns["NgayTao"].Width = 130;
                 dgvYeuCau.Columns["NgayTao"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
                 dgvYeuCau.Columns["NgayTao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -428,7 +431,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (dgvYeuCau.Columns["TenHocSinh"] != null)
             {
                 dgvYeuCau.Columns["TenHocSinh"].Visible = true;
-                dgvYeuCau.Columns["TenHocSinh"].HeaderText = "👤 Học sinh";
+                dgvYeuCau.Columns["TenHocSinh"].HeaderText = " Học sinh";
                 dgvYeuCau.Columns["TenHocSinh"].Width = 180;
                 dgvYeuCau.Columns["TenHocSinh"].DisplayIndex = displayIndex++;
             }
@@ -436,7 +439,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (dgvYeuCau.Columns["TenLopHienTai"] != null)
             {
                 dgvYeuCau.Columns["TenLopHienTai"].Visible = true;
-                dgvYeuCau.Columns["TenLopHienTai"].HeaderText = "📤 Lớp hiện tại";
+                dgvYeuCau.Columns["TenLopHienTai"].HeaderText = " Lớp hiện tại";
                 dgvYeuCau.Columns["TenLopHienTai"].Width = 120;
                 dgvYeuCau.Columns["TenLopHienTai"].DisplayIndex = displayIndex++;
             }
@@ -444,7 +447,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (dgvYeuCau.Columns["TenLopMongMuon"] != null)
             {
                 dgvYeuCau.Columns["TenLopMongMuon"].Visible = true;
-                dgvYeuCau.Columns["TenLopMongMuon"].HeaderText = "📥 Lớp mong muốn";
+                dgvYeuCau.Columns["TenLopMongMuon"].HeaderText = " Lớp mong muốn";
                 dgvYeuCau.Columns["TenLopMongMuon"].Width = 140;
                 dgvYeuCau.Columns["TenLopMongMuon"].DisplayIndex = displayIndex++;
             }
@@ -452,7 +455,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (dgvYeuCau.Columns["LyDoYeuCau"] != null)
             {
                 dgvYeuCau.Columns["LyDoYeuCau"].Visible = true;
-                dgvYeuCau.Columns["LyDoYeuCau"].HeaderText = "📝 Lý do";
+                dgvYeuCau.Columns["LyDoYeuCau"].HeaderText = " Lý do";
                 dgvYeuCau.Columns["LyDoYeuCau"].Width = 250;
                 dgvYeuCau.Columns["LyDoYeuCau"].DisplayIndex = displayIndex++;
             }
@@ -460,7 +463,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (dgvYeuCau.Columns["TrangThai"] != null)
             {
                 dgvYeuCau.Columns["TrangThai"].Visible = true;
-                dgvYeuCau.Columns["TrangThai"].HeaderText = "🏷️ Trạng thái";
+                dgvYeuCau.Columns["TrangThai"].HeaderText = " Trạng thái";
                 dgvYeuCau.Columns["TrangThai"].Width = 130;
                 dgvYeuCau.Columns["TrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 dgvYeuCau.Columns["TrangThai"].DisplayIndex = displayIndex++;
@@ -469,7 +472,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (dgvYeuCau.Columns["NguoiTao"] != null)
             {
                 dgvYeuCau.Columns["NguoiTao"].Visible = true;
-                dgvYeuCau.Columns["NguoiTao"].HeaderText = "👨‍💼 Người tạo";
+                dgvYeuCau.Columns["NguoiTao"].HeaderText = " Người tạo";
                 dgvYeuCau.Columns["NguoiTao"].Width = 120;
                 dgvYeuCau.Columns["NguoiTao"].DisplayIndex = displayIndex++;
             }
@@ -478,6 +481,79 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (dgvYeuCau.Columns["LyDoYeuCau"] != null)
             {
                 dgvYeuCau.Columns["LyDoYeuCau"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+        }
+
+        /// <summary>
+        /// ✅ Thêm cột "Xem chi tiết" (PDF) vào DataGridView
+        /// </summary>
+        private void ThemCotXemChiTiet()
+        {
+            // Kiểm tra xem cột đã tồn tại chưa
+            if (dgvYeuCau.Columns["colXemChiTiet"] != null)
+            {
+                return;
+            }
+
+            // Tạo cột button "Xem chi tiết"
+            DataGridViewButtonColumn btnColumn = new DataGridViewButtonColumn();
+            btnColumn.Name = "colXemChiTiet";
+            btnColumn.HeaderText = "📄 Xem chi tiết";
+            btnColumn.Text = "Xem PDF";
+            btnColumn.UseColumnTextForButtonValue = true;
+            btnColumn.Width = 120;
+            btnColumn.DefaultCellStyle.BackColor = Color.FromArgb(30, 136, 229);
+            btnColumn.DefaultCellStyle.ForeColor = Color.White;
+            btnColumn.DefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            btnColumn.FlatStyle = FlatStyle.Flat;
+
+            // Thêm cột vào cuối
+            dgvYeuCau.Columns.Add(btnColumn);
+            dgvYeuCau.Columns["colXemChiTiet"].DisplayIndex = dgvYeuCau.Columns.Count - 1;
+        }
+
+        /// <summary>
+        /// ✅ Event khi click vào cột "Xem chi tiết"
+        /// </summary>
+        private void dgvYeuCau_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Kiểm tra click vào cột "Xem chi tiết"
+            if (e.ColumnIndex == dgvYeuCau.Columns["colXemChiTiet"]?.Index && e.RowIndex >= 0)
+            {
+                YeuCauChuyenLopDTO yeuCau = dgvYeuCau.Rows[e.RowIndex].DataBoundItem as YeuCauChuyenLopDTO;
+                if (yeuCau == null)
+                {
+                    MessageBox.Show("Không tìm thấy thông tin yêu cầu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Kiểm tra có file PDF không
+                if (string.IsNullOrWhiteSpace(yeuCau.DuongDanPDF))
+                {
+                    MessageBox.Show("Yêu cầu này chưa có file PDF.\n\nCó thể yêu cầu được tạo trước khi tính năng PDF được thêm vào.", 
+                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Kiểm tra file có tồn tại không
+                if (!System.IO.File.Exists(yeuCau.DuongDanPDF))
+                {
+                    MessageBox.Show($"File PDF không tồn tại tại đường dẫn:\n{yeuCau.DuongDanPDF}", 
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Mở file PDF
+                try
+                {
+                    System.Diagnostics.Process.Start(yeuCau.DuongDanPDF);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Không thể mở file PDF:\n{ex.Message}", 
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }

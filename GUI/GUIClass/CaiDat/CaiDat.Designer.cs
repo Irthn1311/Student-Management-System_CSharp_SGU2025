@@ -44,6 +44,7 @@
             this.guna2CirclePictureBox1 = new Guna.UI2.WinForms.Guna2CirclePictureBox();
             this.guna2Panel3 = new Guna.UI2.WinForms.Guna2Panel();
             this.dateNgaySinh = new Guna.UI2.WinForms.Guna2DateTimePicker();
+            this.btnGuiYeuCauChuyenLop = new Guna.UI2.WinForms.Guna2Button();
             this.btnCapNhat = new Guna.UI2.WinForms.Guna2Button();
             this.txtAddress = new Guna.UI2.WinForms.Guna2TextBox();
             this.txtSDT = new Guna.UI2.WinForms.Guna2TextBox();
@@ -270,6 +271,7 @@
             this.guna2Panel3.BackColor = System.Drawing.Color.Transparent;
             this.guna2Panel3.BorderRadius = 6;
             this.guna2Panel3.Controls.Add(this.dateNgaySinh);
+            this.guna2Panel3.Controls.Add(this.btnGuiYeuCauChuyenLop);
             this.guna2Panel3.Controls.Add(this.btnCapNhat);
             this.guna2Panel3.Controls.Add(this.txtAddress);
             this.guna2Panel3.Controls.Add(this.txtSDT);
@@ -303,6 +305,26 @@
             this.dateNgaySinh.Size = new System.Drawing.Size(337, 41);
             this.dateNgaySinh.TabIndex = 18;
             this.dateNgaySinh.Value = new System.DateTime(2025, 11, 28, 22, 51, 18, 652);
+            // 
+            // btnGuiYeuCauChuyenLop
+            // 
+            this.btnGuiYeuCauChuyenLop.BorderRadius = 7;
+            this.btnGuiYeuCauChuyenLop.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnGuiYeuCauChuyenLop.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnGuiYeuCauChuyenLop.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnGuiYeuCauChuyenLop.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnGuiYeuCauChuyenLop.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(139)))), ((int)(((byte)(34)))));
+            this.btnGuiYeuCauChuyenLop.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGuiYeuCauChuyenLop.ForeColor = System.Drawing.Color.White;
+            this.btnGuiYeuCauChuyenLop.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnGuiYeuCauChuyenLop.Location = new System.Drawing.Point(280, 366);
+            this.btnGuiYeuCauChuyenLop.Margin = new System.Windows.Forms.Padding(2);
+            this.btnGuiYeuCauChuyenLop.Name = "btnGuiYeuCauChuyenLop";
+            this.btnGuiYeuCauChuyenLop.Size = new System.Drawing.Size(201, 41);
+            this.btnGuiYeuCauChuyenLop.TabIndex = 19;
+            this.btnGuiYeuCauChuyenLop.Text = "Gửi yêu cầu chuyển lớp";
+            this.btnGuiYeuCauChuyenLop.Visible = false;
+            this.btnGuiYeuCauChuyenLop.Click += new System.EventHandler(this.btnGuiYeuCauChuyenLop_Click);
             // 
             // btnCapNhat
             // 
@@ -793,5 +815,6 @@
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel6;
         private Guna.UI2.WinForms.Guna2Button btnDoiMatKhau;
         private Guna.UI2.WinForms.Guna2DateTimePicker dateNgaySinh;
+        private Guna.UI2.WinForms.Guna2Button btnGuiYeuCauChuyenLop;
     }
 }

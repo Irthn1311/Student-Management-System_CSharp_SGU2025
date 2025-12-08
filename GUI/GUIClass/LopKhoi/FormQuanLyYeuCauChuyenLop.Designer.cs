@@ -24,9 +24,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelMain = new Guna.UI2.WinForms.Guna2Panel();
             this.dgvYeuCau = new System.Windows.Forms.DataGridView();
             this.panelButtons = new Guna.UI2.WinForms.Guna2Panel();
@@ -65,26 +65,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             this.dgvYeuCau.AllowUserToAddRows = false;
             this.dgvYeuCau.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.dgvYeuCau.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            this.dgvYeuCau.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
             this.dgvYeuCau.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvYeuCau.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvYeuCau.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this.dgvYeuCau.ColumnHeadersHeight = 40;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9F);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(230)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvYeuCau.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Segoe UI", 9F);
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(230)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvYeuCau.DefaultCellStyle = dataGridViewCellStyle9;
             this.dgvYeuCau.EnableHeadersVisualStyles = false;
             this.dgvYeuCau.Location = new System.Drawing.Point(12, 180);
             this.dgvYeuCau.MultiSelect = false;
@@ -95,6 +95,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.dgvYeuCau.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvYeuCau.Size = new System.Drawing.Size(1185, 430);
             this.dgvYeuCau.TabIndex = 3;
+            this.dgvYeuCau.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvYeuCau_CellContentClick);
             this.dgvYeuCau.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvYeuCau_CellDoubleClick);
             // 
             // panelButtons
@@ -120,7 +121,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnLamMoi.Name = "btnLamMoi";
             this.btnLamMoi.Size = new System.Drawing.Size(120, 45);
             this.btnLamMoi.TabIndex = 0;
-            this.btnLamMoi.Text = "🔄 Làm mới";
+            this.btnLamMoi.Text = " Làm mới";
             this.btnLamMoi.Click += new System.EventHandler(this.btnLamMoi_Click);
             // 
             // btnXemChiTiet
@@ -133,7 +134,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnXemChiTiet.Name = "btnXemChiTiet";
             this.btnXemChiTiet.Size = new System.Drawing.Size(140, 45);
             this.btnXemChiTiet.TabIndex = 1;
-            this.btnXemChiTiet.Text = "📋 Xem chi tiết";
+            this.btnXemChiTiet.Text = " Xem chi tiết";
             this.btnXemChiTiet.Click += new System.EventHandler(this.btnXemChiTiet_Click);
             // 
             // btnDuyet
@@ -146,7 +147,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnDuyet.Name = "btnDuyet";
             this.btnDuyet.Size = new System.Drawing.Size(120, 45);
             this.btnDuyet.TabIndex = 2;
-            this.btnDuyet.Text = "✅ Duyệt";
+            this.btnDuyet.Text = "Duyệt";
             this.btnDuyet.Click += new System.EventHandler(this.btnDuyet_Click);
             // 
             // btnTuChoi
@@ -159,7 +160,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnTuChoi.Name = "btnTuChoi";
             this.btnTuChoi.Size = new System.Drawing.Size(120, 45);
             this.btnTuChoi.TabIndex = 3;
-            this.btnTuChoi.Text = "❌ Từ chối";
+            this.btnTuChoi.Text = "Từ chối";
             this.btnTuChoi.Click += new System.EventHandler(this.btnTuChoi_Click);
             // 
             // btnXoa
@@ -172,7 +173,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnXoa.Name = "btnXoa";
             this.btnXoa.Size = new System.Drawing.Size(120, 45);
             this.btnXoa.TabIndex = 4;
-            this.btnXoa.Text = "🗑️ Xóa";
+            this.btnXoa.Text = "Xóa";
             this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
             // 
             // lblThongKe
@@ -182,9 +183,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.lblThongKe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.lblThongKe.Location = new System.Drawing.Point(30, 145);
             this.lblThongKe.Name = "lblThongKe";
-            this.lblThongKe.Size = new System.Drawing.Size(352, 20);
+            this.lblThongKe.Size = new System.Drawing.Size(326, 20);
             this.lblThongKe.TabIndex = 2;
-            this.lblThongKe.Text = "📊 Tổng: 0 | Chờ duyệt: 0 | Đã duyệt: 0 | Từ chối: 0";
+            this.lblThongKe.Text = "Tổng: 0 | Chờ duyệt: 0 | Đã duyệt: 0 | Từ chối: 0";
             // 
             // panelFilter
             // 
@@ -209,10 +210,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.rbTatCa.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.rbTatCa.Location = new System.Drawing.Point(20, 15);
             this.rbTatCa.Name = "rbTatCa";
-            this.rbTatCa.Size = new System.Drawing.Size(89, 23);
+            this.rbTatCa.Size = new System.Drawing.Size(69, 23);
             this.rbTatCa.TabIndex = 0;
             this.rbTatCa.TabStop = true;
-            this.rbTatCa.Text = "📋 Tất cả";
+            this.rbTatCa.Text = " Tất cả";
             this.rbTatCa.UseVisualStyleBackColor = false;
             this.rbTatCa.CheckedChanged += new System.EventHandler(this.rbTatCa_CheckedChanged);
             // 
@@ -223,9 +224,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.rbChoDuyet.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
             this.rbChoDuyet.Location = new System.Drawing.Point(130, 15);
             this.rbChoDuyet.Name = "rbChoDuyet";
-            this.rbChoDuyet.Size = new System.Drawing.Size(116, 23);
+            this.rbChoDuyet.Size = new System.Drawing.Size(92, 23);
             this.rbChoDuyet.TabIndex = 1;
-            this.rbChoDuyet.Text = "⏳ Chờ duyệt";
+            this.rbChoDuyet.Text = "Chờ duyệt";
             this.rbChoDuyet.UseVisualStyleBackColor = false;
             this.rbChoDuyet.CheckedChanged += new System.EventHandler(this.rbChoDuyet_CheckedChanged);
             // 
@@ -236,9 +237,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.rbDaDuyet.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this.rbDaDuyet.Location = new System.Drawing.Point(280, 15);
             this.rbDaDuyet.Name = "rbDaDuyet";
-            this.rbDaDuyet.Size = new System.Drawing.Size(107, 23);
+            this.rbDaDuyet.Size = new System.Drawing.Size(83, 23);
             this.rbDaDuyet.TabIndex = 2;
-            this.rbDaDuyet.Text = "✅ Đã duyệt";
+            this.rbDaDuyet.Text = "Đã duyệt";
             this.rbDaDuyet.UseVisualStyleBackColor = false;
             this.rbDaDuyet.CheckedChanged += new System.EventHandler(this.rbDaDuyet_CheckedChanged);
             // 
@@ -249,9 +250,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.rbTuChoi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
             this.rbTuChoi.Location = new System.Drawing.Point(420, 15);
             this.rbTuChoi.Name = "rbTuChoi";
-            this.rbTuChoi.Size = new System.Drawing.Size(99, 23);
+            this.rbTuChoi.Size = new System.Drawing.Size(75, 23);
             this.rbTuChoi.TabIndex = 3;
-            this.rbTuChoi.Text = "❌ Từ chối";
+            this.rbTuChoi.Text = "Từ chối";
             this.rbTuChoi.UseVisualStyleBackColor = false;
             this.rbTuChoi.CheckedChanged += new System.EventHandler(this.rbTuChoi_CheckedChanged);
             // 
@@ -262,9 +263,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
             this.lblTitle.Location = new System.Drawing.Point(30, 25);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(400, 37);
+            this.lblTitle.Size = new System.Drawing.Size(355, 37);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "📋 Quản lý yêu cầu chuyển lớp";
+            this.lblTitle.Text = "Quản lý yêu cầu chuyển lớp";
             // 
             // FormQuanLyYeuCauChuyenLop
             // 

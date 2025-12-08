@@ -35,7 +35,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             phanLopDAO = new PhanLopDAO();
             giaoVienDAO = new GiaoVienDAO();
 
-            SetupCardHoverEffects();
             InitializeUserControls();
             AttachEventHandlers();
             LoadHocKyToCombobox();
@@ -222,33 +221,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
 
 
-        private void SetupCardHoverEffects()
-        {
-            // Add hover effects to cards
-            SetupCardHover(cardThongKeDiem);
-            SetupCardHover(cardBaoCaoTongHop);
-        }
-
         private void ShowDefaultPanels(bool visible)
         {
             // Ẩn/hiện 2 panel gốc trong pnlContent
             pnlClassListHeader.Visible = visible;
             pnlClassesContainer.Visible = visible;
-        }
-
-        private void SetupCardHover(Guna.UI2.WinForms.Guna2Panel card)
-        {
-            card.MouseEnter += (s, e) =>
-            {
-                card.ShadowDecoration.Depth = 10;
-                card.Cursor = Cursors.Hand;
-            };
-
-            card.MouseLeave += (s, e) =>
-            {
-                card.ShadowDecoration.Depth = 5;
-                card.Cursor = Cursors.Default;
-            };
         }
 
         private void InitializeUserControls()
@@ -276,11 +253,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             btnBangDiem.Click += BtnTab_Click;
             btnThongKeHocLuc.Click += BtnTab_Click;
 
-            // 3 card điều hướng tương ứng
-            cardBaoCaoHocSinh.Click += (s, e) => BtnTab_Click(btnDanhSachLop, e);
-            cardThongKeDiem.Click += (s, e) => BtnTab_Click(btnBangDiem, e);
-            cardBaoCaoTongHop.Click += (s, e) => BtnTab_Click(btnThongKeHocLuc, e);
-
             // Combobox chọn học kỳ
             cboHocKy.SelectedIndexChanged += CboHocKy_SelectedIndexChanged;
         }
@@ -295,7 +267,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ShowDefaultPanels(false);
 
             // Kiểm tra nút được nhấn
-            if (sender == btnDanhSachLop || sender == cardBaoCaoHocSinh)
+            if (sender == btnDanhSachLop)
             {
                 // Hiện lại panel danh sách lớp
                 ShowDefaultPanels(true);
@@ -305,7 +277,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 btnBangDiem.Checked = false;
                 btnThongKeHocLuc.Checked = false;
             }
-            else if (sender == btnBangDiem || sender == cardThongKeDiem)
+            else if (sender == btnBangDiem)
             {
                 ucBangDiem.Visible = true;
                 ucBangDiem.BringToFront();
@@ -314,7 +286,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 btnBangDiem.Checked = true;
                 btnThongKeHocLuc.Checked = false;
             }
-            else if (sender == btnThongKeHocLuc || sender == cardBaoCaoTongHop)
+            else if (sender == btnThongKeHocLuc)
             {
                 ucThongKeHocLuc.Visible = true;
                 ucThongKeHocLuc.BringToFront();
@@ -348,11 +320,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         private void pnlContent_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void cardThongKeDiem_Paint(object sender, PaintEventArgs e)
         {
 
         }
@@ -635,77 +602,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (worksheet.Column(7).Width < 30) worksheet.Column(7).Width = 30; // Email
         }
 
-        private void cardBaoCaoHocSinh_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private void pnlClass1_Paint(object sender, PaintEventArgs e)
         {
 
         }
 
         private void pnlMain_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void cardBaoCaoTongHop_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void guna2Panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void lblThongKeDiemDesc_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblThongKeDiemTitle_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pnlIconThongKe_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void cardBaoCaoHocSinh_Paint_1(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void lblBaoCaoHocSinhDesc_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pnlIconBaoCao_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void lblBaoCaoHocSinhTitle_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cardThongKeDiem_Paint_1(object sender, PaintEventArgs e)
         {
 
         }
