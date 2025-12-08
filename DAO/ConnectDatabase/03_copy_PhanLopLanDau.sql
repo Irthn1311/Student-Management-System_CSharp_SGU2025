@@ -471,7 +471,7 @@ INSERT INTO PhuHuynh (HoTen, SoDienThoai, Email, DiaChi) VALUES
 ('Dương Văn Phúc', '0901236081', 'duong.phuc.ph081@parent.edu.vn', '912 Lý Tự Trọng, Q1, TP.HCM'),
 ('Tôn Thị Quỳnh', '0901236082', 'ton.quynh.ph082@parent.edu.vn', '023 Pasteur, Q3, TP.HCM'),
 ('Chu Minh Rồng', '0901236083', 'chu.rong.ph083@parent.edu.vn', '134 Nguyễn Du, Q1, TP.HCM'),
-('Đỗ Thị Sương', '0901236084', 'do.suong.ph084@parent.edu.vn', '245 Lê Văn Việt, Q9, TP.HCM'),
+('Đỗ Thị Sương', '0901236084', 'do.suong.ph084@parent.edu.vn', '245 Lê Văn Việt, Q9, TP.HCM');
 
 -- Tạo tự động phụ huynh cho 216 học sinh còn lại (từ HS 85 đến HS 300)
 INSERT INTO PhuHuynh (HoTen, SoDienThoai, Email, DiaChi)

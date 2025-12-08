@@ -1,4 +1,4 @@
-﻿namespace Student_Management_System_CSharp_SGU2025.GUI
+namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     partial class PhanLop
     {
@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cbHocKyNamHoc = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.btnHuy = new Guna.UI2.WinForms.Guna2Button();
@@ -43,6 +43,8 @@
             this.btnThemPhanLop = new Guna.UI2.WinForms.Guna2Button();
             this.txtTimKiem = new Guna.UI2.WinForms.Guna2TextBox();
             this.btnPhanLopChuyenTruong = new Guna.UI2.WinForms.Guna2Button();
+            this.btnNhapExcel = new Guna.UI2.WinForms.Guna2Button();
+            this.btnThemHocSinh = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.tablePhanLop)).BeginInit();
             this.SuspendLayout();
             // 
@@ -106,10 +108,10 @@
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnHuy.ForeColor = System.Drawing.Color.Red;
             this.btnHuy.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnHuy.Location = new System.Drawing.Point(631, 529);
+            this.btnHuy.Location = new System.Drawing.Point(23, 529);
             this.btnHuy.Margin = new System.Windows.Forms.Padding(2);
             this.btnHuy.Name = "btnHuy";
-            this.btnHuy.Size = new System.Drawing.Size(60, 33);
+            this.btnHuy.Size = new System.Drawing.Size(60, 44);
             this.btnHuy.TabIndex = 74;
             this.btnHuy.Text = "Hủy";
             this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
@@ -118,16 +120,16 @@
             // 
             this.tablePhanLop.AllowUserToAddRows = false;
             this.tablePhanLop.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            this.tablePhanLop.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tablePhanLop.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.White;
+            this.tablePhanLop.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tablePhanLop.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this.tablePhanLop.ColumnHeadersHeight = 19;
             this.tablePhanLop.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tablePhanLop.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -135,14 +137,14 @@
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewTextBoxColumn3,
             this.Column4});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tablePhanLop.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tablePhanLop.DefaultCellStyle = dataGridViewCellStyle9;
             this.tablePhanLop.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tablePhanLop.Location = new System.Drawing.Point(23, 77);
             this.tablePhanLop.Margin = new System.Windows.Forms.Padding(2);
@@ -229,7 +231,7 @@
             this.btnThemPhanLop.Location = new System.Drawing.Point(870, 529);
             this.btnThemPhanLop.Margin = new System.Windows.Forms.Padding(2);
             this.btnThemPhanLop.Name = "btnThemPhanLop";
-            this.btnThemPhanLop.Size = new System.Drawing.Size(122, 33);
+            this.btnThemPhanLop.Size = new System.Drawing.Size(122, 44);
             this.btnThemPhanLop.TabIndex = 73;
             this.btnThemPhanLop.Text = "Phân lớp tự động";
             this.btnThemPhanLop.Click += new System.EventHandler(this.btnThemPhanLop_Click);
@@ -271,10 +273,49 @@
             this.btnPhanLopChuyenTruong.Location = new System.Drawing.Point(698, 529);
             this.btnPhanLopChuyenTruong.Margin = new System.Windows.Forms.Padding(2);
             this.btnPhanLopChuyenTruong.Name = "btnPhanLopChuyenTruong";
-            this.btnPhanLopChuyenTruong.Size = new System.Drawing.Size(168, 33);
+            this.btnPhanLopChuyenTruong.Size = new System.Drawing.Size(168, 44);
             this.btnPhanLopChuyenTruong.TabIndex = 80;
-            this.btnPhanLopChuyenTruong.Text = "Phân lớp chuyển trường";
+            this.btnPhanLopChuyenTruong.Text = "Chuyển trường";
             this.btnPhanLopChuyenTruong.Click += new System.EventHandler(this.btnPhanLopChuyenTruong_Click);
+            // 
+            // btnNhapExcel
+            // 
+            this.btnNhapExcel.BorderRadius = 7;
+            this.btnNhapExcel.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnNhapExcel.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnNhapExcel.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnNhapExcel.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnNhapExcel.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
+            this.btnNhapExcel.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnNhapExcel.ForeColor = System.Drawing.Color.White;
+            this.btnNhapExcel.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.download;
+            this.btnNhapExcel.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnNhapExcel.Location = new System.Drawing.Point(564, 529);
+            this.btnNhapExcel.Margin = new System.Windows.Forms.Padding(2);
+            this.btnNhapExcel.Name = "btnNhapExcel";
+            this.btnNhapExcel.Size = new System.Drawing.Size(130, 44);
+            this.btnNhapExcel.TabIndex = 81;
+            this.btnNhapExcel.Text = "Nhập Excel";
+            this.btnNhapExcel.Click += new System.EventHandler(this.btnNhapExcel_Click);
+            // 
+            // btnThemHocSinh
+            // 
+            this.btnThemHocSinh.BorderRadius = 7;
+            this.btnThemHocSinh.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemHocSinh.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemHocSinh.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnThemHocSinh.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnThemHocSinh.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThemHocSinh.ForeColor = System.Drawing.Color.White;
+            this.btnThemHocSinh.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.plus;
+            this.btnThemHocSinh.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnThemHocSinh.Location = new System.Drawing.Point(390, 529);
+            this.btnThemHocSinh.Margin = new System.Windows.Forms.Padding(2);
+            this.btnThemHocSinh.Name = "btnThemHocSinh";
+            this.btnThemHocSinh.Size = new System.Drawing.Size(170, 44);
+            this.btnThemHocSinh.TabIndex = 82;
+            this.btnThemHocSinh.Text = "Thêm học sinh";
+            this.btnThemHocSinh.Click += new System.EventHandler(this.btnThemHocSinh_Click);
             // 
             // PhanLop
             // 
@@ -282,6 +323,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1016, 584);
             this.ControlBox = false;
+            this.Controls.Add(this.btnThemHocSinh);
+            this.Controls.Add(this.btnNhapExcel);
             this.Controls.Add(this.btnPhanLopChuyenTruong);
             this.Controls.Add(this.tablePhanLop);
             this.Controls.Add(this.btnHuy);
@@ -311,5 +354,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private Guna.UI2.WinForms.Guna2Button btnChon;
         private Guna.UI2.WinForms.Guna2Button btnPhanLopChuyenTruong;
+        private Guna.UI2.WinForms.Guna2Button btnNhapExcel;
+        private Guna.UI2.WinForms.Guna2Button btnThemHocSinh;
     }
 }

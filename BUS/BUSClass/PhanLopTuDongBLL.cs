@@ -1,5 +1,6 @@
 using Student_Management_System_CSharp_SGU2025.DAO; // Giả sử bạn có DAO ở đây
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.BUS.Services; // ✅ Để dùng SemesterHelper
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -302,20 +303,47 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                                 khoiMoi = khoiCu + 1;
                                 if (khoiMoi > 12)
                                 {
-                                    // ✅ CẬP NHẬT TRẠNG THÁI "ĐÃ TỐT NGHIỆP" VÀO SQL
-                                    var hocSinhDAO = new HocSinhDAO();
-                                    bool capNhatThanhCong = hocSinhDAO.CapNhatTrangThaiHocSinh(hs.MaHS, "Đã tốt nghiệp");
+                                    // ✅ TRƯỜNG HỢP 2: Không set trạng thái "Đã tốt nghiệp" ngay
+                                    // Chỉ set khi học kỳ hiện tại (năm học mà học sinh đang học lớp 12) đã kết thúc
+                                    // Kiểm tra HK2 năm trước (học kỳ cuối cùng của năm học mà học sinh đang học lớp 12)
+                                    bool hocKyHienTaiDaKetThuc = false;
+                                    if (hocKy2NamTruoc != null)
+                                    {
+                                        // ✅ Kiểm tra học kỳ đã kết thúc chưa bằng SemesterHelper
+                                        string trangThaiHK2 = SemesterHelper.GetStatus(hocKy2NamTruoc.MaHocKy);
+                                        hocKyHienTaiDaKetThuc = (trangThaiHK2 == "Đã kết thúc");
+                                        
+                                        // Hoặc kiểm tra trực tiếp bằng ngày kết thúc (fallback)
+                                        if (!hocKyHienTaiDaKetThuc && hocKy2NamTruoc.NgayKT.HasValue)
+                                        {
+                                            hocKyHienTaiDaKetThuc = hocKy2NamTruoc.NgayKT.Value.Date < DateTime.Now.Date;
+                                        }
+                                    }
                                     
                                     string loi = $"HS {hs.HoTen}: Đã tốt nghiệp (khối 12), không thể lên lớp";
-                                    if (capNhatThanhCong)
+                                    
+                                    if (hocKyHienTaiDaKetThuc)
                                     {
-                                        loi += " → Đã cập nhật trạng thái 'Đã tốt nghiệp'";
-                                        Console.WriteLine($"  ✓ {loi}");
+                                        // ✅ Học kỳ hiện tại đã kết thúc → Set trạng thái "Đã tốt nghiệp"
+                                        var hocSinhDAO = new HocSinhDAO();
+                                        bool capNhatThanhCong = hocSinhDAO.CapNhatTrangThaiHocSinh(hs.MaHS, "Đã tốt nghiệp");
+                                        
+                                        if (capNhatThanhCong)
+                                        {
+                                            loi += " → Đã cập nhật trạng thái 'Đã tốt nghiệp'";
+                                            Console.WriteLine($"  ✓ {loi}");
+                                        }
+                                        else
+                                        {
+                                            loi += " → Lỗi khi cập nhật trạng thái";
+                                            Console.WriteLine($"  ❌ {loi}");
+                                        }
                                     }
                                     else
                                     {
-                                        loi += " → Lỗi khi cập nhật trạng thái";
-                                        Console.WriteLine($"  ❌ {loi}");
+                                        // ✅ Học kỳ hiện tại chưa kết thúc → Chỉ thông báo, KHÔNG set trạng thái
+                                        loi += " → Học kỳ hiện tại chưa kết thúc, chưa cập nhật trạng thái 'Đã tốt nghiệp' (sẽ cập nhật khi học kỳ kết thúc)";
+                                        Console.WriteLine($"  ⚠️ {loi}");
                                     }
                                     
                                     danhSachLoi.Add(loi);
