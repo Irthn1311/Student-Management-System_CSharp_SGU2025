@@ -288,7 +288,7 @@ INSERT INTO ThongBao (TieuDe, NoiDung, NgayTao, LoaiThongBao, DoiTuongNhan, Ngay
 ('Thông báo đã nhập điểm Toán - Lớp 10A1',
  'Điểm kiểm tra thường xuyên môn Toán lần 1 đã được cập nhật. Học sinh và phụ huynh có thể xem điểm trong hệ thống.',
  '2025-09-25 16:00:00', 'HOC_TAP', 'Học sinh lớp 10A1', NULL, 
- @gvcn_lop1, 'LOP', NULL, 1, NULL, 'BINH_THUONG', 'HIEN_THI');
+ @gvcn_lop1, 'LOP', NULL, 1, NULL, 'BINH_THUONG', 'HIEN_THI'),
 
 -- Thông báo theo khối
 ('Hướng nghiệp cho học sinh khối 12',

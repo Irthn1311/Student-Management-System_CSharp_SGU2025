@@ -20,10 +20,6 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.soTiet = soTiet;
             this.ghiChu = ghiChu;
         }
-        ~MonHocDTO()
-        {
-            Console.WriteLine("Huy doi tuong MonHocDTO");
-        }
         public int MaMon
         {
             get { return maMon; }
