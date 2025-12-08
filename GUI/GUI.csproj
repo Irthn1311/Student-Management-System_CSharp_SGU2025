@@ -372,6 +372,18 @@
     <Compile Include="GUIClass\HocSinh\XemChiTietHocSinh.Designer.cs">
       <DependentUpon>XemChiTietHocSinh.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUIClass\ThongBao\FrmSuaThongBao.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\ThongBao\FrmSuaThongBao.Designer.cs">
+      <DependentUpon>FrmSuaThongBao.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUIClass\ThongBao\FrmXemThongBao.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\ThongBao\FrmXemThongBao.Designer.cs">
+      <DependentUpon>FrmXemThongBao.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\StudentWebServer.cs" />
     <Compile Include="Services\StudentWebServerManager.cs" />
     <Compile Include="Services\UrlResolver.cs" />
@@ -804,6 +816,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\ThoiKhoaBieu\ThoiKhoaBieu.resx">
       <DependentUpon>ThoiKhoaBieu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\ThongBao\FrmChiTietThongBao.resx">
+      <DependentUpon>FrmChiTietThongBao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\ThongBao\FrmThemThongBao.resx">
+      <DependentUpon>FrmThemThongBao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\ThongBao\FrmXemThongBao.resx">
+      <DependentUpon>FrmXemThongBao.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\ThongBao\ThongBao.resx">
       <DependentUpon>ThongBao.cs</DependentUpon>
