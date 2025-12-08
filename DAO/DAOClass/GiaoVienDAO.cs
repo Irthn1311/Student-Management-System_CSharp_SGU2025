@@ -223,29 +223,105 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
-        // ✅ Xóa giáo viên - Sử dụng LINQ to Entities
-        public bool XoaGiaoVien(string maGiaoVien)
+        // ✅ Xóa giáo viên - Xử lý tất cả ràng buộc khóa ngoại và chuyển phân công
+        // danhSachGiaoVienThayThe: Dictionary<MaPhanCong, MaGiaoVienThayThe> - Danh sách giáo viên thay thế cho từng phân công
+        public bool XoaGiaoVien(string maGiaoVien, Dictionary<int, string> danhSachGiaoVienThayThe = null)
         {
+            MySqlConnection conn = null;
+            MySqlTransaction transaction = null;
+            PhanCongGiangDayDAO phanCongDAO = new PhanCongGiangDayDAO();
+            
             try
             {
-                using (var db = new SchoolDbContext())
+                // Kiểm tra giáo viên có tồn tại không
+                if (LayGiaoVienTheoMa(maGiaoVien) == null)
                 {
-                    // ✅ LINQ to Entities - Tìm entity theo mã
-                    var entity = db.GiaoViens.FirstOrDefault(g => g.MaGiaoVien == maGiaoVien);
-                    
-                    if (entity == null)
-                        return false;
+                    return false;
+                }
 
-                    // ✅ LINQ to Entities - Remove và SaveChanges
-                    db.GiaoViens.Remove(entity);
-                    int result = db.SaveChanges();
-                    return result > 0;
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+                transaction = conn.BeginTransaction();
+
+                try
+                {
+                    // ✅ Chuyển phân công sang giáo viên thay thế (nếu có)
+                    if (danhSachGiaoVienThayThe != null && danhSachGiaoVienThayThe.Count > 0)
+                    {
+                        foreach (var kvp in danhSachGiaoVienThayThe)
+                        {
+                            int maPhanCong = kvp.Key;
+                            string maGiaoVienThayThe = kvp.Value;
+                            
+                            if (!string.IsNullOrEmpty(maGiaoVienThayThe))
+                            {
+                                phanCongDAO.ChuyenPhanCongSangGiaoVienKhac(maPhanCong, maGiaoVienThayThe, conn, transaction);
+                            }
+                        }
+                    }
+
+                    // 1. Xóa TKB_Temp liên quan (nếu có) - Lưu ý: TKB_Temp dùng cột MaGV
+                    string query2 = @"DELETE FROM TKB_Temp WHERE MaGV = @MaGiaoVien";
+                    using (MySqlCommand cmd = new MySqlCommand(query2, conn, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 2. Xóa PhanCong_Temp liên quan (nếu có)
+                    string query4 = @"DELETE FROM PhanCong_Temp WHERE MaGiaoVien = @MaGiaoVien";
+                    using (MySqlCommand cmd = new MySqlCommand(query4, conn, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 3. Cập nhật LopHoc: Set MaGiaoVienChuNhiem = NULL cho các lớp có giáo viên này làm GVCN
+                    string query5 = @"UPDATE LopHoc SET MaGiaoVienChuNhiem = NULL WHERE MaGiaoVienChuNhiem = @MaGiaoVien";
+                    using (MySqlCommand cmd = new MySqlCommand(query5, conn, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 4. Xóa giáo viên từ bảng GiaoVien
+                    string query6 = @"DELETE FROM GiaoVien WHERE MaGiaoVien = @MaGiaoVien";
+                    using (MySqlCommand cmd = new MySqlCommand(query6, conn, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@MaGiaoVien", maGiaoVien);
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        
+                        if (rowsAffected == 0)
+                        {
+                            transaction.Rollback();
+                            return false;
+                        }
+                    }
+
+                    // Commit transaction nếu tất cả thành công
+                    transaction.Commit();
+                    int soPhanCongDaChuyen = danhSachGiaoVienThayThe != null ? danhSachGiaoVienThayThe.Count : 0;
+                    Console.WriteLine($"Đã xóa giáo viên '{maGiaoVien}' và chuyển {soPhanCongDaChuyen} phân công sang giáo viên thay thế");
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction?.Rollback();
+                    Console.WriteLine($"Lỗi trong transaction XoaGiaoVien: {ex.Message}");
+                    throw;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Lỗi XoaGiaoVien: {ex.Message}");
                 throw;
+            }
+            finally
+            {
+                if (conn != null && conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
             }
         }
 
@@ -309,6 +385,80 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
             
             return maTiepTheo;
+        }
+
+        // ✅ Lấy danh sách giáo viên thay thế: cùng chuyên môn và chưa có phân công giảng dạy
+        public List<GiaoVienDTO> LayDanhSachGiaoVienThayThe(int maMonHoc, string maGiaoVienLoaiTru)
+        {
+            List<GiaoVienDTO> danhSach = new List<GiaoVienDTO>();
+            try
+            {
+                using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+
+                    // Lấy danh sách giáo viên có cùng chuyên môn, đang hoạt động và CHƯA CÓ phân công giảng dạy
+                    string query = @"SELECT DISTINCT gv.MaGiaoVien, gv.HoTen, gv.NgaySinh, gv.GioiTinh, 
+                                           gv.DiaChi, gv.SoDienThoai, gv.Email, gv.MaMonChuyenMon, gv.TrangThai
+                                     FROM GiaoVien gv
+                                     WHERE gv.MaMonChuyenMon = @MaMonHoc
+                                     AND gv.TrangThai = 'Đang giảng dạy'
+                                     AND gv.MaGiaoVien != @MaGiaoVienLoaiTru
+                                     AND gv.MaGiaoVien NOT IN (
+                                         SELECT DISTINCT pc.MaGiaoVien 
+                                         FROM PhanCongGiangDay pc
+                                         INNER JOIN HocKy hk ON pc.MaHocKy = hk.MaHocKy
+                                         WHERE hk.NgayKT IS NULL OR hk.NgayKT >= CURDATE()
+                                     )
+                                     ORDER BY gv.HoTen";
+                    
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
+                        cmd.Parameters.AddWithValue("@MaGiaoVienLoaiTru", maGiaoVienLoaiTru);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                GiaoVienDTO gv = new GiaoVienDTO
+                                {
+                                    MaGiaoVien = reader.GetString("MaGiaoVien"),
+                                    HoTen = reader.GetString("HoTen"),
+                                    NgaySinh = reader.IsDBNull(reader.GetOrdinal("NgaySinh")) 
+                                        ? DateTime.MinValue 
+                                        : reader.GetDateTime("NgaySinh"),
+                                    GioiTinh = reader.IsDBNull(reader.GetOrdinal("GioiTinh")) 
+                                        ? "" 
+                                        : reader.GetString("GioiTinh"),
+                                    DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) 
+                                        ? "" 
+                                        : reader.GetString("DiaChi"),
+                                    SoDienThoai = reader.IsDBNull(reader.GetOrdinal("SoDienThoai")) 
+                                        ? "" 
+                                        : reader.GetString("SoDienThoai"),
+                                    Email = reader.IsDBNull(reader.GetOrdinal("Email")) 
+                                        ? "" 
+                                        : reader.GetString("Email"),
+                                    MaMonChuyenMon = reader.IsDBNull(reader.GetOrdinal("MaMonChuyenMon")) 
+                                        ? (int?)null 
+                                        : reader.GetInt32("MaMonChuyenMon"),
+                                    TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai")) 
+                                        ? "Đang giảng dạy" 
+                                        : reader.GetString("TrangThai")
+                                };
+                                danhSach.Add(gv);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayDanhSachGiaoVienThayThe: {ex.Message}");
+                throw;
+            }
+            
+            return danhSach;
         }
     }
 }

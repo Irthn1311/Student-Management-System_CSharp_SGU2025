@@ -16,18 +16,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     {
         private GiaoVienBUS giaoVienBUS;
         private MonHocBUS monHocBUS;
+        private LopHocBUS lopHocBUS;
+        private PhanCongGiangDayBUS phanCongBUS;
         private BindingList<GiaoVienDTO> bindingListGiaoVien;
         private List<GiaoVienDTO> danhSachGiaoVienFull;
         private List<MonHocDTO> danhSachMonHoc;
+        private Dictionary<string, string> dictGiaoVienChuNhiem; // MaGiaoVien -> TenLop
 
         public GiaoVien()
         {
             InitializeComponent();
             giaoVienBUS = new GiaoVienBUS();
             monHocBUS = new MonHocBUS();
+            lopHocBUS = new LopHocBUS();
+            phanCongBUS = new PhanCongGiangDayBUS();
             bindingListGiaoVien = new BindingList<GiaoVienDTO>();
             danhSachGiaoVienFull = new List<GiaoVienDTO>();
             danhSachMonHoc = new List<MonHocDTO>();
+            dictGiaoVienChuNhiem = new Dictionary<string, string>();
             SetupTableGiaoVien();
         }
 
@@ -94,34 +100,46 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tableGiaoVien.Columns["Sdt"].FillWeight = 10; tableGiaoVien.Columns["Sdt"].MinimumWidth = 70;
             tableGiaoVien.Columns["TrangThai"].FillWeight = 10; tableGiaoVien.Columns["TrangThai"].MinimumWidth = 90;
 
-            // ====== CỘT ICON (Thao tác) ======
+            // ====== CỘT ICON (Xem, Sửa, Xóa) ======
             var colView = new DataGridViewImageColumn()
             {
                 Name = "View",
-                HeaderText = "Thao tác",
+                HeaderText = "Xem",
+                ImageLayout = DataGridViewImageCellLayout.Zoom,
+            };
+            var colEdit = new DataGridViewImageColumn()
+            {
+                Name = "Edit",
+                HeaderText = "Sửa",
                 ImageLayout = DataGridViewImageCellLayout.Zoom,
             };
             var colDel = new DataGridViewImageColumn()
             {
                 Name = "Delete",
-                HeaderText = "",
+                HeaderText = "Xóa",
                 ImageLayout = DataGridViewImageCellLayout.Zoom,
             };
 
             tableGiaoVien.Columns.Add(colView);
+            tableGiaoVien.Columns.Add(colEdit);
             tableGiaoVien.Columns.Add(colDel);
 
-            int viewColWidth = 70;
-            int delColWidth = 34;
+            int viewColWidth = 60;
+            int editColWidth = 60;
+            int delColWidth = 60;
 
             tableGiaoVien.Columns["View"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            tableGiaoVien.Columns["Edit"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             tableGiaoVien.Columns["Delete"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             tableGiaoVien.Columns["View"].Width = viewColWidth;
+            tableGiaoVien.Columns["Edit"].Width = editColWidth;
             tableGiaoVien.Columns["Delete"].Width = delColWidth;
 
             tableGiaoVien.Columns["View"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            tableGiaoVien.Columns["Edit"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             tableGiaoVien.Columns["Delete"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             tableGiaoVien.Columns["View"].DefaultCellStyle.Padding = new Padding(6);
+            tableGiaoVien.Columns["Edit"].DefaultCellStyle.Padding = new Padding(6);
             tableGiaoVien.Columns["Delete"].DefaultCellStyle.Padding = new Padding(6);
 
             // Event
@@ -145,18 +163,46 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
 
         // === Hàm xử lý click icon ===
+        // Xem chi tiết giáo viên (chế độ chỉ đọc)
         private void HandleViewClick(int rowIndex)
         {
-            if (rowIndex < 0 || rowIndex >= bindingListGiaoVien.Count)
+            if (rowIndex < 0 || rowIndex >= tableGiaoVien.Rows.Count)
                 return;
 
-            var giaoVien = bindingListGiaoVien[rowIndex];
+            // Lấy MaGiaoVien từ row để tránh lỗi khi sắp xếp
+            string maGiaoVien = tableGiaoVien.Rows[rowIndex].Cells["MaGv"].Value?.ToString();
+            if (string.IsNullOrEmpty(maGiaoVien))
+                return;
+
+            // Tìm giáo viên trong danh sách đầy đủ
+            var giaoVien = danhSachGiaoVienFull.FirstOrDefault(gv => gv.MaGiaoVien == maGiaoVien);
             if (giaoVien == null)
                 return;
 
-            // Mở form chi tiết/sửa giáo viên
-            var formChiTiet = new ChinhSuaGiaoVien(giaoVien.MaGiaoVien);
-            if (formChiTiet.ShowDialog() == DialogResult.OK)
+            // Mở form xem chi tiết giáo viên mới
+            var formChiTiet = new XemChiTietGiaoVien(giaoVien.MaGiaoVien);
+            formChiTiet.ShowDialog();
+        }
+
+        // Sửa thông tin giáo viên
+        private void HandleEditClick(int rowIndex)
+        {
+            if (rowIndex < 0 || rowIndex >= tableGiaoVien.Rows.Count)
+                return;
+
+            // Lấy MaGiaoVien từ row để tránh lỗi khi sắp xếp
+            string maGiaoVien = tableGiaoVien.Rows[rowIndex].Cells["MaGv"].Value?.ToString();
+            if (string.IsNullOrEmpty(maGiaoVien))
+                return;
+
+            // Tìm giáo viên trong danh sách đầy đủ
+            var giaoVien = danhSachGiaoVienFull.FirstOrDefault(gv => gv.MaGiaoVien == maGiaoVien);
+            if (giaoVien == null)
+                return;
+
+            // Mở form chỉnh sửa giáo viên
+            var formChinhSua = new ChinhSuaGiaoVien(giaoVien.MaGiaoVien, readOnly: false);
+            if (formChinhSua.ShowDialog() == DialogResult.OK)
             {
                 // Reload dữ liệu sau khi sửa
                 LoadData();
@@ -165,10 +211,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void HandleDelClick(int rowIndex)
         {
-            if (rowIndex < 0 || rowIndex >= bindingListGiaoVien.Count)
+            if (rowIndex < 0 || rowIndex >= tableGiaoVien.Rows.Count)
                 return;
 
-            var giaoVien = bindingListGiaoVien[rowIndex];
+            // Lấy MaGiaoVien từ row để tránh lỗi khi sắp xếp
+            string maGiaoVien = tableGiaoVien.Rows[rowIndex].Cells["MaGv"].Value?.ToString();
+            if (string.IsNullOrEmpty(maGiaoVien))
+                return;
+
+            // Tìm giáo viên trong danh sách đầy đủ
+            var giaoVien = danhSachGiaoVienFull.FirstOrDefault(gv => gv.MaGiaoVien == maGiaoVien);
             if (giaoVien == null)
                 return;
 
@@ -186,10 +238,36 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 try
                 {
-                    bool success = giaoVienBUS.XoaGiaoVien(giaoVien.MaGiaoVien);
+                    // Kiểm tra giáo viên có phân công giảng dạy không
+                    var danhSachPhanCong = phanCongBUS.LayPhanCongTheoGiaoVien(giaoVien.MaGiaoVien);
+                    
+                    Dictionary<int, string> danhSachGiaoVienThayThe = null;
+                    
+                    // Nếu có phân công, mở form chọn giáo viên thay thế
+                    if (danhSachPhanCong.Count > 0)
+                    {
+                        var formChon = new ChonGiaoVienThayThe(giaoVien.MaGiaoVien);
+                        if (formChon.ShowDialog() == DialogResult.OK)
+                        {
+                            danhSachGiaoVienThayThe = formChon.DanhSachGiaoVienThayThe;
+                        }
+                        else
+                        {
+                            // Người dùng hủy, không xóa
+                            return;
+                        }
+                    }
+
+                    // Thực hiện xóa với danh sách giáo viên thay thế
+                    bool success = giaoVienBUS.XoaGiaoVien(giaoVien.MaGiaoVien, danhSachGiaoVienThayThe);
                     if (success)
                     {
-                        MessageBox.Show("Xóa giáo viên thành công!", "Thông báo",
+                        string message = "Xóa giáo viên thành công!";
+                        if (danhSachPhanCong.Count > 0)
+                        {
+                            message += $"\n\nĐã chuyển {danhSachPhanCong.Count} phân công giảng dạy sang giáo viên thay thế.";
+                        }
+                        MessageBox.Show(message, "Thông báo",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadData();
                     }
@@ -201,7 +279,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi xóa giáo viên: {ex.Message}", "Lỗi",
+                    string errorMessage = $"Lỗi khi xóa giáo viên: {ex.Message}";
+                    
+                    // Thông báo chi tiết hơn nếu thiếu giáo viên thay thế
+                    if (ex.Message.Contains("thay thế") || ex.Message.Contains("replacement") || 
+                        ex.Message.Contains("KHÔNG CÓ GIÁO VIÊN"))
+                    {
+                        errorMessage += "\n\nVui lòng đảm bảo tất cả phân công giảng dạy đều có giáo viên thay thế phù hợp.";
+                    }
+                    
+                    MessageBox.Show(errorMessage, "Lỗi",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -220,6 +307,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Gắn sự kiện tìm kiếm và lọc
                 txtTimKiemGiaoVien.TextChanged += TxtTimKiemGiaoVien_TextChanged;
                 cbBoMon.SelectedIndexChanged += CbBoMon_SelectedIndexChanged;
+                cbGVCN.SelectedIndexChanged += CbGVCN_SelectedIndexChanged;
+                cbTrangThai.SelectedIndexChanged += CbTrangThai_SelectedIndexChanged;
                 btnThemGiaoVien.Click += BtnThemGiaoVien_Click;
             }
             catch (Exception ex)
@@ -257,6 +346,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Load dữ liệu từ database
                 danhSachGiaoVienFull = giaoVienBUS.DocDSGiaoVien();
                 
+                // Load danh sách lớp để lấy thông tin GVCN
+                LoadDanhSachLop();
+                
                 // Áp dụng tìm kiếm và lọc
                 ApplyFilterAndSearch();
 
@@ -267,6 +359,36 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 MessageBox.Show($"Lỗi khi tải dữ liệu giáo viên: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadDanhSachLop()
+        {
+            try
+            {
+                dictGiaoVienChuNhiem.Clear();
+                var danhSachLop = lopHocBUS.DocDSLop();
+                
+                // ✅ Sử dụng LINQ to Objects để tạo dictionary map MaGiaoVien -> TenLop
+                danhSachLop
+                    .Where(lop => !string.IsNullOrEmpty(lop.maGVCN))
+                    .ToList()
+                    .ForEach(lop => 
+                    {
+                        // Nếu giáo viên đã là GVCN của lớp khác, nối thêm lớp mới
+                        if (dictGiaoVienChuNhiem.ContainsKey(lop.maGVCN))
+                        {
+                            dictGiaoVienChuNhiem[lop.maGVCN] += $", {lop.tenLop}";
+                        }
+                        else
+                        {
+                            dictGiaoVienChuNhiem[lop.maGVCN] = lop.tenLop;
+                        }
+                    });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi tải danh sách lớp: {ex.Message}");
             }
         }
 
@@ -285,6 +407,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     {
                         danhSachLoc = danhSachLoc.Where(gv => gv.MaMonChuyenMon == monHoc.maMon);
                     }
+                }
+
+                // Lọc theo GVCN
+                if (cbGVCN.SelectedIndex > 0 && cbGVCN.SelectedItem != null)
+                {
+                    string filterGVCN = cbGVCN.SelectedItem.ToString();
+                    if (filterGVCN == "Có làm GVCN")
+                    {
+                        danhSachLoc = danhSachLoc.Where(gv => dictGiaoVienChuNhiem.ContainsKey(gv.MaGiaoVien));
+                    }
+                    else if (filterGVCN == "Không làm GVCN")
+                    {
+                        danhSachLoc = danhSachLoc.Where(gv => !dictGiaoVienChuNhiem.ContainsKey(gv.MaGiaoVien));
+                    }
+                }
+
+                // Lọc theo trạng thái
+                if (cbTrangThai.SelectedIndex > 0 && cbTrangThai.SelectedItem != null)
+                {
+                    string trangThai = cbTrangThai.SelectedItem.ToString();
+                    danhSachLoc = danhSachLoc.Where(gv => 
+                        (gv.TrangThai ?? "Đang giảng dạy") == trangThai);
                 }
 
                 // Tìm kiếm
@@ -325,7 +469,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 gv.MaGiaoVien,
                 gv.HoTen,
                 GioiTinh = gv.GioiTinh ?? "",
-                ChuyenMon = !string.IsNullOrEmpty(gv.TenMonChuyenMon) ? gv.TenMonChuyenMon : "Chưa phân công",
+                ChuyenMon = FormatChuyenMon(gv),
                 SoDienThoai = gv.SoDienThoai ?? "",
                 TrangThai = gv.TrangThai ?? "Đang giảng dạy"
             })
@@ -339,13 +483,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     gv.ChuyenMon,
                     gv.SoDienThoai,
                     gv.TrangThai,
-                    null,
-                    null
+                    null,  // View
+                    null,  // Edit
+                    null   // Delete
                 );
 
                 try
                 {
                     tableGiaoVien.Rows[idx].Cells["View"].Value = Properties.Resources.icon_eye;
+                    tableGiaoVien.Rows[idx].Cells["Edit"].Value = Properties.Resources.edit_icon;
                     tableGiaoVien.Rows[idx].Cells["Delete"].Value = Properties.Resources.deleteicon;
                 }
                 catch (Exception ex)
@@ -354,6 +500,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     Console.WriteLine($"Không thể load icon: {ex.Message}");
                 }
             });
+        }
+
+        private string FormatChuyenMon(GiaoVienDTO gv)
+        {
+            string chuyenMon = !string.IsNullOrEmpty(gv.TenMonChuyenMon) ? gv.TenMonChuyenMon : "Chưa phân công";
+            
+            // Nếu giáo viên là GVCN, thêm tên lớp vào
+            if (dictGiaoVienChuNhiem.ContainsKey(gv.MaGiaoVien))
+            {
+                string tenLop = dictGiaoVienChuNhiem[gv.MaGiaoVien];
+                chuyenMon += $" ({tenLop})";
+            }
+            
+            return chuyenMon;
         }
 
         private void UpdateStatistics()
@@ -400,6 +560,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ApplyFilterAndSearch();
         }
 
+        private void CbGVCN_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ApplyFilterAndSearch();
+        }
+
+        private void CbTrangThai_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ApplyFilterAndSearch();
+        }
+
         private void BtnThemGiaoVien_Click(object sender, EventArgs e)
         {
             var formThem = new ThemGiaoVien();
@@ -417,6 +587,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             if (column == "View")
                 HandleViewClick(e.RowIndex);
+            else if (column == "Edit")
+                HandleEditClick(e.RowIndex);
             else if (column == "Delete")
                 HandleDelClick(e.RowIndex);
         }

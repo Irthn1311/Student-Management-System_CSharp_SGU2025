@@ -729,6 +729,40 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 				}
 			}
 		}
+
+		/// <summary>
+		/// Xóa thời khóa biểu theo danh sách phân công (dùng khi đổi chuyên môn giáo viên)
+		/// </summary>
+		/// <param name="danhSachMaPhanCong">Danh sách mã phân công cần xóa thời khóa biểu</param>
+		public void XoaThoiKhoaBieuTheoPhanCong(List<int> danhSachMaPhanCong)
+		{
+			if (danhSachMaPhanCong == null || danhSachMaPhanCong.Count == 0)
+				return;
+
+			// Tạo parameterized query an toàn
+			var parameters = new List<string>();
+			for (int i = 0; i < danhSachMaPhanCong.Count; i++)
+			{
+				parameters.Add($"@MaPhanCong{i}");
+			}
+			
+			string sql = $@"
+				DELETE FROM ThoiKhoaBieu 
+				WHERE MaPhanCong IN ({string.Join(",", parameters)})";
+
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var cmd = new MySqlCommand(sql, conn))
+				{
+					for (int i = 0; i < danhSachMaPhanCong.Count; i++)
+					{
+						cmd.Parameters.AddWithValue($"@MaPhanCong{i}", danhSachMaPhanCong[i]);
+					}
+					cmd.ExecuteNonQuery();
+				}
+			}
+		}
 	}
 }
 

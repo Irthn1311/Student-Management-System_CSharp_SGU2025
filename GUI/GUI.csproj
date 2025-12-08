@@ -306,6 +306,12 @@
     <Compile Include="GUIClass\GiaoVien\ChinhSuaGiaoVien.Designer.cs">
       <DependentUpon>ChinhSuaGiaoVien.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUIClass\GiaoVien\ChonGiaoVienThayThe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\GiaoVien\ChonGiaoVienThayThe.Designer.cs">
+      <DependentUpon>ChonGiaoVienThayThe.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUIClass\GiaoVien\GiaoVien.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -317,6 +323,12 @@
     </Compile>
     <Compile Include="GUIClass\GiaoVien\ThemGiaoVien.Designer.cs">
       <DependentUpon>ThemGiaoVien.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUIClass\GiaoVien\XemChiTietGiaoVien.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\GiaoVien\XemChiTietGiaoVien.Designer.cs">
+      <DependentUpon>XemChiTietGiaoVien.cs</DependentUpon>
     </Compile>
     <Compile Include="GUIClass\HanhKiem\HanhKiem.cs">
       <SubType>UserControl</SubType>
