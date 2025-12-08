@@ -1,5 +1,6 @@
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -406,14 +407,168 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             try
             {
-                return thongBaoDAO.LayDanhSachThongBaoTheoNguoiDung(
-                    tenDangNhap,
-                    loaiThongBao,
-                    daDoc,
-                    timKiem,
-                    pageNumber,
-                    pageSize
-                );
+                // Kiểm tra nếu là admin, lấy tất cả thông báo
+                var vaiTros = new PhanQuyenDAO().GetVaiTroByNguoiDung(tenDangNhap);
+                if (vaiTros != null && vaiTros.Any(v => v.Equals("ADMIN", StringComparison.OrdinalIgnoreCase) || v.Equals("GIAO_VU", StringComparison.OrdinalIgnoreCase)))
+                {
+                    // Admin xem tất cả thông báo
+                    var tatCaThongBao = thongBaoDAO.LayTatCaThongBao("HIEN_THI");
+                    
+                    // Thêm thông tin đã đọc cho admin (nếu có trong NguoiNhanThongBao)
+                    // Lấy tất cả thông tin đã đọc trong một query
+                    string sqlDoc = @"SELECT MaThongBao, DaDoc, NgayDoc FROM NguoiNhanThongBao 
+                        WHERE TenDangNhap = @tenDangNhap";
+                    
+                    Dictionary<int, (bool DaDoc, DateTime? NgayDoc)> dictDaDoc = new Dictionary<int, (bool, DateTime?)>();
+                    
+                    using (var conn = DAO.ConnectDatabase.ConnectionDatabase.GetConnection())
+                    {
+                        try
+                        {
+                            conn.Open();
+                            using (var cmd = new MySqlCommand(sqlDoc, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@tenDangNhap", tenDangNhap);
+                                using (var reader = cmd.ExecuteReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        int maTB = reader.GetInt32("MaThongBao");
+                                        bool isDaDoc = reader.GetBoolean("DaDoc");
+                                        DateTime? ngayDoc = reader.IsDBNull(reader.GetOrdinal("NgayDoc")) 
+                                            ? (DateTime?)null 
+                                            : reader.GetDateTime("NgayDoc");
+                                        dictDaDoc[maTB] = (isDaDoc, ngayDoc);
+                                    }
+                                }
+                            }
+                        }
+                        catch { }
+                        finally
+                        {
+                            DAO.ConnectDatabase.ConnectionDatabase.CloseConnection(conn);
+                        }
+                    }
+                    
+                    // Gán thông tin đã đọc cho từng thông báo
+                    foreach (var tb in tatCaThongBao)
+                    {
+                        if (dictDaDoc.ContainsKey(tb.MaThongBao))
+                        {
+                            tb.DaDoc = dictDaDoc[tb.MaThongBao].DaDoc;
+                            tb.NgayDoc = dictDaDoc[tb.MaThongBao].NgayDoc;
+                        }
+                        else
+                        {
+                            tb.DaDoc = false;
+                            tb.NgayDoc = null;
+                        }
+                    }
+
+                    // Filter theo loại
+                    if (!string.IsNullOrEmpty(loaiThongBao))
+                    {
+                        tatCaThongBao = tatCaThongBao.Where(tb => tb.LoaiThongBao == loaiThongBao).ToList();
+                    }
+
+                    // Filter theo trạng thái đọc
+                    if (daDoc.HasValue)
+                    {
+                        tatCaThongBao = tatCaThongBao.Where(tb => tb.DaDoc == daDoc.Value).ToList();
+                    }
+
+                    // Tìm kiếm
+                    if (!string.IsNullOrWhiteSpace(timKiem))
+                    {
+                        string keyword = timKiem.ToLower();
+                        tatCaThongBao = tatCaThongBao.Where(tb =>
+                            tb.TieuDe.ToLower().Contains(keyword) ||
+                            (tb.NoiDung != null && tb.NoiDung.ToLower().Contains(keyword)) ||
+                            (tb.DoiTuongNhan != null && tb.DoiTuongNhan.ToLower().Contains(keyword))
+                        ).ToList();
+                    }
+
+                    // Phân trang
+                    return tatCaThongBao.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                }
+                else
+                {
+                    // Kiểm tra nếu là giáo viên
+                    var vaiTrosUser = new PhanQuyenDAO().GetVaiTroByNguoiDung(tenDangNhap);
+                    bool isTeacher = vaiTrosUser != null && vaiTrosUser.Any(v => v.Equals("teacher", StringComparison.OrdinalIgnoreCase));
+                    
+                    if (isTeacher)
+                    {
+                        // Giáo viên: Lấy thông báo từ NguoiNhanThongBao + thông báo gửi cho giáo viên (VAI_TRO = teacher)
+                        var danhSachTuNguoiNhan = thongBaoDAO.LayDanhSachThongBaoTheoNguoiDung(
+                            tenDangNhap,
+                            loaiThongBao,
+                            daDoc,
+                            timKiem,
+                            1,
+                            1000  // Lấy tất cả để merge
+                        );
+                        
+                        // Lấy thêm thông báo gửi cho giáo viên (PhamVi = VAI_TRO, MaVaiTroNhan = teacher)
+                        // nhưng chưa có trong NguoiNhanThongBao (có thể do thông báo cũ)
+                        var tatCaThongBao = thongBaoDAO.LayTatCaThongBao("HIEN_THI");
+                        var thongBaoChoGiaoVien = tatCaThongBao
+                            .Where(tb => 
+                                (tb.PhamVi == "VAI_TRO" && tb.MaVaiTroNhan == "teacher") ||
+                                (tb.PhamVi == "ALL") ||
+                                (tb.DoiTuongNhan != null && (
+                                    tb.DoiTuongNhan.Contains("Giáo viên") ||
+                                    tb.DoiTuongNhan.Contains("Toàn trường") ||
+                                    tb.DoiTuongNhan.Contains("Tất cả")
+                                ))
+                            )
+                            .Where(tb => !danhSachTuNguoiNhan.Any(d => d.MaThongBao == tb.MaThongBao)) // Loại bỏ đã có
+                            .ToList();
+                        
+                        // Merge 2 danh sách
+                        var danhSachMerged = danhSachTuNguoiNhan.Concat(thongBaoChoGiaoVien).ToList();
+                        
+                        Console.WriteLine($"[ThongBaoBUS] Giáo viên {tenDangNhap}: {danhSachTuNguoiNhan.Count} từ NguoiNhanThongBao + {thongBaoChoGiaoVien.Count} thông báo cho giáo viên = {danhSachMerged.Count} tổng");
+                        
+                        // Filter theo loại
+                        if (!string.IsNullOrEmpty(loaiThongBao))
+                        {
+                            danhSachMerged = danhSachMerged.Where(tb => tb.LoaiThongBao == loaiThongBao).ToList();
+                        }
+
+                        // Filter theo trạng thái đọc
+                        if (daDoc.HasValue)
+                        {
+                            danhSachMerged = danhSachMerged.Where(tb => tb.DaDoc == daDoc.Value).ToList();
+                        }
+
+                        // Tìm kiếm
+                        if (!string.IsNullOrWhiteSpace(timKiem))
+                        {
+                            string keyword = timKiem.ToLower();
+                            danhSachMerged = danhSachMerged.Where(tb =>
+                                tb.TieuDe.ToLower().Contains(keyword) ||
+                                (tb.NoiDung != null && tb.NoiDung.ToLower().Contains(keyword)) ||
+                                (tb.DoiTuongNhan != null && tb.DoiTuongNhan.ToLower().Contains(keyword))
+                            ).ToList();
+                        }
+
+                        // Phân trang
+                        return danhSachMerged.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                    }
+                    else
+                    {
+                        // User thường (học sinh, phụ huynh) chỉ xem thông báo của mình
+                        return thongBaoDAO.LayDanhSachThongBaoTheoNguoiDung(
+                            tenDangNhap,
+                            loaiThongBao,
+                            daDoc,
+                            timKiem,
+                            pageNumber,
+                            pageSize
+                        );
+                    }
+                }
             }
             catch (Exception ex)
             {

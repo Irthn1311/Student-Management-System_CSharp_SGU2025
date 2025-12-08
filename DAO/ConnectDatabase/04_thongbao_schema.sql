@@ -13,36 +13,179 @@ USE QuanLyHocSinh;
 -- =====================================================================
 
 -- Thêm các cột mới vào bảng ThongBao nếu chưa có
-ALTER TABLE ThongBao 
-ADD COLUMN IF NOT EXISTS PhamVi VARCHAR(20) DEFAULT 'ALL' 
-    COMMENT 'Phạm vi gửi: ALL, VAI_TRO, LOP, KHOI, CA_NHAN',
-ADD COLUMN IF NOT EXISTS MaVaiTroNhan VARCHAR(10) NULL 
-    COMMENT 'Vai trò nhận thông báo (teacher, student, parent)',
-ADD COLUMN IF NOT EXISTS MaLop INT NULL 
-    COMMENT 'Mã lớp nhận thông báo (nếu PhamVi = LOP)',
-ADD COLUMN IF NOT EXISTS MaKhoi INT NULL 
-    COMMENT 'Mã khối nhận thông báo (nếu PhamVi = KHOI)',
-ADD COLUMN IF NOT EXISTS DoUuTien VARCHAR(20) DEFAULT 'BINH_THUONG' 
-    COMMENT 'Độ ưu tiên: BINH_THUONG, QUAN_TRONG, KHAN_CAP',
-ADD COLUMN IF NOT EXISTS TrangThai VARCHAR(20) DEFAULT 'HIEN_THI' 
-    COMMENT 'Trạng thái: HIEN_THI, AN, DA_XOA';
+-- MySQL không hỗ trợ IF NOT EXISTS trong ALTER TABLE, nên dùng stored procedure hoặc kiểm tra thủ công
+SET @dbname = DATABASE();
+SET @tablename = 'ThongBao';
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND COLUMN_NAME = 'PhamVi') = 0,
+    'ALTER TABLE ThongBao ADD COLUMN PhamVi VARCHAR(20) DEFAULT ''ALL'' COMMENT ''Phạm vi gửi: ALL, VAI_TRO, LOP, KHOI, CA_NHAN'';',
+    'SELECT ''Column PhamVi already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
 
--- Thêm foreign key cho MaLop và MaKhoi
-ALTER TABLE ThongBao
-ADD CONSTRAINT IF NOT EXISTS fk_thongbao_lop 
-    FOREIGN KEY (MaLop) REFERENCES LopHoc(MaLop) ON DELETE SET NULL,
-ADD CONSTRAINT IF NOT EXISTS fk_thongbao_khoi 
-    FOREIGN KEY (MaKhoi) REFERENCES KhoiLop(MaKhoi) ON DELETE SET NULL,
-ADD CONSTRAINT IF NOT EXISTS fk_thongbao_vaitro 
-    FOREIGN KEY (MaVaiTroNhan) REFERENCES VaiTro(MaVaiTro) ON DELETE SET NULL;
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND COLUMN_NAME = 'MaVaiTroNhan') = 0,
+    'ALTER TABLE ThongBao ADD COLUMN MaVaiTroNhan VARCHAR(10) NULL COMMENT ''Vai trò nhận thông báo (teacher, student, parent)'';',
+    'SELECT ''Column MaVaiTroNhan already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
 
--- Index để tối ưu truy vấn
-ALTER TABLE ThongBao
-ADD INDEX IF NOT EXISTS idx_thongbao_phamvi (PhamVi),
-ADD INDEX IF NOT EXISTS idx_thongbao_ngaytao (NgayTao),
-ADD INDEX IF NOT EXISTS idx_thongbao_nguoitao (MaNguoiTao),
-ADD INDEX IF NOT EXISTS idx_thongbao_loai (LoaiThongBao),
-ADD INDEX IF NOT EXISTS idx_thongbao_trangthai (TrangThai);
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND COLUMN_NAME = 'MaLop') = 0,
+    'ALTER TABLE ThongBao ADD COLUMN MaLop INT NULL COMMENT ''Mã lớp nhận thông báo (nếu PhamVi = LOP)'';',
+    'SELECT ''Column MaLop already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND COLUMN_NAME = 'MaKhoi') = 0,
+    'ALTER TABLE ThongBao ADD COLUMN MaKhoi INT NULL COMMENT ''Mã khối nhận thông báo (nếu PhamVi = KHOI)'';',
+    'SELECT ''Column MaKhoi already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND COLUMN_NAME = 'DoUuTien') = 0,
+    'ALTER TABLE ThongBao ADD COLUMN DoUuTien VARCHAR(20) DEFAULT ''BINH_THUONG'' COMMENT ''Độ ưu tiên: BINH_THUONG, QUAN_TRONG, KHAN_CAP'';',
+    'SELECT ''Column DoUuTien already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND COLUMN_NAME = 'TrangThai') = 0,
+    'ALTER TABLE ThongBao ADD COLUMN TrangThai VARCHAR(20) DEFAULT ''HIEN_THI'' COMMENT ''Trạng thái: HIEN_THI, AN, DA_XOA'';',
+    'SELECT ''Column TrangThai already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+-- Thêm foreign key cho MaLop và MaKhoi (chỉ thêm nếu chưa tồn tại)
+-- Xóa constraint cũ nếu có (để tránh lỗi duplicate)
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND CONSTRAINT_NAME = 'fk_thongbao_lop') = 0,
+    'ALTER TABLE ThongBao ADD CONSTRAINT fk_thongbao_lop FOREIGN KEY (MaLop) REFERENCES LopHoc(MaLop) ON DELETE SET NULL;',
+    'SELECT ''Constraint fk_thongbao_lop already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND CONSTRAINT_NAME = 'fk_thongbao_khoi') = 0,
+    'ALTER TABLE ThongBao ADD CONSTRAINT fk_thongbao_khoi FOREIGN KEY (MaKhoi) REFERENCES KhoiLop(MaKhoi) ON DELETE SET NULL;',
+    'SELECT ''Constraint fk_thongbao_khoi already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND CONSTRAINT_NAME = 'fk_thongbao_vaitro') = 0,
+    'ALTER TABLE ThongBao ADD CONSTRAINT fk_thongbao_vaitro FOREIGN KEY (MaVaiTroNhan) REFERENCES VaiTro(MaVaiTro) ON DELETE SET NULL;',
+    'SELECT ''Constraint fk_thongbao_vaitro already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+-- Index để tối ưu truy vấn (chỉ thêm nếu chưa tồn tại)
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND INDEX_NAME = 'idx_thongbao_phamvi') = 0,
+    'ALTER TABLE ThongBao ADD INDEX idx_thongbao_phamvi (PhamVi);',
+    'SELECT ''Index idx_thongbao_phamvi already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND INDEX_NAME = 'idx_thongbao_ngaytao') = 0,
+    'ALTER TABLE ThongBao ADD INDEX idx_thongbao_ngaytao (NgayTao);',
+    'SELECT ''Index idx_thongbao_ngaytao already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND INDEX_NAME = 'idx_thongbao_nguoitao') = 0,
+    'ALTER TABLE ThongBao ADD INDEX idx_thongbao_nguoitao (MaNguoiTao);',
+    'SELECT ''Index idx_thongbao_nguoitao already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND INDEX_NAME = 'idx_thongbao_loai') = 0,
+    'ALTER TABLE ThongBao ADD INDEX idx_thongbao_loai (LoaiThongBao);',
+    'SELECT ''Index idx_thongbao_loai already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @preparedStatement = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS 
+     WHERE TABLE_SCHEMA = @dbname 
+     AND TABLE_NAME = @tablename 
+     AND INDEX_NAME = 'idx_thongbao_trangthai') = 0,
+    'ALTER TABLE ThongBao ADD INDEX idx_thongbao_trangthai (TrangThai);',
+    'SELECT ''Index idx_thongbao_trangthai already exists'' AS Message;'
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
 
 -- =====================================================================
 -- PHẦN 2: TẠO BẢNG NGUOINHAN THONGBAO (Theo dõi người nhận cụ thể)
@@ -106,6 +249,9 @@ INSERT INTO LoaiThongBao (MaLoai, TenLoai, MoTa, MauSac, Icon, ThuTu) VALUES
 DELETE FROM NguoiNhanThongBao;
 DELETE FROM ThongBao;
 
+-- Lấy giáo viên chủ nhiệm lớp 10A1 hoặc dùng admin
+SET @gvcn_lop1 = COALESCE((SELECT TenDangNhap FROM NguoiDung WHERE TenDangNhap = 'GV001' LIMIT 1), 'admin');
+
 -- Thêm thông báo mẫu
 INSERT INTO ThongBao (TieuDe, NoiDung, NgayTao, LoaiThongBao, DoiTuongNhan, NgayHetHan, MaNguoiTao, PhamVi, MaVaiTroNhan, MaLop, MaKhoi, DoUuTien, TrangThai) VALUES
 -- Thông báo hệ thống (Admin -> Tất cả)
@@ -136,13 +282,13 @@ INSERT INTO ThongBao (TieuDe, NoiDung, NgayTao, LoaiThongBao, DoiTuongNhan, Ngay
  '2025-09-10 08:00:00', 'SU_KIEN', 'Học sinh', '2025-09-25 17:00:00', 'admin', 'VAI_TRO', 'student', NULL, NULL, 'BINH_THUONG', 'HIEN_THI'),
 
 -- Thông báo theo lớp (GVCN -> Lớp cụ thể)
-('Họp phụ huynh lớp 10A1 học kỳ I',
- 'Kính mời quý phụ huynh lớp 10A1 tham dự buổi họp phụ huynh đầu năm học.\n- Thời gian: 8h00 Chủ nhật, ngày 15/09/2025\n- Địa điểm: Phòng học 10A1\n- Nội dung: Thông báo kế hoạch học tập, giới thiệu ban cán sự lớp, thu các khoản đầu năm.',
- '2025-09-08 14:00:00', 'HOP_PHU_HUYNH', 'Phụ huynh lớp 10A1', '2025-09-15 12:00:00', 'GV001', 'LOP', NULL, 1, NULL, 'KHAN_CAP', 'HIEN_THI'),
+-- Lưu ý: Sử dụng MaNguoiTao là giáo viên chủ nhiệm của lớp 10A1 (MaLop = 1)
+-- Từ file 03_sample_seed.sql, lớp 10A1 có MaGiaoVienChuNhiem = 'GV001'
 
 ('Thông báo đã nhập điểm Toán - Lớp 10A1',
  'Điểm kiểm tra thường xuyên môn Toán lần 1 đã được cập nhật. Học sinh và phụ huynh có thể xem điểm trong hệ thống.',
- '2025-09-25 16:00:00', 'HOC_TAP', 'Học sinh lớp 10A1', NULL, 'GV001', 'LOP', NULL, 1, NULL, 'BINH_THUONG', 'HIEN_THI'),
+ '2025-09-25 16:00:00', 'HOC_TAP', 'Học sinh lớp 10A1', NULL, 
+ @gvcn_lop1, 'LOP', NULL, 1, NULL, 'BINH_THUONG', 'HIEN_THI');
 
 -- Thông báo theo khối
 ('Hướng nghiệp cho học sinh khối 12',
@@ -169,7 +315,7 @@ FROM ThongBao tb
 CROSS JOIN NguoiDung nd
 WHERE tb.PhamVi = 'ALL'
 AND nd.TrangThai = 'Hoạt động'
-LIMIT 500;
+ON DUPLICATE KEY UPDATE DaDoc = DaDoc;
 
 -- Gửi thông báo theo vai trò (teacher)
 INSERT INTO NguoiNhanThongBao (MaThongBao, TenDangNhap, DaDoc, NgayDoc)
@@ -225,6 +371,22 @@ JOIN HocSinh hs ON pl.MaHocSinh = hs.MaHocSinh
 WHERE tb.PhamVi = 'KHOI' 
 AND tb.MaKhoi = 12 
 AND hs.TenDangNhap IS NOT NULL
+ON DUPLICATE KEY UPDATE DaDoc = DaDoc;
+
+-- Đảm bảo admin được thêm vào tất cả thông báo (để admin có thể xem tất cả)
+INSERT INTO NguoiNhanThongBao (MaThongBao, TenDangNhap, DaDoc, NgayDoc)
+SELECT 
+    tb.MaThongBao,
+    'admin' as TenDangNhap,
+    FALSE as DaDoc,
+    NULL as NgayDoc
+FROM ThongBao tb
+WHERE NOT EXISTS (
+    SELECT 1 FROM NguoiNhanThongBao nn 
+    WHERE nn.MaThongBao = tb.MaThongBao 
+    AND nn.TenDangNhap = 'admin'
+)
+AND tb.TrangThai = 'HIEN_THI'
 ON DUPLICATE KEY UPDATE DaDoc = DaDoc;
 
 -- =====================================================================
