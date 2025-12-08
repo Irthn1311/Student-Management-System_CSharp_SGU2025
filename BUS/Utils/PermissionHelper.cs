@@ -28,7 +28,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Utils
         public const string QLCAIDAT = "qlcaidat";
         public const string QLDANHGIA = "qldanhgia";
         public const string QLXEPLOAI = "qlxeploai";
-        public const string QLYEUCAUCHUYENLOP = "qlyeucau_chuyenlop"; // ✅ Quản lý yêu cầu chuyển lớp
+        public const string QLYEUCAUCHUYENLOP = "qlyeucau_chuyenlop"; 
 
         // Danh sách hành động 
         public const string READ = "read";
@@ -71,6 +71,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Utils
                 var danhSachVaiTro = phanQuyenBUS.GetVaiTroByNguoiDung(SessionManager.TenDangNhap);
 
                 foreach (var maVaiTro in danhSachVaiTro)
+
                 {
                     var danhSachChucNang = phanQuyenBUS.GetTenChucNangByVaiTro(maVaiTro);
                     if (danhSachChucNang.Count > 0)

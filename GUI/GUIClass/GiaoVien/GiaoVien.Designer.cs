@@ -1,4 +1,4 @@
-﻿namespace Student_Management_System_CSharp_SGU2025.GUI
+namespace Student_Management_System_CSharp_SGU2025.GUI
 {
     partial class GiaoVien
     {
@@ -34,6 +34,8 @@
             this.btnThemGiaoVien = new Guna.UI2.WinForms.Guna2Button();
             this.txtTimKiemGiaoVien = new Guna.UI2.WinForms.Guna2TextBox();
             this.cbBoMon = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.cbGVCN = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.cbTrangThai = new Guna.UI2.WinForms.Guna2ComboBox();
             this.tableGiaoVien = new Guna.UI2.WinForms.Guna2DataGridView();
             this.MãHS = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -106,12 +108,55 @@
             "Ngữ Văn",
             "Tiếng Anh",
             "Vật Lí"});
-            this.cbBoMon.Location = new System.Drawing.Point(979, 32);
+            this.cbBoMon.Location = new System.Drawing.Point(560, 22);
             this.cbBoMon.Margin = new System.Windows.Forms.Padding(2);
             this.cbBoMon.Name = "cbBoMon";
             this.cbBoMon.Size = new System.Drawing.Size(158, 36);
             this.cbBoMon.StartIndex = 0;
             this.cbBoMon.TabIndex = 12;
+            // 
+            // cbGVCN
+            // 
+            this.cbGVCN.BackColor = System.Drawing.Color.Transparent;
+            this.cbGVCN.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbGVCN.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbGVCN.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbGVCN.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbGVCN.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbGVCN.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbGVCN.ItemHeight = 30;
+            this.cbGVCN.Items.AddRange(new object[] {
+            "Tất cả",
+            "Có làm GVCN",
+            "Không làm GVCN"});
+            this.cbGVCN.Location = new System.Drawing.Point(740, 22);
+            this.cbGVCN.Margin = new System.Windows.Forms.Padding(2);
+            this.cbGVCN.Name = "cbGVCN";
+            this.cbGVCN.Size = new System.Drawing.Size(158, 36);
+            this.cbGVCN.StartIndex = 0;
+            this.cbGVCN.TabIndex = 13;
+            // 
+            // cbTrangThai
+            // 
+            this.cbTrangThai.BackColor = System.Drawing.Color.Transparent;
+            this.cbTrangThai.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbTrangThai.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbTrangThai.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbTrangThai.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbTrangThai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbTrangThai.ItemHeight = 30;
+            this.cbTrangThai.Items.AddRange(new object[] {
+            "Tất cả trạng thái",
+            "Đang giảng dạy",
+            "Nghỉ hưu",
+            "Nghỉ việc"});
+            this.cbTrangThai.Location = new System.Drawing.Point(920, 22);
+            this.cbTrangThai.Margin = new System.Windows.Forms.Padding(2);
+            this.cbTrangThai.Name = "cbTrangThai";
+            this.cbTrangThai.Size = new System.Drawing.Size(158, 36);
+            this.cbTrangThai.StartIndex = 0;
+            this.cbTrangThai.TabIndex = 14;
             // 
             // tableGiaoVien
             // 
@@ -263,6 +308,8 @@
             this.Controls.Add(this.statCardGiaoVienNam);
             this.Controls.Add(this.statCardTongGiaoVien);
             this.Controls.Add(this.tableGiaoVien);
+            this.Controls.Add(this.cbTrangThai);
+            this.Controls.Add(this.cbGVCN);
             this.Controls.Add(this.cbBoMon);
             this.Controls.Add(this.txtTimKiemGiaoVien);
             this.Controls.Add(this.btnThemGiaoVien);
@@ -279,6 +326,8 @@
         private Guna.UI2.WinForms.Guna2Button btnThemGiaoVien;
         private Guna.UI2.WinForms.Guna2TextBox txtTimKiemGiaoVien;
         private Guna.UI2.WinForms.Guna2ComboBox cbBoMon;
+        private Guna.UI2.WinForms.Guna2ComboBox cbGVCN;
+        private Guna.UI2.WinForms.Guna2ComboBox cbTrangThai;
         private Guna.UI2.WinForms.Guna2DataGridView tableGiaoVien;
         private System.Windows.Forms.DataGridViewTextBoxColumn MãHS;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;

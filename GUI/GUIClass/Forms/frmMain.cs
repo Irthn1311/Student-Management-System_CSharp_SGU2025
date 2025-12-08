@@ -29,6 +29,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             InitializeComponent();
             InitializeNavigation();
             UpdateHeaderUserInfo();
+            InitializeSearchNavigation(); // Đăng ký sự kiện tìm kiếm
             ApplySidebarPermissions(); // Áp dụng phân quyền cho sidebar
             // Đặt trang mặc định là Dashboard khi form khởi chạy
             ShowDashboard();
@@ -50,6 +51,79 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             catch (Exception ex)
             {
                 Console.WriteLine($"[ERROR] Lỗi khi cập nhật header: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// ✅ Đăng ký sự kiện tìm kiếm từ ucHeader
+        /// </summary>
+        private void InitializeSearchNavigation()
+        {
+            if (ucHeader1 != null)
+            {
+                ucHeader1.OnNavigationRequested += HandleNavigation;
+            }
+        }
+
+        /// <summary>
+        /// ✅ Xử lý chuyển màn hình từ tìm kiếm
+        /// </summary>
+        private void HandleNavigation(string screenName)
+        {
+            switch (screenName)
+            {
+                case "BangTin":
+                    ShowDashboard();
+                    break;
+                case "HocSinh":
+                    ShowHocSinh();
+                    break;
+                case "GiaoVien":
+                    ShowGiaoVien();
+                    break;
+                case "LopHoc":
+                    ShowLopKhoi();
+                    break;
+                case "MonHoc":
+                    ShowFrmMonHoc();
+                    break;
+                case "DiemSo":
+                    ShowDiemSo();
+                    break;
+                case "XepLoai":
+                    ShowXepLoai();
+                    break;
+                case "HanhKiem":
+                    ShowHanhKiem();
+                    break;
+                case "DanhGia":
+                    ShowDanhGia();
+                    break;
+                case "PhanCong":
+                    ShowPhanCongGiangDay();
+                    break;
+                case "ThoiKhoaBieu":
+                    ShowThoiKhoaBieu();
+                    break;
+                case "ThongBao":
+                    ShowThongBao();
+                    break;
+                case "NamHoc":
+                    ShowNamHoc();
+                    break;
+                case "BaoCao":
+                    ShowBaoCao();
+                    break;
+                case "TaiKhoan":
+                    ShowTaiKhoan();
+                    break;
+                case "CaiDat":
+                    ShowCaiDat();
+                    break;
+                default:
+                    MessageBox.Show($"Chức năng '{screenName}' chưa được triển khai.", 
+                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    break;
             }
         }
 

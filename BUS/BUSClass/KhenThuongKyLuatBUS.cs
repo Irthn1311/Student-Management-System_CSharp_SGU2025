@@ -1,5 +1,6 @@
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.BUS.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,18 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         private KhenThuongKyLuatDAO ktklDAO;
         private HocSinhDAO hocSinhDAO;
         private PhanLopDAO phanLopDAO;
+        private ThongBaoBUS thongBaoBUS;
+        private ThongBaoDAO thongBaoDAO;
+        private HocKyBUS hocKyBUS;
 
         public KhenThuongKyLuatBUS()
         {
             ktklDAO = new KhenThuongKyLuatDAO();
             hocSinhDAO = new HocSinhDAO();
             phanLopDAO = new PhanLopDAO();
+            thongBaoBUS = new ThongBaoBUS();
+            thongBaoDAO = new ThongBaoDAO();
+            hocKyBUS = new HocKyBUS();
         }
 
         #region Validation Methods
@@ -167,6 +174,20 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 );
 
                 bool result = ktklDAO.ThemKhenThuongKyLuat(kt);
+
+                // Tự động tạo thông báo cho học sinh khi thêm khen thưởng/kỷ luật
+                if (result)
+                {
+                    try
+                    {
+                        TaoThongBaoKhenThuongKyLuat(kt, hocSinh);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log lỗi nhưng không fail toàn bộ operation
+                        Console.WriteLine($"Lỗi khi tạo thông báo khen thưởng kỷ luật: {ex.Message}");
+                    }
+                }
 
                 return new OperationResult
                 {
@@ -402,6 +423,76 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         public KhenThuongKyLuatDTO LayTheoMa(int maKTKL)
         {
             return ktklDAO.LayTheoMa(maKTKL);
+        }
+
+        /// <summary>
+        /// Tự động tạo thông báo khi thêm khen thưởng/kỷ luật
+        /// </summary>
+        private void TaoThongBaoKhenThuongKyLuat(KhenThuongKyLuatDTO kt, HocSinhDTO hocSinh)
+        {
+            try
+            {
+                // Chỉ tạo thông báo nếu học sinh có TenDangNhap
+                if (string.IsNullOrEmpty(hocSinh.TenDangNhap))
+                {
+                    Console.WriteLine($"[KhenThuongKyLuatBUS] Học sinh {hocSinh.HoTen} chưa có tài khoản, bỏ qua tạo thông báo");
+                    return;
+                }
+
+                // Tạo tiêu đề và nội dung thông báo
+                string tieuDe = $"{kt.Loai}: {hocSinh.HoTen}";
+                string noiDung = $"{kt.NoiDung}";
+                
+                if (kt.Loai == "Khen thưởng" && !string.IsNullOrEmpty(kt.CapKhenThuong))
+                {
+                    noiDung += $" - Cấp: {kt.CapKhenThuong}";
+                }
+                else if (kt.Loai == "Kỷ luật" && !string.IsNullOrEmpty(kt.MucXuLy))
+                {
+                    noiDung += $" - Mức xử lý: {kt.MucXuLy}";
+                }
+
+                // Tạo thông báo DTO
+                ThongBaoDTO thongBao = new ThongBaoDTO
+                {
+                    TieuDe = tieuDe,
+                    NoiDung = noiDung,
+                    NgayTao = DateTime.Now,
+                    LoaiThongBao = kt.Loai == "Khen thưởng" ? "KHEN_THUONG" : "KY_LUAT",
+                    DoiTuongNhan = $"Học sinh: {hocSinh.HoTen}",
+                    MaNguoiTao = SessionManager.TenDangNhap ?? "system",
+                    PhamVi = "CA_NHAN", // Gửi cá nhân
+                    TrangThai = "HIEN_THI",
+                    DoUuTien = kt.Loai == "Khen thưởng" ? "QUAN_TRONG" : "BINH_THUONG"
+                };
+
+                // Thêm thông báo vào database
+                int maThongBao = thongBaoDAO.ThemThongBao(thongBao);
+                
+                if (maThongBao > 0)
+                {
+                    // Gửi thông báo trực tiếp cho học sinh
+                    bool sent = thongBaoDAO.ThemNguoiNhan(maThongBao, hocSinh.TenDangNhap);
+                    
+                    if (sent)
+                    {
+                        Console.WriteLine($"[KhenThuongKyLuatBUS] Đã tạo và gửi thông báo {kt.Loai} cho học sinh {hocSinh.HoTen} ({hocSinh.TenDangNhap})");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[KhenThuongKyLuatBUS] Đã tạo thông báo nhưng không gửi được cho {hocSinh.TenDangNhap}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[KhenThuongKyLuatBUS] Không thể tạo thông báo cho học sinh {hocSinh.HoTen}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[KhenThuongKyLuatBUS] Exception khi tạo thông báo: {ex.Message}\n{ex.StackTrace}");
+                // Không throw để không ảnh hưởng đến việc thêm khen thưởng kỷ luật
+            }
         }
 
         #endregion

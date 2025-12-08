@@ -12,11 +12,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     {
         private GiaoVienBUS giaoVienBUS;
         private MonHocBUS monHocBUS;
+        private PhanCongGiangDayBUS phanCongBUS;
+        private ThoiKhoaBieuBUS thoiKhoaBieuBUS;
         private List<MonHocDTO> danhSachMonHoc;
         private GiaoVienDTO giaoVienHienTai;
         private string maGiaoVien;
         private ErrorProvider errorProvider;
         private bool isReadOnly;
+        private int? maMonChuyenMonCu; // Lưu chuyên môn cũ để so sánh
 
         public ChinhSuaGiaoVien(string maGiaoVien, bool readOnly = false)
         {
@@ -25,6 +28,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.isReadOnly = readOnly;
             giaoVienBUS = new GiaoVienBUS();
             monHocBUS = new MonHocBUS();
+            phanCongBUS = new PhanCongGiangDayBUS();
+            thoiKhoaBieuBUS = new ThoiKhoaBieuBUS();
             danhSachMonHoc = new List<MonHocDTO>();
 
             // Khởi tạo Error Provider
@@ -135,6 +140,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     cbChuyenMon.SelectedIndex = 0;
                 }
 
+                // Lưu chuyên môn cũ để so sánh khi cập nhật
+                maMonChuyenMonCu = giaoVienHienTai.MaMonChuyenMon;
+
                 // Chọn trạng thái
                 if (!string.IsNullOrEmpty(giaoVienHienTai.TrangThai))
                 {
@@ -194,12 +202,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 giaoVienHienTai.TrangThai = cbTrangThai.SelectedItem.ToString();
 
                 // Chọn môn chuyên môn
+                int? maMonChuyenMonMoi = null;
                 if (cbChuyenMon.SelectedIndex > 0)
                 {
                     string tenMon = cbChuyenMon.SelectedItem.ToString();
                     var monHoc = danhSachMonHoc.FirstOrDefault(m => m.tenMon == tenMon);
                     if (monHoc != null)
                     {
+                        maMonChuyenMonMoi = monHoc.maMon;
                         giaoVienHienTai.MaMonChuyenMon = monHoc.maMon;
                     }
                 }
@@ -208,27 +218,84 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     giaoVienHienTai.MaMonChuyenMon = null;
                 }
 
+                // Kiểm tra nếu chuyên môn thay đổi
+                bool chuyenMonThayDoi = maMonChuyenMonCu != maMonChuyenMonMoi;
+                Dictionary<int, string> danhSachGiaoVienThayThe = null;
+
+                if (chuyenMonThayDoi)
+                {
+                    // Kiểm tra giáo viên có phân công giảng dạy không
+                    var danhSachPhanCong = phanCongBUS.LayPhanCongTheoGiaoVien(maGiaoVien);
+                    
+                    if (danhSachPhanCong.Count > 0)
+                    {
+                        // Hiển thị form chọn giáo viên thay thế
+                        var formChon = new ChonGiaoVienThayThe(maGiaoVien);
+                        if (formChon.ShowDialog() == DialogResult.OK)
+                        {
+                            danhSachGiaoVienThayThe = formChon.DanhSachGiaoVienThayThe;
+                        }
+                        else
+                        {
+                            // Người dùng hủy, không cập nhật
+                            return;
+                        }
+                    }
+                }
+
                 // Xác nhận
-                DialogResult result = MessageBox.Show(
-                    $"Bạn có chắc chắn muốn cập nhật thông tin giáo viên?\n\n" +
+                string message = "Bạn có chắc chắn muốn cập nhật thông tin giáo viên?\n\n" +
                     $"Mã GV: {giaoVienHienTai.MaGiaoVien}\n" +
-                    $"Họ tên: {giaoVienHienTai.HoTen}",
+                    $"Họ tên: {giaoVienHienTai.HoTen}";
+                
+                if (chuyenMonThayDoi)
+                {
+                    message += "\n\n⚠️ Lưu ý: Chuyên môn đã thay đổi. Tất cả phân công và thời khóa biểu của giáo viên sẽ được chuyển sang giáo viên thay thế.";
+                }
+
+                DialogResult result = MessageBox.Show(message,
                     "Xác nhận",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
                 if (result == DialogResult.Yes)
                 {
-                    // Cập nhật giáo viên
-                    bool success = giaoVienBUS.CapNhatGiaoVien(giaoVienHienTai);
-                    if (success)
+                    try
                     {
-                        MessageBox.Show("Cập nhật thông tin giáo viên thành công!",
-                            "Thành công",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                        this.DialogResult = DialogResult.OK;
-                        this.Close();
+                        // Nếu chuyên môn thay đổi và có phân công, cập nhật phân công và xóa thời khóa biểu
+                        if (chuyenMonThayDoi && danhSachGiaoVienThayThe != null && danhSachGiaoVienThayThe.Count > 0)
+                        {
+                            // Cập nhật phân công với giáo viên thay thế
+                            phanCongBUS.CapNhatPhanCongVoiGiaoVienThayThe(danhSachGiaoVienThayThe);
+                            
+                            // Xóa thời khóa biểu của các phân công cũ
+                            var danhSachMaPhanCong = danhSachGiaoVienThayThe.Keys.ToList();
+                            thoiKhoaBieuBUS.XoaThoiKhoaBieuTheoPhanCong(danhSachMaPhanCong);
+                        }
+
+                        // Cập nhật giáo viên
+                        bool success = giaoVienBUS.CapNhatGiaoVien(giaoVienHienTai);
+                        if (success)
+                        {
+                            string successMessage = "Cập nhật thông tin giáo viên thành công!";
+                            if (chuyenMonThayDoi && danhSachGiaoVienThayThe != null && danhSachGiaoVienThayThe.Count > 0)
+                            {
+                                successMessage += $"\n\nĐã chuyển {danhSachGiaoVienThayThe.Count} phân công giảng dạy sang giáo viên thay thế.";
+                                successMessage += "\nThời khóa biểu liên quan đã được xóa.";
+                            }
+                            
+                            MessageBox.Show(successMessage,
+                                "Thành công",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                            this.DialogResult = DialogResult.OK;
+                            this.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Lỗi khi cập nhật giáo viên: {ex.Message}", "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }

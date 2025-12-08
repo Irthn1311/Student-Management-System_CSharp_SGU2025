@@ -25,13 +25,13 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return maKhoi; }
             set
             {
-                if (maKhoi >0)
+                if (value > 0)
                 {
                     maKhoi = value;
                 }
                 else
                 {
-                    Console.WriteLine("Ma khoi khong duoc de trong");
+                    Console.WriteLine("Ma khoi khong duoc de trong hoac nho hon 0");
                 }
             }
         }
@@ -40,7 +40,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             get { return tenKhoi; }
             set
             {
-                if (tenKhoi == "")
+                if (!string.IsNullOrWhiteSpace(value))
                 {
                     tenKhoi = value;
                 }

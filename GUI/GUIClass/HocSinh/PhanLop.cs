@@ -151,6 +151,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void cbHocKyNamHoc_SelectedIndexChanged(object sender, EventArgs e)
         {
             FilterTablePhanLop();
+            // ✅ Cập nhật trạng thái nút khi thay đổi năm học
+            UpdateButtonStates();
         }
 
         private void btnChon_Click(object sender, EventArgs e)
@@ -374,6 +376,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             // ✅ Chỉ refresh lại bảng phân lớp của học kỳ vừa phân lớp (không load tất cả)
                             FilterTablePhanLop(); // FilterTablePhanLop sẽ chỉ load học kỳ đã chọn
                             
+                            // ✅ Cập nhật trạng thái nút sau khi phân lớp tự động thành công
+                            UpdateButtonStates();
+                            
                             // Tự động chuyển sang tab Phân lớp để xem kết quả
                             btnPhanLop_Click(null, null);
                         }
@@ -404,6 +409,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                                        $"{ketQua.message}";
                         ScrollableMessageBox.Show("Thành công", thongBaoThanhCong, MessageBoxIcon.Information);
                         FilterTablePhanLop();
+                        // ✅ Cập nhật trạng thái nút sau khi phân lớp tự động thành công
+                        UpdateButtonStates();
                         btnPhanLop_Click(null, null);
                     }
                     else
@@ -521,6 +528,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             // ✅ Load dữ liệu phân lớp của học kỳ đã chọn (tự động là học kỳ "Đang diễn ra")
             FilterTablePhanLop(); // FilterTablePhanLop sẽ chỉ load học kỳ đã chọn trong comboBox
+            // ✅ Cập nhật trạng thái nút sau khi load dữ liệu
+            UpdateButtonStates();
         }
 
         private void LoadTablePhanLop()
@@ -555,6 +564,91 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             
             danhSachPhanLopGoc = new List<(int, int, int)>(danhSachPhanLop); // Lưu danh sách gốc để tìm kiếm
             RefreshTablePhanLop(danhSachPhanLop);
+        }
+
+        /// <summary>
+        /// Cập nhật trạng thái enable/disable của các nút
+        /// - "Phân lớp chuyển trường": chỉ enable khi đã phân lớp tự động cho cả HK1 và HK2 VÀ có học kỳ "Đang diễn ra"
+        /// - "Nhập Excel": disable khi đã phân lớp tự động cho cả HK1 và HK2, enable khi chưa phân lớp
+        /// </summary>
+        private void UpdateButtonStates()
+        {
+            try
+            {
+                // Kiểm tra đã chọn năm học chưa
+                string selectedNamHoc = cbHocKyNamHoc.SelectedItem?.ToString();
+                if (string.IsNullOrEmpty(selectedNamHoc) || !danhSachNamHoc.ContainsKey(selectedNamHoc))
+                {
+                    // Chưa chọn năm học, disable các nút
+                    btnPhanLopChuyenTruong.Enabled = false;
+                    btnNhapExcel.Enabled = false;
+                    btnThemHocSinh.Enabled = false;
+                    return;
+                }
+
+                // Lấy HK1 và HK2 của năm học được chọn
+                var (hk1, hk2) = danhSachNamHoc[selectedNamHoc];
+                if (hk1 == null || hk2 == null)
+                {
+                    // Không có đủ HK1 và HK2, disable các nút
+                    btnPhanLopChuyenTruong.Enabled = false;
+                    btnNhapExcel.Enabled = false;
+                    btnThemHocSinh.Enabled = false;
+                    return;
+                }
+
+                // Kiểm tra trạng thái học kỳ
+                string trangThaiHK1 = SemesterHelper.GetStatus(hk1.MaHocKy);
+                string trangThaiHK2 = SemesterHelper.GetStatus(hk2.MaHocKy);
+                bool hk1DangDienRa = trangThaiHK1 == "Đang diễn ra";
+                bool hk2DangDienRa = trangThaiHK2 == "Đang diễn ra";
+                bool coHocKyDangDienRa = hk1DangDienRa || hk2DangDienRa;
+
+                // ✅ KIỂM TRA: Đã phân lớp tự động cho cả HK1 và HK2 chưa
+                var allPhanLop = phanLopBLL.GetAllPhanLop();
+                int soHocSinhDaPhanLopHK1 = allPhanLop.Count(p => p.maHocKy == hk1.MaHocKy);
+                int soHocSinhDaPhanLopHK2 = allPhanLop.Count(p => p.maHocKy == hk2.MaHocKy);
+                
+                // Lấy số học sinh đang học để tính ngưỡng
+                int tongSoHocSinhDangHoc = hocSinhBus.GetTotalHocSinhDangHoc();
+                
+                // Ngưỡng: Phải có ít nhất 50 học sinh được phân lớp HOẶC ít nhất 30% số học sinh đang học
+                // Điều này đảm bảo rằng đã có phân lớp tự động, không phải chỉ 1-2 học sinh chuyển trường
+                int nguongToiThieu = Math.Max(50, (int)(tongSoHocSinhDangHoc * 0.3));
+                
+                // Chỉ enable nút "Phân lớp chuyển trường" khi:
+                // 1. Cả HK1 và HK2 đều đã có phân lớp tự động (đạt ngưỡng)
+                // 2. Có ít nhất một học kỳ "Đang diễn ra"
+                bool daPhanLopTuDongHK1 = soHocSinhDaPhanLopHK1 >= nguongToiThieu;
+                bool daPhanLopTuDongHK2 = soHocSinhDaPhanLopHK2 >= nguongToiThieu;
+                
+                btnPhanLopChuyenTruong.Enabled = daPhanLopTuDongHK1 && daPhanLopTuDongHK2 && coHocKyDangDienRa;
+
+                // ✅ LOGIC CHO NÚT "NHẬP EXCEL" VÀ "THÊM HỌC SINH":
+                // Disable nếu đã phân lớp tự động cho CẢ HK1 VÀ HK2 (không cần quan tâm "Đang diễn ra")
+                // Vì các nút này dùng cho tuyển sinh (học sinh chưa được phân lớp)
+                // Enable nếu chưa phân lớp tự động cho cả HK1 và HK2
+                if (daPhanLopTuDongHK1 && daPhanLopTuDongHK2)
+                {
+                    // Đã phân lớp tự động cho cả HK1 và HK2 → disable các nút tuyển sinh
+                    btnNhapExcel.Enabled = false;
+                    btnThemHocSinh.Enabled = false;
+                }
+                else
+                {
+                    // Chưa phân lớp tự động cho cả HK1 và HK2 → enable các nút tuyển sinh
+                    btnNhapExcel.Enabled = true;
+                    btnThemHocSinh.Enabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Nếu có lỗi, disable các nút để an toàn
+                btnPhanLopChuyenTruong.Enabled = false;
+                btnNhapExcel.Enabled = false;
+                btnThemHocSinh.Enabled = false;
+                Console.WriteLine($"Lỗi khi cập nhật trạng thái nút: {ex.Message}");
+            }
         }
 
         #endregion
@@ -677,23 +771,64 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 .Where(pl => pl.maHocKy == hk1.MaHocKy || pl.maHocKy == hk2.MaHocKy)
                 .ToList();
             
+            // ✅ KIỂM TRA: Năm học đã phân lớp tự động chưa?
+            int tongSoHocSinhDangHoc = hocSinhBus.GetTotalHocSinhDangHoc();
+            int nguongToiThieu = Math.Max(50, (int)(tongSoHocSinhDangHoc * 0.3));
+            int soHocSinhDaPhanLopHK1 = phanLopByNamHoc.Count(p => p.maHocKy == hk1.MaHocKy);
+            int soHocSinhDaPhanLopHK2 = phanLopByNamHoc.Count(p => p.maHocKy == hk2.MaHocKy);
+            bool daPhanLopTuDongHK1 = soHocSinhDaPhanLopHK1 >= nguongToiThieu;
+            bool daPhanLopTuDongHK2 = soHocSinhDaPhanLopHK2 >= nguongToiThieu;
+            bool daPhanLopTuDong = daPhanLopTuDongHK1 || daPhanLopTuDongHK2;
+
+            // ✅ Nếu chưa phân lớp tự động → thêm học sinh chưa phân lớp từ Excel
+            List<(int maHocSinh, int maLop, int maHocKy)> danhSachHienThi = new List<(int, int, int)>(phanLopByNamHoc);
+            
+            if (!daPhanLopTuDong)
+            {
+                // Lấy tất cả học sinh "Đang học" chưa có phân lớp cho HK1 và HK2
+                var allHocSinh = hocSinhBus.GetAllHocSinh();
+                var hocSinhDangHoc = allHocSinh.Where(hs => hs.TrangThai == "Đang học").ToList();
+                
+                // Lấy danh sách mã học sinh đã có phân lớp
+                var maHocSinhDaPhanLop = phanLopByNamHoc.Select(pl => pl.maHocSinh).ToHashSet();
+                
+                // Lọc ra học sinh chưa phân lớp
+                var hocSinhChuaPhanLop = hocSinhDangHoc
+                    .Where(hs => !maHocSinhDaPhanLop.Contains(hs.MaHS))
+                    .ToList();
+                
+                // Thêm vào danh sách hiển thị với maLop = 0 và maHocKy = hk1.MaHocKy (để đánh dấu chưa phân lớp)
+                foreach (var hs in hocSinhChuaPhanLop)
+                {
+                    danhSachHienThi.Add((hs.MaHS, 0, hk1.MaHocKy)); // maLop = 0 nghĩa là chưa phân lớp
+                }
+            }
+            
             // Lọc thêm theo lớp nếu có
-            var filteredPhanLop = phanLopByNamHoc.Where(pl =>
+            var filteredPhanLop = danhSachHienThi.Where(pl =>
             {
                 // Kiểm tra lớp
                 bool lopMatch = true;
                 if (selectedLop != "Chọn lớp" && !string.IsNullOrEmpty(selectedLop))
                 {
-                    string tenLop = "";
-                    foreach (var lop in danhSachLop)
+                    // Nếu chưa phân lớp (maLop = 0), không lọc theo lớp
+                    if (pl.maLop == 0)
                     {
-                        if (lop.MaLop == pl.maLop)
-                        {
-                            tenLop = lop.TenLop;
-                            break;
-                        }
+                        lopMatch = false; // Ẩn học sinh chưa phân lớp khi lọc theo lớp
                     }
-                    lopMatch = tenLop == selectedLop;
+                    else
+                    {
+                        string tenLop = "";
+                        foreach (var lop in danhSachLop)
+                        {
+                            if (lop.MaLop == pl.maLop)
+                            {
+                                tenLop = lop.TenLop;
+                                break;
+                            }
+                        }
+                        lopMatch = tenLop == selectedLop;
+                    }
                 }
 
                 return lopMatch;
@@ -713,13 +848,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 string tenHocSinh = hocSinhBus.GetHocSinhById(pl.maHocSinh)?.HoTen ?? $"HS {pl.maHocSinh}";
 
+                // ✅ Nếu maLop = 0 → học sinh chưa phân lớp
                 string tenLop = "";
-                foreach (var lop in danhSachLop)
+                if (pl.maLop == 0)
                 {
-                    if (lop.MaLop == pl.maLop)
+                    tenLop = "Chưa phân lớp";
+                }
+                else
+                {
+                    foreach (var lop in danhSachLop)
                     {
-                        tenLop = lop.TenLop;
-                        break;
+                        if (lop.MaLop == pl.maLop)
+                        {
+                            tenLop = lop.TenLop;
+                            break;
+                        }
                     }
                 }
 
@@ -758,9 +901,81 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     int maHocKy = phanLopToDelete.maHocKy;
 
                     // Lấy tên học sinh để hiển thị
-                    string tenHocSinh = hocSinhBus.GetHocSinhById(maHS)?.HoTen ?? $"HS {maHS}";
+                    var hocSinh = hocSinhBus.GetHocSinhById(maHS);
+                    if (hocSinh == null)
+                    {
+                        MessageBox.Show("Không tìm thấy thông tin học sinh.", "Lỗi",
+                                       MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    
+                    string tenHocSinh = hocSinh.HoTen ?? $"HS {maHS}";
+                    string trangThaiHS = hocSinh.TrangThai ?? "";
 
-                    if (MessageBox.Show($"Bạn có chắc muốn xóa phân lớp của học sinh {tenHocSinh} (Mã HS: {maHS})?", 
+                    // ✅ TRƯỜNG HỢP 1: Kiểm tra điều kiện xóa phân lớp
+                    // Không cho xóa nếu trạng thái là "Đang học", "Đang học(CT)", "Nghỉ học"
+                    if (trangThaiHS == "Đang học" || trangThaiHS == "Đang học(CT)" || trangThaiHS == "Nghỉ học")
+                    {
+                        MessageBox.Show($"⚠️ KHÔNG THỂ XÓA PHÂN LỚP!\n\n" +
+                                       $"Học sinh {tenHocSinh} có trạng thái '{trangThaiHS}'.\n\n" +
+                                       $"Chỉ có thể xóa phân lớp khi học sinh có trạng thái 'Bảo lưu' hoặc 'Thôi học'.",
+                                       "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Chỉ cho phép xóa nếu trạng thái là "Bảo lưu" hoặc "Thôi học"
+                    if (trangThaiHS != "Bảo lưu" && trangThaiHS != "Thôi học")
+                    {
+                        MessageBox.Show($"⚠️ KHÔNG THỂ XÓA PHÂN LỚP!\n\n" +
+                                       $"Học sinh {tenHocSinh} có trạng thái '{trangThaiHS}'.\n\n" +
+                                       $"Chỉ có thể xóa phân lớp khi học sinh có trạng thái 'Bảo lưu' hoặc 'Thôi học'.",
+                                       "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // ✅ Kiểm tra trạng thái học kỳ: HK1 & HK2 phải có ít nhất 1 "Đang diễn ra" hoặc cả 2 "Chưa bắt đầu"
+                    string selectedNamHoc = cbHocKyNamHoc.SelectedItem?.ToString();
+                    if (string.IsNullOrEmpty(selectedNamHoc) || !danhSachNamHoc.ContainsKey(selectedNamHoc))
+                    {
+                        MessageBox.Show("Không thể xác định năm học để kiểm tra trạng thái học kỳ.", "Lỗi",
+                                       MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var (hk1, hk2) = danhSachNamHoc[selectedNamHoc];
+                    if (hk1 == null || hk2 == null)
+                    {
+                        MessageBox.Show("Không thể xác định HK1 và HK2 để kiểm tra trạng thái học kỳ.", "Lỗi",
+                                       MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    string trangThaiHK1 = SemesterHelper.GetStatus(hk1.MaHocKy);
+                    string trangThaiHK2 = SemesterHelper.GetStatus(hk2.MaHocKy);
+                    bool hk1DangDienRa = trangThaiHK1 == "Đang diễn ra";
+                    bool hk2DangDienRa = trangThaiHK2 == "Đang diễn ra";
+                    bool hk1ChuaBatDau = trangThaiHK1 == "Chưa bắt đầu";
+                    bool hk2ChuaBatDau = trangThaiHK2 == "Chưa bắt đầu";
+
+                    // Kiểm tra: Phải có ít nhất 1 "Đang diễn ra" HOẶC cả 2 đều "Chưa bắt đầu"
+                    bool coTheXoa = (hk1DangDienRa || hk2DangDienRa) || (hk1ChuaBatDau && hk2ChuaBatDau);
+                    
+                    if (!coTheXoa)
+                    {
+                        MessageBox.Show($"⚠️ KHÔNG THỂ XÓA PHÂN LỚP!\n\n" +
+                                       $"Năm học {selectedNamHoc}:\n" +
+                                       $"• HK1: {trangThaiHK1}\n" +
+                                       $"• HK2: {trangThaiHK2}\n\n" +
+                                       $"Chỉ có thể xóa khi:\n" +
+                                       $"• Có ít nhất 1 học kỳ 'Đang diễn ra', HOẶC\n" +
+                                       $"• Cả 2 học kỳ đều 'Chưa bắt đầu'.",
+                                       "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    if (MessageBox.Show($"Bạn có chắc muốn xóa phân lớp của học sinh {tenHocSinh} (Mã HS: {maHS})?\n\n" +
+                                       $"Trạng thái học sinh: {trangThaiHS}\n" +
+                                       $"Năm học: {selectedNamHoc}",
                                        "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
                         if (phanLopBLL.DeletePhanLop(maHS, maLop, maHocKy))
@@ -770,6 +985,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             
                             // ✅ Chỉ cập nhật lại bảng phân lớp của học kỳ hiện tại (không load tất cả)
                             FilterTablePhanLop();
+                            // ✅ Cập nhật trạng thái nút sau khi xóa phân lớp
+                            UpdateButtonStates();
                         }
                         else
                         {
@@ -929,29 +1146,220 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         }
 
+        private void btnThemHocSinh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // ✅ Kiểm tra đã chọn năm học chưa
+                string selectedNamHoc = cbHocKyNamHoc.SelectedItem?.ToString();
+                if (string.IsNullOrEmpty(selectedNamHoc) || !danhSachNamHoc.ContainsKey(selectedNamHoc))
+                {
+                    MessageBox.Show("Vui lòng chọn năm học.", "Thông báo",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Lấy HK1 và HK2 của năm học được chọn
+                var (hk1, hk2) = danhSachNamHoc[selectedNamHoc];
+                if (hk1 == null || hk2 == null)
+                {
+                    MessageBox.Show($"Năm học {selectedNamHoc} phải có đầy đủ HK1 và HK2!", "Lỗi",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // ✅ Kiểm tra: Nếu đã phân lớp tự động cho cả HK1 và HK2 → không cho thêm học sinh
+                var allPhanLop = phanLopBLL.GetAllPhanLop();
+                int soHocSinhDaPhanLopHK1 = allPhanLop.Count(p => p.maHocKy == hk1.MaHocKy);
+                int soHocSinhDaPhanLopHK2 = allPhanLop.Count(p => p.maHocKy == hk2.MaHocKy);
+                
+                int tongSoHocSinhDangHoc = hocSinhBus.GetTotalHocSinhDangHoc();
+                int nguongToiThieu = Math.Max(50, (int)(tongSoHocSinhDangHoc * 0.3));
+                
+                bool daPhanLopTuDongHK1 = soHocSinhDaPhanLopHK1 >= nguongToiThieu;
+                bool daPhanLopTuDongHK2 = soHocSinhDaPhanLopHK2 >= nguongToiThieu;
+                
+                if (daPhanLopTuDongHK1 && daPhanLopTuDongHK2)
+                {
+                    MessageBox.Show($"⚠️ KHÔNG THỂ THÊM HỌC SINH!\n\n" +
+                                   $"Năm học {selectedNamHoc} đã được phân lớp tự động.\n\n" +
+                                   $"Vui lòng chọn năm học khác (chưa phân lớp) để thêm học sinh tuyển sinh.",
+                                   "Không thể thêm học sinh",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Mở form thêm học sinh
+                ThemHoSoHocSinh frmThemHocSinh = new ThemHoSoHocSinh();
+                frmThemHocSinh.StartPosition = FormStartPosition.CenterScreen;
+
+                // Hiển thị form dưới dạng Dialog và chờ kết quả
+                DialogResult result = frmThemHocSinh.ShowDialog(this);
+
+                // ✅ Kiểm tra kết quả trả về từ form
+                if (result == DialogResult.OK)
+                {
+                    try
+                    {
+                        // ✅ Lấy học sinh vừa tạo từ form
+                        HocSinhDTO newHS = frmThemHocSinh.NewHocSinh;
+
+                        if (newHS != null)
+                        {
+                            // ✅ Refresh lại bảng phân lớp để hiển thị học sinh vừa thêm
+                            FilterTablePhanLop();
+                            
+                            // ✅ Cập nhật trạng thái nút sau khi thêm học sinh
+                            UpdateButtonStates();
+
+                            MessageBox.Show($"✅ Thêm học sinh thành công!\n\n" +
+                                           $"Học sinh '{newHS.HoTen}' đã được thêm vào hệ thống.\n\n" +
+                                           $"Học sinh này sẽ được hiển thị trong bảng phân lớp và sẽ được phân vào lớp 10 khi thực hiện 'Phân lớp tự động'.",
+                                           "Thêm học sinh thành công",
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Đã xảy ra lỗi sau khi thêm học sinh:\n{ex.Message}",
+                                       "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Đã xảy ra lỗi khi mở form thêm học sinh:\n{ex.Message}",
+                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnNhapExcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // ✅ Kiểm tra đã chọn năm học chưa
+                string selectedNamHoc = cbHocKyNamHoc.SelectedItem?.ToString();
+                if (string.IsNullOrEmpty(selectedNamHoc) || !danhSachNamHoc.ContainsKey(selectedNamHoc))
+                {
+                    MessageBox.Show("Vui lòng chọn năm học.", "Thông báo",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Lấy HK1 và HK2 của năm học được chọn
+                var (hk1, hk2) = danhSachNamHoc[selectedNamHoc];
+                if (hk1 == null || hk2 == null)
+                {
+                    MessageBox.Show($"Năm học {selectedNamHoc} phải có đầy đủ HK1 và HK2!", "Lỗi",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Kiểm tra trạng thái học kỳ
+                string trangThaiHK1 = SemesterHelper.GetStatus(hk1.MaHocKy);
+                string trangThaiHK2 = SemesterHelper.GetStatus(hk2.MaHocKy);
+                bool hk1DangDienRa = trangThaiHK1 == "Đang diễn ra";
+                bool hk2DangDienRa = trangThaiHK2 == "Đang diễn ra";
+                bool coHocKyDangDienRa = hk1DangDienRa || hk2DangDienRa;
+
+                // ✅ KIỂM TRA: Nếu HK1 & HK2 "Đang diễn ra" và đã phân lớp → không cho nhập Excel
+                var allPhanLop = phanLopBLL.GetAllPhanLop();
+                int soHocSinhDaPhanLopHK1 = allPhanLop.Count(p => p.maHocKy == hk1.MaHocKy);
+                int soHocSinhDaPhanLopHK2 = allPhanLop.Count(p => p.maHocKy == hk2.MaHocKy);
+                
+                int tongSoHocSinhDangHoc = hocSinhBus.GetTotalHocSinhDangHoc();
+                int nguongToiThieu = Math.Max(50, (int)(tongSoHocSinhDangHoc * 0.3));
+                
+                bool daPhanLopTuDongHK1 = soHocSinhDaPhanLopHK1 >= nguongToiThieu;
+                bool daPhanLopTuDongHK2 = soHocSinhDaPhanLopHK2 >= nguongToiThieu;
+                
+                if (coHocKyDangDienRa && (daPhanLopTuDongHK1 || daPhanLopTuDongHK2))
+                {
+                    MessageBox.Show($"⚠️ KHÔNG THỂ NHẬP EXCEL!\n\n" +
+                                   $"Năm học {selectedNamHoc} đang diễn ra và đã được phân lớp tự động.\n\n" +
+                                   $"Vui lòng chọn năm học khác (chưa phân lớp) để nhập Excel.",
+                                   "Không thể nhập Excel",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Mở file dialog để chọn file Excel
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = "Excel Files|*.xlsx;*.xls",
+                    Title = "Chọn file Excel để nhập học sinh tuyển sinh (HocSinh, PhuHuynh, MoiQuanHe)"
+                };
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return; // Người dùng hủy
+                }
+
+                string filePath = openFileDialog.FileName;
+
+                // Hiển thị thông báo đang xử lý
+                this.Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
+
+                // Lấy học kỳ để nhập (ưu tiên HK1, nếu không có thì HK2)
+                var hocKyDeNhap = hk1DangDienRa ? hk1 : (hk2DangDienRa ? hk2 : hk1);
+
+                // Gọi hàm nhập Excel cho học sinh tuyển sinh
+                ImportExcelTuyenSinh(filePath, hocKyDeNhap, hk1, hk2);
+
+                this.Cursor = Cursors.Default;
+
+                // ✅ Refresh lại bảng phân lớp để hiển thị học sinh vừa nhập
+                FilterTablePhanLop();
+                
+                // ✅ Cập nhật trạng thái nút sau khi nhập Excel
+                UpdateButtonStates();
+            }
+            catch (Exception ex)
+            {
+                this.Cursor = Cursors.Default;
+                MessageBox.Show($"Đã xảy ra lỗi khi nhập Excel:\n{ex.Message}\n\nStack trace:\n{ex.StackTrace}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void btnPhanLopChuyenTruong_Click(object sender, EventArgs e)
         {
             try
             {
-                // Kiểm tra học kỳ hiện tại
-                var hocKyHienTai = SemesterHelper.GetCurrentSemester();
-                if (hocKyHienTai == null)
+                // ✅ Kiểm tra đã chọn năm học chưa
+                string selectedNamHoc = cbHocKyNamHoc.SelectedItem?.ToString();
+                if (string.IsNullOrEmpty(selectedNamHoc) || !danhSachNamHoc.ContainsKey(selectedNamHoc))
                 {
-                    MessageBox.Show("Không tìm thấy học kỳ đang diễn ra. Vui lòng kiểm tra lại cấu hình học kỳ.",
+                    MessageBox.Show("Vui lòng chọn năm học.", "Thông báo",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Lấy HK1 và HK2 của năm học được chọn
+                var (hk1, hk2) = danhSachNamHoc[selectedNamHoc];
+                if (hk1 == null || hk2 == null)
+                {
+                    MessageBox.Show($"Năm học {selectedNamHoc} phải có đầy đủ HK1 và HK2!", "Lỗi",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Kiểm tra trạng thái học kỳ
+                string trangThaiHK1 = SemesterHelper.GetStatus(hk1.MaHocKy);
+                string trangThaiHK2 = SemesterHelper.GetStatus(hk2.MaHocKy);
+                
+                if (trangThaiHK1 != "Đang diễn ra" && trangThaiHK2 != "Đang diễn ra")
+                {
+                    MessageBox.Show($"Cả HK1 và HK2 của năm học {selectedNamHoc} đều không phải 'Đang diễn ra'.\n\nVui lòng kiểm tra lại cấu hình học kỳ.",
                         "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                string trangThaiHocKy = SemesterHelper.GetStatus(hocKyHienTai.MaHocKy);
-                if (trangThaiHocKy != "Đang diễn ra")
-                {
-                    MessageBox.Show($"Học kỳ hiện tại không phải 'Đang diễn ra' (Trạng thái: {trangThaiHocKy}).\n\nVui lòng kiểm tra lại cấu hình học kỳ.",
-                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // ✅ KIỂM TRA: Học kỳ này PHẢI đã được phân lớp tự động rồi mới cho phép phân lớp chuyển trường
-                int soHocSinhDaPhanLop = phanLopBLL.CountHocSinhInHocKy(hocKyHienTai.MaHocKy);
+                // ✅ KIỂM TRA: Cả HK1 và HK2 PHẢI đã được phân lớp tự động rồi mới cho phép phân lớp chuyển trường
+                var allPhanLop = phanLopBLL.GetAllPhanLop();
+                int soHocSinhDaPhanLopHK1 = allPhanLop.Count(p => p.maHocKy == hk1.MaHocKy);
+                int soHocSinhDaPhanLopHK2 = allPhanLop.Count(p => p.maHocKy == hk2.MaHocKy);
                 
                 // Lấy số học sinh đang học để tính ngưỡng
                 int tongSoHocSinhDangHoc = hocSinhBus.GetTotalHocSinhDangHoc();
@@ -960,21 +1368,38 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Điều này đảm bảo rằng đã có phân lớp tự động, không phải chỉ 1-2 học sinh chuyển trường
                 int nguongToiThieu = Math.Max(50, (int)(tongSoHocSinhDangHoc * 0.3));
                 
-                if (soHocSinhDaPhanLop < nguongToiThieu)
+                bool daPhanLopTuDongHK1 = soHocSinhDaPhanLopHK1 >= nguongToiThieu;
+                bool daPhanLopTuDongHK2 = soHocSinhDaPhanLopHK2 >= nguongToiThieu;
+                
+                if (!daPhanLopTuDongHK1 || !daPhanLopTuDongHK2)
                 {
-                    string tenHocKyHienTai = hocKyHienTai.TenHocKy + " " + hocKyHienTai.MaNamHoc;
-                    
                     string thongBao = $"⚠️ CHƯA THỂ PHÂN LỚP CHUYỂN TRƯỜNG!\n\n";
-                    thongBao += $"Học kỳ: {tenHocKyHienTai}\n\n";
-                    thongBao += $"Số học sinh đã được phân lớp: {soHocSinhDaPhanLop}\n";
-                    thongBao += $"Ngưỡng tối thiểu: {nguongToiThieu} học sinh\n\n";
-                    thongBao += "❌ Học kỳ này chưa được phân lớp tự động!\n\n";
-                    thongBao += "Vui lòng thực hiện 'Phân lớp tự động' trước khi phân lớp chuyển trường.";
+                    thongBao += $"Năm học: {selectedNamHoc}\n\n";
+                    thongBao += $"HK1 ({hk1.TenHocKy}): {soHocSinhDaPhanLopHK1} học sinh (Ngưỡng: {nguongToiThieu})\n";
+                    thongBao += $"HK2 ({hk2.TenHocKy}): {soHocSinhDaPhanLopHK2} học sinh (Ngưỡng: {nguongToiThieu})\n\n";
+                    
+                    if (!daPhanLopTuDongHK1 && !daPhanLopTuDongHK2)
+                    {
+                        thongBao += "❌ Cả HK1 và HK2 đều chưa được phân lớp tự động!\n\n";
+                    }
+                    else if (!daPhanLopTuDongHK1)
+                    {
+                        thongBao += "❌ HK1 chưa được phân lớp tự động!\n\n";
+                    }
+                    else
+                    {
+                        thongBao += "❌ HK2 chưa được phân lớp tự động!\n\n";
+                    }
+                    
+                    thongBao += "Vui lòng thực hiện 'Phân lớp tự động' cho cả HK1 và HK2 trước khi phân lớp chuyển trường.";
                     
                     MessageBox.Show(thongBao, "Chưa thể phân lớp chuyển trường",
                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return; // CHẶN NGAY, KHÔNG CHO PHÂN LỚP CHUYỂN TRƯỜNG
                 }
+
+                // Lấy học kỳ đang diễn ra để nhập Excel (ưu tiên HK1, nếu không có thì HK2)
+                var hocKyHienTai = trangThaiHK1 == "Đang diễn ra" ? hk1 : hk2;
 
                 // Mở file dialog để chọn file Excel
                 OpenFileDialog openFileDialog = new OpenFileDialog
@@ -1001,6 +1426,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 // ✅ Chỉ refresh lại bảng phân lớp của học kỳ vừa nhập Excel (không load tất cả)
                 FilterTablePhanLop(); // FilterTablePhanLop sẽ chỉ load học kỳ đã chọn
+                
+                // ✅ Cập nhật trạng thái nút sau khi nhập Excel phân lớp chuyển trường
+                UpdateButtonStates();
             }
             catch (Exception ex)
             {
@@ -1012,6 +1440,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         /// <summary>
         /// Hàm chính để nhập Excel cho phân lớp chuyển trường
+        /// ✅ Phân lớp cho CẢ HK1 và HK2 cùng lúc
         /// </summary>
         private void ImportExcelPhanLopChuyenTruong(string filePath, HocKyDTO hocKyHienTai)
         {
@@ -1099,8 +1528,39 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                // 5. Kiểm tra điều kiện và tự động phân lớp
-                PhanLopTuDongChoHocSinhChuyenTruong(hocSinhThanhCong, hocKyHienTai);
+                // 5. Kiểm tra điều kiện và tự động phân lớp cho CẢ HK1 và HK2
+                // ✅ Lấy HK1 và HK2 của năm học từ dropdown
+                string selectedNamHoc = cbHocKyNamHoc.SelectedItem?.ToString();
+                HocKyDTO hk1ForPhanLop = null;
+                HocKyDTO hk2ForPhanLop = null;
+                
+                if (!string.IsNullOrEmpty(selectedNamHoc) && danhSachNamHoc.ContainsKey(selectedNamHoc))
+                {
+                    var (hk1, hk2) = danhSachNamHoc[selectedNamHoc];
+                    hk1ForPhanLop = hk1;
+                    hk2ForPhanLop = hk2;
+                }
+                else
+                {
+                    // Fallback: Nếu không lấy được từ dropdown, dùng hocKyHienTai và tìm học kỳ còn lại
+                    hk1ForPhanLop = hocKyHienTai;
+                    // Tìm HK2 từ danh sách học kỳ (cùng năm học - dùng MaNamHoc)
+                    var allHocKy = hocKyBus.DocDSHocKy();
+                    var hocKyCungNamHoc = allHocKy.Where(hk => 
+                        hk.MaNamHoc == hocKyHienTai.MaNamHoc && 
+                        hk.MaHocKy != hocKyHienTai.MaHocKy).FirstOrDefault();
+                    hk2ForPhanLop = hocKyCungNamHoc;
+                }
+                
+                if (hk1ForPhanLop != null && hk2ForPhanLop != null)
+                {
+                    PhanLopTuDongChoHocSinhChuyenTruong(hocSinhThanhCong, hk1ForPhanLop, hk2ForPhanLop);
+                }
+                else
+                {
+                    MessageBox.Show("Không thể phân lớp: Không tìm thấy đủ thông tin HK1 và HK2.", 
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 
                 // ✅ CHỈ hiển thị thông báo thành công nếu còn học sinh
                 if (hocSinhThanhCong.Count > 0)
@@ -3378,12 +3838,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         /// <summary>
         /// Tự động phân lớp cho học sinh chuyển trường
         /// </summary>
+        /// <summary>
+        /// Phân lớp tự động cho học sinh chuyển trường - Phân lớp cho CẢ HK1 và HK2 cùng lúc
+        /// </summary>
         private void PhanLopTuDongChoHocSinhChuyenTruong(
             Dictionary<string, (int maHS, int excelRow, string khoi, DateTime ngayChuyenVao, string nguyenVong)> hocSinhThanhCong,
-            HocKyDTO hocKyHienTai)
+            HocKyDTO hk1,
+            HocKyDTO hk2)
         {
             if (hocSinhThanhCong.Count == 0)
                 return;
+
+            // ✅ Kiểm tra có đủ HK1 và HK2 không
+            if (hk1 == null || hk2 == null)
+            {
+                MessageBox.Show("Không thể phân lớp: Thiếu thông tin học kỳ HK1 hoặc HK2.", 
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             // Lấy danh sách lớp
             var allLop = lopHocBus.DocDSLop();
@@ -3438,15 +3910,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             // ✅ Kiểm tra lớp nguyện vọng cùng khối - BÁO LỖI nếu không khớp
                             if (lopNguyenVong.maKhoi == maKhoi)
                             {
-                                // Kiểm tra sĩ số
-                                int siSoHienTai = phanLopBLL.CountHocSinhInLop(lopNguyenVong.maLop, hocKyHienTai.MaHocKy);
+                                // ✅ Kiểm tra sĩ số cho CẢ HK1 và HK2 (lấy max để đảm bảo cả 2 học kỳ đều còn chỗ)
+                                int siSoHK1 = phanLopBLL.CountHocSinhInLop(lopNguyenVong.maLop, hk1.MaHocKy);
+                                int siSoHK2 = phanLopBLL.CountHocSinhInLop(lopNguyenVong.maLop, hk2.MaHocKy);
+                                int siSoHienTai = Math.Max(siSoHK1, siSoHK2);
+                                
                                 if (siSoHienTai < lopNguyenVong.siSo)
                                 {
                                     lopDuocPhan = lopNguyenVong;
                                 }
                                 else
                                 {
-                                    warnings.AppendLine($"Học sinh {tenHS}: Lớp nguyện vọng '{nguyenVong}' đã đầy ({siSoHienTai}/{lopNguyenVong.siSo}) - Tự động phân lớp");
+                                    warnings.AppendLine($"Học sinh {tenHS}: Lớp nguyện vọng '{nguyenVong}' đã đầy (HK1: {siSoHK1}, HK2: {siSoHK2}, Tối đa: {lopNguyenVong.siSo}) - Tự động phân lớp");
                                 }
                             }
                             else
@@ -3467,12 +3942,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     // Nếu không có lớp nguyện vọng phù hợp, tự động phân lớp
                     if (lopDuocPhan == null)
                     {
-                        // Sắp xếp lớp theo sĩ số hiện tại (tăng dần) - ưu tiên lớp có ít học sinh nhất
+                        // ✅ Sắp xếp lớp theo sĩ số hiện tại (tăng dần) - ưu tiên lớp có ít học sinh nhất
+                        // ✅ Lấy max sĩ số giữa HK1 và HK2 để đảm bảo cả 2 học kỳ đều còn chỗ
                         var lopConCho = lopCungKhoi
                             .Select(l => new
                             {
                                 Lop = l,
-                                SiSoHienTai = phanLopBLL.CountHocSinhInLop(l.maLop, hocKyHienTai.MaHocKy)
+                                SiSoHK1 = phanLopBLL.CountHocSinhInLop(l.maLop, hk1.MaHocKy),
+                                SiSoHK2 = phanLopBLL.CountHocSinhInLop(l.maLop, hk2.MaHocKy),
+                                SiSoHienTai = Math.Max(
+                                    phanLopBLL.CountHocSinhInLop(l.maLop, hk1.MaHocKy),
+                                    phanLopBLL.CountHocSinhInLop(l.maLop, hk2.MaHocKy)
+                                )
                             })
                             .Where(x => x.SiSoHienTai < x.Lop.siSo)
                             .OrderBy(x => x.SiSoHienTai)
@@ -3492,18 +3973,48 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         }
                     }
 
-                    // Kiểm tra học sinh chưa được phân lớp trong học kỳ này
-                    if (phanLopBLL.CheckHocSinhDaPhanLop(maHS, hocKyHienTai.MaHocKy))
+                    // ✅ Kiểm tra học sinh chưa được phân lớp trong CẢ HK1 và HK2
+                    bool daPhanLopHK1 = phanLopBLL.CheckHocSinhDaPhanLop(maHS, hk1.MaHocKy);
+                    bool daPhanLopHK2 = phanLopBLL.CheckHocSinhDaPhanLop(maHS, hk2.MaHocKy);
+                    
+                    if (daPhanLopHK1 && daPhanLopHK2)
                     {
-                        warnings.AppendLine($"Học sinh {tenHS}: Đã được phân lớp trong học kỳ này - Bỏ qua");
+                        warnings.AppendLine($"Học sinh {tenHS}: Đã được phân lớp trong cả HK1 và HK2 - Bỏ qua");
                         continue;
                     }
+                    else if (daPhanLopHK1 || daPhanLopHK2)
+                    {
+                        // Nếu chỉ phân lớp một học kỳ, vẫn tiếp tục phân lớp cho học kỳ còn lại
+                        warnings.AppendLine($"Học sinh {tenHS}: Đã được phân lớp trong {(daPhanLopHK1 ? "HK1" : "HK2")} - Sẽ phân lớp cho học kỳ còn lại");
+                    }
 
-                    // Phân lớp
+                    // ✅ Phân lớp cho CẢ HK1 và HK2
                     try
                     {
-                        bool success = phanLopBLL.AddPhanLop(maHS, lopDuocPhan.maLop, hocKyHienTai.MaHocKy);
-                        if (success)
+                        bool successHK1 = false;
+                        bool successHK2 = false;
+                        
+                        // Phân lớp cho HK1 (nếu chưa có)
+                        if (!daPhanLopHK1)
+                        {
+                            successHK1 = phanLopBLL.AddPhanLop(maHS, lopDuocPhan.maLop, hk1.MaHocKy);
+                        }
+                        else
+                        {
+                            successHK1 = true; // Đã có rồi, coi như thành công
+                        }
+                        
+                        // Phân lớp cho HK2 (nếu chưa có)
+                        if (!daPhanLopHK2)
+                        {
+                            successHK2 = phanLopBLL.AddPhanLop(maHS, lopDuocPhan.maLop, hk2.MaHocKy);
+                        }
+                        else
+                        {
+                            successHK2 = true; // Đã có rồi, coi như thành công
+                        }
+                        
+                        if (successHK1 && successHK2)
                         {
                             successCount++;
                             // ✅ Lưu thông tin lớp đã phân
@@ -3513,7 +4024,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         }
                         else
                         {
-                            errors.AppendLine($"Học sinh {tenHS}: Không thể phân lớp vào {lopDuocPhan.tenLop}");
+                            string chiTiet = "";
+                            if (!successHK1) chiTiet += "HK1 thất bại. ";
+                            if (!successHK2) chiTiet += "HK2 thất bại.";
+                            errors.AppendLine($"Học sinh {tenHS}: Không thể phân lớp vào {lopDuocPhan.tenLop} ({chiTiet.Trim()})");
                             errorCount++;
                             hocSinhKhongPhanLopDuoc.Add(maHS); // ✅ Đánh dấu cần rollback
                         }
@@ -3736,6 +4250,983 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             else if (successCount > 0)
             {
                 ScrollableMessageBox.Show("Kết quả phân lớp", result.ToString(), MessageBoxIcon.Information);
+            }
+        }
+
+        /// <summary>
+        /// Hàm nhập Excel cho học sinh tuyển sinh (lớp 9 vào lớp 10 chưa được phân lớp)
+        /// Chỉ nhập HocSinh, PhuHuynh, MoiQuanHe (không cần điểm, hạnh kiểm, xếp loại)
+        /// ✅ Đảm bảo transaction: Tất cả hoặc không có gì - Rollback toàn bộ nếu có bất kỳ lỗi nào
+        /// </summary>
+        private void ImportExcelTuyenSinh(string filePath, HocKyDTO hocKyDeNhap, HocKyDTO hk1, HocKyDTO hk2)
+        {
+            // ✅ Set LicenseContext cho EPPlus (bắt buộc từ phiên bản 5.0+)
+            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+            
+            // ✅ Danh sách học sinh đã thêm để rollback nếu cần
+            List<int> hocSinhDaThem = new List<int>();
+            List<int> phuHuynhDaThem = new List<int>();
+            
+            try
+            {
+                using (var package = new ExcelPackage(new FileInfo(filePath)))
+                {
+                    // Kiểm tra xem file có ít nhất 3 worksheet không
+                    if (package.Workbook.Worksheets.Count < 3)
+                    {
+                        throw new Exception("File Excel phải có ít nhất 3 worksheet: HocSinh, PhuHuynh, MoiQuanHe");
+                    }
+
+                    // Đọc từng worksheet
+                    var wsHocSinh = package.Workbook.Worksheets["HocSinh"] ?? package.Workbook.Worksheets[0];
+                    var wsPhuHuynh = package.Workbook.Worksheets["PhuHuynh"] ?? package.Workbook.Worksheets[1];
+                    var wsMoiQuanHe = package.Workbook.Worksheets["MoiQuanHe"] ?? package.Workbook.Worksheets[2];
+
+                    // 1. Nhập Học Sinh với trạng thái "Đang học"
+                    Dictionary<string, (int maHS, int excelRow)> hocSinhThanhCong = 
+                        ImportHocSinhFromWorksheetTuyenSinh(wsHocSinh, hocSinhDaThem);
+
+                    if (hocSinhThanhCong.Count == 0)
+                    {
+                        MessageBox.Show("Không có học sinh nào được nhập thành công. Vui lòng kiểm tra lại dữ liệu Excel.",
+                            "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // 2. Nhập Phụ Huynh của học sinh đã nhập thành công
+                    // ✅ Nếu có lỗi, sẽ rollback học sinh
+                    Dictionary<string, (int maPH, int excelRow)> phuHuynhThanhCong = 
+                        ImportPhuHuynhFromWorksheetTuyenSinh(wsPhuHuynh, hocSinhThanhCong, hocSinhDaThem, phuHuynhDaThem);
+
+                    // ✅ Kiểm tra: Nếu sau khi nhập phụ huynh, không còn học sinh nào thì rollback
+                    if (hocSinhThanhCong.Count == 0)
+                    {
+                        RollbackTuyenSinh(hocSinhDaThem, phuHuynhDaThem);
+                        MessageBox.Show("Không có học sinh nào đủ điều kiện sau khi nhập phụ huynh. Đã rollback toàn bộ dữ liệu.",
+                            "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // 3. Nhập Mối Quan Hệ của học sinh đã nhập thành công
+                    // ✅ Nếu có lỗi, sẽ rollback học sinh và phụ huynh
+                    ImportMoiQuanHeFromWorksheetTuyenSinh(wsMoiQuanHe, hocSinhThanhCong, phuHuynhThanhCong, hocSinhDaThem, phuHuynhDaThem);
+
+                    // ✅ Kiểm tra: Nếu sau khi nhập mối quan hệ, không còn học sinh nào thì rollback
+                    if (hocSinhThanhCong.Count == 0)
+                    {
+                        RollbackTuyenSinh(hocSinhDaThem, phuHuynhDaThem);
+                        MessageBox.Show("Không có học sinh nào đủ điều kiện sau khi nhập mối quan hệ. Đã rollback toàn bộ dữ liệu.",
+                            "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // ✅ THÀNH CÔNG: Tất cả dữ liệu đã được thêm
+                    MessageBox.Show($"✅ Nhập Excel thành công!\n\n" +
+                                   $"Đã nhập {hocSinhThanhCong.Count} học sinh tuyển sinh.\n" +
+                                   $"Đã nhập {phuHuynhThanhCong.Count} phụ huynh.\n" +
+                                   $"Đã tạo {hocSinhThanhCong.Count} mối quan hệ.\n\n" +
+                                   $"Các học sinh này sẽ được hiển thị trong bảng phân lớp và sẽ được phân vào lớp 10 khi thực hiện 'Phân lớp tự động'.",
+                                   "Nhập Excel thành công",
+                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                // ✅ ROLLBACK TOÀN BỘ nếu có bất kỳ lỗi nào
+                RollbackTuyenSinh(hocSinhDaThem, phuHuynhDaThem);
+                throw new Exception($"Lỗi khi nhập Excel: {ex.Message}\n\nĐã rollback toàn bộ dữ liệu.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Rollback toàn bộ dữ liệu đã thêm (học sinh, phụ huynh, mối quan hệ, tài khoản)
+        /// </summary>
+        private void RollbackTuyenSinh(List<int> hocSinhDaThem, List<int> phuHuynhDaThem)
+        {
+            // Xóa mối quan hệ trước
+            foreach (int maHS in hocSinhDaThem)
+            {
+                try
+                {
+                    hocSinhPhuHuynhBLL.DeleteQuanHeByHocSinh(maHS);
+                }
+                catch { }
+            }
+
+            // Xóa phụ huynh
+            foreach (int maPH in phuHuynhDaThem)
+            {
+                try
+                {
+                    phuHuynhBLL.DeletePhuHuynh(maPH);
+                }
+                catch { }
+            }
+
+            // Xóa học sinh và tài khoản
+            foreach (int maHS in hocSinhDaThem)
+            {
+                try
+                {
+                    // Xóa tài khoản
+                    string tenDangNhap = "HS" + maHS;
+                    nguoiDungBLL.DeleteNguoiDung(tenDangNhap);
+                    
+                    // Xóa học sinh
+                    hocSinhBus.DeleteHocSinh(maHS);
+                }
+                catch { }
+            }
+        }
+
+        /// <summary>
+        /// Nhập học sinh từ worksheet Excel (cho tuyển sinh)
+        /// </summary>
+        private Dictionary<string, (int maHS, int excelRow)> ImportHocSinhFromWorksheetTuyenSinh(ExcelWorksheet ws, List<int> hocSinhDaThem)
+        {
+            var result = new Dictionary<string, (int, int)>();
+            int rowCount = ws.Dimension?.End.Row ?? 0;
+            if (rowCount < 2) return result;
+
+            // ✅ Tìm các cột (tự động phát hiện) - BỎ QUA cột "Mã HS" (auto-generated)
+            int colHoTen = -1, colNgaySinh = -1, colGioiTinh = -1, colSdt = -1, colEmail = -1, colTrangThai = -1;
+            
+            for (int col = 1; col <= ws.Dimension.End.Column; col++)
+            {
+                string header = ws.Cells[1, col].Text.Trim().ToLower();
+                // ✅ Bỏ qua cột "Mã HS" (auto-generated)
+                if (header.Contains("mã hs") || header.Contains("mahs") || header.Contains("mã học sinh"))
+                    continue;
+                    
+                if ((header.Contains("họ") && header.Contains("tên")) || header.Contains("hoten") || header == "họ và tên")
+                    colHoTen = col;
+                else if ((header.Contains("ngày") && header.Contains("sinh")) || header.Contains("ngaysinh"))
+                    colNgaySinh = col;
+                else if ((header.Contains("giới") && header.Contains("tính")) || header.Contains("gioitinh"))
+                    colGioiTinh = col;
+                else if (header.Contains("sđt") || header.Contains("sdt") || header.Contains("điện thoại") || header.Contains("sdths"))
+                    colSdt = col;
+                else if (header.Contains("email"))
+                    colEmail = col;
+                else if ((header.Contains("trạng") && header.Contains("thái")) || header.Contains("trangthai"))
+                    colTrangThai = col;
+            }
+
+            // ✅ Fallback: Nếu không tìm thấy, tìm từ cột 2 trở đi (bỏ qua cột "Mã HS" ở đầu)
+            if (colHoTen == -1)
+            {
+                // Tìm cột đầu tiên có dữ liệu (không phải "Mã HS")
+                for (int col = 2; col <= Math.Min(ws.Dimension.End.Column, 7); col++)
+                {
+                    string header = ws.Cells[1, col].Text.Trim().ToLower();
+                    if (!header.Contains("mã hs") && !header.Contains("mahs"))
+                    {
+                        colHoTen = col;
+                        break;
+                    }
+                }
+                if (colHoTen == -1) colHoTen = 2; // Mặc định cột 2 (bỏ qua cột 1 "Mã HS")
+            }
+            if (colNgaySinh == -1) colNgaySinh = colHoTen + 1;
+            if (colGioiTinh == -1) colGioiTinh = colNgaySinh + 1;
+            if (colSdt == -1) colSdt = colGioiTinh + 1;
+            if (colEmail == -1) colEmail = colSdt + 1;
+            if (colTrangThai == -1) colTrangThai = colEmail + 1;
+
+            int successCount = 0;
+            int errorCount = 0;
+            var errors = new StringBuilder();
+
+            for (int row = 2; row <= rowCount; row++)
+            {
+                try
+                {
+                    string hoTen = ws.Cells[row, colHoTen].Text.Trim();
+                    string ngaySinhStr = ws.Cells[row, colNgaySinh].Text.Trim();
+                    string gioiTinh = ws.Cells[row, colGioiTinh].Text.Trim();
+                    string sdtHS = ws.Cells[row, colSdt].Text.Trim();
+                    string email = ws.Cells[row, colEmail].Text.Trim();
+                    string trangThai = ws.Cells[row, colTrangThai].Text.Trim();
+
+                    // Bỏ qua dòng trống
+                    if (string.IsNullOrWhiteSpace(hoTen) && string.IsNullOrWhiteSpace(ngaySinhStr))
+                        continue;
+
+                    // Validate dữ liệu
+                    if (string.IsNullOrWhiteSpace(hoTen))
+                    {
+                        errors.AppendLine($"Dòng {row - 1}: Thiếu họ tên");
+                        errorCount++;
+                        continue;
+                    }
+
+                    // Parse ngày sinh với nhiều format (ưu tiên format Việt Nam)
+                    DateTime? ngaySinh = null;
+                    bool parsedDate = false;
+                    if (!string.IsNullOrWhiteSpace(ngaySinhStr))
+                    {
+                        // ✅ Ưu tiên format Việt Nam trước (dd/MM/yyyy)
+                        string[] dateFormats = {
+                            "dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "d-M-yyyy",
+                            "dd/MM/yy", "d/M/yy", "yyyy-MM-dd", "MM/dd/yyyy" // Format Mỹ (fallback)
+                        };
+                        
+                        foreach (string format in dateFormats)
+                        {
+                            if (DateTime.TryParseExact(ngaySinhStr, format,
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                System.Globalization.DateTimeStyles.None, out DateTime parsed))
+                            {
+                                ngaySinh = parsed;
+                                parsedDate = true;
+                                break;
+                            }
+                        }
+                        
+                        // Nếu vẫn chưa parse được, thử parse tự động
+                        if (!parsedDate && DateTime.TryParse(ngaySinhStr, out DateTime autoParsed))
+                        {
+                            ngaySinh = autoParsed;
+                            parsedDate = true;
+                        }
+                    }
+
+                    // Nếu không parse được ngày sinh, báo lỗi
+                    if (!parsedDate || !ngaySinh.HasValue)
+                    {
+                        errors.AppendLine($"Dòng {row - 1}: {hoTen} - Ngày sinh không hợp lệ ({ngaySinhStr}). Vui lòng kiểm tra lại format (dd/MM/yyyy).");
+                        errorCount++;
+                        continue;
+                    }
+
+                    // ✅ Validate tuổi cho học sinh tuyển sinh (cho phép từ 15 tuổi trở lên)
+                    int currentYear = DateTime.Now.Year;
+                    int birthYear = ngaySinh.Value.Year;
+                    int age = currentYear - birthYear;
+                    
+                    // Điều chỉnh tuổi nếu chưa qua sinh nhật trong năm hiện tại
+                    if (ngaySinh.Value.Date > DateTime.Today.AddYears(-age))
+                    {
+                        age--;
+                    }
+                    
+                    // Học sinh tuyển sinh lớp 10: cho phép từ 15 tuổi trở lên (thay vì 16)
+                    if (age < 15)
+                    {
+                        errors.AppendLine($"Dòng {row - 1}: {hoTen} - Học sinh phải từ 15 tuổi trở lên (Hiện tại: {age} tuổi, Ngày sinh: {ngaySinh.Value:dd/MM/yyyy}).");
+                        errorCount++;
+                        continue;
+                    }
+
+                    // Kiểm tra ngày sinh không được là tương lai
+                    if (ngaySinh.Value.Date > DateTime.Today)
+                    {
+                        errors.AppendLine($"Dòng {row - 1}: {hoTen} - Ngày sinh không được là ngày trong tương lai ({ngaySinh.Value:dd/MM/yyyy}).");
+                        errorCount++;
+                        continue;
+                    }
+
+                    // Mặc định trạng thái là "Đang học" nếu không có
+                    if (string.IsNullOrWhiteSpace(trangThai))
+                        trangThai = "Đang học";
+
+                    // ✅ Chỉ nhập học sinh có trạng thái "Đang học" - BÁO LỖI nếu không phải
+                    if (trangThai != "Đang học")
+                    {
+                        errors.AppendLine($"Dòng {row - 1}: {hoTen} - Trạng thái '{trangThai}' không hợp lệ. Chỉ chấp nhận học sinh có trạng thái 'Đang học'.");
+                        errorCount++;
+                        continue;
+                    }
+
+                    // Tạo học sinh mới
+                    var hocSinh = new HocSinhDTO
+                    {
+                        HoTen = hoTen,
+                        NgaySinh = ngaySinh.Value, // Đã validate ở trên
+                        GioiTinh = gioiTinh,
+                        SdtHS = sdtHS,
+                        Email = email,
+                        TrangThai = trangThai,
+                        TenDangNhap = null // Học sinh tuyển sinh chưa có tài khoản
+                    };
+
+                    // ✅ Thêm học sinh tuyển sinh (cho phép từ 15 tuổi, bỏ qua validation tuổi 16)
+                    try
+                    {
+                        int maHS = AddHocSinhTuyenSinh(hocSinh);
+                        if (maHS > 0)
+                        {
+                            result[hoTen] = (maHS, row);
+                            hocSinhDaThem.Add(maHS); // ✅ Lưu để rollback nếu cần
+                            successCount++;
+                        }
+                        else
+                        {
+                            errors.AppendLine($"Dòng {row - 1}: {hoTen} - Không thể thêm học sinh");
+                            errorCount++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        errors.AppendLine($"Dòng {row - 1}: {hoTen} - Lỗi: {ex.Message}");
+                        errorCount++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errors.AppendLine($"Dòng {row - 1}: Lỗi - {ex.Message}");
+                    errorCount++;
+                }
+            }
+
+            // ✅ Hiển thị kết quả nhập Học Sinh (riêng biệt)
+            if (successCount > 0 || errorCount > 0)
+            {
+                StringBuilder resultMsg = new StringBuilder();
+                resultMsg.AppendLine("📋 KẾT QUẢ NHẬP HỌC SINH (Tuyển sinh):");
+                resultMsg.AppendLine();
+                if (successCount > 0)
+                    resultMsg.AppendLine($"✅ Thành công: {successCount} học sinh");
+                if (errorCount > 0)
+                {
+                    resultMsg.AppendLine($"❌ Lỗi: {errorCount} học sinh");
+                    resultMsg.AppendLine();
+                    resultMsg.AppendLine("Chi tiết lỗi:");
+                    resultMsg.Append(errors);
+                }
+                
+                if (resultMsg.Length > 1000)
+                    ScrollableMessageBox.Show("Kết quả nhập Học Sinh", resultMsg.ToString(), 
+                        errorCount > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+                else
+                    MessageBox.Show(resultMsg.ToString(), "Kết quả nhập Học Sinh", 
+                        MessageBoxButtons.OK, 
+                        errorCount > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Thêm học sinh tuyển sinh (bỏ qua validation tuổi 16, cho phép từ 15 tuổi)
+        /// </summary>
+        private int AddHocSinhTuyenSinh(HocSinhDTO hocSinh)
+        {
+            try
+            {
+                // Validate các trường khác (trừ tuổi)
+                if (string.IsNullOrWhiteSpace(hocSinh.HoTen))
+                    throw new ArgumentException("Họ và tên không được để trống.");
+                
+                if (string.IsNullOrWhiteSpace(hocSinh.Email))
+                    throw new ArgumentException("Email không được để trống.");
+                
+                if (string.IsNullOrWhiteSpace(hocSinh.GioiTinh) || (hocSinh.GioiTinh != "Nam" && hocSinh.GioiTinh != "Nữ"))
+                    throw new ArgumentException("Giới tính không hợp lệ.");
+                
+                // Kiểm tra trùng lặp
+                var hocSinhDAO = new HocSinhDAO();
+                if (!string.IsNullOrWhiteSpace(hocSinh.SdtHS) && hocSinhDAO.KiemTraTrungSdt(hocSinh.SdtHS))
+                    throw new ArgumentException($"Số điện thoại '{hocSinh.SdtHS}' đã tồn tại.");
+                
+                if (!string.IsNullOrWhiteSpace(hocSinh.Email) && hocSinhDAO.KiemTraTrungEmail(hocSinh.Email))
+                    throw new ArgumentException($"Email '{hocSinh.Email}' đã tồn tại.");
+                
+                // Thêm học sinh vào CSDL (bỏ qua validation tuổi)
+                int newMaHocSinh = hocSinhDAO.ThemHocSinh(hocSinh);
+                if (newMaHocSinh <= 0)
+                    throw new Exception("Thêm học sinh thất bại.");
+                
+                // Tạo tài khoản đăng nhập
+                string tenDangNhap = "HS" + newMaHocSinh;
+                string matKhauMacDinh = "123456";
+                var loginBUS = new LoginBUS();
+                bool taoTaiKhoanThanhCong = loginBUS.ThemNguoiDung(tenDangNhap, matKhauMacDinh, "Hoạt động");
+                
+                if (!taoTaiKhoanThanhCong)
+                {
+                    // Rollback: Xóa học sinh
+                    hocSinhDAO.XoaHocSinh(newMaHocSinh);
+                    throw new Exception("Tạo tài khoản đăng nhập thất bại. Đã rollback.");
+                }
+                
+                // Cập nhật TenDangNhap cho học sinh
+                bool capNhatThanhCong = hocSinhDAO.CapNhatTenDangNhap(newMaHocSinh, tenDangNhap);
+                if (!capNhatThanhCong)
+                {
+                    // Rollback: Xóa học sinh và tài khoản
+                    hocSinhDAO.XoaHocSinh(newMaHocSinh);
+                    throw new Exception("Cập nhật tên đăng nhập cho học sinh thất bại. Đã rollback.");
+                }
+                
+                // Gán vai trò student (INSERT vào NguoiDungVaiTro)
+                using (var conn = DAO.ConnectDatabase.ConnectionDatabase.GetConnection())
+                {
+                    conn.Open();
+                    string queryVaiTro = @"INSERT IGNORE INTO NguoiDungVaiTro (TenDangNhap, MaVaiTro) 
+                                          VALUES (@TenDangNhap, @MaVaiTro)";
+                    using (var cmd = new MySqlCommand(queryVaiTro, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@TenDangNhap", tenDangNhap);
+                        cmd.Parameters.AddWithValue("@MaVaiTro", "student");
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                
+                return newMaHocSinh;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi AddHocSinhTuyenSinh: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Nhập phụ huynh từ worksheet Excel (cho tuyển sinh)
+        /// ✅ Nếu có lỗi, sẽ rollback học sinh tương ứng
+        /// ✅ Tìm học sinh theo tên (không phải theo dòng Excel) vì dòng có thể không tương ứng
+        /// </summary>
+        private Dictionary<string, (int maPH, int excelRow)> ImportPhuHuynhFromWorksheetTuyenSinh(
+            ExcelWorksheet ws, 
+            Dictionary<string, (int maHS, int excelRow)> hocSinhThanhCong,
+            List<int> hocSinhDaThem,
+            List<int> phuHuynhDaThem)
+        {
+            var result = new Dictionary<string, (int, int)>();
+            int rowCount = ws.Dimension?.End.Row ?? 0;
+            if (rowCount < 2) return result;
+
+            // ✅ Tìm các cột - BỎ QUA cột "Mã PH" (auto-generated)
+            int colHoTen = -1, colSdt = -1, colEmail = -1, colDiaChi = -1;
+            
+            for (int col = 1; col <= ws.Dimension.End.Column; col++)
+            {
+                string header = ws.Cells[1, col].Text.Trim().ToLower();
+                // ✅ Bỏ qua cột "Mã PH" (auto-generated)
+                if (header.Contains("mã ph") || header.Contains("maph") || header.Contains("mã phụ huynh"))
+                    continue;
+                    
+                if ((header.Contains("họ") && header.Contains("tên")) || header.Contains("hoten") || header == "họ và tên")
+                    colHoTen = col;
+                else if (header.Contains("sđt") || header.Contains("sdt") || header.Contains("điện thoại"))
+                    colSdt = col;
+                else if (header.Contains("email"))
+                    colEmail = col;
+                else if ((header.Contains("địa") && header.Contains("chỉ")) || header.Contains("diachi"))
+                    colDiaChi = col;
+            }
+
+            // ✅ Fallback: Nếu không tìm thấy, tìm từ cột 2 trở đi (bỏ qua cột "Mã PH" ở đầu)
+            if (colHoTen == -1)
+            {
+                // Tìm cột đầu tiên có dữ liệu (không phải "Mã PH")
+                for (int col = 2; col <= Math.Min(ws.Dimension.End.Column, 5); col++)
+                {
+                    string header = ws.Cells[1, col].Text.Trim().ToLower();
+                    if (!header.Contains("mã ph") && !header.Contains("maph"))
+                    {
+                        colHoTen = col;
+                        break;
+                    }
+                }
+                if (colHoTen == -1) colHoTen = 2; // Mặc định cột 2 (bỏ qua cột 1 "Mã PH")
+            }
+            if (colSdt == -1) colSdt = colHoTen + 1;
+            if (colEmail == -1) colEmail = colSdt + 1;
+            if (colDiaChi == -1) colDiaChi = colEmail + 1;
+
+            HashSet<string> emailDaNhap = new HashSet<string>();
+            HashSet<string> sdtDaNhap = new HashSet<string>();
+            List<int> hocSinhCanRollback = new List<int>(); // ✅ Danh sách học sinh cần rollback
+            int successCount = 0;
+            int errorCount = 0;
+            int skippedCount = 0;
+            var errors = new StringBuilder();
+            var skipped = new StringBuilder();
+
+            // ✅ Tạo map: tên học sinh -> mã học sinh (để tìm nhanh)
+            Dictionary<string, int> mapTenHSToMaHS = new Dictionary<string, int>();
+            foreach (var kvp in hocSinhThanhCong)
+            {
+                if (!mapTenHSToMaHS.ContainsKey(kvp.Key))
+                {
+                    mapTenHSToMaHS[kvp.Key] = kvp.Value.maHS;
+                }
+            }
+
+            for (int row = 2; row <= rowCount; row++)
+            {
+                try
+                {
+                    string hoTen = ws.Cells[row, colHoTen].Text.Trim();
+                    string sdt = ws.Cells[row, colSdt].Text.Trim();
+                    string email = ws.Cells[row, colEmail].Text.Trim();
+                    string diaChi = ws.Cells[row, colDiaChi].Text.Trim();
+
+                    if (string.IsNullOrWhiteSpace(hoTen) && string.IsNullOrWhiteSpace(sdt))
+                        continue;
+
+                    // ✅ Tìm học sinh tương ứng: Ưu tiên theo dòng Excel, sau đó theo tên
+                    // ✅ Sử dụng mapTenHSToMaHS để tránh lặp lại
+                    int maHSTuongUng = 0;
+                    string tenHSTuongUng = "";
+                    
+                    // 1. Ưu tiên: Tìm theo dòng Excel
+                    foreach (var kvp in hocSinhThanhCong)
+                    {
+                        if (kvp.Value.excelRow == row)
+                        {
+                            maHSTuongUng = kvp.Value.maHS;
+                            tenHSTuongUng = kvp.Key;
+                            break;
+                        }
+                    }
+                    
+                    // 2. Nếu không tìm thấy theo dòng, tìm theo tên (so khớp chính xác trước, sau đó một phần)
+                    if (maHSTuongUng == 0)
+                    {
+                        // Ưu tiên: Tìm chính xác theo tên
+                        if (mapTenHSToMaHS.ContainsKey(hoTen))
+                        {
+                            maHSTuongUng = mapTenHSToMaHS[hoTen];
+                            tenHSTuongUng = hoTen;
+                        }
+                        else
+                        {
+                            // Tìm học sinh có tên gần giống nhất (so khớp một phần)
+                            foreach (var kvp in hocSinhThanhCong)
+                            {
+                                string tenHS = kvp.Key;
+                                // So khớp một phần (ví dụ: "Nguyễn Tuấn" trong "Nguyễn Tuấn Tà")
+                                if (tenHS.IndexOf(hoTen, StringComparison.OrdinalIgnoreCase) >= 0 || 
+                                    hoTen.IndexOf(tenHS, StringComparison.OrdinalIgnoreCase) >= 0)
+                                {
+                                    maHSTuongUng = kvp.Value.maHS;
+                                    tenHSTuongUng = tenHS;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (maHSTuongUng == 0)
+                    {
+                        skipped.AppendLine($"Dòng {row - 1}: {hoTen} - Bỏ qua (Không tìm thấy học sinh tương ứng)");
+                        skippedCount++;
+                        continue;
+                    }
+                    
+                    // ✅ Kiểm tra xem học sinh này đã bị rollback chưa (tránh lặp lại lỗi)
+                    if (hocSinhCanRollback.Contains(maHSTuongUng))
+                    {
+                        continue; // Đã bị rollback rồi, bỏ qua
+                    }
+
+                    if (string.IsNullOrWhiteSpace(hoTen))
+                    {
+                        // ✅ Nếu thiếu tên phụ huynh nhưng có học sinh → rollback học sinh
+                        errors.AppendLine($"Dòng {row - 1}: Thiếu họ tên phụ huynh (Học sinh: {tenHSTuongUng})");
+                        errorCount++;
+                        if (!hocSinhCanRollback.Contains(maHSTuongUng))
+                        {
+                            hocSinhCanRollback.Add(maHSTuongUng);
+                        }
+                        continue;
+                    }
+
+                    // ✅ Kiểm tra trùng SDT trong cùng file Excel (kiểm tra trước)
+                    if (!string.IsNullOrWhiteSpace(sdt))
+                    {
+                        if (sdtDaNhap.Contains(sdt))
+                        {
+                            errors.AppendLine($"Dòng {row - 1}: {hoTen} - Số điện thoại '{sdt}' đã được sử dụng ở dòng trước đó trong file Excel (Học sinh: {tenHSTuongUng})");
+                            errorCount++;
+                            if (!hocSinhCanRollback.Contains(maHSTuongUng))
+                            {
+                                hocSinhCanRollback.Add(maHSTuongUng);
+                            }
+                            continue;
+                        }
+                    }
+
+                    // ✅ Kiểm tra trùng Email trong cùng file Excel (kiểm tra trước)
+                    if (!string.IsNullOrWhiteSpace(email))
+                    {
+                        if (emailDaNhap.Contains(email.ToLower()))
+                        {
+                            errors.AppendLine($"Dòng {row - 1}: {hoTen} - Email '{email}' đã được sử dụng ở dòng trước đó trong file Excel (Học sinh: {tenHSTuongUng})");
+                            errorCount++;
+                            if (!hocSinhCanRollback.Contains(maHSTuongUng))
+                            {
+                                hocSinhCanRollback.Add(maHSTuongUng);
+                            }
+                            continue;
+                        }
+                    }
+
+                    // ✅ Kiểm tra trùng SDT trong database
+                    if (!string.IsNullOrWhiteSpace(sdt))
+                    {
+                        var phuHuynhDAO = new PhuHuynhDAO();
+                        if (phuHuynhDAO.KiemTraTrungSdt(sdt))
+                        {
+                            errors.AppendLine($"Dòng {row - 1}: {hoTen} - Số điện thoại '{sdt}' đã tồn tại trong hệ thống (Học sinh: {tenHSTuongUng})");
+                            errorCount++;
+                            if (!hocSinhCanRollback.Contains(maHSTuongUng))
+                            {
+                                hocSinhCanRollback.Add(maHSTuongUng);
+                            }
+                            continue;
+                        }
+                    }
+
+                    // ✅ Kiểm tra trùng Email trong database
+                    if (!string.IsNullOrWhiteSpace(email))
+                    {
+                        var phuHuynhDAO = new PhuHuynhDAO();
+                        if (phuHuynhDAO.KiemTraTrungEmail(email))
+                        {
+                            errors.AppendLine($"Dòng {row - 1}: {hoTen} - Email '{email}' đã tồn tại trong hệ thống (Học sinh: {tenHSTuongUng})");
+                            errorCount++;
+                            if (!hocSinhCanRollback.Contains(maHSTuongUng))
+                            {
+                                hocSinhCanRollback.Add(maHSTuongUng);
+                            }
+                            continue;
+                        }
+                    }
+
+                    // Tạo phụ huynh mới
+                    var phuHuynh = new PhuHuynhDTO
+                    {
+                        HoTen = hoTen,
+                        SoDienThoai = sdt,
+                        Email = email,
+                        DiaChi = diaChi
+                    };
+
+                    try
+                    {
+                        bool addSuccess = phuHuynhBLL.AddPhuHuynh(phuHuynh);
+                        if (addSuccess && !string.IsNullOrWhiteSpace(sdt))
+                        {
+                            // Lấy mã phụ huynh vừa thêm bằng số điện thoại
+                            var phuHuynhVuaThem = phuHuynhBLL.GetPhuHuynhBySdt(sdt);
+                            if (phuHuynhVuaThem != null)
+                            {
+                                result[hoTen] = (phuHuynhVuaThem.MaPhuHuynh, row);
+                                phuHuynhDaThem.Add(phuHuynhVuaThem.MaPhuHuynh); // ✅ Lưu để rollback nếu cần
+                                successCount++;
+                                
+                                if (!string.IsNullOrWhiteSpace(email))
+                                    emailDaNhap.Add(email.ToLower());
+                                if (!string.IsNullOrWhiteSpace(sdt))
+                                    sdtDaNhap.Add(sdt);
+                            }
+                            else
+                            {
+                                errors.AppendLine($"Dòng {row - 1}: {hoTen} - Không thể lấy mã phụ huynh sau khi thêm (Học sinh: {tenHSTuongUng})");
+                                errorCount++;
+                                if (!hocSinhCanRollback.Contains(maHSTuongUng))
+                                {
+                                    hocSinhCanRollback.Add(maHSTuongUng);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // ✅ Thêm phụ huynh thất bại → rollback học sinh
+                            errors.AppendLine($"Dòng {row - 1}: {hoTen} - Không thể thêm phụ huynh (Học sinh: {tenHSTuongUng})");
+                            errorCount++;
+                            if (!hocSinhCanRollback.Contains(maHSTuongUng))
+                            {
+                                hocSinhCanRollback.Add(maHSTuongUng);
+                            }
+                        }
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        // ✅ Lỗi validation (trùng SDT/Email) → rollback học sinh
+                        errors.AppendLine($"Dòng {row - 1}: {hoTen} - {ex.Message} (Học sinh: {tenHSTuongUng})");
+                        errorCount++;
+                        if (!hocSinhCanRollback.Contains(maHSTuongUng))
+                        {
+                            hocSinhCanRollback.Add(maHSTuongUng);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        errors.AppendLine($"Dòng {row - 1}: {hoTen} - Lỗi: {ex.Message} (Học sinh: {tenHSTuongUng})");
+                        errorCount++;
+                        if (!hocSinhCanRollback.Contains(maHSTuongUng))
+                        {
+                            hocSinhCanRollback.Add(maHSTuongUng);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errors.AppendLine($"Dòng {row - 1}: Lỗi đọc dữ liệu - {ex.Message}");
+                    errorCount++;
+                }
+            }
+
+            // ✅ Hiển thị kết quả nhập Phụ Huynh (riêng biệt) TRƯỚC KHI rollback
+            if (successCount > 0 || errorCount > 0 || skippedCount > 0 || hocSinhCanRollback.Count > 0)
+            {
+                StringBuilder resultMsg = new StringBuilder();
+                resultMsg.AppendLine("👨‍👩‍👧 KẾT QUẢ NHẬP PHỤ HUYNH (Tuyển sinh):");
+                resultMsg.AppendLine();
+                if (successCount > 0)
+                    resultMsg.AppendLine($"✅ Thành công: {successCount} phụ huynh");
+                if (skippedCount > 0)
+                    resultMsg.AppendLine($"⚠️ Bỏ qua: {skippedCount} phụ huynh");
+                if (errorCount > 0)
+                    resultMsg.AppendLine($"❌ Lỗi: {errorCount} phụ huynh");
+                if (hocSinhCanRollback.Count > 0)
+                    resultMsg.AppendLine($"⚠️ Sẽ rollback {hocSinhCanRollback.Count} học sinh do phụ huynh lỗi");
+                
+                if (skipped.Length > 0)
+                {
+                    resultMsg.AppendLine();
+                    resultMsg.AppendLine("Chi tiết bỏ qua:");
+                    resultMsg.Append(skipped);
+                }
+                if (errors.Length > 0)
+                {
+                    resultMsg.AppendLine();
+                    resultMsg.AppendLine("Chi tiết lỗi:");
+                    resultMsg.Append(errors);
+                }
+                
+                if (resultMsg.Length > 1000)
+                    ScrollableMessageBox.Show("Kết quả nhập Phụ Huynh", resultMsg.ToString(), 
+                        errorCount > 0 || hocSinhCanRollback.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+                else
+                    MessageBox.Show(resultMsg.ToString(), "Kết quả nhập Phụ Huynh", 
+                        MessageBoxButtons.OK, 
+                        errorCount > 0 || hocSinhCanRollback.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+            }
+
+            // ✅ ROLLBACK học sinh nếu phụ huynh lỗi
+            foreach (int maHS in hocSinhCanRollback)
+            {
+                try
+                {
+                    // Xóa tài khoản
+                    string tenDangNhap = "HS" + maHS;
+                    nguoiDungBLL.DeleteNguoiDung(tenDangNhap);
+                    
+                    // Xóa học sinh
+                    hocSinhBus.DeleteHocSinh(maHS);
+                    
+                    // Xóa khỏi danh sách
+                    var keyToRemove = hocSinhThanhCong.FirstOrDefault(kvp => kvp.Value.maHS == maHS);
+                    if (!string.IsNullOrEmpty(keyToRemove.Key))
+                    {
+                        hocSinhThanhCong.Remove(keyToRemove.Key);
+                    }
+                    
+                    // Xóa khỏi danh sách đã thêm
+                    hocSinhDaThem.Remove(maHS);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Lỗi rollback học sinh {maHS}: {ex.Message}");
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Nhập mối quan hệ từ worksheet Excel (cho tuyển sinh)
+        /// ✅ Nếu có lỗi, sẽ rollback học sinh và phụ huynh tương ứng
+        /// </summary>
+        private void ImportMoiQuanHeFromWorksheetTuyenSinh(
+            ExcelWorksheet ws, 
+            Dictionary<string, (int maHS, int excelRow)> hocSinhThanhCong,
+            Dictionary<string, (int maPH, int excelRow)> phuHuynhThanhCong,
+            List<int> hocSinhDaThem,
+            List<int> phuHuynhDaThem)
+        {
+            int rowCount = ws.Dimension?.End.Row ?? 0;
+            if (rowCount < 2) return;
+
+            List<int> hocSinhCanRollback = new List<int>(); // ✅ Danh sách học sinh cần rollback
+            Dictionary<int, int> phuHuynhTheoHocSinh = new Dictionary<int, int>(); // ✅ Map học sinh -> phụ huynh để rollback
+            int successCount = 0;
+            int errorCount = 0;
+            int skippedCount = 0;
+            var errors = new StringBuilder();
+            var skipped = new StringBuilder();
+
+            for (int row = 2; row <= rowCount; row++)
+            {
+                try
+                {
+                    string tenHS = ws.Cells[row, 1].Text.Trim();
+                    string tenPH = ws.Cells[row, 2].Text.Trim();
+                    string moiQuanHe = ws.Cells[row, 3].Text.Trim();
+
+                    if (string.IsNullOrWhiteSpace(tenHS) || string.IsNullOrWhiteSpace(tenPH))
+                        continue;
+
+                    // Tìm học sinh và phụ huynh tương ứng
+                    int maHS = 0, maPH = 0;
+
+                    // Tìm học sinh theo tên (ưu tiên theo dòng Excel)
+                    foreach (var kvp in hocSinhThanhCong)
+                    {
+                        if (kvp.Value.excelRow == row && kvp.Key.Equals(tenHS, StringComparison.OrdinalIgnoreCase))
+                        {
+                            maHS = kvp.Value.maHS;
+                            break;
+                        }
+                    }
+                    if (maHS == 0)
+                    {
+                        if (hocSinhThanhCong.ContainsKey(tenHS))
+                            maHS = hocSinhThanhCong[tenHS].maHS;
+                    }
+
+                    // Tìm phụ huynh theo tên (ưu tiên theo dòng Excel)
+                    foreach (var kvp in phuHuynhThanhCong)
+                    {
+                        if (kvp.Value.excelRow == row && kvp.Key.Equals(tenPH, StringComparison.OrdinalIgnoreCase))
+                        {
+                            maPH = kvp.Value.maPH;
+                            break;
+                        }
+                    }
+                    if (maPH == 0)
+                    {
+                        if (phuHuynhThanhCong.ContainsKey(tenPH))
+                            maPH = phuHuynhThanhCong[tenPH].maPH;
+                    }
+
+                    if (maHS > 0 && maPH > 0)
+                    {
+                        try
+                        {
+                            // Thêm mối quan hệ
+                            hocSinhPhuHuynhBLL.AddQuanHe(maHS, maPH, moiQuanHe);
+                            phuHuynhTheoHocSinh[maHS] = maPH; // ✅ Lưu mapping để rollback
+                            successCount++;
+                        }
+                        catch (Exception ex)
+                        {
+                            // ✅ Lỗi khi thêm mối quan hệ → rollback học sinh và phụ huynh
+                            errors.AppendLine($"Dòng {row - 1}: {tenHS} - {tenPH} - Lỗi: {ex.Message}");
+                            errorCount++;
+                            if (!hocSinhCanRollback.Contains(maHS))
+                            {
+                                hocSinhCanRollback.Add(maHS);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // ✅ Không tìm thấy học sinh hoặc phụ huynh
+                        if (maHS == 0)
+                        {
+                            errors.AppendLine($"Dòng {row - 1}: Không tìm thấy học sinh '{tenHS}'");
+                            errorCount++;
+                        }
+                        if (maPH == 0)
+                        {
+                            errors.AppendLine($"Dòng {row - 1}: Không tìm thấy phụ huynh '{tenPH}' (Học sinh: {tenHS})");
+                            errorCount++;
+                            if (maHS > 0 && !hocSinhCanRollback.Contains(maHS))
+                            {
+                                hocSinhCanRollback.Add(maHS);
+                            }
+                        }
+                        skippedCount++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errors.AppendLine($"Dòng {row - 1}: Lỗi đọc dữ liệu - {ex.Message}");
+                    errorCount++;
+                }
+            }
+
+            // ✅ Hiển thị kết quả nhập Mối Quan Hệ (riêng biệt) TRƯỚC KHI rollback
+            if (successCount > 0 || errorCount > 0 || skippedCount > 0 || hocSinhCanRollback.Count > 0)
+            {
+                StringBuilder resultMsg = new StringBuilder();
+                resultMsg.AppendLine("🔗 KẾT QUẢ NHẬP MỐI QUAN HỆ (Tuyển sinh):");
+                resultMsg.AppendLine();
+                if (successCount > 0)
+                    resultMsg.AppendLine($"✅ Thành công: {successCount} mối quan hệ");
+                if (skippedCount > 0)
+                    resultMsg.AppendLine($"⚠️ Bỏ qua: {skippedCount} mối quan hệ");
+                if (errorCount > 0)
+                    resultMsg.AppendLine($"❌ Lỗi: {errorCount} mối quan hệ");
+                if (hocSinhCanRollback.Count > 0)
+                    resultMsg.AppendLine($"⚠️ Sẽ rollback {hocSinhCanRollback.Count} học sinh do mối quan hệ lỗi");
+                
+                if (skipped.Length > 0)
+                {
+                    resultMsg.AppendLine();
+                    resultMsg.AppendLine("Chi tiết bỏ qua:");
+                    resultMsg.Append(skipped);
+                }
+                if (errors.Length > 0)
+                {
+                    resultMsg.AppendLine();
+                    resultMsg.AppendLine("Chi tiết lỗi:");
+                    resultMsg.Append(errors);
+                }
+                
+                if (resultMsg.Length > 1000)
+                    ScrollableMessageBox.Show("Kết quả nhập Mối Quan Hệ", resultMsg.ToString(), 
+                        errorCount > 0 || hocSinhCanRollback.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+                else
+                    MessageBox.Show(resultMsg.ToString(), "Kết quả nhập Mối Quan Hệ", 
+                        MessageBoxButtons.OK, 
+                        errorCount > 0 || hocSinhCanRollback.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+            }
+
+            // ✅ ROLLBACK học sinh và phụ huynh nếu mối quan hệ lỗi
+            foreach (int maHS in hocSinhCanRollback)
+            {
+                try
+                {
+                    // Xóa mối quan hệ (nếu có)
+                    try { hocSinhPhuHuynhBLL.DeleteQuanHeByHocSinh(maHS); } catch { }
+                    
+                    // Xóa phụ huynh (nếu có)
+                    if (phuHuynhTheoHocSinh.ContainsKey(maHS))
+                    {
+                        int maPH = phuHuynhTheoHocSinh[maHS];
+                        try { phuHuynhBLL.DeletePhuHuynh(maPH); } catch { }
+                        phuHuynhDaThem.Remove(maPH);
+                    }
+                    
+                    // Xóa tài khoản
+                    string tenDangNhap = "HS" + maHS;
+                    nguoiDungBLL.DeleteNguoiDung(tenDangNhap);
+                    
+                    // Xóa học sinh
+                    hocSinhBus.DeleteHocSinh(maHS);
+                    
+                    // Xóa khỏi danh sách
+                    var keyToRemove = hocSinhThanhCong.FirstOrDefault(kvp => kvp.Value.maHS == maHS);
+                    if (!string.IsNullOrEmpty(keyToRemove.Key))
+                    {
+                        hocSinhThanhCong.Remove(keyToRemove.Key);
+                    }
+                    
+                    // Xóa khỏi danh sách đã thêm
+                    hocSinhDaThem.Remove(maHS);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Lỗi rollback học sinh {maHS}: {ex.Message}");
+                }
             }
         }
     }
