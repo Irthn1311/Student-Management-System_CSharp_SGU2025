@@ -112,9 +112,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Load Học kỳ
                 LoadHocKyComboBox();
 
-                // ✅ Tự động chọn học kỳ hiện tại
-                SelectCurrentSemester();
-
                 // Load Lớp (disabled initially)
                 LoadLopComboBox();
                 cbLop.Enabled = false;
@@ -126,6 +123,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 // Apply role-based UI restrictions
                 ApplyRoleBasedTimetableView();
+
+                // ✅ Nếu là học sinh, tự động chọn học kỳ mới nhất mà học sinh có lớp
+                if (IsStudentRole())
+                {
+                    AutoSelectStudentClassWithLatestSemester();
+                }
+                else
+                {
+                    // ✅ Tự động chọn học kỳ hiện tại cho các vai trò khác
+                    SelectCurrentSemester();
+                }
 
                 
 
@@ -465,8 +473,38 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (string.IsNullOrEmpty(tenDangNhap))
                 return false;
 
-            return tenDangNhap.StartsWith("HS", StringComparison.OrdinalIgnoreCase) ||
-                   tenDangNhap.StartsWith("PH", StringComparison.OrdinalIgnoreCase);
+            // Kiểm tra theo username format
+            bool isStudentByUsername = tenDangNhap.StartsWith("HS", StringComparison.OrdinalIgnoreCase) ||
+                                       tenDangNhap.StartsWith("PH", StringComparison.OrdinalIgnoreCase);
+
+            // Kiểm tra theo vai trò từ SessionManager
+            bool isStudentByRole = false;
+            if (SessionManager.DanhSachVaiTro != null && SessionManager.DanhSachVaiTro.Count > 0)
+            {
+                isStudentByRole = SessionManager.DanhSachVaiTro.Any(vt => 
+                    vt.Equals("student", StringComparison.OrdinalIgnoreCase) ||
+                    vt.Equals("Student", StringComparison.OrdinalIgnoreCase));
+            }
+
+            return isStudentByUsername || isStudentByRole;
+        }
+
+        /// <summary>
+        /// Kiểm tra xem người dùng có vai trò student không (chỉ kiểm tra vai trò, không kiểm tra username)
+        /// </summary>
+        private bool IsStudentRole()
+        {
+            if (!SessionManager.IsLoggedIn())
+                return false;
+
+            if (SessionManager.DanhSachVaiTro != null && SessionManager.DanhSachVaiTro.Count > 0)
+            {
+                return SessionManager.DanhSachVaiTro.Any(vt => 
+                    vt.Equals("student", StringComparison.OrdinalIgnoreCase) ||
+                    vt.Equals("Student", StringComparison.OrdinalIgnoreCase));
+            }
+
+            return false;
         }
 
         #endregion
@@ -496,41 +534,75 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Teacher: Restricted access
                 if (isTeacher && !string.IsNullOrEmpty(teacherId))
                 {
+                    // ✅ Kiểm tra vai trò "teacher" từ SessionManager
+                    bool isTeacherRole = SessionManager.DanhSachVaiTro != null && 
+                                         SessionManager.DanhSachVaiTro.Any(vt => 
+                                             vt.Equals("teacher", StringComparison.OrdinalIgnoreCase) ||
+                                             vt.Equals("Teacher", StringComparison.OrdinalIgnoreCase));
+
+                    if (!isTeacherRole)
+                    {
+                        // Không phải vai trò teacher, không áp dụng logic này
+                        return;
+                    }
+
                     // Check if homeroom teacher
                     int? homeroomClassId = tkbBUS.GetHomeroomClassIdForTeacher(teacherId);
                     bool isHomeroomTeacher = homeroomClassId.HasValue;
 
                     if (isHomeroomTeacher)
                     {
-                        // Homeroom teacher: Can view both teacher and homeroom class
+                        // ✅ Giáo viên chủ nhiệm: Có thể lựa chọn thoải mái cbViewMode
                         cbViewMode.Enabled = true;
                         cbViewMode.Items.Clear();
                         cbViewMode.Items.Add("Thời khóa biểu lớp");
                         cbViewMode.Items.Add("Thời khóa biểu giảng dạy");
+                        
+                        // ✅ Tạm thời gỡ event handler để tránh trigger khi đang set
+                        cbViewMode.SelectedIndexChanged -= cbViewMode_SelectedIndexChanged;
+                        cbViewMode.SelectedIndex = 0; // Mặc định chọn "Thời khóa biểu lớp"
+                        currentViewMode = "Thời khóa biểu lớp"; // Set currentViewMode
+                        cbViewMode.SelectedIndexChanged += cbViewMode_SelectedIndexChanged;
 
-                        // Pre-select homeroom class in class view mode
-                        if (cbViewMode.SelectedIndex == 0) // Class view
-                        {
-                            SelectClassInComboBox(homeroomClassId.Value);
-                        }
+                        // ✅ Mặc định chọn lớp chủ nhiệm và khóa cbLop
+                        SelectClassInComboBox(homeroomClassId.Value);
+                        cbLop.Enabled = false; // Khóa cbLop
+                        cbLop.Visible = true;
 
-                        // Pre-select current teacher in teacher view mode
+                        // ✅ Pre-select current teacher và khóa cbGiaoVien (nhưng ẩn khi ở chế độ lớp)
                         SelectTeacherInComboBox(teacherId);
-                        cbGiaoVien.Enabled = false; // Lock to own teacher
+                        cbGiaoVien.Enabled = false; // Khóa cbGiaoVien
+                        cbGiaoVien.Visible = false; // Ẩn khi ở chế độ lớp
+
+                        // ✅ Áp dụng logic ban đầu dựa trên chế độ xem được chọn
+                        ApplyViewModeForHomeroomTeacher();
                     }
                     else
                     {
-                        // Subject teacher only: Only teacher view
+                        // ✅ Giáo viên không phải chủ nhiệm: Khóa cbViewMode ở "Thời khóa biểu giảng dạy"
                         cbViewMode.Items.Clear();
                         cbViewMode.Items.Add("Thời khóa biểu giảng dạy");
+                        
+                        // ✅ Tạm thời gỡ event handler để tránh trigger khi đang set
+                        cbViewMode.SelectedIndexChanged -= cbViewMode_SelectedIndexChanged;
                         cbViewMode.SelectedIndex = 0;
-                        cbViewMode.Enabled = false; // Lock to teacher view
+                        cbViewMode.Enabled = false; // Khóa cbViewMode
+                        currentViewMode = "Thời khóa biểu giảng dạy"; // Set currentViewMode
+                        cbViewMode.SelectedIndexChanged += cbViewMode_SelectedIndexChanged;
 
+                        // ✅ Mặc định chọn và khóa giáo viên đang đăng nhập
                         SelectTeacherInComboBox(teacherId);
-                        cbGiaoVien.Enabled = false;
+                        cbGiaoVien.Enabled = false; // Khóa cbGiaoVien
+                        cbGiaoVien.Visible = true;
+
                         cbLop.Enabled = false;
                         cbLop.Visible = false;
-                        cbGiaoVien.Visible = true;
+                        
+                        // ✅ Nếu đã chọn học kỳ và có TKB, load TKB cho giáo viên
+                        if (currentSemesterId > 0 && hasTKBForSemester && !string.IsNullOrEmpty(currentTeacherId))
+                        {
+                            LoadData(currentSemesterId);
+                        }
                     }
 
                     // Disable auto-generate for teachers
@@ -564,6 +636,60 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
+        /// ✅ Áp dụng logic khi giáo viên chủ nhiệm thay đổi chế độ xem
+        /// </summary>
+        private void ApplyViewModeForHomeroomTeacher()
+        {
+            try
+            {
+                string teacherId = GetCurrentTeacherId();
+                if (string.IsNullOrEmpty(teacherId))
+                    return;
+
+                int? homeroomClassId = tkbBUS.GetHomeroomClassIdForTeacher(teacherId);
+                if (!homeroomClassId.HasValue)
+                    return;
+
+                if (currentViewMode == "Thời khóa biểu lớp")
+                {
+                    // ✅ Chế độ xem lớp: Khóa cbLop và mặc định chọn lớp chủ nhiệm
+                    cbLop.Enabled = false; // Khóa cbLop
+                    cbLop.Visible = true;
+                    SelectClassInComboBox(homeroomClassId.Value);
+
+                    cbGiaoVien.Visible = false;
+                    cbGiaoVien.Enabled = false;
+                    
+                    // ✅ Nếu đã chọn học kỳ và có TKB, load TKB cho lớp chủ nhiệm
+                    if (currentSemesterId > 0 && hasTKBForSemester && currentLopId > 0)
+                    {
+                        LoadData(currentSemesterId);
+                    }
+                }
+                else if (currentViewMode == "Thời khóa biểu giảng dạy")
+                {
+                    // ✅ Chế độ xem giảng dạy: Khóa cbGiaoVien và mặc định chọn giáo viên đang đăng nhập
+                    cbGiaoVien.Enabled = false; // Khóa cbGiaoVien
+                    cbGiaoVien.Visible = true;
+                    SelectTeacherInComboBox(teacherId);
+
+                    cbLop.Visible = false;
+                    cbLop.Enabled = false;
+                    
+                    // ✅ Nếu đã chọn học kỳ và có TKB, load TKB cho giáo viên
+                    if (currentSemesterId > 0 && hasTKBForSemester && !string.IsNullOrEmpty(currentTeacherId))
+                    {
+                        LoadData(currentSemesterId);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi áp dụng chế độ xem cho giáo viên chủ nhiệm: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Helper: Select a class in the ComboBox by MaLop
         /// </summary>
         private void SelectClassInComboBox(int maLop)
@@ -575,9 +701,112 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 if (dsLop[i].maLop == maLop)
                 {
+                    // ✅ Tạm thời gỡ event handler để tránh trigger khi đang set
+                    cbLop.SelectedIndexChanged -= cbLop_SelectedIndexChanged;
                     cbLop.SelectedIndex = i + 1; // +1 because index 0 is placeholder
+                    currentLopId = maLop; // ✅ Set currentLopId
+                    cbLop.SelectedIndexChanged += cbLop_SelectedIndexChanged;
                     return;
                 }
+            }
+        }
+
+        /// <summary>
+        /// ✅ Tự động chọn lớp cho học sinh khi load form hoặc thay đổi học kỳ
+        /// </summary>
+        private void AutoSelectStudentClass(int maHocKy)
+        {
+            try
+            {
+                int? maHocSinh = GetCurrentStudentId();
+                if (!maHocSinh.HasValue)
+                    return;
+
+                // Lấy lớp của học sinh trong học kỳ này
+                int maLop = phanLopBLL.GetLopByHocSinh(maHocSinh.Value, maHocKy);
+                
+                if (maLop > 0)
+                {
+                    // Tìm và chọn lớp trong combobox
+                    SelectClassInComboBox(maLop);
+                    cbLop.Enabled = false; // Khóa combobox để học sinh không thể thay đổi
+                    
+                    // Load TKB cho lớp của học sinh
+                    if (hasTKBForSemester)
+                    {
+                        LoadData(maHocKy);
+                    }
+                }
+                else
+                {
+                    // Nếu học sinh chưa có lớp trong học kỳ này, đặt về "Chọn lớp"
+                    cbLop.SelectedIndex = 0;
+                    cbLop.Enabled = false; // Vẫn khóa để học sinh không thể chọn lớp khác
+                    ClearAllPanels();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi tự động chọn lớp cho học sinh: {ex.Message}");
+                // Nếu có lỗi, đặt về "Chọn lớp"
+                cbLop.SelectedIndex = 0;
+            }
+        }
+
+        /// <summary>
+        /// ✅ Tự động chọn lớp và học kỳ mới nhất cho học sinh khi mở form lần đầu
+        /// </summary>
+        private void AutoSelectStudentClassWithLatestSemester()
+        {
+            try
+            {
+                int? maHocSinh = GetCurrentStudentId();
+                if (!maHocSinh.HasValue)
+                    return;
+
+                // Lấy lớp của học sinh với học kỳ mới nhất
+                var (maLop, maHocKy) = phanLopBLL.GetLopCuaHocSinhVoiHocKyMoiNhat(maHocSinh.Value);
+                
+                if (maLop > 0 && maHocKy > 0)
+                {
+                    // Tìm và chọn học kỳ trong combobox
+                    var dsHocKy = cbHocKyNamHoc.Tag as List<HocKyDTO>;
+                    if (dsHocKy != null)
+                    {
+                        for (int i = 0; i < cbHocKyNamHoc.Items.Count; i++)
+                        {
+                            var item = cbHocKyNamHoc.Items[i] as ComboBoxItem;
+                            if (item != null && item.Value != null)
+                            {
+                                string valueStr = item.Value.ToString();
+                                if (!valueStr.StartsWith("NAM_") && valueStr == maHocKy.ToString())
+                                {
+                                    // Tạm thời gỡ event handler để tránh trigger khi đang set
+                                    cbHocKyNamHoc.SelectedIndexChanged -= cbHocKyNamHoc_SelectedIndexChanged;
+                                    cbHocKyNamHoc.SelectedIndex = i;
+                                    cbHocKyNamHoc.SelectedIndexChanged += cbHocKyNamHoc_SelectedIndexChanged;
+                                    
+                                    // Trigger event để load dữ liệu và tự động chọn lớp
+                                    // Event này sẽ gọi AutoSelectStudentClass() vì IsStudentRole() sẽ return true
+                                    cbHocKyNamHoc_SelectedIndexChanged(cbHocKyNamHoc, EventArgs.Empty);
+                                    
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Nếu học sinh chưa có lớp trong bất kỳ học kỳ nào, đặt về "Chọn lớp"
+                    cbLop.SelectedIndex = 0;
+                    cbLop.Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi tự động chọn lớp và học kỳ mới nhất cho học sinh: {ex.Message}");
+                cbLop.SelectedIndex = 0;
             }
         }
 
@@ -587,16 +816,58 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void SelectTeacherInComboBox(string maGiaoVien)
         {
             var dsGiaoVien = cbGiaoVien.Tag as List<GiaoVienDTO>;
-            if (dsGiaoVien == null) return;
-
-            for (int i = 0; i < dsGiaoVien.Count; i++)
+            if (dsGiaoVien == null || string.IsNullOrEmpty(maGiaoVien)) 
             {
-                if (dsGiaoVien[i].MaGiaoVien == maGiaoVien)
+                Console.WriteLine($"[SelectTeacherInComboBox] dsGiaoVien is null or maGiaoVien is empty. maGiaoVien = {maGiaoVien}");
+                return;
+            }
+
+            // ✅ Tìm giáo viên trong danh sách và tìm index tương ứng trong Items
+            // Vì Items có thể được filter (chỉ hiển thị giáo viên "Đang giảng dạy"),
+            // nên cần tìm trong Items thực tế, không phải trong dsGiaoVien
+            for (int i = 1; i < cbGiaoVien.Items.Count; i++) // Bắt đầu từ 1 vì index 0 là placeholder
+            {
+                string itemText = cbGiaoVien.Items[i].ToString();
+                // Format: "Họ Tên (MaGiaoVien)"
+                // ✅ So sánh không phân biệt hoa thường và tìm chính xác mã giáo viên
+                if (itemText.ToLower().Contains($"({maGiaoVien.ToLower()})"))
                 {
-                    cbGiaoVien.SelectedIndex = i + 1; // +1 because index 0 is placeholder
+                    cbGiaoVien.SelectedIndex = i;
                     currentTeacherId = maGiaoVien;
+                    Console.WriteLine($"[SelectTeacherInComboBox] Tìm thấy giáo viên tại index {i}: {itemText}");
                     return;
                 }
+            }
+
+            // ✅ Nếu không tìm thấy trong Items (có thể bị filter), thử tìm trong dsGiaoVien
+            // và tạo displayText để so sánh
+            GiaoVienDTO giaoVienCanTim = dsGiaoVien.FirstOrDefault(gv => 
+                gv.MaGiaoVien.Equals(maGiaoVien, StringComparison.OrdinalIgnoreCase));
+            
+            if (giaoVienCanTim != null)
+            {
+                // Kiểm tra xem giáo viên này có trong Items không
+                string displayText = $"{giaoVienCanTim.HoTen} ({giaoVienCanTim.MaGiaoVien})";
+                for (int j = 1; j < cbGiaoVien.Items.Count; j++)
+                {
+                    string itemText = cbGiaoVien.Items[j].ToString();
+                    if (itemText.Equals(displayText, StringComparison.OrdinalIgnoreCase))
+                    {
+                        cbGiaoVien.SelectedIndex = j;
+                        currentTeacherId = maGiaoVien;
+                        Console.WriteLine($"[SelectTeacherInComboBox] Tìm thấy giáo viên trong dsGiaoVien tại index {j}: {displayText}");
+                        return;
+                    }
+                }
+                
+                // ✅ Nếu giáo viên không có trong Items (có thể bị filter), vẫn set currentTeacherId
+                // để có thể load TKB sau này
+                currentTeacherId = maGiaoVien;
+                Console.WriteLine($"[SelectTeacherInComboBox] Giáo viên {maGiaoVien} không có trong Items (có thể bị filter), nhưng đã set currentTeacherId");
+            }
+            else
+            {
+                Console.WriteLine($"[SelectTeacherInComboBox] Không tìm thấy giáo viên với mã {maGiaoVien} trong dsGiaoVien");
             }
         }
 
@@ -672,8 +943,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     // Apply role-based restrictions after semester is selected
                     ApplyRoleBasedTimetableView();
                     
-                    // For students/parents: Pre-select their class
-                    if (IsStudentOrParent())
+                    // ✅ Tự động chọn lớp cho học sinh khi thay đổi học kỳ
+                    if (IsStudentRole())
+                    {
+                        AutoSelectStudentClass(currentSemesterId);
+                    }
+                    // For students/parents (by username): Pre-select their class
+                    else if (IsStudentOrParent())
                     {
                         int? studentClassId = GetStudentClass(currentSemesterId);
                         if (studentClassId.HasValue)
@@ -684,18 +960,61 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             LoadData(currentSemesterId);
                         }
                     }
-                    // ✅ FIX: Chỉ load TKB khi đã chọn lớp (trong class view mode)
-                    // Nếu là teacher view mode, sẽ load khi chọn giáo viên
-                    else if (currentViewMode == "Thời khóa biểu giảng dạy" && !string.IsNullOrEmpty(currentTeacherId))
-                    {
-                        // Teacher view: load ngay nếu đã chọn giáo viên
-                        LoadData(currentSemesterId);
-                    }
-                    // Class view mode: KHÔNG load TKB, chờ chọn lớp
+                    // ✅ Kiểm tra nếu là giáo viên chủ nhiệm hoặc giáo viên bộ môn
                     else
                     {
-                        // Clear panels và hiển thị thông báo
-                        ClearAllPanels();
+                        string teacherId = GetCurrentTeacherId();
+                        bool isTeacherRole = SessionManager.DanhSachVaiTro != null && 
+                                             SessionManager.DanhSachVaiTro.Any(vt => 
+                                                 vt.Equals("teacher", StringComparison.OrdinalIgnoreCase) ||
+                                                 vt.Equals("Teacher", StringComparison.OrdinalIgnoreCase));
+                        
+                        if (isTeacherRole && !string.IsNullOrEmpty(teacherId))
+                        {
+                            int? homeroomClassId = tkbBUS.GetHomeroomClassIdForTeacher(teacherId);
+                            bool isHomeroomTeacher = homeroomClassId.HasValue;
+                            
+                            if (isHomeroomTeacher)
+                            {
+                                // ✅ Giáo viên chủ nhiệm: Kiểm tra chế độ xem và load TKB tương ứng
+                                if (currentViewMode == "Thời khóa biểu lớp" && currentLopId > 0)
+                                {
+                                    // ✅ Giáo viên chủ nhiệm ở chế độ lớp: Load TKB cho lớp chủ nhiệm
+                                    LoadData(currentSemesterId);
+                                }
+                                else if (currentViewMode == "Thời khóa biểu giảng dạy" && !string.IsNullOrEmpty(currentTeacherId))
+                                {
+                                    // ✅ Giáo viên chủ nhiệm ở chế độ giảng dạy: Load TKB cho giáo viên
+                                    LoadData(currentSemesterId);
+                                }
+                                else
+                                {
+                                    ClearAllPanels();
+                                }
+                            }
+                            else if (currentViewMode == "Thời khóa biểu giảng dạy" && !string.IsNullOrEmpty(currentTeacherId))
+                            {
+                                // ✅ Giáo viên bộ môn ở chế độ giảng dạy: Load TKB cho giáo viên
+                                LoadData(currentSemesterId);
+                            }
+                            else
+                            {
+                                ClearAllPanels();
+                            }
+                        }
+                        // ✅ FIX: Chỉ load TKB khi đã chọn lớp (trong class view mode)
+                        // Nếu là teacher view mode, sẽ load khi chọn giáo viên
+                        else if (currentViewMode == "Thời khóa biểu giảng dạy" && !string.IsNullOrEmpty(currentTeacherId))
+                        {
+                            // Teacher view: load ngay nếu đã chọn giáo viên
+                            LoadData(currentSemesterId);
+                        }
+                        // Class view mode: KHÔNG load TKB, chờ chọn lớp
+                        else
+                        {
+                            // Clear panels và hiển thị thông báo
+                            ClearAllPanels();
+                        }
                     }
                     
                     // ✅ Disable nút Sắp xếp tự động khi đã có TKB (không cho tạo lại)
@@ -793,18 +1112,50 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 currentViewMode = cbViewMode.Items[selectedIndex].ToString();
 
+                // ✅ Kiểm tra nếu là giáo viên chủ nhiệm
+                string teacherId = GetCurrentTeacherId();
+                bool isTeacherRole = SessionManager.DanhSachVaiTro != null && 
+                                     SessionManager.DanhSachVaiTro.Any(vt => 
+                                         vt.Equals("teacher", StringComparison.OrdinalIgnoreCase) ||
+                                         vt.Equals("Teacher", StringComparison.OrdinalIgnoreCase));
+                
+                bool isHomeroomTeacher = false;
+                int? homeroomClassId = null;
+                
+                if (isTeacherRole && !string.IsNullOrEmpty(teacherId))
+                {
+                    homeroomClassId = tkbBUS.GetHomeroomClassIdForTeacher(teacherId);
+                    isHomeroomTeacher = homeroomClassId.HasValue;
+                }
+
                 // Show/hide and enable/disable appropriate ComboBoxes
                 if (currentViewMode == "Thời khóa biểu lớp")
                 {
                     cbLop.Visible = true;
-                    cbLop.Enabled = true;
                     cbGiaoVien.Visible = false;
                     cbGiaoVien.Enabled = false;
 
-                    // Auto-load timetable if class is already selected
-                    if (cbLop.SelectedIndex > 0 && currentSemesterId > 0)
+                    // ✅ Nếu là giáo viên chủ nhiệm: Khóa cbLop và chọn lớp chủ nhiệm
+                    if (isHomeroomTeacher && homeroomClassId.HasValue)
                     {
-                        cbLop_SelectedIndexChanged(cbLop, EventArgs.Empty);
+                        cbLop.Enabled = false; // Khóa cbLop
+                        SelectClassInComboBox(homeroomClassId.Value);
+                        
+                        // ✅ Auto-load timetable nếu đã chọn học kỳ và có TKB
+                        if (currentSemesterId > 0 && hasTKBForSemester && currentLopId > 0)
+                        {
+                            LoadData(currentSemesterId);
+                        }
+                    }
+                    else
+                    {
+                        cbLop.Enabled = true; // Admin hoặc người dùng khác có thể chọn tự do
+                        
+                        // ✅ Auto-load timetable if class is already selected
+                        if (cbLop.SelectedIndex > 0 && currentSemesterId > 0 && currentLopId > 0)
+                        {
+                            LoadData(currentSemesterId);
+                        }
                     }
                 }
                 else if (currentViewMode == "Thời khóa biểu giảng dạy")
@@ -812,12 +1163,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     cbLop.Visible = false;
                     cbLop.Enabled = false;
                     cbGiaoVien.Visible = true;
-                    cbGiaoVien.Enabled = true;
 
-                    // Auto-load timetable if teacher is already selected
-                    if (cbGiaoVien.SelectedIndex > 0 && currentSemesterId > 0)
+                    // ✅ Nếu là giáo viên chủ nhiệm hoặc giáo viên bộ môn: Khóa cbGiaoVien và chọn giáo viên đang đăng nhập
+                    if ((isHomeroomTeacher || isTeacherRole) && !string.IsNullOrEmpty(teacherId))
                     {
-                        cbGiaoVien_SelectedIndexChanged(cbGiaoVien, EventArgs.Empty);
+                        cbGiaoVien.Enabled = false; // Khóa cbGiaoVien
+                        SelectTeacherInComboBox(teacherId);
+                        
+                        // ✅ Auto-load timetable nếu đã chọn học kỳ và có TKB
+                        if (currentSemesterId > 0 && hasTKBForSemester && !string.IsNullOrEmpty(currentTeacherId))
+                        {
+                            LoadData(currentSemesterId);
+                        }
+                    }
+                    else
+                    {
+                        cbGiaoVien.Enabled = true; // Admin hoặc người dùng khác có thể chọn tự do
+                        
+                        // ✅ Auto-load timetable if teacher is already selected
+                        if (cbGiaoVien.SelectedIndex > 0 && currentSemesterId > 0 && !string.IsNullOrEmpty(currentTeacherId))
+                        {
+                            LoadData(currentSemesterId);
+                        }
                     }
                 }
             }

@@ -124,7 +124,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
               tableHocSinh,
               tablePhuHuynh
   );
-
+            PermissionHelper.SetButtonPermission(btnPhanLop, PermissionHelper.QLHOCSINH, PermissionHelper.CREATE);
             isLoadingData = false; // Kết thúc load dữ liệu
 
             // ✅ Force update label sau khi load xong (fix bug hiển thị 500 lần đầu)
@@ -2223,6 +2223,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // btnPhanLop
         private void guna2Button1_Click_1(object sender, EventArgs e)
         {
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLHOCSINH, "Quản lý học sinh"))
+                return;
             // 1. Tạo và hiển thị form Thêm
             PhanLop frm = new PhanLop();
             frm.StartPosition = FormStartPosition.CenterScreen;

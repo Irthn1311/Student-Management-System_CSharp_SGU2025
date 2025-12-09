@@ -258,6 +258,52 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
 
         /// <summary>
+        /// Lấy lớp của học sinh với học kỳ mới nhất (MaHocKy lớn nhất).
+        /// </summary>
+        /// <param name="maHocSinh">Mã học sinh.</param>
+        /// <returns>Tuple (MaLop, MaHocKy) nếu tìm thấy, (-1, -1) nếu không tìm thấy.</returns>
+        public (int maLop, int maHocKy) LayLopCuaHocSinhVoiHocKyMoiNhat(int maHocSinh)
+        {
+            string sql = @"
+                SELECT MaLop, MaHocKy 
+                FROM PhanLop 
+                WHERE MaHocSinh = @maHS 
+                ORDER BY MaHocKy DESC 
+                LIMIT 1";
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maHS", maHocSinh);
+                        
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                int maLop = reader.GetInt32("MaLop");
+                                int maHocKy = reader.GetInt32("MaHocKy");
+                                return (maLop, maHocKy);
+                            }
+                        }
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Lỗi lấy lớp của học sinh với học kỳ mới nhất: " + ex.Message);
+                    return (-1, -1);
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return (-1, -1);
+        }
+
+        /// <summary>
         /// Đếm số lượng học sinh trong một lớp cụ thể của học kỳ.
         /// </summary>
         /// <param name="maLop">Mã lớp.</param>

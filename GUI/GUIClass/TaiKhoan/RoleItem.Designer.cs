@@ -31,7 +31,6 @@
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             this.btnXemRole = new Guna.UI2.WinForms.Guna2Button();
             this.btnXoaRole = new Guna.UI2.WinForms.Guna2Button();
-            this.lblRoleDescription = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblRoleName = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2Panel1.SuspendLayout();
             this.SuspendLayout();
@@ -43,7 +42,6 @@
             this.guna2Panel1.BorderThickness = 1;
             this.guna2Panel1.Controls.Add(this.btnXemRole);
             this.guna2Panel1.Controls.Add(this.btnXoaRole);
-            this.guna2Panel1.Controls.Add(this.lblRoleDescription);
             this.guna2Panel1.Controls.Add(this.lblRoleName);
             this.guna2Panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.guna2Panel1.FillColor = System.Drawing.Color.White;
@@ -89,18 +87,6 @@
             this.btnXoaRole.Text = "Xoá";
             this.btnXoaRole.Click += new System.EventHandler(this.btnXoaRole_Click);
             // 
-            // lblRoleDescription
-            // 
-            this.lblRoleDescription.BackColor = System.Drawing.Color.Transparent;
-            this.lblRoleDescription.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRoleDescription.ForeColor = System.Drawing.Color.DimGray;
-            this.lblRoleDescription.Location = new System.Drawing.Point(21, 42);
-            this.lblRoleDescription.Margin = new System.Windows.Forms.Padding(2);
-            this.lblRoleDescription.Name = "lblRoleDescription";
-            this.lblRoleDescription.Size = new System.Drawing.Size(85, 21);
-            this.lblRoleDescription.TabIndex = 5;
-            this.lblRoleDescription.Text = "Role Describe";
-            // 
             // lblRoleName
             // 
             this.lblRoleName.BackColor = System.Drawing.Color.Transparent;
@@ -134,7 +120,6 @@
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private Guna.UI2.WinForms.Guna2Button btnXemRole;
         private Guna.UI2.WinForms.Guna2Button btnXoaRole;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblRoleDescription;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblRoleName;
     }
 }

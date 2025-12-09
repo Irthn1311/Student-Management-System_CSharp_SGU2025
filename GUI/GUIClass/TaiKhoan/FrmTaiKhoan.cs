@@ -19,11 +19,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     {
         private NguoiDungBLL nguoiDungBLL;
         private PhanQuyenBUS phanQuyenBUS;
+
+        private int pageSize = 50; // Số tài khoản trên mỗi trang
+        private int currentPage = 1; // Trang hiện tại
+        private int totalPages = 0; // Tổng số trang
+        private List<NguoiDungDTO> fullListTaiKhoan = new List<NguoiDungDTO>(); // Danh sách đầy đủ
+        private string searchKeyword = ""; // Từ khóa tìm kiếm
         public FrmTaiKhoan()
         {
             InitializeComponent();
             nguoiDungBLL = new NguoiDungBLL();
             phanQuyenBUS = new PhanQuyenBUS();
+
+            txtSearch.TextChanged += txtSearch_TextChanged;
+        
         }
 
         private void guna2Panel1_Paint(object sender, PaintEventArgs e)
@@ -72,8 +81,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                List<NguoiDungDTO> danhSachTaiKhoan = nguoiDungBLL.GetAllNguoiDung();
-                HienThiDanhSachTaiKhoan(danhSachTaiKhoan);
+                // ✅ Lấy TOÀN BỘ danh sách tài khoản
+                fullListTaiKhoan = nguoiDungBLL.GetAllNguoiDung();
+
+                // ✅ Reset về trang 1
+                currentPage = 1;
+
+                // ✅ Hiển thị dữ liệu với phân trang
+                HienThiDanhSachTaiKhoan();
             }
             catch (Exception ex)
             {
@@ -457,19 +472,47 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         /// <summary>
         /// Hiển thị danh sách tài khoản đã lọc (dùng chung cho Load và Search)
         /// </summary>
-        private void HienThiDanhSachTaiKhoan(List<NguoiDungDTO> danhSachTaiKhoan)
+        private void HienThiDanhSachTaiKhoan()
         {
             try
             {
+                // ✅ Lọc theo từ khóa tìm kiếm (nếu có)
+                List<NguoiDungDTO> filteredList = fullListTaiKhoan;
+
+                if (!string.IsNullOrWhiteSpace(searchKeyword))
+                {
+                    string keyword = searchKeyword.Trim().ToLower();
+                    filteredList = fullListTaiKhoan.FindAll(x =>
+                        x.TenDangNhap.ToLower().Contains(keyword) ||
+                        (x.VaiTro != null && x.VaiTro.ToLower().Contains(keyword)) ||
+                        (x.TrangThai != null && x.TrangThai.ToLower().Contains(keyword))
+                    );
+                }
+
+                // ✅ Tính tổng số trang
+                totalPages = (int)Math.Ceiling((double)filteredList.Count / pageSize);
+
+                // ✅ Đảm bảo trang hiện tại hợp lệ
+                if (currentPage < 1) currentPage = 1;
+                if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+
+                // ✅ Lấy dữ liệu của trang hiện tại
+                var pagedList = filteredList
+                    .Skip((currentPage - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                // ✅ Xóa dữ liệu cũ
                 tbTaiKhoan.Rows.Clear();
+                tbTaiKhoan.SuspendLayout();
 
                 // ✅ Đếm số liệu thống kê
-                int tongTaiKhoan = danhSachTaiKhoan.Count;
+                int tongTaiKhoan = filteredList.Count;
                 int tongHoatDong = 0;
                 int tongBiKhoa = 0;
                 int tongAdmin = 0;
 
-                foreach (var tk in danhSachTaiKhoan)
+                foreach (var tk in pagedList)
                 {
                     // ✅ Định dạng thời gian đăng nhập cuối
                     string lastLogin = tk.LanDangNhapCuoi.HasValue
@@ -484,23 +527,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         lastLogin,
                         "" // Cột thao tác
                     );
-
-                    // ✅ Đếm thống kê
-                    if (tk.TrangThai == "Hoạt động") tongHoatDong++;
-                    if (tk.TrangThai == "Bị khóa") tongBiKhoa++;
-
-                    // ✅ KIỂM TRA CHÍNH XÁC MaVaiTro = "admin"
-                    if (!string.IsNullOrEmpty(tk.MaVaiTro))
-                    {
-                        var danhSachMaVaiTro = tk.MaVaiTro.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                                          .Select(v => v.Trim().ToLower())
-                                                          .ToList();
-
-                        if (danhSachMaVaiTro.Contains("admin"))
-                        {
-                            tongAdmin++;
-                        }
-                    }
 
                     // ✅ Tô màu cho vai trò
                     var row = tbTaiKhoan.Rows[tbTaiKhoan.Rows.Count - 1];
@@ -523,11 +549,36 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         row.Cells["trangThai"].Style.ForeColor = Color.FromArgb(239, 68, 68);
                 }
 
+                // ✅ Đếm thống kê trên toàn bộ danh sách (không chỉ trang hiện tại)
+                foreach (var tk in filteredList)
+                {
+                    if (tk.TrangThai == "Hoạt động") tongHoatDong++;
+                    if (tk.TrangThai == "Bị khóa") tongBiKhoa++;
+
+                    if (!string.IsNullOrEmpty(tk.MaVaiTro))
+                    {
+                        var danhSachMaVaiTro = tk.MaVaiTro.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                                          .Select(v => v.Trim().ToLower())
+                                                          .ToList();
+
+                        if (danhSachMaVaiTro.Contains("admin"))
+                        {
+                            tongAdmin++;
+                        }
+                    }
+                }
+
                 // ✅ Cập nhật thống kê
                 statCardThongKeTaiKhoan1.TitleLietKe = tongTaiKhoan.ToString();
                 statCardThongKeTaiKhoan2.TitleLietKe = tongHoatDong.ToString();
                 statCardThongKeTaiKhoan3.TitleLietKe = tongBiKhoa.ToString();
                 statCardThongKeTaiKhoan4.TitleLietKe = tongAdmin.ToString();
+
+                // ✅ Tiếp tục vẽ
+                tbTaiKhoan.ResumeLayout();
+
+                // ✅ Cập nhật UI phân trang
+                UpdatePaginationUI();
             }
             catch (Exception ex)
             {
@@ -535,6 +586,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// ✅ Cập nhật UI phân trang
+        /// </summary>
+        private void UpdatePaginationUI()
+        {
+            if (totalPages == 0)
+            {
+                lblTrangHienTai.Text = "0/0";
+                btnTrangTruoc.Enabled = false;
+                btnTrangSau.Enabled = false;
+            }
+            else
+            {
+                lblTrangHienTai.Text = $"{currentPage}/{totalPages}";
+                btnTrangTruoc.Enabled = currentPage > 1;
+                btnTrangSau.Enabled = currentPage < totalPages;
+            }
+        }
+
         private void thongKeTK1_Load(object sender, EventArgs e)
         {
         }
@@ -570,34 +641,47 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             ThemTaiKhoan themTaiKhoanForm = new ThemTaiKhoan();
             themTaiKhoanForm.StartPosition = FormStartPosition.CenterParent;
-            themTaiKhoanForm.ShowDialog();
+            if (themTaiKhoanForm.ShowDialog() == DialogResult.OK)
+            {
+                // ✅ Reload lại dữ liệu sau khi thêm
+                LoadTaiKhoanData();
+            }
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                string keyword = txtSearch.Text.Trim();
-                if (string.IsNullOrWhiteSpace(keyword))
-                {
-                    LoadTaiKhoanData();
-                    return;
-                }
+                searchKeyword = txtSearch.Text.Trim();
 
-                List<NguoiDungDTO> ketQuaTimKiem = nguoiDungBLL.SearchNguoiDung(keyword);
+                // ✅ Reset về trang 1 khi tìm kiếm
+                currentPage = 1;
 
-                HienThiDanhSachTaiKhoan(ketQuaTimKiem);
-
-                if (ketQuaTimKiem.Count == 0)
-                {
-                    // Có thể thêm label thông báo hoặc để trống
-                    // lblThongBao.Text = $"Không tìm thấy kết quả cho '{keyword}'";
-                }
+                // ✅ Hiển thị lại dữ liệu
+                HienThiDanhSachTaiKhoan();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi tìm kiếm: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnTrangSau_Click(object sender, EventArgs e)
+        {
+            if (currentPage < totalPages)
+            {
+                currentPage++;
+                HienThiDanhSachTaiKhoan();
+            }
+        }
+
+        private void btnTrangTruoc_Click(object sender, EventArgs e)
+        {
+            if (currentPage > 1)
+            {
+                currentPage--;
+                HienThiDanhSachTaiKhoan();
             }
         }
     }

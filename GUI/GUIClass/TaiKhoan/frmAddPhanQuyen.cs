@@ -154,6 +154,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     List<string> hanhDongs = new List<string>();
 
+                    // ✅ THÊM: Tự động thêm quyền READ cho mọi chức năng được chọn
+                    bool coQuyenKhac = false;
+
                     foreach (var cb in checkBoxes)
                     {
                         if (cb.Value.Checked)
@@ -162,8 +165,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             if (!string.IsNullOrEmpty(hanhDong))
                             {
                                 hanhDongs.Add(hanhDong);
+                                coQuyenKhac = true;
                             }
                         }
+                    }
+
+                    // ✅ THÊM: Nếu có bất kỳ quyền nào được chọn, tự động thêm READ
+                    if (coQuyenKhac && !hanhDongs.Contains("read"))
+                    {
+                        hanhDongs.Add("read");
                     }
 
                     // Chỉ thêm vào nếu có ít nhất 1 hành động được chọn

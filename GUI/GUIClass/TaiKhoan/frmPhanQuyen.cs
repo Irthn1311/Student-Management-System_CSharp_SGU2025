@@ -58,7 +58,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     // Tạo RoleItem
                     RoleItem roleItem = new RoleItem();
                     roleItem.RoleName = vaiTro.TenVaiTro;
-                    roleItem.RoleDescription = moTa;
+                    //roleItem.RoleDescription = moTa;
                     roleItem.Tag = vaiTro.MaVaiTro; // Lưu MaVaiTro vào Tag
 
                     // Thiết lập vị trí

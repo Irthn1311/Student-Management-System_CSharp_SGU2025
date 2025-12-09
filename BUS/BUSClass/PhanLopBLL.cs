@@ -266,6 +266,36 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         }
 
         /// <summary>
+        /// Lấy lớp của học sinh với học kỳ mới nhất (MaHocKy lớn nhất).
+        /// </summary>
+        /// <param name="maHocSinh">Mã học sinh.</param>
+        /// <returns>Tuple (MaLop, MaHocKy) nếu tìm thấy, (-1, -1) nếu không tìm thấy.</returns>
+        public (int maLop, int maHocKy) GetLopCuaHocSinhVoiHocKyMoiNhat(int maHocSinh)
+        {
+            // --- Validation ---
+            if (maHocSinh <= 0)
+            {
+                throw new ArgumentException("Mã học sinh không hợp lệ.");
+            }
+
+            // Kiểm tra học sinh tồn tại
+            if (!hocSinhDAO.KiemTraTonTai(maHocSinh))
+            {
+                throw new ArgumentException($"Học sinh với mã {maHocSinh} không tồn tại.");
+            }
+
+            try
+            {
+                return phanLopDAO.LayLopCuaHocSinhVoiHocKyMoiNhat(maHocSinh);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi BLL GetLopCuaHocSinhVoiHocKyMoiNhat: " + ex.Message);
+                return (-1, -1);
+            }
+        }
+
+        /// <summary>
         /// Đếm số lượng học sinh trong lớp cụ thể của học kỳ.
         /// </summary>
         /// <param name="maLop">Mã lớp.</param>

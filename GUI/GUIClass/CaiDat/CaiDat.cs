@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Student_Management_System_CSharp_SGU2025.GUI.GUIClass.CaiDat;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
@@ -67,6 +68,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                                 !string.IsNullOrEmpty(SessionManager.TenDangNhap) &&
                                 SessionManager.TenDangNhap.StartsWith("HS", StringComparison.OrdinalIgnoreCase);
                 btnGuiYeuCauChuyenLop.Visible = isStudent;
+            }
+
+            // ✅ Hiển thị nút "Xem thành tích" chỉ khi người dùng là học sinh
+            if (btnXemThanhTich != null)
+            {
+                bool isStudent = SessionManager.IsLoggedIn() && 
+                                !string.IsNullOrEmpty(SessionManager.TenDangNhap) &&
+                                SessionManager.TenDangNhap.StartsWith("HS", StringComparison.OrdinalIgnoreCase);
+                btnXemThanhTich.Visible = isStudent;
+                
+                if (isStudent)
+                {
+                    // Hủy đăng ký event cũ trước khi đăng ký mới để tránh đăng ký nhiều lần
+                    btnXemThanhTich.Click -= btnXemThanhTich_Click;
+                    btnXemThanhTich.Click += btnXemThanhTich_Click;
+                }
             }
         }
 
@@ -1128,6 +1145,39 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 Console.WriteLine($"[ERROR] Lỗi khi mở form yêu cầu chuyển lớp: {ex.Message}");
                 MessageBox.Show($"Lỗi khi mở form yêu cầu chuyển lớp:\n{ex.Message}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnXemThanhTich_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Kiểm tra đăng nhập
+                if (!SessionManager.IsLoggedIn())
+                {
+                    MessageBox.Show("Bạn chưa đăng nhập!",
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string tenDangNhap = SessionManager.TenDangNhap;
+                if (string.IsNullOrEmpty(tenDangNhap) || !tenDangNhap.StartsWith("HS", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("Chức năng này chỉ dành cho học sinh!",
+                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Mở form xem thành tích
+                FrmThanhTich form = new FrmThanhTich();
+                form.StartPosition = FormStartPosition.CenterScreen;
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Lỗi khi mở form thành tích: {ex.Message}");
+                MessageBox.Show($"Lỗi khi mở form thành tích:\n{ex.Message}",
                     "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

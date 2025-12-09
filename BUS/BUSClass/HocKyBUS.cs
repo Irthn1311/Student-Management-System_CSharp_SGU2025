@@ -192,5 +192,54 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 return null;
             }
         }
+
+        /// <summary>
+        /// Lấy học kỳ mới nhất có dữ liệu điểm số
+        /// </summary>
+        public HocKyDTO LayHocKyMoiNhatCoDuLieu()
+        {
+            try
+            {
+                return hocKyDAO.LayHocKyMoiNhatCoDuLieu();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS LayHocKyMoiNhatCoDuLieu: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra học kỳ có dữ liệu điểm số hay không
+        /// </summary>
+        public bool KiemTraHocKyCoDiemSo(int maHocKy)
+        {
+            try
+            {
+                return hocKyDAO.KiemTraHocKyCoDiemSo(maHocKy);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS KiemTraHocKyCoDiemSo: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Lấy học kỳ I của năm học mới nhất (dùng khi không có học kỳ nào có dữ liệu điểm số)
+        /// </summary>
+        public HocKyDTO LayHocKyIDauTienCuaNamHocMoiNhat()
+        {
+            try
+            {
+                return hocKyDAO.LayHocKyIDauTienCuaNamHocMoiNhat();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi BUS LayHocKyIDauTienCuaNamHocMoiNhat: {ex.Message}");
+                return null;
+            }
+        }
+
     }
 }

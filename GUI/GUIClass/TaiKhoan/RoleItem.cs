@@ -25,11 +25,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             set => lblRoleName.Text = value;
         }
 
-        public string RoleDescription
-        {
-            get => lblRoleDescription.Text;
-            set => lblRoleDescription.Text = value;
-        }
+      
 
         public event EventHandler DeleteClicked;
         public event EventHandler ViewClicked;

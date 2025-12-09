@@ -1,7 +1,7 @@
 ﻿using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.BUS.Utils;
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
-using Student_Management_System_CSharp_SGU2025.BUS.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Student_Management_System_CSharp_SGU2025.DAO.HanhKiemDAO;
 
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
@@ -28,6 +29,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private HanhKiemDAO hanhKiemDAO;
         private XepLoaiDAO xepLoaiDAO;
 
+        private int pageSize = 50; // Số học sinh trên mỗi trang
+        private int currentPage = 1; // Trang hiện tại
+        private int totalPages = 0; // Tổng số trang
+        private List<HanhKiemDTO> fullListHanhKiem = new List<HanhKiemDTO>(); // Danh sách đầy đủ
+        private string searchKeyword = ""; // Từ khóa tìm kiếm
+        private Dictionary<int, HanhKiemDisplayDTO> _cachedDisplayInfo = new Dictionary<int, HanhKiemDisplayDTO>();
+        private string _cachedTenHocKy = "";
         public HanhKiem()
         {
             InitializeComponent();
@@ -92,23 +100,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             statCardHanhKiemYeu.lbCardValue.Font = new Font("Segoe UI", 16, FontStyle.Bold);
             statCardHanhKiemKha.lbCardValue.Font = new Font("Segoe UI", 16, FontStyle.Bold);
             statCardHanhKiemTrungBinh.lbCardValue.Font = new Font("Segoe UI", 16, FontStyle.Bold);
+            // ⭐ GẮN SỰ KIỆN TRƯỚC KHI LOAD COMBOBOX
+            cbHocKyNamHoc.SelectedIndexChanged += cbHocKyNamHoc_SelectedIndexChanged;
+            cbLop.SelectedIndexChanged += cbLop_SelectedIndexChanged;
+            txtSearch.TextChanged += txtSearch_TextChanged;
             // Load ComboBox
             LoadHocKyComboBox();
             LoadLopComboBox();
 
-            // ⭐ GẮN SỰ KIỆN TRƯỚC KHI SET SELECTEDINDEX
-            cbHocKyNamHoc.SelectedIndexChanged += cbHocKyNamHoc_SelectedIndexChanged;
-            cbLop.SelectedIndexChanged += cbLop_SelectedIndexChanged;
-
-            // Load dữ liệu ban đầu
-            if (cbHocKyNamHoc.Items.Count > 0)
-            {
-                cbHocKyNamHoc.SelectedIndex = 0;
-                // ⭐ SAU KHI SET SELECTEDINDEX, SỰ KIỆN SelectedIndexChanged SẼ TỰ GỌI LoadDuLieuHanhKiem()
-            }
-
             PermissionHelper.ApplyPermissionHanhKiem(btnXepHanhKiemTuDong, btnLuuHanhKiem);
-
+        
         }
 
         // Hàm cấu hình tableNhapDiem
@@ -199,16 +200,61 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
+                // ⭐ TẠM THỜI GỠ SỰ KIỆN ĐỂ TRÁNH KÍCH HOẠT KHI ĐANG LOAD
+                cbHocKyNamHoc.SelectedIndexChanged -= cbHocKyNamHoc_SelectedIndexChanged;
+
+                // Lấy danh sách học kỳ từ database (đã sắp xếp theo thứ tự mới nhất)
+                List<HocKyDTO> dsHocKy = hocKyDAO.GetAllHocKy();
+
+                // Xóa dữ liệu cũ trong combobox
                 cbHocKyNamHoc.Items.Clear();
                 cbHocKyNamHoc.DisplayMember = "Text";
                 cbHocKyNamHoc.ValueMember = "Value";
 
-                List<HocKyDTO> dsHocKy = hocKyDAO.GetAllHocKy();
+                // Tạo danh sách các item để thêm vào combobox
+                var itemsToAdd = new List<dynamic>();
 
-                foreach (var hk in dsHocKy)
+                // Tìm học kỳ mới nhất có dữ liệu hạnh kiểm
+                int indexHocKyMoiNhatCoDuLieu = -1;
+
+                for (int i = 0; i < dsHocKy.Count; i++)
                 {
-                    string displayText = $"{hk.TenHocKy} - {hk.MaNamHoc}";
-                    cbHocKyNamHoc.Items.Add(new { Text = displayText, Value = hk.MaHocKy });
+                    HocKyDTO hocKy = dsHocKy[i];
+                    string displayText = $"{hocKy.TenHocKy} - {hocKy.MaNamHoc}";
+
+                    var item = new { Text = displayText, Value = hocKy.MaHocKy };
+                    itemsToAdd.Add(item);
+
+                    // Kiểm tra học kỳ này có dữ liệu hạnh kiểm không
+                    if (indexHocKyMoiNhatCoDuLieu == -1 && hanhKiemDAO.KiemTraHocKyCoDuLieuHanhKiem(hocKy.MaHocKy))
+                    {
+                        indexHocKyMoiNhatCoDuLieu = i;
+                        Console.WriteLine($"[LoadHocKyComboBox] Tìm thấy học kỳ có dữ liệu: {displayText} (index={i})");
+                    }
+                }
+
+                // Thêm tất cả items vào combobox
+                foreach (var item in itemsToAdd)
+                {
+                    cbHocKyNamHoc.Items.Add(item);
+                }
+
+                // ⭐ GẮN LẠI SỰ KIỆN TRƯỚC KHI SET SELECTEDINDEX
+                cbHocKyNamHoc.SelectedIndexChanged += cbHocKyNamHoc_SelectedIndexChanged;
+
+                // Chọn học kỳ mới nhất có dữ liệu hạnh kiểm, nếu không có thì chọn học kỳ đầu tiên
+                if (cbHocKyNamHoc.Items.Count > 0)
+                {
+                    if (indexHocKyMoiNhatCoDuLieu >= 0)
+                    {
+                        cbHocKyNamHoc.SelectedIndex = indexHocKyMoiNhatCoDuLieu;
+                        Console.WriteLine($"[LoadHocKyComboBox] Đã chọn học kỳ có dữ liệu tại index: {indexHocKyMoiNhatCoDuLieu}");
+                    }
+                    else
+                    {
+                        cbHocKyNamHoc.SelectedIndex = 0; // Chọn học kỳ đầu tiên (mới nhất)
+                        Console.WriteLine("[LoadHocKyComboBox] Không có học kỳ nào có dữ liệu, chọn học kỳ đầu tiên");
+                    }
                 }
             }
             catch (Exception ex)
@@ -380,56 +426,135 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void LoadDuLieuHanhKiem()
         {
-            
-
             try
             {
-                tableHanhKiem.Rows.Clear();
-
                 if (cbHocKyNamHoc.SelectedItem == null)
+                {
+                    tableHanhKiem.Rows.Clear();
+                    fullListHanhKiem.Clear();
+                    currentPage = 1;
+                    totalPages = 0;
+                    UpdatePaginationUI();
                     return;
+                }
 
-                dynamic selectedHocKy = cbHocKyNamHoc.SelectedItem;
-                int maHocKy = selectedHocKy.Value;
+                // ⭐ KIỂM TRA KIỂU DỮ LIỆU AN TOÀN
+                int maHocKy;
+                try
+                {
+                    dynamic selectedHocKy = cbHocKyNamHoc.SelectedItem;
+                    maHocKy = selectedHocKy.Value;
+                }
+                catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+                {
+                    Console.WriteLine("[LoadDuLieuHanhKiem] SelectedItem không có thuộc tính Value");
+                    return;
+                }
 
                 int? maLop = null;
                 if (cbLop.SelectedItem != null)
                 {
-                    dynamic selectedLop = cbLop.SelectedItem;
-                    int lopValue = selectedLop.Value;
-                    if (lopValue > 0)
+                    try
                     {
-                        maLop = lopValue;
+                        dynamic selectedLop = cbLop.SelectedItem;
+                        int lopValue = selectedLop.Value;
+                        if (lopValue > 0)
+                        {
+                            maLop = lopValue;
+                        }
+                    }
+                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+                    {
+                        Console.WriteLine("[LoadDuLieuHanhKiem] cbLop SelectedItem không có thuộc tính Value");
                     }
                 }
 
-                // LẤY TRỰC TIẾP TỪ DATABASE - KHÔNG GỌI BUS
-                // Chỉ lấy học sinh ĐÃ CÓ xếp loại hạnh kiểm
-                var dsHanhKiem = hanhKiemDAO.LayDanhSachHanhKiemBindingList(maHocKy, maLop);
+                // ✅ GỌI 1 LẦN DUY NHẤT - ĐÃ CÓ ĐẦY ĐỦ THÔNG TIN
+                var dsHanhKiemDisplay = hanhKiemDAO.LayDanhSachHanhKiemDisplay(maHocKy, maLop);
 
                 HocKyDTO hocKy = hocKyDAO.LayHocKyTheoMa(maHocKy);
                 string tenHocKy = hocKy != null ? hocKy.TenHocKy : "";
 
-                foreach (var hk in dsHanhKiem)
-                {
-                    // Lấy thông tin học sinh
-                    HocSinhDTO hs = hocSinhDAO.LayHocSinhTheoMa(hk.MaHocSinh);
-                    if (hs == null) continue;
+                fullListHanhKiem.Clear();
 
-                    // Lấy lớp của học sinh
-                    int maLopHS = phanLopDAO.LayLopCuaHocSinh(hs.MaHS, maHocKy);
-                    string tenLop = "";
-                    if (maLopHS > 0)
+                // ✅ KHÔNG CẦN QUERY THÊM - CHỈ CHUYỂN ĐỔI SANG DTO
+                foreach (var hkDisplay in dsHanhKiemDisplay)
+                {
+                    fullListHanhKiem.Add(new HanhKiemDTO
                     {
-                        LopDTO lop = lopDAO.LayLopTheoId(maLopHS);
-                        tenLop = lop != null ? lop.TenLop : "";
-                    }
+                        MaHocSinh = hkDisplay.MaHocSinh,
+                        MaHocKy = hkDisplay.MaHocKy,
+                        XepLoai = hkDisplay.XepLoai,
+                        NhanXet = hkDisplay.NhanXet
+                    });
+                }
+
+                // Lưu thêm thông tin hiển thị (tên, lớp) vào dictionary để dùng sau
+                _cachedDisplayInfo = dsHanhKiemDisplay.ToDictionary(x => x.MaHocSinh);
+                _cachedTenHocKy = tenHocKy;
+
+                currentPage = 1;
+                HienThiDanhSachHanhKiem();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu hạnh kiểm: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị danh sách hạnh kiểm với phân trang
+        /// </summary>
+        private void HienThiDanhSachHanhKiem()
+        {
+            try
+            {
+                List<HanhKiemDTO> filteredList = fullListHanhKiem;
+
+                if (!string.IsNullOrWhiteSpace(searchKeyword))
+                {
+                    string keyword = searchKeyword.Trim().ToLower();
+                    filteredList = fullListHanhKiem.FindAll(x =>
+                    {
+                        // ✅ DÙNG CACHE THAY VÌ QUERY
+                        if (!_cachedDisplayInfo.TryGetValue(x.MaHocSinh, out var info))
+                            return false;
+
+                        // Tìm kiếm theo: Mã HS, Họ tên, Tên lớp, Tên học kỳ, Xếp loại, Nhận xét
+                        return x.MaHocSinh.ToString().Contains(keyword) ||
+                               (info.HoTen != null && info.HoTen.ToLower().Contains(keyword)) ||
+                               (info.TenLop != null && info.TenLop.ToLower().Contains(keyword)) ||
+                               (_cachedTenHocKy != null && _cachedTenHocKy.ToLower().Contains(keyword)) ||
+                               (x.XepLoai != null && x.XepLoai.ToLower().Contains(keyword)) ||
+                               (x.NhanXet != null && x.NhanXet.ToLower().Contains(keyword));
+                    });
+                }
+
+                totalPages = (int)Math.Ceiling((double)filteredList.Count / pageSize);
+
+                if (currentPage < 1) currentPage = 1;
+                if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+
+                var pagedList = filteredList
+                    .Skip((currentPage - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                tableHanhKiem.Rows.Clear();
+                tableHanhKiem.SuspendLayout();
+
+                // ✅ KHÔNG CẦN QUERY TRONG VÒNG LẶP NỮA!
+                foreach (var hk in pagedList)
+                {
+                    if (!_cachedDisplayInfo.TryGetValue(hk.MaHocSinh, out var info))
+                        continue;
 
                     tableHanhKiem.Rows.Add(
-                        hs.MaHS,
-                        hs.HoTen,
-                        tenLop,
-                        tenHocKy,
+                        info.MaHocSinh,
+                        info.HoTen,
+                        info.TenLop,
+                        _cachedTenHocKy,
                         hk.XepLoai,
                         hk.NhanXet
                     );
@@ -437,13 +562,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     int rowIndex = tableHanhKiem.Rows.Count - 1;
                     ApplyXepLoaiColor(rowIndex, hk.XepLoai);
                 }
+
+                tableHanhKiem.ResumeLayout();
+                UpdatePaginationUI();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải dữ liệu hạnh kiểm: {ex.Message}", "Lỗi",
+                MessageBox.Show($"Lỗi khi hiển thị danh sách hạnh kiểm: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
         private void ApplyXepLoaiColor(int rowIndex, string xepLoai)
@@ -509,8 +636,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 if (cbHocKyNamHoc.SelectedItem == null)
                     return;
 
-                dynamic selectedHocKy = cbHocKyNamHoc.SelectedItem;
-                int maHocKy = selectedHocKy.Value;
+                // ⭐ KIỂM TRA KIỂU DỮ LIỆU AN TOÀN
+                int maHocKy;
+                try
+                {
+                    dynamic selectedHocKy = cbHocKyNamHoc.SelectedItem;
+                    maHocKy = selectedHocKy.Value;
+                }
+                catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex)
+                {
+                    Console.WriteLine($"[CapNhatThongKe] Lỗi: {ex.Message}");
+                    return;
+                }
 
                 int tongHS = 0;
                 int soTot = 0, soKha = 0, soTrungBinh = 0, soYeu = 0, chuaDanhGia = 0;
@@ -521,17 +658,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     if (row.IsNewRow) continue;
                     tongHS++;
 
-                    string xepLoai = row.Cells[4].Value?.ToString()?.Trim(); // ⭐ THÊM .Trim()
+                    string xepLoai = row.Cells[4].Value?.ToString()?.Trim();
 
-                    if (string.IsNullOrEmpty(xepLoai)) continue; // ⭐ THÊM kiểm tra null
+                    if (string.IsNullOrEmpty(xepLoai)) continue;
 
-                    // ⭐ SỬ DỤNG StringComparison.OrdinalIgnoreCase để so sánh không phân biệt hoa thường
                     if (xepLoai.Equals("Tốt", StringComparison.OrdinalIgnoreCase))
                         soTot++;
                     else if (xepLoai.Equals("Khá", StringComparison.OrdinalIgnoreCase))
                         soKha++;
                     else if (xepLoai.Equals("Trung Bình", StringComparison.OrdinalIgnoreCase) ||
-                             xepLoai.Equals("Trung binh", StringComparison.OrdinalIgnoreCase)) 
+                             xepLoai.Equals("Trung binh", StringComparison.OrdinalIgnoreCase))
                         soTrungBinh++;
                     else if (xepLoai.Equals("Yếu", StringComparison.OrdinalIgnoreCase))
                         soYeu++;
@@ -541,11 +677,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 int? maLop = null;
                 if (cbLop.SelectedItem != null)
                 {
-                    dynamic selectedLop = cbLop.SelectedItem;
-                    int lopValue = selectedLop.Value;
-                    if (lopValue > 0)
+                    try
                     {
-                        maLop = lopValue;
+                        dynamic selectedLop = cbLop.SelectedItem;
+                        int lopValue = selectedLop.Value;
+                        if (lopValue > 0)
+                        {
+                            maLop = lopValue;
+                        }
+                    }
+                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+                    {
+                        Console.WriteLine("[CapNhatThongKe] cbLop SelectedItem không có thuộc tính Value");
                     }
                 }
 
@@ -753,6 +896,55 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 MessageBox.Show($"Lỗi khi xếp hạnh kiểm tự động: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// Cập nhật UI phân trang (hiển thị số trang, enable/disable nút)
+        /// </summary>
+        private void UpdatePaginationUI()
+        {
+            if (totalPages == 0)
+            {
+                lblTrangHienTai.Text = "0/0";
+                btnTrangTruoc.Enabled = false;
+                btnTrangSau.Enabled = false;
+            }
+            else
+            {
+                lblTrangHienTai.Text = $"{currentPage}/{totalPages}";
+                btnTrangTruoc.Enabled = currentPage > 1;
+                btnTrangSau.Enabled = currentPage < totalPages;
+            }
+        }
+
+        private void btnTrangTruoc_Click(object sender, EventArgs e)
+        {
+            if (currentPage > 1)
+            {
+                currentPage--;
+                HienThiDanhSachHanhKiem();
+            }
+        }
+
+        private void btnTrangSau_Click(object sender, EventArgs e)
+        {
+            if (currentPage < totalPages)
+            {
+                currentPage++;
+                HienThiDanhSachHanhKiem();
+            }
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            // Lưu từ khóa tìm kiếm
+            searchKeyword = txtSearch.Text.Trim();
+
+            // Reset về trang đầu tiên khi tìm kiếm
+            currentPage = 1;
+
+            // Hiển thị lại danh sách với từ khóa mới
+            HienThiDanhSachHanhKiem();
         }
     }
 }

@@ -31,6 +31,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             namHocDAO = new NamHocDAO();
             xepLoaiDAO = new XepLoaiDAO();
             xepLoaiBUS = new XepLoaiBUS();
+            tableXepLoai.ReadOnly = true;
+            tableXepLoai.AllowUserToAddRows = false;
+            tableXepLoai.AllowUserToDeleteRows = false;
             LoadHocKy();
         }
 
@@ -59,6 +62,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 List<HocKyDTO> dsHocKy = hocKyDAO.GetAllHocKy();
 
+                // Hiển thị TẤT CẢ học kỳ vào combobox
                 foreach (var hk in dsHocKy)
                 {
                     string displayText = $"{hk.TenHocKy} - {hk.MaNamHoc}";
@@ -67,11 +71,51 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (cbHocKyNamHoc.Items.Count > 0)
                 {
+                    // ✅ SỬA LẠI: Lấy học kỳ mới nhất có dữ liệu xếp loại
+                    HocKyDTO hocKyMoiNhat = null;
+
+                    // Tìm học kỳ mới nhất có dữ liệu xếp loại
+                    foreach (var hk in dsHocKy)
+                    {
+                        if (hocKyDAO.KiemTraHocKyCoXepLoai(hk.MaHocKy))
+                        {
+                            hocKyMoiNhat = hk;
+                            break; // dsHocKy đã được sắp xếp theo thứ tự mới nhất
+                        }
+                    }
+
+                    // ✅ DEBUG: In ra để kiểm tra
+                    Console.WriteLine($"[LoadHocKy] hocKyMoiNhat = {(hocKyMoiNhat != null ? hocKyMoiNhat.MaHocKy + " - " + hocKyMoiNhat.TenHocKy + " - " + hocKyMoiNhat.MaNamHoc : "NULL")}");
+
+                    if (hocKyMoiNhat != null)
+                    {
+                        // Tìm và chọn học kỳ mới nhất có dữ liệu xếp loại
+                        for (int i = 0; i < cbHocKyNamHoc.Items.Count; i++)
+                        {
+                            var item = cbHocKyNamHoc.Items[i];
+                            // Sử dụng reflection để lấy giá trị Value
+                            var valueProperty = item.GetType().GetProperty("Value");
+                            if (valueProperty != null)
+                            {
+                                int value = (int)valueProperty.GetValue(item);
+                                if (value == hocKyMoiNhat.MaHocKy)
+                                {
+                                    Console.WriteLine($"[LoadHocKy] Chọn index {i} - MaHocKy = {hocKyMoiNhat.MaHocKy}");
+                                    cbHocKyNamHoc.SelectedIndex = i;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    // Nếu không tìm thấy học kỳ nào có dữ liệu xếp loại, chọn học kỳ đầu tiên
+                    Console.WriteLine($"[LoadHocKy] FALLBACK - Chọn index 0");
                     cbHocKyNamHoc.SelectedIndex = 0;
                 }
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"[LoadHocKy] LỖI: {ex.Message}");
                 MessageBox.Show($"Lỗi khi tải danh sách học kỳ: {ex.Message}",
                     "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
