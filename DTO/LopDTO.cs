@@ -25,10 +25,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.maGVCN = maGVCN;
 
         }
-        ~LopDTO()
-        {
-            Console.WriteLine("Huy doi tuong LopDTO");
-        }
+        // Destructor khiến object phải qua finalization queue, làm chậm GC
         public int MaLop
         {
             get { return maLop; }

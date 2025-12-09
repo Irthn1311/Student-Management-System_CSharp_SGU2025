@@ -327,10 +327,13 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                             }
                         }
                     }
+                    
+                    // Log để debug
+                    Console.WriteLine($"[ThongBaoDAO] LayThongBaoNguoiDung: Lấy được {ds.Count} thông báo từ NguoiNhanThongBao cho {tenDangNhap}");
                 }
                 catch (MySqlException ex)
                 {
-                    Console.WriteLine("Lỗi lấy thông báo người dùng: " + ex.Message);
+                    Console.WriteLine($"[ThongBaoDAO] Lỗi lấy thông báo người dùng: {ex.Message}");
                 }
                 finally
                 {

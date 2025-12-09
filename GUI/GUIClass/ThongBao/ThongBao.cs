@@ -25,6 +25,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
         // Lọc
         private string selectedLoaiThongBao = null;
         private bool? selectedDaDoc = null;
+        private string selectedDoiTuongNhan = null; // Filter theo đối tượng nhận
 
         public ThongBao()
         {
@@ -49,6 +50,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
 
             // Load loại thông báo
             LoadLoaiThongBao();
+
+            // Load đối tượng nhận
+            LoadDoiTuongNhan();
 
             // Load dữ liệu
             LoadData();
@@ -112,6 +116,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
             }
         }
 
+        private void LoadDoiTuongNhan()
+        {
+            try
+            {
+                if (cbDoiTuongNhan != null)
+                {
+                    cbDoiTuongNhan.Items.Clear();
+                    cbDoiTuongNhan.Items.Add("Tất cả đối tượng nhận");
+                    cbDoiTuongNhan.Items.Add("Toàn trường");
+                    cbDoiTuongNhan.Items.Add("Giáo viên");
+                    cbDoiTuongNhan.Items.Add("Học sinh");
+                    cbDoiTuongNhan.Items.Add("Phụ huynh");
+                    cbDoiTuongNhan.Items.Add("Theo lớp");
+                    cbDoiTuongNhan.Items.Add("Theo khối");
+                    cbDoiTuongNhan.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi load đối tượng nhận: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        }
+
         private void LoadData()
         {
             try
@@ -147,8 +175,33 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
 
             // Lọc theo trạng thái đọc
             if (selectedDaDoc.HasValue)
-            {
+        {
                 filtered = filtered.Where(tb => tb.DaDoc == selectedDaDoc.Value);
+            }
+
+            // Lọc theo đối tượng nhận (dựa vào PhamVi và MaVaiTroNhan trong schema)
+            if (!string.IsNullOrEmpty(selectedDoiTuongNhan))
+            {
+                filtered = filtered.Where(tb =>
+                {
+                    switch (selectedDoiTuongNhan)
+                    {
+                        case "Toàn trường":
+                            return tb.PhamVi == "ALL";
+                        case "Giáo viên":
+                            return tb.PhamVi == "VAI_TRO" && tb.MaVaiTroNhan == "teacher";
+                        case "Học sinh":
+                            return tb.PhamVi == "VAI_TRO" && tb.MaVaiTroNhan == "student";
+                        case "Phụ huynh":
+                            return tb.PhamVi == "VAI_TRO" && tb.MaVaiTroNhan == "parent";
+                        case "Theo lớp":
+                            return tb.PhamVi == "LOP" && tb.MaLop.HasValue;
+                        case "Theo khối":
+                            return tb.PhamVi == "KHOI" && tb.MaKhoi.HasValue;
+                        default:
+                            return true;
+                    }
+                });
             }
 
             // Tìm kiếm
@@ -197,6 +250,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
                         ? tb.NgayHetHan.Value.ToString("dd/MM/yyyy")
                         : "";
 
+                    // Lấy text độ ưu tiên
+                    string doUuTienText = tb.GetDoUuTienText();
+
                     // Tạo màu cho chưa đọc
                     int index = tableThongBao.Rows.Add(
                         tb.MaThongBao,
@@ -204,11 +260,29 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
                         noiDungNgan,
                         tb.TenLoaiThongBao ?? tb.LoaiThongBao,
                         tb.DoiTuongNhan,
+                        doUuTienText,
                         tb.NgayTao.ToString("dd/MM/yyyy HH:mm"),
                         tb.TenNguoiTao ?? tb.MaNguoiTao,
                         ngayHetHan,
                         "" // Thao tác
                     );
+
+                    // Đặt màu cho cột độ ưu tiên
+                    var doUuTienCell = tableThongBao.Rows[index].Cells["DoUuTien"];
+                    switch (tb.DoUuTien)
+                    {
+                        case "KHAN_CAP":
+                            doUuTienCell.Style.ForeColor = Color.Red;
+                            doUuTienCell.Style.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+                            break;
+                        case "QUAN_TRONG":
+                            doUuTienCell.Style.ForeColor = Color.Orange;
+                            doUuTienCell.Style.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+                            break;
+                        default:
+                            doUuTienCell.Style.ForeColor = Color.Green;
+                            break;
+                    }
 
                     // Đánh dấu thông báo chưa đọc bằng font đậm
                     if (!tb.DaDoc)
@@ -243,12 +317,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
 
                 Color defaultTextColor = Color.FromArgb(71, 85, 105);
 
-                // Thẻ 1: Tổng thông báo
+                // Thẻ 1: Tổng thông báo - Hiển thị thống kê theo phạm vi
                 if (statCardTongThongBao != null)
                 {
                     statCardTongThongBao.lbCardTitle.Text = "Tổng thông báo";
                     statCardTongThongBao.lbCardValue.Text = stats.TongThongBao.ToString();
-                    statCardTongThongBao.lbCardNote.Text = $"{stats.ChuaDoc} chưa đọc";
+                    
+                    // Hiển thị thống kê theo phạm vi gửi
+                    List<string> phamViList = new List<string>();
+                    if (stats.GuiToanTruong > 0)
+                        phamViList.Add($"{stats.GuiToanTruong} toàn trường");
+                    if (stats.GuiGiaoVien > 0)
+                        phamViList.Add($"{stats.GuiGiaoVien} giáo viên");
+                    if (stats.GuiHocSinh > 0)
+                        phamViList.Add($"{stats.GuiHocSinh} học sinh");
+                    
+                    if (phamViList.Count > 0)
+                    {
+                        statCardTongThongBao.lbCardNote.Text = string.Join(", ", phamViList);
+                    }
+                    else
+                    {
+                        statCardTongThongBao.lbCardNote.Text = "Thông báo hệ thống";
+                    }
+                    
                     statCardTongThongBao.lbCardValue.ForeColor = Color.FromArgb(37, 99, 235);
                     statCardTongThongBao.lbCardTitle.ForeColor = defaultTextColor;
                     statCardTongThongBao.lbCardNote.ForeColor = defaultTextColor;
@@ -257,31 +349,70 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
                 // Thẻ 2: Gửi Giáo viên
                 if (statCardThongBaoGiaoVien != null)
                 {
-                    statCardThongBaoGiaoVien.lbCardTitle.Text = "Gửi Giáo viên";
+            statCardThongBaoGiaoVien.lbCardTitle.Text = "Gửi Giáo viên";
                     statCardThongBaoGiaoVien.lbCardValue.Text = stats.GuiGiaoVien.ToString();
-                    statCardThongBaoGiaoVien.lbCardNote.Text = "Thông báo gần đây";
+            statCardThongBaoGiaoVien.lbCardNote.Text = "Thông báo gần đây";
                     statCardThongBaoGiaoVien.lbCardValue.ForeColor = Color.FromArgb(22, 163, 74);
-                    statCardThongBaoGiaoVien.lbCardTitle.ForeColor = defaultTextColor;
-                    statCardThongBaoGiaoVien.lbCardNote.ForeColor = defaultTextColor;
+            statCardThongBaoGiaoVien.lbCardTitle.ForeColor = defaultTextColor;
+            statCardThongBaoGiaoVien.lbCardNote.ForeColor = defaultTextColor;
                 }
 
                 // Thẻ 3: Gửi Học sinh
                 if (statCardThongBaoHocSinh != null)
                 {
-                    statCardThongBaoHocSinh.lbCardTitle.Text = "Gửi Học sinh";
+            statCardThongBaoHocSinh.lbCardTitle.Text = "Gửi Học sinh";
                     statCardThongBaoHocSinh.lbCardValue.Text = stats.GuiHocSinh.ToString();
-                    statCardThongBaoHocSinh.lbCardNote.Text = "Thông báo gần đây";
+            statCardThongBaoHocSinh.lbCardNote.Text = "Thông báo gần đây";
                     statCardThongBaoHocSinh.lbCardValue.ForeColor = Color.FromArgb(234, 88, 12);
-                    statCardThongBaoHocSinh.lbCardTitle.ForeColor = defaultTextColor;
-                    statCardThongBaoHocSinh.lbCardNote.ForeColor = defaultTextColor;
+            statCardThongBaoHocSinh.lbCardTitle.ForeColor = defaultTextColor;
+            statCardThongBaoHocSinh.lbCardNote.ForeColor = defaultTextColor;
                 }
 
-                // Thẻ 4: Thông báo quan trọng
+                // Thẻ 4: Thông báo quan trọng - Mở rộng với nhiều loại thống kê, xuống dòng cho 2 cái cuối
                 if (statCardThongBaoGiaoVu != null)
                 {
                     statCardThongBaoGiaoVu.lbCardTitle.Text = "Quan trọng";
-                    statCardThongBaoGiaoVu.lbCardValue.Text = (stats.KhanCap + stats.QuanTrong).ToString();
-                    statCardThongBaoGiaoVu.lbCardNote.Text = "Cần chú ý";
+                    int tongQuanTrong = stats.KhanCap + stats.QuanTrong;
+                    statCardThongBaoGiaoVu.lbCardValue.Text = tongQuanTrong.ToString();
+                    
+                    // Tính toán thống kê bổ sung
+                    int binhThuong = stats.TongThongBao - tongQuanTrong;
+                    
+                    // Hiển thị nhiều loại thống kê: Khẩn cấp, Quan trọng, Bình thường, Toàn trường
+                    List<string> thongKeList = new List<string>();
+                    
+                    if (stats.KhanCap > 0)
+                        thongKeList.Add($"{stats.KhanCap} khẩn cấp");
+                    if (stats.QuanTrong > 0)
+                        thongKeList.Add($"{stats.QuanTrong} quan trọng");
+                    if (binhThuong > 0)
+                        thongKeList.Add($"{binhThuong} bình thường");
+                    if (stats.GuiToanTruong > 0)
+                        thongKeList.Add($"{stats.GuiToanTruong} toàn trường");
+                    
+                    // Kết hợp các thống kê, 2 cái cuối xuống dòng để tránh tràn
+                    if (thongKeList.Count > 0)
+                    {
+                        string thongKeText = "";
+                        if (thongKeList.Count <= 2)
+                        {
+                            // Nếu có 2 hoặc ít hơn, viết trên 1 dòng
+                            thongKeText = string.Join(", ", thongKeList);
+                        }
+                        else
+                        {
+                            // Nếu có nhiều hơn 2, 2 cái đầu trên 1 dòng, các cái còn lại xuống dòng
+                            string dong1 = string.Join(", ", thongKeList.Take(2));
+                            string dong2 = string.Join(", ", thongKeList.Skip(2));
+                            thongKeText = dong1 + Environment.NewLine + dong2;
+                        }
+                        statCardThongBaoGiaoVu.lbCardNote.Text = thongKeText;
+                    }
+                    else
+                    {
+                        statCardThongBaoGiaoVu.lbCardNote.Text = "Cần chú ý";
+                    }
+                    
                     statCardThongBaoGiaoVu.lbCardValue.ForeColor = Color.FromArgb(124, 58, 237);
                     statCardThongBaoGiaoVu.lbCardTitle.ForeColor = defaultTextColor;
                     statCardThongBaoGiaoVu.lbCardNote.ForeColor = defaultTextColor;
@@ -309,6 +440,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
             tableThongBao.Columns.Add("NoiDung", "Nội dung");
             tableThongBao.Columns.Add("LoaiThongBao", "Loại");
             tableThongBao.Columns.Add("DoiTuongNhan", "Gửi đến");
+            tableThongBao.Columns.Add("DoUuTien", "Độ ưu tiên");
             tableThongBao.Columns.Add("NgayTao", "Ngày tạo");
             tableThongBao.Columns.Add("NguoiTao", "Người tạo");
             tableThongBao.Columns.Add("NgayHetHan", "Hết hạn");
@@ -320,19 +452,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
             tableThongBao.Columns["NoiDung"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tableThongBao.Columns["LoaiThongBao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             tableThongBao.Columns["DoiTuongNhan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            tableThongBao.Columns["DoUuTien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             tableThongBao.Columns["NguoiTao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
             // Kích thước
             tableThongBao.Columns["MaThongBao"].Visible = false;
-            tableThongBao.Columns["TieuDe"].FillWeight = 25; tableThongBao.Columns["TieuDe"].MinimumWidth = 180;
-            tableThongBao.Columns["NoiDung"].FillWeight = 30; tableThongBao.Columns["NoiDung"].MinimumWidth = 200;
-            tableThongBao.Columns["LoaiThongBao"].FillWeight = 10; tableThongBao.Columns["LoaiThongBao"].MinimumWidth = 100;
-            tableThongBao.Columns["DoiTuongNhan"].FillWeight = 12; tableThongBao.Columns["DoiTuongNhan"].MinimumWidth = 120;
-            tableThongBao.Columns["NgayTao"].FillWeight = 12; tableThongBao.Columns["NgayTao"].MinimumWidth = 130;
-            tableThongBao.Columns["NguoiTao"].FillWeight = 10; tableThongBao.Columns["NguoiTao"].MinimumWidth = 100;
-            tableThongBao.Columns["NgayHetHan"].FillWeight = 10; tableThongBao.Columns["NgayHetHan"].MinimumWidth = 100;
+            tableThongBao.Columns["TieuDe"].FillWeight = 20; tableThongBao.Columns["TieuDe"].MinimumWidth = 150;
+            tableThongBao.Columns["NoiDung"].FillWeight = 25; tableThongBao.Columns["NoiDung"].MinimumWidth = 180;
+            tableThongBao.Columns["LoaiThongBao"].FillWeight = 8; tableThongBao.Columns["LoaiThongBao"].MinimumWidth = 90;
+            tableThongBao.Columns["DoiTuongNhan"].FillWeight = 10; tableThongBao.Columns["DoiTuongNhan"].MinimumWidth = 110;
+            tableThongBao.Columns["DoUuTien"].FillWeight = 8; tableThongBao.Columns["DoUuTien"].MinimumWidth = 100;
+            tableThongBao.Columns["NgayTao"].FillWeight = 10; tableThongBao.Columns["NgayTao"].MinimumWidth = 120;
+            tableThongBao.Columns["NguoiTao"].FillWeight = 8; tableThongBao.Columns["NguoiTao"].MinimumWidth = 90;
+            tableThongBao.Columns["NgayHetHan"].FillWeight = 8; tableThongBao.Columns["NgayHetHan"].MinimumWidth = 90;
             tableThongBao.Columns["ThaoTac"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            tableThongBao.Columns["ThaoTac"].Width = 100;
+            tableThongBao.Columns["ThaoTac"].Width = 140; // Tăng width để chứa 3 icon
 
             tableThongBao.Columns["TieuDe"].DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
 
@@ -375,13 +509,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
 
         private void cbDoiTuongNhan_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Lọc theo trạng thái đọc
+            // Lọc theo đối tượng nhận
             if (cbDoiTuongNhan.SelectedIndex == 0)
-                selectedDaDoc = null;
-            else if (cbDoiTuongNhan.SelectedIndex == 1)
-                selectedDaDoc = false; // Chưa đọc
-            else if (cbDoiTuongNhan.SelectedIndex == 2)
-                selectedDaDoc = true;  // Đã đọc
+            {
+                selectedDoiTuongNhan = null; // Tất cả
+            }
+            else
+            {
+                string selected = cbDoiTuongNhan.SelectedItem?.ToString();
+                selectedDoiTuongNhan = selected;
+            }
 
             currentPage = 1;
             ApplyFilters();
@@ -473,7 +610,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
                     e.CellStyle.ForeColor = Color.FromArgb(154, 52, 18);
                 else if (doiTuong.Contains("lớp"))
                     e.CellStyle.ForeColor = Color.FromArgb(55, 48, 163);
-            }
+        }
         }
 
         private void tableThongBao_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
@@ -482,23 +619,40 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
             {
                 e.PaintBackground(e.ClipBounds, true);
 
-                Image editIcon = Properties.Resources.icon_eye;
-                Image deleteIcon = Properties.Resources.bin;
+                // Lấy icon từ resources hoặc tạo icon
+                Image viewIcon = Properties.Resources.icon_eye ?? CreateSimpleIcon(Color.FromArgb(59, 130, 246)); // Xanh dương
+                Image editIcon = Properties.Resources.icon_edit ?? CreateSimpleIcon(Color.FromArgb(34, 197, 94)); // Xanh lá
+                Image deleteIcon = Properties.Resources.bin ?? CreateSimpleIcon(Color.FromArgb(239, 68, 68)); // Đỏ
 
                 int iconSize = 18;
-                int spacing = 15;
-                int totalWidth = iconSize * 2 + spacing;
+                int spacing = 12;
+                int totalWidth = iconSize * 3 + spacing * 2; // 3 icon với 2 khoảng cách
                 int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
                 int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
 
+                // Vị trí 3 icon: Xem, Sửa, Xóa
                 Rectangle viewRect = new Rectangle(startX, y, iconSize, iconSize);
-                Rectangle deleteRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
+                Rectangle editRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
+                Rectangle deleteRect = new Rectangle(startX + (iconSize + spacing) * 2, y, iconSize, iconSize);
 
-                e.Graphics.DrawImage(editIcon, viewRect);
+                e.Graphics.DrawImage(viewIcon, viewRect);
+                e.Graphics.DrawImage(editIcon, editRect);
                 e.Graphics.DrawImage(deleteIcon, deleteRect);
 
                 e.Handled = true;
             }
+        }
+
+        // Helper method để tạo icon đơn giản nếu không có resource
+        private Image CreateSimpleIcon(Color color)
+        {
+            Bitmap bmp = new Bitmap(18, 18);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                g.FillEllipse(new SolidBrush(color), 2, 2, 14, 14);
+            }
+            return bmp;
         }
 
         private void tableThongBao_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -581,17 +735,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
             int xClick = clickPosInCell.X - cellBounds.Left;
 
             int iconSize = 18;
-            int spacing = 15;
-            int totalWidth = iconSize * 2 + spacing;
+            int spacing = 12;
+            int totalWidth = iconSize * 3 + spacing * 2; // 3 icon với 2 khoảng cách
             int startXInCell = (cellBounds.Width - totalWidth) / 2;
 
-            int viewIconEndX = startXInCell + iconSize;
-            int deleteIconStartX = startXInCell + iconSize + spacing;
+            // Vị trí 3 icon
+            int viewIconStartX = startXInCell;
+            int viewIconEndX = viewIconStartX + iconSize;
+            int editIconStartX = viewIconEndX + spacing;
+            int editIconEndX = editIconStartX + iconSize;
+            int deleteIconStartX = editIconEndX + spacing;
             int deleteIconEndX = deleteIconStartX + iconSize;
 
             int maThongBao = Convert.ToInt32(dgv.Rows[rowIndex].Cells[idColumnName].Value);
 
-            if (xClick >= startXInCell && xClick < viewIconEndX)
+            if (xClick >= viewIconStartX && xClick < viewIconEndX)
             {
                 // Xem chi tiết
                 try
@@ -617,6 +775,56 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
                 catch (Exception ex)
                 {
                     MessageBox.Show("Lỗi khi mở chi tiết thông báo: " + ex.Message, "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else if (xClick >= editIconStartX && xClick < editIconEndX)
+            {
+                // Sửa thông báo
+                try
+                {
+                    // Kiểm tra quyền chỉnh sửa
+                    if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLTHONGBAO, "Quản lý thông báo"))
+                    {
+                        MessageBox.Show("Bạn không có quyền chỉnh sửa thông báo!", "Thông báo",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Lấy thông tin thông báo
+                    var thongBao = thongBaoBUS.LayChiTietThongBao(maThongBao, SessionManager.TenDangNhap);
+                    if (thongBao != null)
+                    {
+                        // Kiểm tra quyền chỉnh sửa thông báo của chính mình hoặc admin
+                        if (thongBao.MaNguoiTao != SessionManager.TenDangNhap &&
+                            !SessionManager.DanhSachVaiTro.Contains("admin"))
+                        {
+                            MessageBox.Show("Bạn chỉ có thể chỉnh sửa thông báo do chính mình tạo!", "Thông báo",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        // Mở form chỉnh sửa
+                        using (var frmSua = new FrmThemThongBao(thongBao))
+                        {
+                            if (frmSua.ShowDialog() == DialogResult.OK)
+                            {
+                                // Reload dữ liệu sau khi sửa
+                                LoadData();
+                                MessageBox.Show("Thông báo đã được cập nhật thành công!", "Thành công",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không tìm thấy thông báo!", "Thông báo",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi mở form chỉnh sửa: " + ex.Message, "Lỗi",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -674,5 +882,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
         }
 
         #endregion
+
+        private void tableThongBao_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void btnThemThongBao_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

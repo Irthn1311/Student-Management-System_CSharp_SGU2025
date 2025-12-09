@@ -31,15 +31,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.statCardThongBaoGiaoVu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardThongBaoHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardThongBaoGiaoVien = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
-            this.statCardTongThongBao = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.tableThongBao = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.cbLoaiTB = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.txtTimKiemThongBao = new Guna.UI2.WinForms.Guna2TextBox();
-            this.btnThemThongBao = new Guna.UI2.WinForms.Guna2Button();
-            this.cbDoiTuongNhan = new Guna.UI2.WinForms.Guna2ComboBox();
             this.MãHS = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,44 +39,16 @@
             this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cbLoaiTB = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.txtTimKiemThongBao = new Guna.UI2.WinForms.Guna2TextBox();
+            this.cbDoiTuongNhan = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.statCardThongBaoGiaoVu = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardThongBaoHocSinh = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardThongBaoGiaoVien = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.statCardTongThongBao = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
+            this.btnThemThongBao = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.tableThongBao)).BeginInit();
             this.SuspendLayout();
-            // 
-            // statCardThongBaoGiaoVu
-            // 
-            this.statCardThongBaoGiaoVu.BackColor = System.Drawing.Color.Transparent;
-            this.statCardThongBaoGiaoVu.Location = new System.Drawing.Point(888, 93);
-            this.statCardThongBaoGiaoVu.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardThongBaoGiaoVu.Name = "statCardThongBaoGiaoVu";
-            this.statCardThongBaoGiaoVu.Size = new System.Drawing.Size(271, 129);
-            this.statCardThongBaoGiaoVu.TabIndex = 20;
-            // 
-            // statCardThongBaoHocSinh
-            // 
-            this.statCardThongBaoHocSinh.BackColor = System.Drawing.Color.Transparent;
-            this.statCardThongBaoHocSinh.Location = new System.Drawing.Point(594, 93);
-            this.statCardThongBaoHocSinh.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardThongBaoHocSinh.Name = "statCardThongBaoHocSinh";
-            this.statCardThongBaoHocSinh.Size = new System.Drawing.Size(262, 129);
-            this.statCardThongBaoHocSinh.TabIndex = 21;
-            // 
-            // statCardThongBaoGiaoVien
-            // 
-            this.statCardThongBaoGiaoVien.BackColor = System.Drawing.Color.Transparent;
-            this.statCardThongBaoGiaoVien.Location = new System.Drawing.Point(306, 93);
-            this.statCardThongBaoGiaoVien.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardThongBaoGiaoVien.Name = "statCardThongBaoGiaoVien";
-            this.statCardThongBaoGiaoVien.Size = new System.Drawing.Size(262, 129);
-            this.statCardThongBaoGiaoVien.TabIndex = 22;
-            // 
-            // statCardTongThongBao
-            // 
-            this.statCardTongThongBao.BackColor = System.Drawing.Color.Transparent;
-            this.statCardTongThongBao.Location = new System.Drawing.Point(14, 93);
-            this.statCardTongThongBao.Margin = new System.Windows.Forms.Padding(2);
-            this.statCardTongThongBao.Name = "statCardTongThongBao";
-            this.statCardTongThongBao.Size = new System.Drawing.Size(266, 129);
-            this.statCardTongThongBao.TabIndex = 23;
             // 
             // tableThongBao
             // 
@@ -148,93 +112,7 @@
             this.tableThongBao.ThemeStyle.RowsStyle.Height = 24;
             this.tableThongBao.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tableThongBao.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            // 
-            // cbLoaiTB
-            // 
-            this.cbLoaiTB.BackColor = System.Drawing.Color.Transparent;
-            this.cbLoaiTB.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cbLoaiTB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbLoaiTB.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbLoaiTB.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbLoaiTB.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLoaiTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
-            this.cbLoaiTB.ItemHeight = 30;
-            this.cbLoaiTB.Items.AddRange(new object[] {
-            "Tất cả loại TB",
-            "Chung",
-            "Lịch Thi",
-            "Sự Kiện ",
-            "Nghỉ Lễ"});
-            this.cbLoaiTB.Location = new System.Drawing.Point(979, 35);
-            this.cbLoaiTB.Margin = new System.Windows.Forms.Padding(2);
-            this.cbLoaiTB.Name = "cbLoaiTB";
-            this.cbLoaiTB.Size = new System.Drawing.Size(158, 36);
-            this.cbLoaiTB.StartIndex = 0;
-            this.cbLoaiTB.TabIndex = 18;
-            // 
-            // txtTimKiemThongBao
-            // 
-            this.txtTimKiemThongBao.BorderRadius = 7;
-            this.txtTimKiemThongBao.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtTimKiemThongBao.DefaultText = "";
-            this.txtTimKiemThongBao.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txtTimKiemThongBao.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.txtTimKiemThongBao.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtTimKiemThongBao.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtTimKiemThongBao.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtTimKiemThongBao.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtTimKiemThongBao.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtTimKiemThongBao.IconLeft = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.search;
-            this.txtTimKiemThongBao.IconLeftOffset = new System.Drawing.Point(7, 0);
-            this.txtTimKiemThongBao.Location = new System.Drawing.Point(218, 25);
-            this.txtTimKiemThongBao.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.txtTimKiemThongBao.Name = "txtTimKiemThongBao";
-            this.txtTimKiemThongBao.PlaceholderText = "Tìm kiếm thông báo ...";
-            this.txtTimKiemThongBao.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtTimKiemThongBao.SelectedText = "";
-            this.txtTimKiemThongBao.Size = new System.Drawing.Size(323, 51);
-            this.txtTimKiemThongBao.TabIndex = 17;
-            // 
-            // btnThemThongBao
-            // 
-            this.btnThemThongBao.BorderRadius = 7;
-            this.btnThemThongBao.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemThongBao.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnThemThongBao.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnThemThongBao.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnThemThongBao.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnThemThongBao.ForeColor = System.Drawing.Color.White;
-            this.btnThemThongBao.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.plus;
-            this.btnThemThongBao.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnThemThongBao.Location = new System.Drawing.Point(14, 25);
-            this.btnThemThongBao.Margin = new System.Windows.Forms.Padding(2);
-            this.btnThemThongBao.Name = "btnThemThongBao";
-            this.btnThemThongBao.Size = new System.Drawing.Size(172, 51);
-            this.btnThemThongBao.TabIndex = 16;
-            this.btnThemThongBao.Text = "Thêm thông báo";
-            // 
-            // cbDoiTuongNhan
-            // 
-            this.cbDoiTuongNhan.BackColor = System.Drawing.Color.Transparent;
-            this.cbDoiTuongNhan.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.cbDoiTuongNhan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbDoiTuongNhan.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbDoiTuongNhan.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.cbDoiTuongNhan.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbDoiTuongNhan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
-            this.cbDoiTuongNhan.ItemHeight = 30;
-            this.cbDoiTuongNhan.Items.AddRange(new object[] {
-            "Tất cả đối tượng nhận",
-            "Tất cả",
-            "Học Sinh-Phụ Huynh",
-            "Giáo Viên",
-            "Giáo Vụ"});
-            this.cbDoiTuongNhan.Location = new System.Drawing.Point(748, 35);
-            this.cbDoiTuongNhan.Margin = new System.Windows.Forms.Padding(2);
-            this.cbDoiTuongNhan.Name = "cbDoiTuongNhan";
-            this.cbDoiTuongNhan.Size = new System.Drawing.Size(212, 36);
-            this.cbDoiTuongNhan.StartIndex = 0;
-            this.cbDoiTuongNhan.TabIndex = 24;
+            this.tableThongBao.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tableThongBao_CellContentClick);
             // 
             // MãHS
             // 
@@ -278,6 +156,130 @@
             this.Column9.MinimumWidth = 6;
             this.Column9.Name = "Column9";
             // 
+            // cbLoaiTB
+            // 
+            this.cbLoaiTB.BackColor = System.Drawing.Color.Transparent;
+            this.cbLoaiTB.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbLoaiTB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbLoaiTB.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbLoaiTB.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbLoaiTB.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLoaiTB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbLoaiTB.ItemHeight = 30;
+            this.cbLoaiTB.Items.AddRange(new object[] {
+            "Tất cả loại TB",
+            "Chung",
+            "Lịch Thi",
+            "Sự Kiện ",
+            "Nghỉ Lễ"});
+            this.cbLoaiTB.Location = new System.Drawing.Point(941, 35);
+            this.cbLoaiTB.Margin = new System.Windows.Forms.Padding(2);
+            this.cbLoaiTB.Name = "cbLoaiTB";
+            this.cbLoaiTB.Size = new System.Drawing.Size(196, 36);
+            this.cbLoaiTB.StartIndex = 0;
+            this.cbLoaiTB.TabIndex = 18;
+            // 
+            // txtTimKiemThongBao
+            // 
+            this.txtTimKiemThongBao.BorderRadius = 7;
+            this.txtTimKiemThongBao.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtTimKiemThongBao.DefaultText = "";
+            this.txtTimKiemThongBao.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtTimKiemThongBao.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtTimKiemThongBao.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtTimKiemThongBao.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtTimKiemThongBao.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtTimKiemThongBao.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtTimKiemThongBao.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtTimKiemThongBao.IconLeft = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.search;
+            this.txtTimKiemThongBao.IconLeftOffset = new System.Drawing.Point(7, 0);
+            this.txtTimKiemThongBao.Location = new System.Drawing.Point(218, 25);
+            this.txtTimKiemThongBao.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.txtTimKiemThongBao.Name = "txtTimKiemThongBao";
+            this.txtTimKiemThongBao.PlaceholderText = "Tìm kiếm thông báo ...";
+            this.txtTimKiemThongBao.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtTimKiemThongBao.SelectedText = "";
+            this.txtTimKiemThongBao.Size = new System.Drawing.Size(323, 51);
+            this.txtTimKiemThongBao.TabIndex = 17;
+            // 
+            // cbDoiTuongNhan
+            // 
+            this.cbDoiTuongNhan.BackColor = System.Drawing.Color.Transparent;
+            this.cbDoiTuongNhan.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbDoiTuongNhan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbDoiTuongNhan.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbDoiTuongNhan.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbDoiTuongNhan.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbDoiTuongNhan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbDoiTuongNhan.ItemHeight = 30;
+            this.cbDoiTuongNhan.Items.AddRange(new object[] {
+            "Tất cả đối tượng nhận",
+            "Tất cả",
+            "Học Sinh-Phụ Huynh",
+            "Giáo Viên",
+            "Giáo Vụ"});
+            this.cbDoiTuongNhan.Location = new System.Drawing.Point(697, 35);
+            this.cbDoiTuongNhan.Margin = new System.Windows.Forms.Padding(2);
+            this.cbDoiTuongNhan.Name = "cbDoiTuongNhan";
+            this.cbDoiTuongNhan.Size = new System.Drawing.Size(212, 36);
+            this.cbDoiTuongNhan.StartIndex = 0;
+            this.cbDoiTuongNhan.TabIndex = 24;
+            // 
+            // statCardThongBaoGiaoVu
+            // 
+            this.statCardThongBaoGiaoVu.BackColor = System.Drawing.Color.Transparent;
+            this.statCardThongBaoGiaoVu.Location = new System.Drawing.Point(888, 93);
+            this.statCardThongBaoGiaoVu.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardThongBaoGiaoVu.Name = "statCardThongBaoGiaoVu";
+            this.statCardThongBaoGiaoVu.Size = new System.Drawing.Size(271, 129);
+            this.statCardThongBaoGiaoVu.TabIndex = 20;
+            // 
+            // statCardThongBaoHocSinh
+            // 
+            this.statCardThongBaoHocSinh.BackColor = System.Drawing.Color.Transparent;
+            this.statCardThongBaoHocSinh.Location = new System.Drawing.Point(594, 93);
+            this.statCardThongBaoHocSinh.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardThongBaoHocSinh.Name = "statCardThongBaoHocSinh";
+            this.statCardThongBaoHocSinh.Size = new System.Drawing.Size(262, 129);
+            this.statCardThongBaoHocSinh.TabIndex = 21;
+            // 
+            // statCardThongBaoGiaoVien
+            // 
+            this.statCardThongBaoGiaoVien.BackColor = System.Drawing.Color.Transparent;
+            this.statCardThongBaoGiaoVien.Location = new System.Drawing.Point(306, 93);
+            this.statCardThongBaoGiaoVien.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardThongBaoGiaoVien.Name = "statCardThongBaoGiaoVien";
+            this.statCardThongBaoGiaoVien.Size = new System.Drawing.Size(262, 129);
+            this.statCardThongBaoGiaoVien.TabIndex = 22;
+            // 
+            // statCardTongThongBao
+            // 
+            this.statCardTongThongBao.BackColor = System.Drawing.Color.Transparent;
+            this.statCardTongThongBao.Location = new System.Drawing.Point(14, 93);
+            this.statCardTongThongBao.Margin = new System.Windows.Forms.Padding(2);
+            this.statCardTongThongBao.Name = "statCardTongThongBao";
+            this.statCardTongThongBao.Size = new System.Drawing.Size(266, 129);
+            this.statCardTongThongBao.TabIndex = 23;
+            // 
+            // btnThemThongBao
+            // 
+            this.btnThemThongBao.BorderRadius = 7;
+            this.btnThemThongBao.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemThongBao.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemThongBao.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnThemThongBao.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnThemThongBao.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnThemThongBao.ForeColor = System.Drawing.Color.White;
+            this.btnThemThongBao.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.plus;
+            this.btnThemThongBao.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnThemThongBao.Location = new System.Drawing.Point(14, 25);
+            this.btnThemThongBao.Margin = new System.Windows.Forms.Padding(2);
+            this.btnThemThongBao.Name = "btnThemThongBao";
+            this.btnThemThongBao.Size = new System.Drawing.Size(172, 51);
+            this.btnThemThongBao.TabIndex = 16;
+            this.btnThemThongBao.Text = "Thêm thông báo";
+            this.btnThemThongBao.Click += new System.EventHandler(this.btnThemThongBao_Click_1);
+            // 
             // ThongBao
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -310,7 +312,6 @@
         private Guna.UI2.WinForms.Guna2DataGridView tableThongBao;
         private Guna.UI2.WinForms.Guna2ComboBox cbLoaiTB;
         private Guna.UI2.WinForms.Guna2TextBox txtTimKiemThongBao;
-        private Guna.UI2.WinForms.Guna2Button btnThemThongBao;
         private Guna.UI2.WinForms.Guna2ComboBox cbDoiTuongNhan;
         private System.Windows.Forms.DataGridViewTextBoxColumn MãHS;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
@@ -319,5 +320,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
+        private Guna.UI2.WinForms.Guna2Button btnThemThongBao;
     }
 }

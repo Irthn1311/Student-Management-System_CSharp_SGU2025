@@ -537,6 +537,77 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
+        // ✅ Chuyển phân công sang giáo viên khác
+        public bool ChuyenPhanCongSangGiaoVienKhac(int maPhanCong, string maGiaoVienMoi, MySqlConnection conn = null, MySqlTransaction transaction = null)
+        {
+            bool shouldCloseConnection = false;
+            try
+            {
+                // Nếu không có connection, tạo mới
+                if (conn == null)
+                {
+                    conn = ConnectionDatabase.GetConnection();
+                    conn.Open();
+                    shouldCloseConnection = true;
+                }
+
+                // 1. Lấy thông tin phân công hiện tại
+                PhanCongGiangDayDTO phanCong = LayPhanCongTheoMa(maPhanCong);
+                if (phanCong == null)
+                {
+                    throw new Exception($"Không tìm thấy phân công với mã {maPhanCong}");
+                }
+
+                // 2. Kiểm tra không trùng lặp (lớp-môn-học kỳ) với giáo viên mới
+                string checkQuery = @"SELECT COUNT(*) FROM PhanCongGiangDay 
+                                    WHERE MaLop = @MaLop 
+                                    AND MaMonHoc = @MaMonHoc 
+                                    AND MaHocKy = @MaHocKy
+                                    AND MaGiaoVien = @MaGiaoVienMoi
+                                    AND MaPhanCong != @MaPhanCong";
+                
+                using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn, transaction))
+                {
+                    checkCmd.Parameters.AddWithValue("@MaLop", phanCong.MaLop);
+                    checkCmd.Parameters.AddWithValue("@MaMonHoc", phanCong.MaMonHoc);
+                    checkCmd.Parameters.AddWithValue("@MaHocKy", phanCong.MaHocKy);
+                    checkCmd.Parameters.AddWithValue("@MaGiaoVienMoi", maGiaoVienMoi);
+                    checkCmd.Parameters.AddWithValue("@MaPhanCong", maPhanCong);
+                    
+                    int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+                    if (count > 0)
+                    {
+                        throw new Exception($"Giáo viên {maGiaoVienMoi} đã có phân công cho lớp-môn-học kỳ này");
+                    }
+                }
+
+                // 3. Cập nhật MaGiaoVien
+                string updateQuery = @"UPDATE PhanCongGiangDay 
+                                     SET MaGiaoVien = @MaGiaoVienMoi 
+                                     WHERE MaPhanCong = @MaPhanCong";
+                
+                using (MySqlCommand updateCmd = new MySqlCommand(updateQuery, conn, transaction))
+                {
+                    updateCmd.Parameters.AddWithValue("@MaGiaoVienMoi", maGiaoVienMoi);
+                    updateCmd.Parameters.AddWithValue("@MaPhanCong", maPhanCong);
+                    int result = updateCmd.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi ChuyenPhanCongSangGiaoVienKhac: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                if (shouldCloseConnection && conn != null && conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
         // Kiểm tra trùng lặp môn học cho lớp trong học kỳ (không phân biệt giáo viên)
         // Input: maLop, maMonHoc, maHocKy, maPhanCongExclude (nullable)
         // Returns: true nếu đã tồn tại phân công môn học này cho lớp trong học kỳ

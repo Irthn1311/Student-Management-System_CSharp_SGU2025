@@ -285,6 +285,18 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 			var homeroomClass = allClasses.FirstOrDefault(l => !string.IsNullOrEmpty(l.maGVCN) && l.maGVCN.Equals(maGiaoVien, StringComparison.OrdinalIgnoreCase));
 			return homeroomClass?.maLop;
 		}
+
+		/// <summary>
+		/// Xóa thời khóa biểu theo danh sách phân công (dùng khi đổi chuyên môn giáo viên)
+		/// </summary>
+		/// <param name="danhSachMaPhanCong">Danh sách mã phân công cần xóa thời khóa biểu</param>
+		public void XoaThoiKhoaBieuTheoPhanCong(List<int> danhSachMaPhanCong)
+		{
+			if (danhSachMaPhanCong == null || danhSachMaPhanCong.Count == 0)
+				return;
+
+			_dao.XoaThoiKhoaBieuTheoPhanCong(danhSachMaPhanCong);
+		}
 	}
 }
 

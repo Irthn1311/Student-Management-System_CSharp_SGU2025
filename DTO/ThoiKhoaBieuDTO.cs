@@ -25,13 +25,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.SoTiet = soTiet;
             this.PhongHoc = phongHoc;
         }
-
-        // Destructor (Hàm hủy)
-        ~ThoiKhoaBieu()
-        {
-            // Console.WriteLine("Huy doi tuong ThoiKhoaBieu");
-        }
-
+        // ✅ ĐÃ XÓA DESTRUCTOR - Nguyên nhân gây lag (đã comment nhưng vẫn tồn tại)
         // Properties (Thuộc tính)
         public int MaThoiKhoaBieu
         {

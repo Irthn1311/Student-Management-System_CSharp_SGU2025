@@ -598,7 +598,7 @@
             // lblNamHocHienTai
             // 
             this.lblNamHocHienTai.AutoSize = true;
-            this.lblNamHocHienTai.Font = new System.Drawing.Font("Segoe UI", 23F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNamHocHienTai.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNamHocHienTai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.lblNamHocHienTai.Location = new System.Drawing.Point(22, 78);
             this.lblNamHocHienTai.Margin = new System.Windows.Forms.Padding(0);

@@ -664,7 +664,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// ✅ Vẽ bar chart cho điểm trung bình của từng học sinh
+        /// ✅ Vẽ bar chart
+        /// - Nếu "Tất cả lớp": Vẽ biểu đồ phân phối điểm (histogram) full width
+        /// - Nếu lớp cụ thể: Ẩn bar chart (chỉ hiển thị line chart)
         /// </summary>
         private void VeBarChart()
         {
@@ -681,79 +683,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                // Chỉ vẽ khi có lớp cụ thể được chọn (không phải "Tất cả lớp")
+                // Nếu chọn "Tất cả lớp": Vẽ biểu đồ phân phối điểm full width
                 if (!currentMaLop.HasValue || currentMaLop.Value <= 0)
                 {
-                    ClearCharts();
+                    // Điều chỉnh layout: chartBar full width, ẩn chartLine
+                    chartBar.Location = new Point(20, 62);
+                    chartBar.Size = new Size(1080, 258);
+                    chartLine.Visible = false;
+                    
+                    VePhanPhoiDiem();
                     return;
                 }
 
-                // Tạo ChartArea
-                ChartArea chartArea = new ChartArea("ChartArea1");
-                chartArea.AxisX.Title = "Học sinh";
-                chartArea.AxisX.TitleFont = new Font("Segoe UI", 10, FontStyle.Bold);
-                chartArea.AxisY.Title = "Điểm trung bình";
-                chartArea.AxisY.TitleFont = new Font("Segoe UI", 10, FontStyle.Bold);
-                chartArea.AxisY.Minimum = 0;
-                chartArea.AxisY.Maximum = 10;
-                chartArea.BackColor = Color.White;
-                chartArea.AxisX.MajorGrid.Enabled = false;
-                chartArea.AxisY.MajorGrid.LineColor = Color.FromArgb(243, 244, 246);
-                chartBar.ChartAreas.Add(chartArea);
-
-                // Tạo Series
-                Series series = new Series("Điểm trung bình");
-                series.ChartType = SeriesChartType.Column;
-                series.Color = Color.FromArgb(30, 136, 229);
-                series.IsValueShownAsLabel = true;
-                series.LabelFormat = "{0:0.0}";
-                series.Font = new Font("Segoe UI", 8, FontStyle.Bold);
-                series.LabelForeColor = Color.FromArgb(17, 24, 39);
-
-                // Lọc học sinh có điểm trung bình và sắp xếp
-                var dsCoDiem = currentBangDiemData
-                    .Where(hs => hs.DiemTB.HasValue)
-                    .OrderByDescending(hs => hs.DiemTB.Value)
-                    .ToList();
-
-                if (dsCoDiem.Count == 0)
-                {
-                    ClearCharts();
-                    return;
-                }
-
-                // Thêm dữ liệu vào biểu đồ
-                int index = 0;
-                foreach (var item in dsCoDiem)
-                {
-                    if (item.DiemTB.HasValue)
-                    {
-                        DataPoint point = series.Points.Add(item.DiemTB.Value);
-                        
-                        // Rút ngắn tên học sinh nếu quá dài (chỉ hiển thị 10 ký tự đầu)
-                        string tenRutGon = item.HoTen.Length > 15 ? item.HoTen.Substring(0, 12) + "..." : item.HoTen;
-                        point.AxisLabel = tenRutGon;
-                        
-                        // Màu sắc theo điểm số
-                        if (item.DiemTB.Value >= 8.0)
-                            point.Color = Color.FromArgb(22, 163, 74); // Xanh lá - Giỏi
-                        else if (item.DiemTB.Value >= 6.5)
-                            point.Color = Color.FromArgb(30, 136, 229); // Xanh dương - Khá
-                        else if (item.DiemTB.Value >= 5.0)
-                            point.Color = Color.FromArgb(234, 179, 8); // Vàng - Trung bình
-                        else
-                            point.Color = Color.FromArgb(220, 38, 38); // Đỏ - Yếu
-
-                        point.Label = item.DiemTB.Value.ToString("0.0");
-                        index++;
-                    }
-                }
-
-                chartBar.Series.Add(series);
-                chartBar.Titles.Clear();
-                chartBar.Titles.Add("Thống kê điểm trung bình theo học sinh");
-                chartBar.Titles[0].Font = new Font("Segoe UI", 12, FontStyle.Bold);
-                chartBar.Titles[0].ForeColor = Color.FromArgb(17, 24, 39);
+                // Nếu chọn lớp cụ thể: Ẩn bar chart, chỉ hiển thị line chart
+                chartBar.Visible = false;
+                chartLine.Visible = true;
+                // Điều chỉnh layout: line chart full width
+                chartLine.Location = new Point(20, 62);
+                chartLine.Size = new Size(1080, 258);
             }
             catch (Exception ex)
             {
@@ -763,7 +710,102 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// ✅ Vẽ line chart cho điểm trung bình theo thứ tự học sinh
+        /// Vẽ biểu đồ phân phối điểm (histogram) khi chọn "Tất cả lớp"
+        /// </summary>
+        private void VePhanPhoiDiem()
+        {
+            try
+            {
+                // Lọc học sinh có điểm trung bình
+                var dsCoDiem = currentBangDiemData
+                    .Where(hs => hs.DiemTB.HasValue)
+                    .ToList();
+
+                if (dsCoDiem.Count == 0)
+                {
+                    ClearCharts();
+                    return;
+                }
+
+                // Tạo ChartArea
+                ChartArea chartArea = new ChartArea("ChartArea1");
+                chartArea.AxisX.Title = "Điểm";
+                chartArea.AxisX.TitleFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                chartArea.AxisY.Title = "Số lượng học sinh";
+                chartArea.AxisY.TitleFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                chartArea.BackColor = Color.White;
+                chartArea.AxisX.MajorGrid.Enabled = false;
+                chartArea.AxisY.MajorGrid.LineColor = Color.FromArgb(243, 244, 246);
+                // Hiển thị nhãn mỗi 1 điểm để dễ đọc (0, 1, 2, ..., 10)
+                chartArea.AxisX.Interval = 1.0;
+                chartArea.AxisX.LabelStyle.Angle = -45;
+                chartArea.AxisX.LabelStyle.Font = new Font("Segoe UI", 7);
+                chartBar.ChartAreas.Add(chartArea);
+
+                // Tạo Series
+                Series series = new Series("Phân phối điểm");
+                series.ChartType = SeriesChartType.Column;
+                series.Color = Color.FromArgb(30, 136, 229);
+                series.IsValueShownAsLabel = true;
+                series.LabelFormat = "{0}";
+                series.Font = new Font("Segoe UI", 7, FontStyle.Bold);
+                series.LabelForeColor = Color.FromArgb(17, 24, 39);
+
+                // Tạo các khoảng điểm từ 0.0 đến 10.0 với bước 0.25
+                Dictionary<string, int> phanPhoiDiem = new Dictionary<string, int>();
+                for (double diem = 0.0; diem <= 10.0; diem += 0.25)
+                {
+                    phanPhoiDiem[diem.ToString("0.00")] = 0;
+                }
+
+                // Đếm số lượng học sinh trong mỗi khoảng điểm
+                foreach (var item in dsCoDiem)
+                {
+                    if (item.DiemTB.HasValue)
+                    {
+                        double diem = item.DiemTB.Value;
+                        // Làm tròn xuống đến bước 0.25 gần nhất
+                        double diemLamTron = Math.Floor(diem * 4) / 4;
+                        string key = diemLamTron.ToString("0.00");
+                        if (phanPhoiDiem.ContainsKey(key))
+                        {
+                            phanPhoiDiem[key]++;
+                        }
+                    }
+                }
+
+                // Thêm dữ liệu vào biểu đồ
+                foreach (var kvp in phanPhoiDiem)
+                {
+                    double diem = double.Parse(kvp.Key);
+                    int soLuong = kvp.Value;
+                    
+                    DataPoint point = series.Points.Add(soLuong);
+                    // Hiển thị nhãn điểm trên trục X
+                    point.AxisLabel = diem.ToString("0.00");
+                    // Chỉ hiển thị số lượng trên cột khi có dữ liệu
+                    point.Label = soLuong > 0 ? soLuong.ToString() : "";
+                    point.Color = Color.FromArgb(30, 136, 229);
+                }
+
+                chartBar.Series.Add(series);
+                chartBar.Titles.Clear();
+                chartBar.Titles.Add("Biểu đồ phổ điểm trung bình");
+                chartBar.Titles[0].Font = new Font("Segoe UI", 12, FontStyle.Bold);
+                chartBar.Titles[0].ForeColor = Color.FromArgb(17, 24, 39);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi vẽ biểu đồ phân phối điểm: {ex.Message}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+
+        /// <summary>
+        /// ✅ Vẽ line chart
+        /// - Nếu "Tất cả lớp": Ẩn biểu đồ line (chỉ hiển thị bar chart phân phối)
+        /// - Nếu lớp cụ thể: Vẽ biểu đồ xu hướng điểm trung bình full width
         /// </summary>
         private void VeLineChart()
         {
@@ -779,12 +821,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                // Chỉ vẽ khi có lớp cụ thể được chọn (không phải "Tất cả lớp")
+                // Nếu chọn "Tất cả lớp": Ẩn line chart (chỉ hiển thị bar chart phân phối)
                 if (!currentMaLop.HasValue || currentMaLop.Value <= 0)
                 {
                     return;
                 }
 
+                // Nếu chọn lớp cụ thể: Vẽ biểu đồ xu hướng điểm trung bình full width
                 // Tạo ChartArea
                 ChartArea chartArea = new ChartArea("ChartArea1");
                 chartArea.AxisX.Title = "Thứ tự học sinh";
@@ -863,6 +906,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 chartLine.ChartAreas.Clear();
                 chartLine.Legends.Clear();
                 chartLine.Titles.Clear();
+                
+                // Reset về layout mặc định
+                chartBar.Location = new Point(20, 62);
+                chartBar.Size = new Size(534, 258);
+                chartBar.Visible = true;
+                
+                chartLine.Location = new Point(566, 62);
+                chartLine.Size = new Size(534, 258);
+                chartLine.Visible = true;
             }
             catch
             {

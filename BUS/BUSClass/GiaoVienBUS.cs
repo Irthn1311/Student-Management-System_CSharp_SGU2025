@@ -248,8 +248,22 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             }
         }
 
-        // Xóa giáo viên với validation
-        public bool XoaGiaoVien(string maGiaoVien)
+        // Lấy danh sách giáo viên thay thế (cùng chuyên môn và chưa có phân công)
+        public List<GiaoVienDTO> LayDanhSachGiaoVienThayThe(int maMonHoc, string maGiaoVienLoaiTru)
+        {
+            try
+            {
+                return giaoVienDAO.LayDanhSachGiaoVienThayThe(maMonHoc, maGiaoVienLoaiTru);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy danh sách giáo viên thay thế: {ex.Message}");
+            }
+        }
+
+        // Xóa giáo viên với validation và xóa tài khoản
+        // danhSachGiaoVienThayThe: Dictionary<MaPhanCong, MaGiaoVienThayThe> - Danh sách giáo viên thay thế cho từng phân công
+        public bool XoaGiaoVien(string maGiaoVien, Dictionary<int, string> danhSachGiaoVienThayThe = null)
         {
             try
             {
@@ -264,10 +278,38 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     throw new ArgumentException("Không tìm thấy giáo viên với mã này.");
                 }
 
-                // Có thể thêm kiểm tra xem giáo viên có đang làm GVCN hay dạy môn nào không
-                // Trước khi xóa (tùy theo yêu cầu hệ thống)
+                // ✅ Xóa giáo viên từ bảng GiaoVien và các dữ liệu liên quan
+                bool xoaGiaoVienThanhCong = giaoVienDAO.XoaGiaoVien(maGiaoVien, danhSachGiaoVienThayThe);
+                
+                if (!xoaGiaoVienThanhCong)
+                {
+                    return false;
+                }
 
-                return giaoVienDAO.XoaGiaoVien(maGiaoVien);
+                // ✅ Xóa tài khoản giáo viên (TenDangNhap = MaGiaoVien)
+                // Mã giáo viên được dùng làm tên đăng nhập
+                string tenDangNhap = maGiaoVien;
+                
+                // Kiểm tra tài khoản có tồn tại không trước khi xóa
+                if (nguoiDungDAO.CheckTenDangNhapExists(tenDangNhap))
+                {
+                    try
+                    {
+                        bool xoaTaiKhoanThanhCong = nguoiDungDAO.DeleteNguoiDung(tenDangNhap);
+                        if (!xoaTaiKhoanThanhCong)
+                        {
+                            Console.WriteLine($"Cảnh báo: Đã xóa giáo viên nhưng không thể xóa tài khoản '{tenDangNhap}'");
+                            // Không throw exception vì giáo viên đã được xóa thành công
+                        }
+                    }
+                    catch (Exception exTaiKhoan)
+                    {
+                        Console.WriteLine($"Cảnh báo: Lỗi khi xóa tài khoản '{tenDangNhap}': {exTaiKhoan.Message}");
+                        // Không throw exception vì giáo viên đã được xóa thành công
+                    }
+                }
+
+                return true;
             }
             catch (Exception ex)
             {

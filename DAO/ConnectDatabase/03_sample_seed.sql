@@ -21,19 +21,19 @@ INSERT INTO KhoiLop (MaKhoi, TenKhoi) VALUES
 
 -- Môn học (13 môn theo chương trình THPT)
 INSERT INTO MonHoc (MaMonHoc, TenMonHoc, SoTiet, GhiChu) VALUES
-(1, 'Ngữ văn', 52, 'Môn chính'),
-(2, 'Toán', 52, 'Môn chính'),
-(3, 'Tiếng Anh', 52, 'Môn chính'),
-(4, 'Lịch sử', 35, 'Khoa học xã hội'),
-(5, 'Địa lý', 35, 'Khoa học xã hội'),
-(6, 'GD Kinh tế & Pháp luật', 35, 'Khoa học xã hội'),
-(7, 'Vật lý', 35, 'Khoa học tự nhiên'),
-(8, 'Hóa học', 35, 'Khoa học tự nhiên'),
-(9, 'Sinh học', 35, 'Khoa học tự nhiên'),
-(10, 'Công nghệ', 35, 'Khoa học xã hội'),
-(11, 'Tin học', 35, 'Kỹ năng khác'),
-(12, 'Giáo dục thể chất', 35, 'Kỹ năng khác'),
-(13, 'GDQP-AN', 18, 'Kỹ năng khác');
+(1, 'Ngữ văn', 51, 'Môn chính'),
+(2, 'Toán', 51, 'Môn chính'),
+(3, 'Tiếng Anh', 51, 'Môn chính'),
+(4, 'Lịch sử', 34, 'Khoa học xã hội'),
+(5, 'Địa lý', 34, 'Khoa học xã hội'),
+(6, 'GD Kinh tế & Pháp luật', 34, 'Khoa học xã hội'),
+(7, 'Vật lý', 34, 'Khoa học tự nhiên'),
+(8, 'Hóa học', 34, 'Khoa học tự nhiên'),
+(9, 'Sinh học', 34, 'Khoa học tự nhiên'),
+(10, 'Công nghệ', 34, 'Khoa học xã hội'),
+(11, 'Tin học', 34, 'Kỹ năng khác'),
+(12, 'Giáo dục thể chất', 34, 'Kỹ năng khác'),
+(13, 'GDQP-AN', 17, 'Kỹ năng khác');
 
 -- Vai trò hệ thống
 INSERT IGNORE INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES

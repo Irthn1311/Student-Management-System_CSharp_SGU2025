@@ -272,6 +272,41 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             }
         }
 
+        // Cập nhật phân công với giáo viên thay thế (dùng khi đổi chuyên môn giáo viên)
+        // danhSachGiaoVienThayThe: Dictionary<MaPhanCong, MaGiaoVienThayThe>
+        public bool CapNhatPhanCongVoiGiaoVienThayThe(Dictionary<int, string> danhSachGiaoVienThayThe)
+        {
+            try
+            {
+                if (danhSachGiaoVienThayThe == null || danhSachGiaoVienThayThe.Count == 0)
+                    throw new ArgumentException("Danh sách giáo viên thay thế không được để trống");
+
+                // Cập nhật từng phân công
+                foreach (var kvp in danhSachGiaoVienThayThe)
+                {
+                    var phanCong = phanCongDAO.LayPhanCongTheoMa(kvp.Key);
+                    if (phanCong == null)
+                        throw new Exception($"Không tìm thấy phân công với mã {kvp.Key}");
+
+                    // Kiểm tra giáo viên thay thế có chuyên môn phù hợp
+                    if (!phanCongDAO.KiemTraGiaoVienChuyenMon(kvp.Value, phanCong.MaMonHoc))
+                    {
+                        throw new Exception($"Giáo viên {kvp.Value} không có chuyên môn phù hợp để dạy môn học {phanCong.MaMonHoc}");
+                    }
+
+                    // Cập nhật giáo viên
+                    phanCong.MaGiaoVien = kvp.Value;
+                    CapNhatPhanCong(phanCong);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi cập nhật phân công với giáo viên thay thế: {ex.Message}", ex);
+            }
+        }
+
         // Xóa phân công
         public bool XoaPhanCong(int maPhanCong)
         {

@@ -3,6 +3,7 @@ using Student_Management_System_CSharp_SGU2025.DAO.ConnectDatabase;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Student_Management_System_CSharp_SGU2025.DAO
 {
@@ -561,7 +562,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         public List<KhoiLop> LayDanhSachKhoiLop()
         {
             List<KhoiLop> danhSach = new List<KhoiLop>();
-            string query = "SELECT MaKhoi, TenKhoi FROM KhoiLop ORDER BY MaKhoi";
+            string query = "SELECT DISTINCT MaKhoi, TenKhoi FROM KhoiLop ORDER BY MaKhoi";
 
             using (MySqlConnection conn = ConnectionDatabase.GetConnection())
             {
@@ -572,13 +573,50 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     {
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
+                            HashSet<int> addedKhoi = new HashSet<int>(); // Để tránh duplicate
+                            
                             while (reader.Read())
                             {
-                                danhSach.Add(new KhoiLop
+                                try
                                 {
-                                    MaKhoi = reader.GetInt32("MaKhoi"),
-                                    TenKhoi = reader.GetString("TenKhoi")
-                                });
+                                    // Đọc giá trị với kiểm tra null
+                                    int maKhoiIndex = reader.GetOrdinal("MaKhoi");
+                                    int tenKhoiIndex = reader.GetOrdinal("TenKhoi");
+                                    
+                                    if (reader.IsDBNull(maKhoiIndex) || reader.IsDBNull(tenKhoiIndex))
+                                    {
+                                        continue; // Bỏ qua record không hợp lệ
+                                    }
+                                    
+                                    int maKhoi = reader.GetInt32(maKhoiIndex);
+                                    string tenKhoi = reader.IsDBNull(tenKhoiIndex) ? null : reader.GetString(tenKhoiIndex);
+                                    
+                                    // Kiểm tra giá trị hợp lệ
+                                    if (maKhoi <= 0 || string.IsNullOrWhiteSpace(tenKhoi))
+                                    {
+                                        continue; // Bỏ qua record không hợp lệ
+                                    }
+                                    
+                                    // Chỉ thêm nếu chưa có trong danh sách
+                                    if (!addedKhoi.Contains(maKhoi))
+                                    {
+                                        // Sử dụng constructor thay vì object initializer để tránh lỗi property setter
+                                        danhSach.Add(new KhoiLop(maKhoi, tenKhoi));
+                                        addedKhoi.Add(maKhoi);
+                                    }
+                                    
+                                    // Giới hạn số lượng để tránh lỗi
+                                    if (danhSach.Count >= 100)
+                                    {
+                                        break;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    // Bỏ qua record lỗi và tiếp tục
+                                    Console.WriteLine($"Lỗi khi đọc record khối: {ex.Message}");
+                                    continue;
+                                }
                             }
                         }
                     }
