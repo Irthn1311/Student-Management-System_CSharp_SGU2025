@@ -11,6 +11,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -376,7 +377,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 e.PaintBackground(e.ClipBounds, true);
 
-                // ✅ Lấy permission - Sử dụng cách an toàn hơn
+                // ✅ Lấy permission - Sử dụng reflection thay vì dynamic để tránh RuntimeBinderException
                 bool canUpdate = true; // Mặc định true
                 bool canDelete = true; // Mặc định true
                 
@@ -384,12 +385,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 {
                     try
                     {
-                        dynamic permissions = tbKyLuat.Tag;
-                        canUpdate = permissions?.CanUpdate ?? true;
-                        canDelete = permissions?.CanDelete ?? true;
+                        var tagType = tbKyLuat.Tag.GetType();
+                        var canUpdateProp = tagType.GetProperty("CanUpdate");
+                        var canDeleteProp = tagType.GetProperty("CanDelete");
+                        
+                        if (canUpdateProp != null)
+                        {
+                            var value = canUpdateProp.GetValue(tbKyLuat.Tag);
+                            if (value is bool) canUpdate = (bool)value;
+                        }
+                        
+                        if (canDeleteProp != null)
+                        {
+                            var value = canDeleteProp.GetValue(tbKyLuat.Tag);
+                            if (value is bool) canDelete = (bool)value;
+                        }
                     }
-                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+                    catch
                     {
+                        // Ignore errors - sử dụng giá trị mặc định
                         canUpdate = true;
                         canDelete = true;
                     }
@@ -499,7 +513,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 e.PaintBackground(e.ClipBounds, true);
                 e.PaintContent(e.ClipBounds);
 
-                // ✅ Lấy permission - Sử dụng cách an toàn hơn
+                // ✅ Lấy permission - Sử dụng reflection thay vì dynamic để tránh RuntimeBinderException
                 bool canUpdate = true; // Mặc định true
                 bool canDelete = true; // Mặc định true
                 
@@ -507,12 +521,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 {
                     try
                     {
-                        dynamic permissions = tbKhenThuong.Tag;
-                        canUpdate = permissions?.CanUpdate ?? true;
-                        canDelete = permissions?.CanDelete ?? true;
+                        var tagType = tbKhenThuong.Tag.GetType();
+                        var canUpdateProp = tagType.GetProperty("CanUpdate");
+                        var canDeleteProp = tagType.GetProperty("CanDelete");
+                        
+                        if (canUpdateProp != null)
+                        {
+                            var value = canUpdateProp.GetValue(tbKhenThuong.Tag);
+                            if (value is bool) canUpdate = (bool)value;
+                        }
+                        
+                        if (canDeleteProp != null)
+                        {
+                            var value = canDeleteProp.GetValue(tbKhenThuong.Tag);
+                            if (value is bool) canDelete = (bool)value;
+                        }
                     }
-                    catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+                    catch
                     {
+                        // Ignore errors - sử dụng giá trị mặc định
                         canUpdate = true;
                         canDelete = true;
                     }

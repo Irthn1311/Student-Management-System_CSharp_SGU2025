@@ -1,5 +1,6 @@
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.BUS;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -407,11 +408,20 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             try
             {
-                // Kiểm tra nếu là admin, lấy tất cả thông báo
+                // ✅ Kiểm tra quyền CREATE/UPDATE/DELETE để cho phép xem tất cả thông báo
+                var phanQuyenBUS = new PhanQuyenBUS();
+                bool hasCreate = phanQuyenBUS.KiemTraQuyenNguoiDung(tenDangNhap, "qlthongbao", "create");
+                bool hasUpdate = phanQuyenBUS.KiemTraQuyenNguoiDung(tenDangNhap, "qlthongbao", "update");
+                bool hasDelete = phanQuyenBUS.KiemTraQuyenNguoiDung(tenDangNhap, "qlthongbao", "delete");
+                bool hasManagePermission = hasCreate || hasUpdate || hasDelete;
+                
+                // Kiểm tra nếu là admin hoặc có quyền quản lý (CREATE/UPDATE/DELETE), lấy tất cả thông báo
                 var vaiTros = new PhanQuyenDAO().GetVaiTroByNguoiDung(tenDangNhap);
-                if (vaiTros != null && vaiTros.Any(v => v.Equals("ADMIN", StringComparison.OrdinalIgnoreCase) || v.Equals("GIAO_VU", StringComparison.OrdinalIgnoreCase)))
+                bool isAdminOrGiaoVu = vaiTros != null && vaiTros.Any(v => v.Equals("ADMIN", StringComparison.OrdinalIgnoreCase) || v.Equals("GIAO_VU", StringComparison.OrdinalIgnoreCase));
+                
+                if (isAdminOrGiaoVu || hasManagePermission)
                 {
-                    // Admin xem tất cả thông báo
+                    // Admin hoặc người có quyền quản lý xem tất cả thông báo
                     var tatCaThongBao = thongBaoDAO.LayTatCaThongBao("HIEN_THI");
                     
                     // Thêm thông tin đã đọc cho admin (nếu có trong NguoiNhanThongBao)

@@ -24,6 +24,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private NamHocDAO namHocDAO;
         private XepLoaiDAO xepLoaiDAO;
         private XepLoaiBUS xepLoaiBUS;
+
+        // Biến phân trang
+        private int pageSize = 50; // Số học sinh trên mỗi trang
+        private int currentPage = 1; // Trang hiện tại
+        private int totalPages = 0; // Tổng số trang
+        private List<XepLoaiDTO> fullListXepLoai = new List<XepLoaiDTO>(); // Danh sách đầy đủ
+        private string searchKeyword = ""; // Từ khóa tìm kiếm
+
         public ucXepLoai()
         {
             InitializeComponent();
@@ -164,6 +172,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 if (cbHocKyNamHoc.SelectedItem == null)
                 {
                     tableXepLoai.Rows.Clear();
+                    fullListXepLoai.Clear();
+                    currentPage = 1;
+                    totalPages = 0;
+                    UpdatePaginationUI();
                     LoadThongKe();
                     return;
                 }
@@ -186,9 +198,63 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 List<XepLoaiDTO> dsXepLoai = xepLoaiBUS.LayDanhSachXepLoaiDayDu(maHocKy, maLop);
                 dsXepLoai = dsXepLoai.OrderBy(x => x.MaHocSinh).ToList();
 
+                // Lưu toàn bộ danh sách vào biến để phân trang
+                fullListXepLoai = dsXepLoai;
 
+                // Reset về trang đầu tiên và hiển thị
+                currentPage = 1;
+                HienThiDanhSachXepLoai();
+                LoadThongKe();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu xếp loại: {ex.Message}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị danh sách xếp loại với phân trang
+        /// </summary>
+        private void HienThiDanhSachXepLoai()
+        {
+            try
+            {
+                List<XepLoaiDTO> filteredList = fullListXepLoai;
+
+                // Áp dụng tìm kiếm nếu có
+                if (!string.IsNullOrWhiteSpace(searchKeyword))
+                {
+                    string keyword = searchKeyword.Trim().ToLower();
+                    filteredList = fullListXepLoai.FindAll(x =>
+                        x.MaHocSinh.ToString().Contains(keyword) ||
+                        (x.HoTen != null && x.HoTen.ToLower().Contains(keyword)) ||
+                        (x.TenLop != null && x.TenLop.ToLower().Contains(keyword)) ||
+                        (x.HanhKiem != null && x.HanhKiem.ToLower().Contains(keyword)) ||
+                        (x.HocLuc != null && x.HocLuc.ToLower().Contains(keyword)) ||
+                        (x.XepLoaiTongKet != null && x.XepLoaiTongKet.ToLower().Contains(keyword)) ||
+                        (x.DiemTB.HasValue && x.DiemTB.Value.ToString("0.0").Contains(keyword))
+                    );
+                }
+
+                // Tính tổng số trang
+                totalPages = (int)Math.Ceiling((double)filteredList.Count / pageSize);
+
+                // Đảm bảo currentPage hợp lệ
+                if (currentPage < 1) currentPage = 1;
+                if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+
+                // Lấy danh sách cho trang hiện tại
+                var pagedList = filteredList
+                    .Skip((currentPage - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                // Hiển thị lên bảng
                 tableXepLoai.Rows.Clear();
-                foreach (var item in dsXepLoai)
+                tableXepLoai.SuspendLayout();
+
+                foreach (var item in pagedList)
                 {
                     tableXepLoai.Rows.Add(
                         item.MaHocSinh,
@@ -200,12 +266,33 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         item.XepLoaiTongKet ?? "" // Cột Xếp loại
                     );
                 }
-                LoadThongKe();
+
+                tableXepLoai.ResumeLayout();
+                UpdatePaginationUI();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải dữ liệu xếp loại: {ex.Message}",
-                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi khi hiển thị danh sách xếp loại: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật UI phân trang (hiển thị số trang, enable/disable nút)
+        /// </summary>
+        private void UpdatePaginationUI()
+        {
+            if (totalPages == 0)
+            {
+                lblTrangHienTai.Text = "0/0";
+                btnTrangTruoc.Enabled = false;
+                btnTrangSau.Enabled = false;
+            }
+            else
+            {
+                lblTrangHienTai.Text = $"{currentPage}/{totalPages}";
+                btnTrangTruoc.Enabled = currentPage > 1;
+                btnTrangSau.Enabled = currentPage < totalPages;
             }
         }
 
@@ -517,12 +604,37 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         }
 
+        /// <summary>
+        /// Lấy danh sách xếp loại đã lọc (áp dụng tìm kiếm nếu có)
+        /// </summary>
+        private List<XepLoaiDTO> LayDanhSachXepLoaiDaLoc()
+        {
+            List<XepLoaiDTO> filteredList = fullListXepLoai;
+
+            if (!string.IsNullOrWhiteSpace(searchKeyword))
+            {
+                string keyword = searchKeyword.Trim().ToLower();
+                filteredList = fullListXepLoai.FindAll(x =>
+                    x.MaHocSinh.ToString().Contains(keyword) ||
+                    (x.HoTen != null && x.HoTen.ToLower().Contains(keyword)) ||
+                    (x.TenLop != null && x.TenLop.ToLower().Contains(keyword)) ||
+                    (x.HanhKiem != null && x.HanhKiem.ToLower().Contains(keyword)) ||
+                    (x.HocLuc != null && x.HocLuc.ToLower().Contains(keyword)) ||
+                    (x.XepLoaiTongKet != null && x.XepLoaiTongKet.ToLower().Contains(keyword)) ||
+                    (x.DiemTB.HasValue && x.DiemTB.Value.ToString("0.0").Contains(keyword))
+                );
+            }
+
+            return filteredList;
+        }
+
         private void guna2Button2_Click(object sender, EventArgs e)
         {
             try
             {
                 // Kiểm tra có dữ liệu không
-                if (tableXepLoai.Rows.Count == 0 || cbHocKyNamHoc.SelectedItem == null)
+                List<XepLoaiDTO> danhSachDaLoc = LayDanhSachXepLoaiDaLoc();
+                if (danhSachDaLoc.Count == 0 || cbHocKyNamHoc.SelectedItem == null)
                 {
                     MessageBox.Show("Không có dữ liệu để xuất báo cáo!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -904,15 +1016,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         table.AddCell(cell);
                     }
 
-                    // Dữ liệu
-                    foreach (DataGridViewRow row in tableXepLoai.Rows)
+                    // Dữ liệu - sử dụng danh sách đầy đủ đã lọc
+                    List<XepLoaiDTO> danhSachDaLoc = LayDanhSachXepLoaiDaLoc();
+                    foreach (var item in danhSachDaLoc)
                     {
-                        if (row.IsNewRow) continue;
+                        string[] cellValues = new string[]
+                        {
+                            item.MaHocSinh.ToString(),
+                            item.HoTen ?? "",
+                            item.TenLop ?? "",
+                            item.DiemTB.HasValue ? item.DiemTB.Value.ToString("0.0") : "",
+                            item.HanhKiem ?? "",
+                            item.HocLuc ?? "",
+                            item.XepLoaiTongKet ?? ""
+                        };
 
                         for (int i = 0; i < 7; i++)
                         {
-                            string cellValue = row.Cells[i].Value?.ToString() ?? "";
-                            PdfPCell cell = new PdfPCell(new Phrase(cellValue, normalFont))
+                            PdfPCell cell = new PdfPCell(new Phrase(cellValues[i], normalFont))
                             {
                                 HorizontalAlignment = (i == 1 || i == 2) ? Element.ALIGN_LEFT : Element.ALIGN_CENTER,
                                 Padding = 5
@@ -1049,29 +1170,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             worksheet.Cell(currentRow, i + 1).Style.Fill.BackgroundColor = XLColor.LightGray;
                         }
 
-                        // Dữ liệu
+                        // Dữ liệu - sử dụng danh sách đầy đủ đã lọc
                         currentRow++;
-                        foreach (DataGridViewRow row in tableXepLoai.Rows)
+                        List<XepLoaiDTO> danhSachDaLoc = LayDanhSachXepLoaiDaLoc();
+                        foreach (var item in danhSachDaLoc)
                         {
-                            if (row.IsNewRow) continue;
+                            worksheet.Cell(currentRow, 1).Value = item.MaHocSinh;
+                            worksheet.Cell(currentRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                            for (int i = 0; i < 7; i++)
-                            {
-                                worksheet.Cell(currentRow, i + 1).Value = row.Cells[i].Value?.ToString() ?? "";
+                            worksheet.Cell(currentRow, 2).Value = item.HoTen ?? "";
 
-                                if (i == 0) // Mã HS
-                                {
-                                    worksheet.Cell(currentRow, i + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                                }
-                                else if (i == 3) // ĐTB
-                                {
-                                    worksheet.Cell(currentRow, i + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                                }
-                                else if (i >= 4) // Hạnh kiểm, Học lực, Xếp loại
-                                {
-                                    worksheet.Cell(currentRow, i + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                                }
-                            }
+                            worksheet.Cell(currentRow, 3).Value = item.TenLop ?? "";
+
+                            worksheet.Cell(currentRow, 4).Value = item.DiemTB.HasValue ? item.DiemTB.Value.ToString("0.0") : "";
+                            worksheet.Cell(currentRow, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                            worksheet.Cell(currentRow, 5).Value = item.HanhKiem ?? "";
+                            worksheet.Cell(currentRow, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                            worksheet.Cell(currentRow, 6).Value = item.HocLuc ?? "";
+                            worksheet.Cell(currentRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                            worksheet.Cell(currentRow, 7).Value = item.XepLoaiTongKet ?? "";
+                            worksheet.Cell(currentRow, 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
                             currentRow++;
                         }
 
@@ -1213,7 +1335,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ucXepLoai_Load(object sender, EventArgs e)
         {
-           
+            // Khởi tạo phân trang
+            UpdatePaginationUI();
 
             LoadThongKe();
             LoadThongKeToanTruong();
@@ -1254,14 +1377,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 int soLuuThatBai = 0;
                 int soThieuDieuKien = 0;
 
-                foreach (DataGridViewRow row in tableXepLoai.Rows)
+                // Sử dụng danh sách đầy đủ đã lọc thay vì chỉ trang hiện tại
+                List<XepLoaiDTO> danhSachDaLoc = LayDanhSachXepLoaiDaLoc();
+                foreach (var item in danhSachDaLoc)
                 {
-                    if (row.IsNewRow) continue;
-
-                    int maHocSinh = Convert.ToInt32(row.Cells[0].Value);
-                    string hanhKiem = row.Cells[4].Value?.ToString() ?? "";
-                    string hocLuc = row.Cells[5].Value?.ToString() ?? "";
-                    string xepLoai = row.Cells[6].Value?.ToString() ?? "";
+                    string hanhKiem = item.HanhKiem ?? "";
+                    string hocLuc = item.HocLuc ?? "";
+                    string xepLoai = item.XepLoaiTongKet ?? "";
 
                     // Chỉ lưu nếu có đủ hạnh kiểm và học lực
                     if (!string.IsNullOrEmpty(hanhKiem) && !string.IsNullOrEmpty(hocLuc) &&
@@ -1269,7 +1391,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     {
                         soHocSinhDuDieuKien++;
 
-                        if (xepLoaiBUS.LuuXepLoai(maHocSinh, maHocKy, xepLoai, ""))
+                        if (xepLoaiBUS.LuuXepLoai(item.MaHocSinh, maHocKy, xepLoai, ""))
                         {
                             soLuuThanhCong++;
                         }
@@ -1326,7 +1448,32 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
+            // Lưu từ khóa tìm kiếm
+            searchKeyword = txtSearch.Text.Trim();
 
+            // Reset về trang đầu tiên khi tìm kiếm
+            currentPage = 1;
+
+            // Hiển thị lại danh sách với từ khóa mới
+            HienThiDanhSachXepLoai();
+        }
+
+        private void btnTrangTruoc_Click(object sender, EventArgs e)
+        {
+            if (currentPage > 1)
+            {
+                currentPage--;
+                HienThiDanhSachXepLoai();
+            }
+        }
+
+        private void btnTrangSau_Click(object sender, EventArgs e)
+        {
+            if (currentPage < totalPages)
+            {
+                currentPage++;
+                HienThiDanhSachXepLoai();
+            }
         }
 
         private void cardTheoKhoi1_Load(object sender, EventArgs e)

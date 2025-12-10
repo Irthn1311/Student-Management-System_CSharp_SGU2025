@@ -1078,7 +1078,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void btnXuatExcel_Click(object sender, EventArgs e)
         {
-            if (tableXemBangDiem.Rows.Count == 0)
+            // ✅ SỬA: Kiểm tra fullListXemBangDiem thay vì tableXemBangDiem
+            if (fullListXemBangDiem == null || fullListXemBangDiem.Count == 0)
             {
                 MessageBox.Show("Không có dữ liệu để xuất!", "Thông báo",
                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1134,48 +1135,62 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         worksheet.Cell(headerRow, i + 1).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                     }
 
-                    // === DỮ LIỆU ===
+                    // === DỮ LIỆU - ✅ XUẤT TOÀN BỘ TỪ fullListXemBangDiem ===
                     int currentRow = headerRow + 1;
-                    foreach (DataGridViewRow row in tableXemBangDiem.Rows)
+                    foreach (var item in fullListXemBangDiem)
                     {
-                        if (row.IsNewRow) continue;
+                        string diemToan = item.DiemToan.HasValue ? item.DiemToan.Value.ToString("0.0") : "";
+                        string diemVan = item.DiemVan.HasValue ? item.DiemVan.Value.ToString("0.0") : "";
+                        string diemAnh = item.DiemAnh.HasValue ? item.DiemAnh.Value.ToString("0.0") : "";
+                        string diemLy = item.DiemLy.HasValue ? item.DiemLy.Value.ToString("0.0") : "";
+                        string diemHoa = item.DiemHoa.HasValue ? item.DiemHoa.Value.ToString("0.0") : "";
+                        string diemTB = item.DiemTB.HasValue ? item.DiemTB.Value.ToString("0.0") : "";
 
-                        for (int i = 0; i < tableXemBangDiem.Columns.Count; i++)
+                        // Thêm dòng dữ liệu
+                        worksheet.Cell(currentRow, 1).Value = item.MaHocSinh;
+                        worksheet.Cell(currentRow, 2).Value = item.HoTen;
+                        worksheet.Cell(currentRow, 3).Value = diemToan;
+                        worksheet.Cell(currentRow, 4).Value = diemVan;
+                        worksheet.Cell(currentRow, 5).Value = diemAnh;
+                        worksheet.Cell(currentRow, 6).Value = diemLy;
+                        worksheet.Cell(currentRow, 7).Value = diemHoa;
+                        worksheet.Cell(currentRow, 8).Value = diemTB;
+
+                        // Căn giữa các cột điểm (từ cột 3 trở đi)
+                        for (int i = 3; i <= 8; i++)
                         {
-                            var cellValue = row.Cells[i].Value?.ToString() ?? "";
-                            worksheet.Cell(currentRow, i + 1).Value = cellValue;
+                            worksheet.Cell(currentRow, i).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        }
 
-                            // Căn giữa các cột điểm (từ cột 3 trở đi)
-                            if (i >= 2)
+                        // Tô màu cho điểm trung bình (cột cuối)
+                        if (!string.IsNullOrEmpty(diemTB))
+                        {
+                            if (float.TryParse(diemTB, out float score))
                             {
-                                worksheet.Cell(currentRow, i + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                            }
-
-                            // Tô màu cho điểm trung bình (cột cuối)
-                            if (i == tableXemBangDiem.Columns.Count - 1 && !string.IsNullOrEmpty(cellValue))
-                            {
-                                if (float.TryParse(cellValue, out float score))
+                                if (score >= 8.0)
                                 {
-                                    if (score >= 8.0)
-                                    {
-                                        worksheet.Cell(currentRow, i + 1).Style.Font.FontColor = XLColor.Green;
-                                        worksheet.Cell(currentRow, i + 1).Style.Font.Bold = true;
-                                    }
-                                    else if (score >= 6.5)
-                                    {
-                                        worksheet.Cell(currentRow, i + 1).Style.Font.FontColor = XLColor.Blue;
-                                        worksheet.Cell(currentRow, i + 1).Style.Font.Bold = true;
-                                    }
-                                    else
-                                    {
-                                        worksheet.Cell(currentRow, i + 1).Style.Font.FontColor = XLColor.Red;
-                                        worksheet.Cell(currentRow, i + 1).Style.Font.Bold = true;
-                                    }
+                                    worksheet.Cell(currentRow, 8).Style.Font.FontColor = XLColor.Green;
+                                    worksheet.Cell(currentRow, 8).Style.Font.Bold = true;
+                                }
+                                else if (score >= 6.5)
+                                {
+                                    worksheet.Cell(currentRow, 8).Style.Font.FontColor = XLColor.Blue;
+                                    worksheet.Cell(currentRow, 8).Style.Font.Bold = true;
+                                }
+                                else
+                                {
+                                    worksheet.Cell(currentRow, 8).Style.Font.FontColor = XLColor.Red;
+                                    worksheet.Cell(currentRow, 8).Style.Font.Bold = true;
                                 }
                             }
-
-                            worksheet.Cell(currentRow, i + 1).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                         }
+
+                        // Thêm border cho tất cả các ô
+                        for (int i = 1; i <= 8; i++)
+                        {
+                            worksheet.Cell(currentRow, i).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        }
+
                         currentRow++;
                     }
 
@@ -1185,26 +1200,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     worksheet.Cell(statsRow, 1).Style.Font.Bold = true;
 
                     statsRow++;
-                    worksheet.Cell(statsRow, 1).Value = $"Tổng số học sinh: {tableXemBangDiem.Rows.Count}";
+                    worksheet.Cell(statsRow, 1).Value = $"Tổng số học sinh: {fullListXemBangDiem.Count}";
 
                     // Tính số học sinh đã có điểm TB
-                    int soHSDaDiem = 0;
-                    foreach (DataGridViewRow row in tableXemBangDiem.Rows)
-                    {
-                        if (row.IsNewRow) continue;
-                        if (row.Cells[7].Value != null && !string.IsNullOrEmpty(row.Cells[7].Value.ToString()))
-                        {
-                            soHSDaDiem++;
-                        }
-                    }
+                    int soHSDaDiem = fullListXemBangDiem.Count(x => x.DiemTB.HasValue);
 
                     statsRow++;
                     worksheet.Cell(statsRow, 1).Value = $"Học sinh đã có điểm: {soHSDaDiem}";
                     worksheet.Cell(statsRow, 1).Style.Font.FontColor = XLColor.Green;
 
                     statsRow++;
-                    worksheet.Cell(statsRow, 1).Value = $"Học sinh chưa có điểm: {tableXemBangDiem.Rows.Count - soHSDaDiem}";
-                    if (tableXemBangDiem.Rows.Count - soHSDaDiem > 0)
+                    worksheet.Cell(statsRow, 1).Value = $"Học sinh chưa có điểm: {fullListXemBangDiem.Count - soHSDaDiem}";
+                    if (fullListXemBangDiem.Count - soHSDaDiem > 0)
                     {
                         worksheet.Cell(statsRow, 1).Style.Font.FontColor = XLColor.Red;
                     }
@@ -1221,8 +1228,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     Cursor = Cursors.Default;
 
-                    MessageBox.Show($"Xuất Excel thành công!\nĐường dẫn: {saveDialog.FileName}", "Thành công",
-                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Xuất Excel thành công!\nĐã xuất {fullListXemBangDiem.Count} học sinh\nĐường dẫn: {saveDialog.FileName}",
+                                   "Thành công",
+                                   MessageBoxButtons.OK,
+                                   MessageBoxIcon.Information);
 
                     // Hỏi có muốn mở file không
                     if (MessageBox.Show("Bạn có muốn mở file Excel vừa xuất?", "Xác nhận",

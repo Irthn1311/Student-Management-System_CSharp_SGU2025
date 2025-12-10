@@ -88,9 +88,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dgvLop.CellPainting += dgvLop_CellPainting;
             dgvLop.CellClick += dgvLop_CellClick;
             dgvLop.CellFormatting += dgvLop_CellFormatting;
-            //PermissionHelper.ApplyPermissionLopHoc(btnThem, dgvLop);
-            
-            // 🆕 Thêm button "Quản lý yêu cầu chuyển lớp" cho ADMIN
+
+            // ✅ Áp dụng phân quyền cho DataGridView
+            ApplyPermissionLopHoc();
+
+            // 🆕 Thêm button "Quản lý yêu cầu chuyển lớp" với quyền UPDATE
             ThemButtonQuanLyYeuCau();
         }
 
@@ -779,12 +781,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             int startX = cellRect.Left + (cellRect.Width - totalWidth) / 2;
 
 
-            // ✅ CLICK ICON SỬA
+            // ✅ CLICK ICON SỬA - Kiểm tra quyền UPDATE
             if (clickPoint.X >= startX && clickPoint.X <= startX + iconSize)
             {
-                // ✅ Kiểm tra quyền UPDATE
-                if (!PermissionHelper.CheckDataGridIconPermission(dgvLop, "edit", "Quản lý lớp học"))
+                // ✅ Kiểm tra quyền UPDATE trước khi cho phép sửa
+                if (!PermissionHelper.HasPermission(PermissionHelper.QLLOPHOC, PermissionHelper.UPDATE))
+                {
+                    MessageBox.Show(
+                        "Bạn không có quyền chỉnh sửa trong chức năng 'Quản lý lớp học'!",
+                        "Không có quyền",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     return;
+                }
 
                 SuaLopHoc frm = new SuaLopHoc(maLop);
                 frm.StartPosition = FormStartPosition.CenterParent;
@@ -796,12 +805,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     LoadData();
                 }
             }
-            // ✅ CLICK ICON XÓA
+            // ✅ CLICK ICON XÓA - Kiểm tra quyền DELETE
             else if (clickPoint.X >= startX + iconSize + spacing && clickPoint.X <= startX + iconSize * 2 + spacing)
             {
-                // ✅ Kiểm tra quyền DELETE
-                if (!PermissionHelper.CheckDataGridIconPermission(dgvLop, "delete", "Quản lý lớp học"))
+                // ✅ Kiểm tra quyền DELETE trước khi cho phép xóa
+                if (!PermissionHelper.HasPermission(PermissionHelper.QLLOPHOC, PermissionHelper.DELETE))
+                {
+                    MessageBox.Show(
+                        "Bạn không có quyền xóa trong chức năng 'Quản lý lớp học'!",
+                        "Không có quyền",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     return;
+                }
 
                 DialogResult dr = MessageBox.Show(
                     $"Bạn có chắc muốn xóa lớp '{tenLop}'?\n\nLưu ý: Thao tác này không thể hoàn tác!",
@@ -855,25 +871,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         }
 
-        // ✅ THÊM MỚI: Không cần nhập maLop (DB tự sinh), reload để hiển thị maLop mới
-        private void guna2Button1_Click(object sender, EventArgs e)
+        // ✅ ÁP DỤNG PHÂN QUYỀN CHO FORM LỚP HỌC
+        private void ApplyPermissionLopHoc()
         {
-            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLLOPHOC, "Quản lý lớp học"))
-                return;
-            ThemLopHoc formThem = new ThemLopHoc(); // Form chỉ nhập tenLop, maKhoi, maGVCN (maLop tự động)
+            //// ✅ Ẩn nút thêm lớp (guna2Button1) nếu có
+            //if (guna2Button1 != null)
+            //{
+            //    guna2Button1.Visible = false;
+            //    guna2Button1.Enabled = false;
+            //}
 
-            DialogResult result = formThem.ShowDialog();
-
-            if (result == DialogResult.OK)
+            // ✅ Set Tag cho DataGridView để kiểm tra quyền Sửa/Xóa
+            if (dgvLop != null)
             {
-                LoadData(); // ✅ Reload và cập nhật thống kê, hiển thị maLop mới từ DB
-
-                // Debug: Kiểm tra maLop mới nhất (có thể xóa sau khi test)
-                var lopMoiNhat = danhSachLopGoc.OrderByDescending(l => l.maLop).FirstOrDefault();
-                if (lopMoiNhat != null)
+                dgvLop.Tag = new
                 {
-                    // Console.WriteLine($"Mã lớp mới tự động: {lopMoiNhat.maLop}"); // Hoặc log vào file/debug
-                }
+                    CanUpdate = PermissionHelper.HasPermission(PermissionHelper.QLLOPHOC, PermissionHelper.UPDATE),
+                    CanDelete = PermissionHelper.HasPermission(PermissionHelper.QLLOPHOC, PermissionHelper.DELETE)
+                };
             }
         }
 
@@ -953,12 +968,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// 🆕 Thêm button "Quản lý yêu cầu chuyển lớp" cho ADMIN
+        /// 🆕 Thêm button "Quản lý yêu cầu chuyển lớp" với quyền UPDATE
         /// </summary>
         private void ThemButtonQuanLyYeuCau()
         {
             try
             {
+                // ✅ Kiểm tra quyền UPDATE trước khi tạo button
+                bool canUpdate = PermissionHelper.HasPermission(PermissionHelper.QLLOPHOC, PermissionHelper.UPDATE);
+                
                 // Tạo button mới
                 Guna2Button btnQuanLyYeuCau = new Guna2Button();
                 btnQuanLyYeuCau.Text = "📋 Yêu cầu chuyển lớp";
@@ -968,10 +986,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 btnQuanLyYeuCau.ForeColor = Color.White;
                 btnQuanLyYeuCau.BorderRadius = 8;
                 btnQuanLyYeuCau.Cursor = Cursors.Hand;
+                btnQuanLyYeuCau.Location = new Point(30, 20);
 
-                
-                    btnQuanLyYeuCau.Location = new Point(30, 20);
-                
+                // ✅ Áp dụng quyền UPDATE: chỉ hiển thị và enable nếu có quyền
+                btnQuanLyYeuCau.Visible = canUpdate;
+                btnQuanLyYeuCau.Enabled = canUpdate;
+
+                // Nếu không có quyền, làm mờ button
+                if (!canUpdate)
+                {
+                    btnQuanLyYeuCau.FillColor = Color.FromArgb(200, 200, 200); // Màu xám
+                    btnQuanLyYeuCau.ForeColor = Color.FromArgb(100, 100, 100);
+                }
 
                 // Gắn sự kiện click
                 btnQuanLyYeuCau.Click += BtnQuanLyYeuCau_Click;
@@ -993,10 +1019,19 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                // Lấy tên đăng nhập admin hiện tại
-                // string tenDangNhapAdmin = PermissionHelper.GetCurrentUsername();
-                // Sửa: Nếu bạn có một biến lưu username, hãy dùng nó. Nếu không, cần truyền username từ nơi khác.
-                string tenDangNhapAdmin = Environment.UserName; // Hoặc lấy từ biến/thuộc tính hiện có
+                // ✅ Kiểm tra quyền UPDATE trước khi mở form
+                if (!PermissionHelper.HasPermission(PermissionHelper.QLLOPHOC, PermissionHelper.UPDATE))
+                {
+                    MessageBox.Show(
+                        "Bạn không có quyền chỉnh sửa trong chức năng 'Quản lý lớp học'!",
+                        "Không có quyền",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Lấy tên đăng nhập từ SessionManager
+                string tenDangNhapAdmin = SessionManager.TenDangNhap;
 
                 if (string.IsNullOrEmpty(tenDangNhapAdmin))
                 {

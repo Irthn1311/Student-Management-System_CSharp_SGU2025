@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
@@ -38,13 +39,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
 
         private void ThongBao_Load(object sender, EventArgs e)
         {
-            // Kiểm tra quyền truy cập
-            if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLTHONGBAO, "Quản lý thông báo"))
+            // ✅ Kiểm tra quyền truy cập - Cho phép nếu có bất kỳ quyền nào (READ, CREATE, UPDATE, DELETE)
+            // Không block load data nếu người dùng có CREATE, UPDATE hoặc DELETE (ngay cả khi không có READ)
+            bool hasRead = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.READ);
+            bool hasCreate = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.CREATE);
+            bool hasUpdate = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.UPDATE);
+            bool hasDelete = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.DELETE);
+            
+            // ✅ Kiểm tra xem có bất kỳ quyền nào không
+            bool hasAnyPermission = hasRead || hasCreate || hasUpdate || hasDelete;
+            
+            // Nếu không có bất kỳ quyền nào thì disable form và return
+            if (!hasAnyPermission)
             {
                 this.Enabled = false;
+                MessageBox.Show("Bạn không có quyền truy cập chức năng 'Quản lý thông báo'!", 
+                    "Không có quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            // ✅ Luôn cho phép load data nếu có bất kỳ quyền nào
             // Cấu hình bảng
             SetupTableThongBao();
 
@@ -54,7 +68,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
             // Load đối tượng nhận
             LoadDoiTuongNhan();
 
-            // Load dữ liệu
+            // Load dữ liệu (cho phép load ngay cả khi chỉ có CREATE, UPDATE hoặc DELETE)
             LoadData();
 
             // Áp dụng phân quyền
@@ -528,13 +542,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
         {
             try
             {
-                // Kiểm tra quyền tạo thông báo
-                if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLTHONGBAO, "Quản lý thông báo"))
-                {
-                    MessageBox.Show("Bạn không có quyền thêm thông báo!", "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // ✅ Kiểm tra quyền tạo thông báo bằng CheckCreatePermission
+                if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLTHONGBAO, "Quản lý thông báo"))
                     return;
-                }
 
                 // Mở form thêm thông báo
                 using (var frmThemThongBao = new FrmThemThongBao())
@@ -619,6 +629,39 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
             {
                 e.PaintBackground(e.ClipBounds, true);
 
+                // ✅ Lấy permission từ Tag - Sử dụng cách an toàn hơn (không dùng dynamic)
+                bool canUpdate = true; // Mặc định true
+                bool canDelete = true; // Mặc định true
+                
+                if (tableThongBao.Tag != null)
+                {
+                    // ✅ Sử dụng reflection thay vì dynamic để tránh RuntimeBinderException
+                    try
+                    {
+                        var tagType = tableThongBao.Tag.GetType();
+                        var canUpdateProp = tagType.GetProperty("CanUpdate");
+                        var canDeleteProp = tagType.GetProperty("CanDelete");
+                        
+                        if (canUpdateProp != null)
+                        {
+                            var value = canUpdateProp.GetValue(tableThongBao.Tag);
+                            if (value is bool) canUpdate = (bool)value;
+                        }
+                        
+                        if (canDeleteProp != null)
+                        {
+                            var value = canDeleteProp.GetValue(tableThongBao.Tag);
+                            if (value is bool) canDelete = (bool)value;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore errors - sử dụng giá trị mặc định
+                        canUpdate = true;
+                        canDelete = true;
+                    }
+                }
+
                 // Lấy icon từ resources hoặc tạo icon
                 Image viewIcon = Properties.Resources.icon_eye ?? CreateSimpleIcon(Color.FromArgb(59, 130, 246)); // Xanh dương
                 Image editIcon = Properties.Resources.icon_edit ?? CreateSimpleIcon(Color.FromArgb(34, 197, 94)); // Xanh lá
@@ -635,9 +678,54 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
                 Rectangle editRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
                 Rectangle deleteRect = new Rectangle(startX + (iconSize + spacing) * 2, y, iconSize, iconSize);
 
+                // ✅ Vẽ icon Xem (luôn hiển thị - không cần quyền)
                 e.Graphics.DrawImage(viewIcon, viewRect);
-                e.Graphics.DrawImage(editIcon, editRect);
-                e.Graphics.DrawImage(deleteIcon, deleteRect);
+
+                // ✅ Vẽ icon Sửa với độ mờ nếu không có quyền
+                if (canUpdate)
+                {
+                    e.Graphics.DrawImage(editIcon, editRect);
+                }
+                else
+                {
+                    var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
+                        new float[][] {
+                    new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                    new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                    new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                    new float[] {0, 0, 0, 0.3f, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                        });
+                    using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+                    {
+                        attributes.SetColorMatrix(grayScaleMatrix);
+                        e.Graphics.DrawImage(editIcon, editRect, 0, 0, editIcon.Width, editIcon.Height,
+                            GraphicsUnit.Pixel, attributes);
+                    }
+                }
+
+                // ✅ Vẽ icon Xóa với độ mờ nếu không có quyền
+                if (canDelete)
+                {
+                    e.Graphics.DrawImage(deleteIcon, deleteRect);
+                }
+                else
+                {
+                    var grayScaleMatrix = new System.Drawing.Imaging.ColorMatrix(
+                        new float[][] {
+                    new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                    new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                    new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                    new float[] {0, 0, 0, 0.3f, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                        });
+                    using (var attributes = new System.Drawing.Imaging.ImageAttributes())
+                    {
+                        attributes.SetColorMatrix(grayScaleMatrix);
+                        e.Graphics.DrawImage(deleteIcon, deleteRect, 0, 0, deleteIcon.Width, deleteIcon.Height,
+                            GraphicsUnit.Pixel, attributes);
+                    }
+                }
 
                 e.Handled = true;
             }
@@ -783,27 +871,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
                 // Sửa thông báo
                 try
                 {
-                    // Kiểm tra quyền chỉnh sửa
-                    if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLTHONGBAO, "Quản lý thông báo"))
-                    {
-                        MessageBox.Show("Bạn không có quyền chỉnh sửa thông báo!", "Thông báo",
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    // ✅ Kiểm tra quyền chỉnh sửa bằng CheckDataGridIconPermission
+                    if (!PermissionHelper.CheckDataGridIconPermission(dgv, "edit", "Quản lý thông báo"))
                         return;
-                    }
 
                     // Lấy thông tin thông báo
                     var thongBao = thongBaoBUS.LayChiTietThongBao(maThongBao, SessionManager.TenDangNhap);
                     if (thongBao != null)
                     {
-                        // Kiểm tra quyền chỉnh sửa thông báo của chính mình hoặc admin
-                        if (thongBao.MaNguoiTao != SessionManager.TenDangNhap &&
-                            !SessionManager.DanhSachVaiTro.Contains("admin"))
-                        {
-                            MessageBox.Show("Bạn chỉ có thể chỉnh sửa thông báo do chính mình tạo!", "Thông báo",
-                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-
+                        // ✅ Người dùng có quyền UPDATE thì được sửa mọi thông báo (bỏ check MaNguoiTao)
                         // Mở form chỉnh sửa
                         using (var frmSua = new FrmThemThongBao(thongBao))
                         {

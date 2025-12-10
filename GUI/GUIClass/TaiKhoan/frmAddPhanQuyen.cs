@@ -305,6 +305,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     // ✅ BỎ QUA chức năng "Cài đặt" - không hiển thị trong bảng phân quyền
                     if (cn.MaChucNang.ToLower() == "qlcaidat")
                         continue;
+                    if (cn.MaChucNang.ToLower() == "qlyeucau_chuyenlop")
+                        continue;
 
                     int rowIndex = tableChucNang.Rows.Add(cn.TenChucNang);
                     // Lưu MaChucNang vào Tag của row
@@ -353,7 +355,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 tableChucNang.Controls.Add(cbThem);
                 cbThem.BringToFront();
 
-                if (maChucNang == "qlxeploai")
+                if (maChucNang == "qlxeploai" || maChucNang == "qlbaocao" || maChucNang == "qllophoc" || maChucNang == "qlmonhoc")
                 {
                     cbThem.Enabled = false;
                     cbThem.Checked = false;
@@ -387,7 +389,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 checkBoxDict[maChucNang]["xoa"] = cbXoa;
 
                 // ✅ Disable checkbox Xóa cho Điểm số và Hạnh kiểm
-                if (maChucNang == "qldiem" || maChucNang == "qlhanhkiem" || maChucNang == "qlxeploai")
+                if (maChucNang == "qldiem" || maChucNang == "qlhanhkiem" || maChucNang == "qlxeploai" || maChucNang == "qltkb" || maChucNang == "qlbaocao" || maChucNang == "qlmonhoc")
                 {
                     cbXoa.Enabled = false;
                     cbXoa.Checked = false;
@@ -454,6 +456,58 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void tableChucNang_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Kiểm tra xem đã chọn hết tất cả checkbox enabled chưa
+                bool tatCaDaChon = true;
+
+                foreach (var maChucNangEntry in checkBoxDict)
+                {
+                    var checkBoxes = maChucNangEntry.Value;
+
+                    // Kiểm tra nếu có bất kỳ checkbox enabled nào chưa được chọn
+                    if ((checkBoxes.ContainsKey("them") && checkBoxes["them"].Enabled && !checkBoxes["them"].Checked) ||
+                        (checkBoxes.ContainsKey("sua") && checkBoxes["sua"].Enabled && !checkBoxes["sua"].Checked) ||
+                        (checkBoxes.ContainsKey("xoa") && checkBoxes["xoa"].Enabled && !checkBoxes["xoa"].Checked))
+                    {
+                        tatCaDaChon = false;
+                        break;
+                    }
+                }
+
+                // Toggle: Nếu đã chọn hết -> Bỏ chọn tất cả, ngược lại -> Chọn tất cả
+                foreach (var maChucNangEntry in checkBoxDict)
+                {
+                    var checkBoxes = maChucNangEntry.Value;
+
+                    // Xử lý checkbox "Thêm"
+                    if (checkBoxes.ContainsKey("them") && checkBoxes["them"].Enabled)
+                    {
+                        checkBoxes["them"].Checked = !tatCaDaChon;
+                    }
+
+                    // Xử lý checkbox "Sửa"
+                    if (checkBoxes.ContainsKey("sua") && checkBoxes["sua"].Enabled)
+                    {
+                        checkBoxes["sua"].Checked = !tatCaDaChon;
+                    }
+
+                    // Xử lý checkbox "Xóa"
+                    if (checkBoxes.ContainsKey("xoa") && checkBoxes["xoa"].Enabled)
+                    {
+                        checkBoxes["xoa"].Checked = !tatCaDaChon;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi chọn toàn quyền: {ex.Message}", "Lỗi",
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
