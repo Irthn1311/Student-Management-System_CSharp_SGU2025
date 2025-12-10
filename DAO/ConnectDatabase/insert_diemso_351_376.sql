@@ -1,4 +1,4 @@
-INSERT INTO diemso (MaHocSinh, MaMonHoc, MaHocKy, DiemThuongXuyen, DiemGiuaKy, DiemCuoiKy, DiemTrungBinh) VALUES
+INSERT ignore INTO diemso (MaHocSinh, MaMonHoc, MaHocKy, DiemThuongXuyen, DiemGiuaKy, DiemCuoiKy, DiemTrungBinh) VALUES
 (351, 1, 1, 10.0, 9.2, 9.4, 9.43),
 (351, 2, 1, 8.3, 8.2, 8.7, 8.47),
 (351, 3, 1, 9.7, 9.7, 8.9, 9.3),

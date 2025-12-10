@@ -35,46 +35,7 @@ INSERT INTO MonHoc (MaMonHoc, TenMonHoc, SoTiet, GhiChu) VALUES
 (12, 'Giáo dục thể chất', 34, 'Kỹ năng khác'),
 (13, 'GDQP-AN', 17, 'Kỹ năng khác');
 
--- Vai trò hệ thống
-INSERT IGNORE INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES
-('student', 'Học sinh', 'Học sinh trong hệ thống'),
-('parent', 'Phụ huynh', 'Phụ huynh học sinh'),
-('teacher', 'Giáo viên', 'Giáo viên giảng dạy'),
-('admin', 'Quản trị viên', 'Quản trị hệ thống');
 
--- Chức năng hệ thống
-INSERT IGNORE INTO ChucNang (MaChucNang, TenChucNang, MoTa) VALUES
-('qlhs', 'Quản lý học sinh', 'Quản lý thông tin học sinh'),
-('qlphuhuynh', 'Quản lý phụ huynh', 'Quản lý thông tin phụ huynh'),
-('qlgiaovien', 'Quản lý giáo viên', 'Quản lý thông tin giáo viên'),
-('qllophoc', 'Quản lý lớp học', 'Quản lý lớp học và phân lớp'),
-('qlmonhoc', 'Quản lý môn học', 'Quản lý môn học và phân công'),
-('qltkb', 'Quản lý thời khóa biểu', 'Quản lý thời khóa biểu'),
-('qldiem', 'Quản lý điểm số', 'Quản lý điểm số học sinh'),
-('qlthongbao', 'Quản lý thông báo', 'Quản lý thông báo hệ thống');
-
--- Phân quyền vai trò - chức năng
-INSERT IGNORE INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
--- Học sinh
-('student', 'qlhs'),
--- Phụ huynh
-('parent', 'qlhs'),
-('parent', 'qlphuhuynh'),
--- Giáo viên
-('teacher', 'qlgiaovien'),
-('teacher', 'qllophoc'),
-('teacher', 'qlmonhoc'),
-('teacher', 'qltkb'),
-('teacher', 'qldiem'),
--- Admin (tất cả quyền)
-('admin', 'qlhs'),
-('admin', 'qlphuhuynh'),
-('admin', 'qlgiaovien'),
-('admin', 'qllophoc'),
-('admin', 'qlmonhoc'),
-('admin', 'qltkb'),
-('admin', 'qldiem'),
-('admin', 'qlthongbao');
 
 -- =====================================================================
 -- PHẦN 2: NĂM HỌC VÀ HỌC KỲ
