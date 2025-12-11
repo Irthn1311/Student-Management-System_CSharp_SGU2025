@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS QuanLyHocSinh;
-USE QuanLyHocSinh;
+-- CREATE DATABASE IF NOT EXISTS QuanLyHocSinh;
+-- USE QuanLyHocSinh;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -211,7 +211,7 @@ CROSS JOIN (
 ) h
 WHERE c.MaChucNang <> 'qlcaidat';
 
-INSERT IGNORE INTO vaitrochucnang (MaVaiTro, MaChucNang) VALUES 
+INSERT IGNORE INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES 
 ('student', 'qltkb'),
 ('teacher', 'qltkb'),
 ('teacher', 'qldiem'),
