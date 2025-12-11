@@ -25,7 +25,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             {
                 using (var db = new SchoolDbContext())
                 {
-                    // ✅ LINQ to Entities query
+                    //  LINQ to Entities query
                     var results = db.GiaoViens
                         .Where(g => g.MaGiaoVien == maGiaoVien && g.MaMonChuyenMon.HasValue)
                         .Select(g => g.MaMonChuyenMon.Value)

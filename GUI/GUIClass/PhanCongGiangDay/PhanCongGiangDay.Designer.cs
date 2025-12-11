@@ -61,8 +61,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnPhanCongMoi.BorderRadius = 10;
             this.btnPhanCongMoi.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
             this.btnPhanCongMoi.ForeColor = System.Drawing.Color.White;
-            this.btnPhanCongMoi.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.plus;
-            this.btnPhanCongMoi.ImageSize = new System.Drawing.Size(18, 18);
             this.btnPhanCongMoi.Location = new System.Drawing.Point(20, 20);
             this.btnPhanCongMoi.Name = "btnPhanCongMoi";
             this.btnPhanCongMoi.Size = new System.Drawing.Size(180, 42);
@@ -75,8 +73,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnAutoPhanCong.BorderRadius = 10;
             this.btnAutoPhanCong.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
             this.btnAutoPhanCong.ForeColor = System.Drawing.Color.White;
-            this.btnAutoPhanCong.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.plus;
-            this.btnAutoPhanCong.ImageSize = new System.Drawing.Size(18, 18);
             this.btnAutoPhanCong.Location = new System.Drawing.Point(220, 20);
             this.btnAutoPhanCong.Name = "btnAutoPhanCong";
             this.btnAutoPhanCong.Size = new System.Drawing.Size(200, 42);
