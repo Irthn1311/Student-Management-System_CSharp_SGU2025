@@ -325,6 +325,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.GUIClass.CaiDat
 
                 // Load hạnh kiểm, học lực, xếp loại
                 LoadHanhKiemHocLucXepLoai(maHocKy);
+                LoadDiemTrungBinh13Mon(maHocKy);
             }
             catch (Exception ex)
             {
@@ -514,6 +515,102 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.GUIClass.CaiDat
                 ApplyStyleToLabel(lblHanhKiem, "Chưa có");
                 ApplyStyleToLabel(lblHocLuc, "Chưa có");
                 ApplyStyleToLabel(lblXepLoai, "Chưa có");
+            }
+        }
+
+        /// <summary>
+        /// ✅ THÊM MỚI: Load điểm trung bình 13 môn vào lblTBChung
+        /// Tương tự như logic trong DiemSo_NhapDiem.cs
+        /// </summary>
+        private void LoadDiemTrungBinh13Mon(int maHocKy)
+        {
+            try
+            {
+                if (!maHocSinh.HasValue)
+                {
+                    lblTBChung.Text = "0.0";
+                    ApplyStyleToLabel(lblTBChung, "Chưa có");
+                    return;
+                }
+
+                // Lấy danh sách tất cả môn học
+                List<MonHocDTO> danhSachMonHoc = monHocBUS.DocDSMH();
+
+                if (danhSachMonHoc == null || danhSachMonHoc.Count == 0)
+                {
+                    lblTBChung.Text = "0.0";
+                    ApplyStyleToLabel(lblTBChung, "Chưa có");
+                    return;
+                }
+
+                // Tổng số môn trong hệ thống (thường là 13 môn)
+                int tongSoMon = danhSachMonHoc.Count;
+                int soMonCoDiem = 0;
+                float tongDiem = 0f;
+
+                // Duyệt qua từng môn học để lấy điểm trung bình
+                foreach (var monHoc in danhSachMonHoc)
+                {
+                    DiemSoDTO diem = diemSoDAO.GetDiemSo(maHocSinh.Value.ToString(), monHoc.maMon, maHocKy);
+
+                    // Chỉ tính nếu có điểm trung bình của môn đó
+                    if (diem != null && diem.MaHocKy == maHocKy && diem.DiemTrungBinh.HasValue)
+                    {
+                        tongDiem += diem.DiemTrungBinh.Value;
+                        soMonCoDiem++;
+                    }
+                }
+
+                // Chỉ tính điểm TB chung nếu có đủ điểm của TẤT CẢ các môn (13 môn)
+                if (soMonCoDiem == tongSoMon && soMonCoDiem > 0)
+                {
+                    float diemTBChung = tongDiem / soMonCoDiem;
+                    lblTBChung.Text = diemTBChung.ToString("0.0");
+
+                    // Áp dụng màu sắc và định dạng bold theo điểm
+                    ApplyStyleToDiemTBChung(diemTBChung);
+                }
+                else
+                {
+                    // Nếu chưa có đủ điểm 13 môn
+                    lblTBChung.Text = "0.0";
+                    ApplyStyleToLabel(lblTBChung, "Chưa có");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi load điểm trung bình 13 môn: {ex.Message}");
+                lblTBChung.Text = "0.0";
+                ApplyStyleToLabel(lblTBChung, "Chưa có");
+            }
+        }
+
+
+        /// <summary>
+        /// ✅ THÊM MỚI: Áp dụng màu sắc và định dạng bold cho lblTBChung theo điểm số
+        /// Giống logic trong ApplyColorToDiemTB() của DiemSo_NhapDiem.cs
+        /// </summary>
+        private void ApplyStyleToDiemTBChung(float diemTB)
+        {
+            // Đặt font chữ đậm
+            lblTBChung.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+
+            // Áp dụng màu theo điểm
+            if (diemTB >= 8.0f)
+            {
+                lblTBChung.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá (Giỏi)
+            }
+            else if (diemTB >= 6.5f)
+            {
+                lblTBChung.ForeColor = Color.FromArgb(30, 136, 229); // Xanh dương (Khá)
+            }
+            else if (diemTB >= 5.0f)
+            {
+                lblTBChung.ForeColor = Color.FromArgb(194, 65, 12); // Cam (Trung bình)
+            }
+            else
+            {
+                lblTBChung.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ (Yếu/Kém)
             }
         }
 
