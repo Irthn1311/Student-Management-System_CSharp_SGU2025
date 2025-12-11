@@ -23,26 +23,23 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            
             this.lblThongBao = new System.Windows.Forms.Label();
             this.dgvPhanCong = new Guna.UI2.WinForms.Guna2DataGridView();
             this.btnXacNhan = new Guna.UI2.WinForms.Guna2Button();
             this.btnHuy = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhanCong)).BeginInit();
             this.SuspendLayout();
-            
             // 
             // lblThongBao
             // 
             this.lblThongBao.AutoSize = true;
-            this.lblThongBao.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular);
+            this.lblThongBao.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.lblThongBao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.lblThongBao.Location = new System.Drawing.Point(20, 20);
             this.lblThongBao.Name = "lblThongBao";
-            this.lblThongBao.Size = new System.Drawing.Size(400, 20);
+            this.lblThongBao.Size = new System.Drawing.Size(374, 20);
             this.lblThongBao.TabIndex = 0;
             this.lblThongBao.Text = "Giáo viên đang phụ trách các phân công giảng dạy sau:";
-            
             // 
             // dgvPhanCong
             // 
@@ -59,6 +56,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvPhanCong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvPhanCong.ColumnHeadersHeight = 35;
+            this.dgvPhanCong.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9F);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPhanCong.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dgvPhanCong.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.dgvPhanCong.Location = new System.Drawing.Point(20, 60);
             this.dgvPhanCong.Name = "dgvPhanCong";
             this.dgvPhanCong.RowHeadersVisible = false;
@@ -83,9 +90,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.dgvPhanCong.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvPhanCong.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.dgvPhanCong.ThemeStyle.RowsStyle.ForeColor = System.Drawing.Color.Black;
+            this.dgvPhanCong.ThemeStyle.RowsStyle.Height = 35;
             this.dgvPhanCong.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(255)))));
             this.dgvPhanCong.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.Black;
-            
             // 
             // btnXacNhan
             // 
@@ -97,13 +104,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnXacNhan.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
             this.btnXacNhan.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnXacNhan.ForeColor = System.Drawing.Color.White;
-            this.btnXacNhan.Location = new System.Drawing.Point(602, 430);
+            this.btnXacNhan.Location = new System.Drawing.Point(594, 430);
             this.btnXacNhan.Name = "btnXacNhan";
-            this.btnXacNhan.Size = new System.Drawing.Size(88, 40);
+            this.btnXacNhan.Size = new System.Drawing.Size(96, 40);
             this.btnXacNhan.TabIndex = 2;
             this.btnXacNhan.Text = "Xác nhận";
             this.btnXacNhan.Click += new System.EventHandler(this.btnXacNhan_Click);
-            
             // 
             // btnHuy
             // 
@@ -121,7 +127,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnHuy.TabIndex = 3;
             this.btnHuy.Text = "Hủy";
             this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
-            
             // 
             // ChonGiaoVienThayThe
             // 
@@ -142,6 +147,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhanCong)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
     }
 }

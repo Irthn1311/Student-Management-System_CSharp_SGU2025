@@ -703,6 +703,9 @@
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\FrmDangNhap.resx" />
+    <EmbeddedResource Include="GUIClass\GiaoVien\ChonGiaoVienThayThe.resx">
+      <DependentUpon>ChonGiaoVienThayThe.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\GiaoVien\GiaoVien.resx">
       <DependentUpon>GiaoVien.cs</DependentUpon>
     </EmbeddedResource>
