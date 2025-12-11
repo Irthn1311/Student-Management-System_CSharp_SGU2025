@@ -67,8 +67,11 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Services
             // Create Excel package
             using (var package = new ExcelPackage())
             {
-                // Remove default worksheet
-                package.Workbook.Worksheets.Delete("Sheet1");
+                // Remove default worksheets if any exist
+                while (package.Workbook.Worksheets.Count > 0)
+                {
+                    package.Workbook.Worksheets.Delete(0);
+                }
 
                 string hocKyName = hocKy != null ? hocKy.TenHocKy : $"Học kỳ {maHocKy}";
 
@@ -121,8 +124,11 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Services
             // Create Excel package
             using (var package = new ExcelPackage())
             {
-                // Remove default worksheet
-                package.Workbook.Worksheets.Delete("Sheet1");
+                // Remove default worksheets if any exist
+                while (package.Workbook.Worksheets.Count > 0)
+                {
+                    package.Workbook.Worksheets.Delete(0);
+                }
 
                 string hocKyName = hocKy != null ? hocKy.TenHocKy : $"Học kỳ {maHocKy}";
 

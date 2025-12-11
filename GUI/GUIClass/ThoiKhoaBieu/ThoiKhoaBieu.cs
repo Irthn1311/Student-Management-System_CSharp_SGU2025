@@ -55,12 +55,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 			
 			// Wire up export button
 			btnXuatExcel.Click += BtnXuatExcel_Click;
+			
+			// ✅ Wire up VisibleChanged event để xử lý khi control được hiển thị
+			this.VisibleChanged += ThoiKhoaBieu_VisibleChanged;
 		}
 
         private void ThoiKhoaBieu_Load(object sender, EventArgs e)
         {
             InitializeUI();
             ApplyPermissions();
+            
+            // ✅ Gọi logic tự động chọn sau khi UI đã sẵn sàng
+            this.BeginInvoke(new Action(HandleInitialAutoSelection));
         }
 
         /// <summary>
@@ -124,19 +130,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Apply role-based UI restrictions
                 ApplyRoleBasedTimetableView();
 
-                // ✅ Nếu là học sinh, tự động chọn học kỳ mới nhất mà học sinh có lớp
-                if (IsStudentRole())
-                {
-                    AutoSelectStudentClassWithLatestSemester();
-                }
-                else
-                {
-                    // ✅ Tự động chọn học kỳ hiện tại cho các vai trò khác
-                    SelectCurrentSemester();
-                }
-
-                
-
                 // Disable action buttons initially
                 btnSapXepTuDong.Enabled = false;
 
@@ -150,6 +143,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 MessageBox.Show($"Lỗi khi khởi tạo giao diện: {ex.Message}", "Lỗi", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// ✅ Xử lý logic tự động chọn sau khi UI đã khởi tạo hoàn tất
+        /// </summary>
+        private void HandleInitialAutoSelection()
+        {
+            try
+            {
+                // ✅ Nếu là học sinh, tự động chọn học kỳ mới nhất mà học sinh có lớp
+                if (IsStudentRole())
+                {
+                    AutoSelectStudentClassWithLatestSemester();
+                }
+                else
+                {
+                    // ✅ Tự động chọn học kỳ hiện tại cho các vai trò khác
+                    SelectCurrentSemester();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi trong HandleInitialAutoSelection: {ex.Message}");
             }
         }
 
@@ -2027,6 +2044,49 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void tableThoiKhoaBieu_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// ✅ Xử lý khi control được hiển thị/ẩn - đảm bảo filters được áp dụng đúng
+        /// </summary>
+        private void ThoiKhoaBieu_VisibleChanged(object sender, EventArgs e)
+        {
+            if (this.Visible && !isLoading)
+            {
+                // ✅ Khi control trở nên visible, kiểm tra lại filters
+                this.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        // Kiểm tra nếu đã có semester được chọn nhưng chưa có dữ liệu hiển thị
+                        if (currentSemesterId > 0 && hasTKBForSemester)
+                        {
+                            // Áp dụng lại role-based view để đảm bảo UI đúng trạng thái
+                            ApplyRoleBasedTimetableView();
+                            
+                            // Nếu là student role và chưa có lớp được chọn, tự động chọn lại
+                            if (IsStudentRole() && currentLopId <= 0)
+                            {
+                                AutoSelectStudentClass(currentSemesterId);
+                            }
+                            // Nếu là admin/teacher và có semester + class được chọn, load dữ liệu
+                            else if (currentLopId > 0 && currentViewMode == "Thời khóa biểu lớp")
+                            {
+                                LoadData(currentSemesterId);
+                            }
+                            // Nếu là teacher view và có teacher được chọn
+                            else if (!string.IsNullOrEmpty(currentTeacherId) && currentViewMode == "Thời khóa biểu giảng dạy")
+                            {
+                                LoadData(currentSemesterId);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Lỗi trong ThoiKhoaBieu_VisibleChanged: {ex.Message}");
+                    }
+                }));
+            }
         }
 
         /// <summary>

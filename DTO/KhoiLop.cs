@@ -16,10 +16,10 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.maKhoi = maKhoi;
             this.tenKhoi = tenKhoi;
         }
-        ~KhoiLop()
-        {
-            Console.WriteLine("Huy doi tuong KhoiLop");
-        }
+        //~KhoiLop()
+        //{
+        //    Console.WriteLine("Huy doi tuong KhoiLop");
+        //}
         public int MaKhoi
         {
             get { return maKhoi; }

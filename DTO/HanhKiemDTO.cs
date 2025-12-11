@@ -23,10 +23,10 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         }
 
         // Destructor (Hàm hủy)
-        ~HanhKiemDTO()
-        {
-            // Console.WriteLine("Huy doi tuong HanhKiemDTO");
-        }
+        //~HanhKiemDTO()
+        //{
+        //    // Console.WriteLine("Huy doi tuong HanhKiemDTO");
+        //}
 
         // Properties (Thuộc tính)
         public int MaHocSinh

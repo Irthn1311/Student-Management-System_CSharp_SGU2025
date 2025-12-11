@@ -28,10 +28,10 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.diemTB = diemTB;
         }
 
-        ~NhapDiemDTO()
-        {
-            Console.WriteLine("Huy doi tuong NhapDiemDTO");
-        }
+        //~NhapDiemDTO()
+        //{
+        //    Console.WriteLine("Huy doi tuong NhapDiemDTO");
+        //}
 
         public string MaHocSinh
         {

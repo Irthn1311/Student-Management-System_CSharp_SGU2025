@@ -43,10 +43,10 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.trangThaiDuyet = trangThaiDuyet;
         }
 
-        ~KhenThuongKyLuatDTO()
-        {
-            Console.WriteLine("Huy doi tuong KhenThuongKyLuatDTO");
-        }
+        //~KhenThuongKyLuatDTO()
+        //{
+        //    Console.WriteLine("Huy doi tuong KhenThuongKyLuatDTO");
+        //}
 
         public int MaKTKL
         {
