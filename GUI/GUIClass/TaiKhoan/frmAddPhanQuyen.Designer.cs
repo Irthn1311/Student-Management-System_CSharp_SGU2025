@@ -39,7 +39,7 @@
             this.tableChucNang = new Guna.UI2.WinForms.Guna2DataGridView();
             this.chucNang = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.hanhDong = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
+            this.btnToanQuyen = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.tableChucNang)).BeginInit();
             this.SuspendLayout();
             // 
@@ -190,24 +190,25 @@
             this.hanhDong.HeaderText = "Hành động";
             this.hanhDong.Name = "hanhDong";
             // 
-            // guna2Button1
+            // btnToanQuyen
             // 
-            this.guna2Button1.BorderRadius = 6;
-            this.guna2Button1.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button1.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button1.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button1.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button1.FillColor = System.Drawing.Color.ForestGreen;
-            this.guna2Button1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.guna2Button1.ForeColor = System.Drawing.Color.White;
-            this.guna2Button1.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources._3que;
-            this.guna2Button1.ImageSize = new System.Drawing.Size(15, 15);
-            this.guna2Button1.Location = new System.Drawing.Point(593, 101);
-            this.guna2Button1.Margin = new System.Windows.Forms.Padding(2);
-            this.guna2Button1.Name = "guna2Button1";
-            this.guna2Button1.Size = new System.Drawing.Size(135, 37);
-            this.guna2Button1.TabIndex = 21;
-            this.guna2Button1.Text = "Toàn quyền";
+            this.btnToanQuyen.BorderRadius = 6;
+            this.btnToanQuyen.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnToanQuyen.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnToanQuyen.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnToanQuyen.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnToanQuyen.FillColor = System.Drawing.Color.ForestGreen;
+            this.btnToanQuyen.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnToanQuyen.ForeColor = System.Drawing.Color.White;
+            this.btnToanQuyen.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources._3que;
+            this.btnToanQuyen.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnToanQuyen.Location = new System.Drawing.Point(593, 101);
+            this.btnToanQuyen.Margin = new System.Windows.Forms.Padding(2);
+            this.btnToanQuyen.Name = "btnToanQuyen";
+            this.btnToanQuyen.Size = new System.Drawing.Size(135, 37);
+            this.btnToanQuyen.TabIndex = 21;
+            this.btnToanQuyen.Text = "Toàn quyền";
+            this.btnToanQuyen.Click += new System.EventHandler(this.guna2Button1_Click);
             // 
             // frmAddPhanQuyen
             // 
@@ -216,7 +217,7 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(866, 594);
             this.ControlBox = false;
-            this.Controls.Add(this.guna2Button1);
+            this.Controls.Add(this.btnToanQuyen);
             this.Controls.Add(this.tableChucNang);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnAddQuyen);
@@ -242,6 +243,6 @@
         private Guna.UI2.WinForms.Guna2DataGridView tableChucNang;
         private System.Windows.Forms.DataGridViewTextBoxColumn chucNang;
         private System.Windows.Forms.DataGridViewTextBoxColumn hanhDong;
-        private Guna.UI2.WinForms.Guna2Button guna2Button1;
+        private Guna.UI2.WinForms.Guna2Button btnToanQuyen;
     }
 }

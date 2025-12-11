@@ -447,5 +447,199 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
+        /// <summary>
+        /// Lấy học kỳ mới nhất có dữ liệu điểm số
+        /// Thứ tự ưu tiên: Năm học mới nhất → Học kỳ II → Học kỳ I
+        /// </summary>
+        public HocKyDTO LayHocKyMoiNhatCoDuLieu()
+        {
+            HocKyDTO hocKy = null;
+            MySqlConnection conn = null;
+
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                // ✅ SỬA LẠI: Theo yêu cầu, học kỳ mới nhất có dữ liệu là MaHocKy=1
+                // Logic: Sắp xếp theo ngày kết thúc học kỳ (NgayKT) DESC để lấy học kỳ kết thúc muộn nhất có dữ liệu
+                // Nếu không có NgayKT thì dùng NgayBD
+                // Điều này sẽ đảm bảo chọn học kỳ có dữ liệu điểm số mới nhất theo thời gian thực tế
+                string query = @"
+            SELECT DISTINCT hk.MaHocKy, hk.TenHocKy, hk.MaNamHoc, hk.TrangThai, hk.NgayBD, hk.NgayKT,
+                   nh.NgayBatDau
+            FROM HocKy hk
+            INNER JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc
+            WHERE EXISTS (
+                SELECT 1 
+                FROM DiemSo ds 
+                WHERE ds.MaHocKy = hk.MaHocKy 
+                    AND ds.DiemTrungBinh IS NOT NULL
+            )
+            ORDER BY 
+                -- Ưu tiên học kỳ đang diễn ra (TrangThai = 'Đang diễn ra')
+                CASE WHEN hk.TrangThai = 'Đang diễn ra' THEN 0 ELSE 1 END ASC,
+                -- Sau đó sắp xếp theo ngày kết thúc (hoặc ngày bắt đầu nếu không có ngày kết thúc)
+                COALESCE(hk.NgayKT, hk.NgayBD) DESC,
+                -- Cuối cùng sắp xếp theo MaHocKy DESC để đảm bảo tính nhất quán
+                hk.MaHocKy DESC
+            LIMIT 1";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int maHocKy = Convert.ToInt32(reader["MaHocKy"]);
+                            string tenHocKy = reader["TenHocKy"].ToString();
+                            string maNamHoc = reader["MaNamHoc"].ToString();
+                            
+                            // ✅ DEBUG: In ra để kiểm tra
+                            Console.WriteLine($"[LayHocKyMoiNhatCoDuLieu] Tìm thấy: MaHocKy={maHocKy}, TenHocKy={tenHocKy}, MaNamHoc={maNamHoc}");
+                            
+                            hocKy = new HocKyDTO
+                            {
+                                MaHocKy = maHocKy,
+                                TenHocKy = tenHocKy,
+                                MaNamHoc = maNamHoc,
+                                TrangThai = reader["TrangThai"].ToString(),
+                                NgayBD = reader["NgayBD"] != DBNull.Value ?
+                                    Convert.ToDateTime(reader["NgayBD"]) : (DateTime?)null,
+                                NgayKT = reader["NgayKT"] != DBNull.Value ?
+                                    Convert.ToDateTime(reader["NgayKT"]) : (DateTime?)null
+                            };
+                        }
+                        else
+                        {
+                            Console.WriteLine("[LayHocKyMoiNhatCoDuLieu] Không tìm thấy học kỳ nào có dữ liệu điểm số");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayHocKyMoiNhatCoDuLieu: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+
+            return hocKy;
+        }
+
+        /// <summary>
+        /// Kiểm tra học kỳ có dữ liệu điểm số thực sự hay không
+        /// </summary>
+        public bool KiemTraHocKyCoDiemSo(int maHocKy)
+        {
+            MySqlConnection conn = null;
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+            SELECT COUNT(*) as SoLuong
+            FROM DiemSo
+            WHERE MaHocKy = @MaHocKy
+                AND DiemTrungBinh IS NOT NULL";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaHocKy", maHocKy);
+                    object result = cmd.ExecuteScalar();
+                    int soLuong = result != null ? Convert.ToInt32(result) : 0;
+                    
+                    // ✅ DEBUG: In ra số lượng điểm số
+                    Console.WriteLine($"[KiemTraHocKyCoDiemSo] MaHocKy={maHocKy}, SoLuong={soLuong}");
+                    
+                    return soLuong > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi KiemTraHocKyCoDiemSo: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+        }
+
+        /// <summary>
+        /// Lấy học kỳ I đầu tiên (theo thứ tự thời gian) - dùng khi không có học kỳ nào có dữ liệu điểm số
+        /// Theo yêu cầu: chọn "Học kì I 2025-2026" (học kỳ đầu tiên)
+        /// </summary>
+        public HocKyDTO LayHocKyIDauTienCuaNamHocMoiNhat()
+        {
+            HocKyDTO hocKy = null;
+            MySqlConnection conn = null;
+
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                // ✅ SỬA LẠI: Lấy học kỳ I đầu tiên theo thứ tự thời gian (NgayBatDau ASC, MaHocKy ASC)
+                string query = @"
+            SELECT hk.MaHocKy, hk.TenHocKy, hk.MaNamHoc, hk.TrangThai, hk.NgayBD, hk.NgayKT,
+                   nh.NgayBatDau
+            FROM HocKy hk
+            INNER JOIN NamHoc nh ON hk.MaNamHoc = nh.MaNamHoc
+            WHERE hk.TenHocKy LIKE '%I%'
+                AND hk.TenHocKy NOT LIKE '%II%'
+                AND hk.TenHocKy NOT LIKE '%2%'
+            ORDER BY nh.NgayBatDau ASC, hk.MaHocKy ASC
+            LIMIT 1";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int maHocKy = Convert.ToInt32(reader["MaHocKy"]);
+                            string tenHocKy = reader["TenHocKy"].ToString();
+                            string maNamHoc = reader["MaNamHoc"].ToString();
+                            
+                            // ✅ DEBUG: In ra để kiểm tra
+                            Console.WriteLine($"[LayHocKyIDauTienCuaNamHocMoiNhat] Tìm thấy: MaHocKy={maHocKy}, TenHocKy={tenHocKy}, MaNamHoc={maNamHoc}");
+                            
+                            hocKy = new HocKyDTO
+                            {
+                                MaHocKy = maHocKy,
+                                TenHocKy = tenHocKy,
+                                MaNamHoc = maNamHoc,
+                                TrangThai = reader["TrangThai"].ToString(),
+                                NgayBD = reader["NgayBD"] != DBNull.Value ?
+                                    Convert.ToDateTime(reader["NgayBD"]) : (DateTime?)null,
+                                NgayKT = reader["NgayKT"] != DBNull.Value ?
+                                    Convert.ToDateTime(reader["NgayKT"]) : (DateTime?)null
+                            };
+                        }
+                        else
+                        {
+                            Console.WriteLine("[LayHocKyIDauTienCuaNamHocMoiNhat] Không tìm thấy học kỳ I nào");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayHocKyIDauTienCuaNamHocMoiNhat: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+
+            return hocKy;
+        }
+
     }
 }

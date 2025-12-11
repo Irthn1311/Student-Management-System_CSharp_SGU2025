@@ -132,6 +132,19 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 if (xepLoai != null)
                 {
                     xepLoai.MaHocKy = maHocKy;
+                    
+                    // Lấy hạnh kiểm và tính xếp loại tổng kết
+                    HanhKiemDTO hk = hanhKiemDAO.LayHanhKiem(maHocSinh, maHocKy);
+                    if (hk != null)
+                    {
+                        xepLoai.HanhKiem = hk.XepLoai;
+                    }
+
+                    // Tính xếp loại tổng kết từ học lực và hạnh kiểm
+                    if (!string.IsNullOrEmpty(xepLoai.HocLuc) && !string.IsNullOrEmpty(xepLoai.HanhKiem))
+                    {
+                        xepLoai.XepLoaiTongKet = TinhXepLoaiTongKet(xepLoai.HocLuc, xepLoai.HanhKiem);
+                    }
                 }
 
                 return xepLoai;

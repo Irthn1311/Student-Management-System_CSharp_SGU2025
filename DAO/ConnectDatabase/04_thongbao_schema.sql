@@ -411,25 +411,6 @@ INSERT IGNORE INTO VaiTroChucNangHanhDong (MaVaiTro, MaChucNang, HanhDong) VALUE
 ('admin', 'qlthongbao', 'update'),
 ('admin', 'qlthongbao', 'delete');
 
--- Gán quyền thông báo cho Giáo viên (read + create cho lớp mình)
-INSERT IGNORE INTO VaiTroChucNangHanhDong (MaVaiTro, MaChucNang, HanhDong) VALUES
-('teacher', 'qlthongbao', 'read'),
-('teacher', 'qlthongbao', 'create');
-
--- Gán quyền thông báo cho Học sinh (chỉ read)
-INSERT IGNORE INTO VaiTroChucNangHanhDong (MaVaiTro, MaChucNang, HanhDong) VALUES
-('student', 'qlthongbao', 'read');
-
--- Gán quyền thông báo cho Phụ huynh (chỉ read)
-INSERT IGNORE INTO VaiTroChucNangHanhDong (MaVaiTro, MaChucNang, HanhDong) VALUES
-('parent', 'qlthongbao', 'read');
-
--- Gán chức năng thông báo vào các vai trò
-INSERT IGNORE INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES
-('admin', 'qlthongbao'),
-('teacher', 'qlthongbao'),
-('student', 'qlthongbao'),
-('parent', 'qlthongbao');
 
 -- =====================================================================
 -- HOÀN THÀNH

@@ -51,7 +51,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- =====================================================================
 
 CREATE TABLE VaiTro (
-    MaVaiTro VARCHAR(10) PRIMARY KEY,
+    MaVaiTro VARCHAR(36) PRIMARY KEY,
     TenVaiTro NVARCHAR(50) NOT NULL UNIQUE,
     MoTa TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -63,7 +63,7 @@ CREATE TABLE ChucNang (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE VaiTroChucNang (
-    MaVaiTro VARCHAR(10),
+    MaVaiTro VARCHAR(36),
     MaChucNang VARCHAR(50),
     PRIMARY KEY (MaVaiTro, MaChucNang),
     FOREIGN KEY (MaVaiTro) REFERENCES VaiTro(MaVaiTro),
@@ -78,7 +78,7 @@ CREATE TABLE NguoiDung (
 
 CREATE TABLE NguoiDungVaiTro (
     TenDangNhap VARCHAR(20),
-    MaVaiTro VARCHAR(10),
+    MaVaiTro VARCHAR(36),
     PRIMARY KEY (TenDangNhap, MaVaiTro),
     FOREIGN KEY (TenDangNhap) REFERENCES NguoiDung(TenDangNhap),
     FOREIGN KEY (MaVaiTro) REFERENCES VaiTro(MaVaiTro)
@@ -94,7 +94,7 @@ CREATE TABLE ChucNangHanhDong (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE VaiTroChucNangHanhDong (
-    MaVaiTro VARCHAR(10),
+    MaVaiTro VARCHAR(36),
     MaChucNang VARCHAR(50),
     HanhDong VARCHAR(20),
     PRIMARY KEY (MaVaiTro, MaChucNang, HanhDong),
@@ -111,7 +111,7 @@ CREATE TABLE HoSoNguoiDung (
     NgaySinh DATE,
     GioiTinh VARCHAR(10),
     DiaChi NVARCHAR(255),
-    LoaiDoiTuong VARCHAR(20) -- 'hocsinh', 'phuhuynh', 'giaovien', 'nhanvien'
+    LoaiDoiTuong VARCHAR(36) -- 'hocsinh', 'phuhuynh', 'giaovien', 'nhanvien'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE NguoiDung 
@@ -161,7 +161,10 @@ INSERT IGNORE INTO ChucNangHanhDong (MaChucNang, HanhDong) VALUES
 
 -- Tạo vai trò admin
 INSERT IGNORE INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES
-('admin', 'Quản trị viên', 'Vai trò quản trị hệ thống với đầy đủ quyền hạn');
+('admin', 'Quản trị viên', 'Vai trò quản trị hệ thống với đầy đủ quyền hạn'),
+('student', 'Học sinh', 'Học sinh trong hệ thống'),
+('teacher', 'Giáo viên', 'Giáo viên giảng dạy');
+
 
 -- Tạo tài khoản admin (mật khẩu mặc định: admin - nên được thay đổi sau khi đăng nhập lần đầu)
 -- Lưu ý: Mật khẩu này nên được hash bằng bcrypt hoặc phương pháp tương tự trong ứng dụng
@@ -207,6 +210,33 @@ CROSS JOIN (
     UNION ALL SELECT 'delete'
 ) h
 WHERE c.MaChucNang <> 'qlcaidat';
+
+INSERT IGNORE INTO vaitrochucnang (MaVaiTro, MaChucNang) VALUES 
+('student', 'qltkb'),
+('teacher', 'qltkb'),
+('teacher', 'qldiem'),
+('teacher', 'qldanhgia'),
+('teacher', 'qlxeploai'),
+('teacher', 'qlhanhkiem'),
+('teacher', 'qlhocsinh'),
+('teacher', 'qlthongbao');
+
+INSERT IGNORE INTO VaiTroChucNangHanhDong (MaVaiTro, MaChucNang, HanhDong) VALUES
+('student', 'qltkb', 'read'),
+('teacher', 'qltkb', 'read'),
+('teacher', 'qldiem', 'read'),
+('teacher', 'qldiem', 'create'),
+('teacher', 'qldiem', 'update'),
+('teacher', 'qldanhgia', 'create'),
+('teacher', 'qldanhgia', 'read'),
+('teacher', 'qlxeploai', 'read'),
+('teacher', 'qlxeploai', 'update'),
+('teacher', 'qlhanhkiem', 'update'),
+('teacher', 'qlhanhkiem', 'read'),
+('teacher', 'qlhanhkiem', 'create'),
+('teacher', 'qlhocsinh', 'read'),
+('teacher', 'qlthongbao', 'read'),
+('teacher', 'qlthongbao', 'create');
 
 -- =====================================================================
 -- PHẦN 2: CÁC BẢNG DANH MỤC VÀ THÔNG TIN CỐT LÕI

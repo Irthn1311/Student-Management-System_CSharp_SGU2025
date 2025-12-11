@@ -49,6 +49,10 @@
             this.statCarHanhKiemTot = new Student_Management_System_CSharp_SGU2025.GUI.StatCardQuanLiHocSinh();
             this.headerHanhKiem = new Student_Management_System_CSharp_SGU2025.GUI.HeaderQuanLiHocSinh();
             this.btnXepHanhKiemTuDong = new Guna.UI2.WinForms.Guna2Button();
+            this.lblTrangHienTai = new System.Windows.Forms.Label();
+            this.btnTrangTruoc = new Guna.UI2.WinForms.Guna2Button();
+            this.btnTrangSau = new Guna.UI2.WinForms.Guna2Button();
+            this.txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.tableHanhKiem)).BeginInit();
             this.SuspendLayout();
             // 
@@ -300,11 +304,86 @@
             this.btnXepHanhKiemTuDong.Text = "Sắp xếp hạnh kiểm";
             this.btnXepHanhKiemTuDong.Click += new System.EventHandler(this.btnXepHanhKiemTuDong_Click);
             // 
+            // lblTrangHienTai
+            // 
+            this.lblTrangHienTai.AutoSize = true;
+            this.lblTrangHienTai.BackColor = System.Drawing.Color.Transparent;
+            this.lblTrangHienTai.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTrangHienTai.Location = new System.Drawing.Point(474, 831);
+            this.lblTrangHienTai.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblTrangHienTai.Name = "lblTrangHienTai";
+            this.lblTrangHienTai.Size = new System.Drawing.Size(43, 20);
+            this.lblTrangHienTai.TabIndex = 65;
+            this.lblTrangHienTai.Text = "1/10";
+            // 
+            // btnTrangTruoc
+            // 
+            this.btnTrangTruoc.BorderRadius = 7;
+            this.btnTrangTruoc.BorderThickness = 1;
+            this.btnTrangTruoc.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangTruoc.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangTruoc.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnTrangTruoc.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnTrangTruoc.FillColor = System.Drawing.Color.White;
+            this.btnTrangTruoc.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTrangTruoc.ForeColor = System.Drawing.Color.Black;
+            this.btnTrangTruoc.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnTrangTruoc.Location = new System.Drawing.Point(427, 815);
+            this.btnTrangTruoc.Margin = new System.Windows.Forms.Padding(2);
+            this.btnTrangTruoc.Name = "btnTrangTruoc";
+            this.btnTrangTruoc.Size = new System.Drawing.Size(43, 35);
+            this.btnTrangTruoc.TabIndex = 64;
+            this.btnTrangTruoc.Text = "◀";
+            this.btnTrangTruoc.Click += new System.EventHandler(this.btnTrangTruoc_Click);
+            // 
+            // btnTrangSau
+            // 
+            this.btnTrangSau.BorderRadius = 7;
+            this.btnTrangSau.BorderThickness = 1;
+            this.btnTrangSau.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangSau.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangSau.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnTrangSau.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnTrangSau.FillColor = System.Drawing.Color.White;
+            this.btnTrangSau.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTrangSau.ForeColor = System.Drawing.Color.Black;
+            this.btnTrangSau.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnTrangSau.Location = new System.Drawing.Point(533, 816);
+            this.btnTrangSau.Margin = new System.Windows.Forms.Padding(2);
+            this.btnTrangSau.Name = "btnTrangSau";
+            this.btnTrangSau.Size = new System.Drawing.Size(43, 35);
+            this.btnTrangSau.TabIndex = 63;
+            this.btnTrangSau.Text = "▶";
+            this.btnTrangSau.Click += new System.EventHandler(this.btnTrangSau_Click);
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtSearch.DefaultText = "";
+            this.txtSearch.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtSearch.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtSearch.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtSearch.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtSearch.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSearch.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtSearch.Location = new System.Drawing.Point(17, 815);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.PlaceholderText = "Tìm kiếm tài khoản...";
+            this.txtSearch.SelectedText = "";
+            this.txtSearch.Size = new System.Drawing.Size(236, 36);
+            this.txtSearch.TabIndex = 66;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            // 
             // HanhKiem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.txtSearch);
+            this.Controls.Add(this.lblTrangHienTai);
+            this.Controls.Add(this.btnTrangTruoc);
+            this.Controls.Add(this.btnTrangSau);
             this.Controls.Add(this.btnXepHanhKiemTuDong);
             this.Controls.Add(this.panelTrong);
             this.Controls.Add(this.statCardHanhKiemTrungBinh);
@@ -325,6 +404,7 @@
             this.Load += new System.EventHandler(this.HanhKiem_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tableHanhKiem)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -348,5 +428,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn xepLoai;
         private System.Windows.Forms.DataGridViewTextBoxColumn nhanXet;
         private Guna.UI2.WinForms.Guna2Button btnXepHanhKiemTuDong;
+        private System.Windows.Forms.Label lblTrangHienTai;
+        private Guna.UI2.WinForms.Guna2Button btnTrangTruoc;
+        private Guna.UI2.WinForms.Guna2Button btnTrangSau;
+        private Guna.UI2.WinForms.Guna2TextBox txtSearch;
     }
 }

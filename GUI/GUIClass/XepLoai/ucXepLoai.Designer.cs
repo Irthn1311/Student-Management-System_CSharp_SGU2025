@@ -72,6 +72,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.thongKeXepLoai2 = new Student_Management_System_CSharp_SGU2025.GUI.ThongKeXepLoai();
             this.thongKeXepLoai1 = new Student_Management_System_CSharp_SGU2025.GUI.ThongKeXepLoai();
             this.txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
+            this.lblTrangHienTai = new System.Windows.Forms.Label();
+            this.btnTrangTruoc = new Guna.UI2.WinForms.Guna2Button();
+            this.btnTrangSau = new Guna.UI2.WinForms.Guna2Button();
             this.lblPercent.SuspendLayout();
             this.guna2Panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableXepLoai)).BeginInit();
@@ -700,12 +703,67 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.txtSearch.TabIndex = 28;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
+            // lblTrangHienTai
+            // 
+            this.lblTrangHienTai.AutoSize = true;
+            this.lblTrangHienTai.BackColor = System.Drawing.Color.Transparent;
+            this.lblTrangHienTai.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTrangHienTai.Location = new System.Drawing.Point(474, 1105);
+            this.lblTrangHienTai.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblTrangHienTai.Name = "lblTrangHienTai";
+            this.lblTrangHienTai.Size = new System.Drawing.Size(43, 20);
+            this.lblTrangHienTai.TabIndex = 65;
+            this.lblTrangHienTai.Text = "1/10";
+            // 
+            // btnTrangTruoc
+            // 
+            this.btnTrangTruoc.BorderRadius = 7;
+            this.btnTrangTruoc.BorderThickness = 1;
+            this.btnTrangTruoc.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangTruoc.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangTruoc.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnTrangTruoc.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnTrangTruoc.FillColor = System.Drawing.Color.White;
+            this.btnTrangTruoc.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTrangTruoc.ForeColor = System.Drawing.Color.Black;
+            this.btnTrangTruoc.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnTrangTruoc.Location = new System.Drawing.Point(427, 1089);
+            this.btnTrangTruoc.Margin = new System.Windows.Forms.Padding(2);
+            this.btnTrangTruoc.Name = "btnTrangTruoc";
+            this.btnTrangTruoc.Size = new System.Drawing.Size(43, 35);
+            this.btnTrangTruoc.TabIndex = 64;
+            this.btnTrangTruoc.Text = "◀";
+            this.btnTrangTruoc.Click += new System.EventHandler(this.btnTrangTruoc_Click);
+            // 
+            // btnTrangSau
+            // 
+            this.btnTrangSau.BorderRadius = 7;
+            this.btnTrangSau.BorderThickness = 1;
+            this.btnTrangSau.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangSau.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangSau.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnTrangSau.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnTrangSau.FillColor = System.Drawing.Color.White;
+            this.btnTrangSau.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTrangSau.ForeColor = System.Drawing.Color.Black;
+            this.btnTrangSau.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnTrangSau.Location = new System.Drawing.Point(533, 1090);
+            this.btnTrangSau.Margin = new System.Windows.Forms.Padding(2);
+            this.btnTrangSau.Name = "btnTrangSau";
+            this.btnTrangSau.Size = new System.Drawing.Size(43, 35);
+            this.btnTrangSau.TabIndex = 63;
+            this.btnTrangSau.Text = "▶";
+            this.btnTrangSau.Click += new System.EventHandler(this.btnTrangSau_Click);
+            // 
             // ucXepLoai
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
+            this.Controls.Add(this.lblTrangHienTai);
+            this.Controls.Add(this.btnTrangTruoc);
+            this.Controls.Add(this.btnTrangSau);
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.thongKeXepLoai4);
             this.Controls.Add(this.thongKeXepLoai3);
@@ -778,5 +836,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private XepLoai.CardTheoKhoi cardTheoKhoi2;
         private XepLoai.CardTheoKhoi cardTheoKhoi1;
         private Guna.UI2.WinForms.Guna2TextBox txtSearch;
+        private System.Windows.Forms.Label lblTrangHienTai;
+        private Guna.UI2.WinForms.Guna2Button btnTrangTruoc;
+        private Guna.UI2.WinForms.Guna2Button btnTrangSau;
     }
 }

@@ -72,6 +72,7 @@
             this.guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.doiMatKhau = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2PictureBox5 = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.btnXemThanhTich = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Panel2.SuspendLayout();
             this.pnlUserDetails.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox2)).BeginInit();
@@ -270,6 +271,7 @@
             // 
             this.guna2Panel3.BackColor = System.Drawing.Color.Transparent;
             this.guna2Panel3.BorderRadius = 6;
+            this.guna2Panel3.Controls.Add(this.btnXemThanhTich);
             this.guna2Panel3.Controls.Add(this.dateNgaySinh);
             this.guna2Panel3.Controls.Add(this.btnGuiYeuCauChuyenLop);
             this.guna2Panel3.Controls.Add(this.btnCapNhat);
@@ -542,7 +544,7 @@
             this.btnDoiMatKhau.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(234)))), ((int)(((byte)(88)))), ((int)(((byte)(12)))));
             this.btnDoiMatKhau.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDoiMatKhau.ForeColor = System.Drawing.Color.White;
-            this.btnDoiMatKhau.Image =  global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.icons8_key_white;
+            this.btnDoiMatKhau.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.icons8_key_white;
             this.btnDoiMatKhau.ImageSize = new System.Drawing.Size(17, 17);
             this.btnDoiMatKhau.Location = new System.Drawing.Point(522, 406);
             this.btnDoiMatKhau.Margin = new System.Windows.Forms.Padding(2);
@@ -740,6 +742,26 @@
             this.guna2PictureBox5.TabIndex = 6;
             this.guna2PictureBox5.TabStop = false;
             // 
+            // btnXemThanhTich
+            // 
+            this.btnXemThanhTich.BorderRadius = 7;
+            this.btnXemThanhTich.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnXemThanhTich.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnXemThanhTich.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnXemThanhTich.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnXemThanhTich.FillColor = System.Drawing.Color.Gray;
+            this.btnXemThanhTich.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnXemThanhTich.ForeColor = System.Drawing.Color.White;
+            this.btnXemThanhTich.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnXemThanhTich.Location = new System.Drawing.Point(32, 366);
+            this.btnXemThanhTich.Margin = new System.Windows.Forms.Padding(2);
+            this.btnXemThanhTich.Name = "btnXemThanhTich";
+            this.btnXemThanhTich.Size = new System.Drawing.Size(201, 41);
+            this.btnXemThanhTich.TabIndex = 20;
+            this.btnXemThanhTich.Text = "Xem thành tích học tập";
+            this.btnXemThanhTich.Visible = false;
+            this.btnXemThanhTich.Click += new System.EventHandler(this.btnXemThanhTich_Click);
+            // 
             // CaiDat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -816,5 +838,6 @@
         private Guna.UI2.WinForms.Guna2Button btnDoiMatKhau;
         private Guna.UI2.WinForms.Guna2DateTimePicker dateNgaySinh;
         private Guna.UI2.WinForms.Guna2Button btnGuiYeuCauChuyenLop;
+        private Guna.UI2.WinForms.Guna2Button btnXemThanhTich;
     }
 }

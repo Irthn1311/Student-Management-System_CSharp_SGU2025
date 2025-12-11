@@ -321,6 +321,27 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Utils
         }
 
         /// <summary>
+        /// ✅ Áp dụng phân quyền cho form Giáo Viên
+        /// </summary>
+        public static void ApplyPermissionGiaoVien(
+            Control btnThemGiaoVien,
+            DataGridView tableGiaoVien)
+        {
+            // Ẩn/hiện nút Thêm giáo viên
+            SetButtonPermission(btnThemGiaoVien, QLGIAOVIEN, CREATE);
+
+            // Vô hiệu hóa icon Sửa/Xóa trên DataGridView (xử lý trong CellPainting)
+            if (tableGiaoVien != null)
+            {
+                tableGiaoVien.Tag = new
+                {
+                    CanUpdate = HasPermission(QLGIAOVIEN, UPDATE),
+                    CanDelete = HasPermission(QLGIAOVIEN, DELETE)
+                };
+            }
+        }
+
+        /// <summary>
         /// ✅ Áp dụng phân quyền cho form Phân công giảng dạy
         /// </summary>
         public static void ApplyPermissionPhanCong(

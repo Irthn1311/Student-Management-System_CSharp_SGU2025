@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
@@ -330,6 +330,51 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             catch (Exception ex)
             {
                 throw new Exception("Lỗi nghiệp vụ khi lấy tất cả điểm số: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Lấy học kỳ mới nhất có dữ liệu điểm số
+        /// </summary>
+        public HocKyDTO GetHocKyMoiNhatCoDuLieu()
+        {
+            try
+            {
+                return hocKyDAO.LayHocKyMoiNhatCoDuLieu();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy học kỳ mới nhất: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra học kỳ có dữ liệu điểm số hay không
+        /// </summary>
+        public bool KiemTraHocKyCoDiemSo(int maHocKy)
+        {
+            try
+            {
+                return hocKyDAO.KiemTraHocKyCoDiemSo(maHocKy);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi kiểm tra điểm số: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Lấy học kỳ I của năm học mới nhất (dùng khi không có học kỳ nào có dữ liệu điểm số)
+        /// </summary>
+        public HocKyDTO LayHocKyIDauTienCuaNamHocMoiNhat()
+        {
+            try
+            {
+                return hocKyDAO.LayHocKyIDauTienCuaNamHocMoiNhat();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi nghiệp vụ khi lấy học kỳ I đầu tiên: " + ex.Message);
             }
         }
 

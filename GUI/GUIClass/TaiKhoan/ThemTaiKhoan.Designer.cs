@@ -324,6 +324,7 @@
             this.guna2HtmlLabel6.Size = new System.Drawing.Size(105, 23);
             this.guna2HtmlLabel6.TabIndex = 83;
             this.guna2HtmlLabel6.Text = "Chọn giới tính:";
+            this.guna2HtmlLabel6.Click += new System.EventHandler(this.guna2HtmlLabel6_Click);
             // 
             // guna2HtmlLabel7
             // 
@@ -334,6 +335,7 @@
             this.guna2HtmlLabel7.Size = new System.Drawing.Size(56, 23);
             this.guna2HtmlLabel7.TabIndex = 85;
             this.guna2HtmlLabel7.Text = "Họ tên :";
+            this.guna2HtmlLabel7.Click += new System.EventHandler(this.guna2HtmlLabel7_Click);
             // 
             // ThemTaiKhoan
             // 

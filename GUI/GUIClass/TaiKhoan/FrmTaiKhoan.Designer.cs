@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnVaiTro = new Guna.UI2.WinForms.Guna2Button();
             this.tbTaiKhoan = new Guna.UI2.WinForms.Guna2DataGridView();
             this.tenTaiKhoan = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -46,6 +46,9 @@
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             this.guna2CustomGradientPanel1 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
             this.txtSearch = new Guna.UI2.WinForms.Guna2TextBox();
+            this.lblTrangHienTai = new System.Windows.Forms.Label();
+            this.btnTrangTruoc = new Guna.UI2.WinForms.Guna2Button();
+            this.btnTrangSau = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)(this.tbTaiKhoan)).BeginInit();
             this.guna2Panel1.SuspendLayout();
             this.SuspendLayout();
@@ -69,16 +72,16 @@
             // 
             // tbTaiKhoan
             // 
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            this.tbTaiKhoan.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tbTaiKhoan.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.White;
+            this.tbTaiKhoan.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tbTaiKhoan.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this.tbTaiKhoan.ColumnHeadersHeight = 18;
             this.tbTaiKhoan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tbTaiKhoan.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -87,14 +90,14 @@
             this.trangThai,
             this.lastLogin,
             this.thaoTac});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tbTaiKhoan.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tbTaiKhoan.DefaultCellStyle = dataGridViewCellStyle9;
             this.tbTaiKhoan.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tbTaiKhoan.Location = new System.Drawing.Point(32, 287);
             this.tbTaiKhoan.Margin = new System.Windows.Forms.Padding(2);
@@ -258,7 +261,7 @@
             this.txtSearch.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSearch.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtSearch.Location = new System.Drawing.Point(32, 757);
+            this.txtSearch.Location = new System.Drawing.Point(81, 757);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.PlaceholderText = "Tìm kiếm tài khoản...";
             this.txtSearch.SelectedText = "";
@@ -266,12 +269,67 @@
             this.txtSearch.TabIndex = 10;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
+            // lblTrangHienTai
+            // 
+            this.lblTrangHienTai.AutoSize = true;
+            this.lblTrangHienTai.BackColor = System.Drawing.Color.Transparent;
+            this.lblTrangHienTai.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTrangHienTai.Location = new System.Drawing.Point(469, 772);
+            this.lblTrangHienTai.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblTrangHienTai.Name = "lblTrangHienTai";
+            this.lblTrangHienTai.Size = new System.Drawing.Size(43, 20);
+            this.lblTrangHienTai.TabIndex = 62;
+            this.lblTrangHienTai.Text = "1/10";
+            // 
+            // btnTrangTruoc
+            // 
+            this.btnTrangTruoc.BorderRadius = 7;
+            this.btnTrangTruoc.BorderThickness = 1;
+            this.btnTrangTruoc.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangTruoc.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangTruoc.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnTrangTruoc.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnTrangTruoc.FillColor = System.Drawing.Color.White;
+            this.btnTrangTruoc.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTrangTruoc.ForeColor = System.Drawing.Color.Black;
+            this.btnTrangTruoc.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnTrangTruoc.Location = new System.Drawing.Point(422, 756);
+            this.btnTrangTruoc.Margin = new System.Windows.Forms.Padding(2);
+            this.btnTrangTruoc.Name = "btnTrangTruoc";
+            this.btnTrangTruoc.Size = new System.Drawing.Size(43, 35);
+            this.btnTrangTruoc.TabIndex = 61;
+            this.btnTrangTruoc.Text = "◀";
+            this.btnTrangTruoc.Click += new System.EventHandler(this.btnTrangTruoc_Click);
+            // 
+            // btnTrangSau
+            // 
+            this.btnTrangSau.BorderRadius = 7;
+            this.btnTrangSau.BorderThickness = 1;
+            this.btnTrangSau.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangSau.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnTrangSau.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnTrangSau.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnTrangSau.FillColor = System.Drawing.Color.White;
+            this.btnTrangSau.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTrangSau.ForeColor = System.Drawing.Color.Black;
+            this.btnTrangSau.ImageSize = new System.Drawing.Size(15, 15);
+            this.btnTrangSau.Location = new System.Drawing.Point(528, 757);
+            this.btnTrangSau.Margin = new System.Windows.Forms.Padding(2);
+            this.btnTrangSau.Name = "btnTrangSau";
+            this.btnTrangSau.Size = new System.Drawing.Size(43, 35);
+            this.btnTrangSau.TabIndex = 60;
+            this.btnTrangSau.Text = "▶";
+            this.btnTrangSau.Click += new System.EventHandler(this.btnTrangSau_Click);
+            // 
             // FrmTaiKhoan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.lblTrangHienTai);
+            this.Controls.Add(this.btnTrangTruoc);
+            this.Controls.Add(this.btnTrangSau);
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.guna2Panel1);
             this.Controls.Add(this.statCardThongKeTaiKhoan4);
@@ -284,11 +342,12 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximumSize = new System.Drawing.Size(1168, 768);
             this.Name = "FrmTaiKhoan";
-            this.Size = new System.Drawing.Size(1151, 768);
+            this.Size = new System.Drawing.Size(1134, 768);
             this.Load += new System.EventHandler(this.TaiKhoan_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tbTaiKhoan)).EndInit();
             this.guna2Panel1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -308,5 +367,8 @@
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private Guna.UI2.WinForms.Guna2CustomGradientPanel guna2CustomGradientPanel1;
         private Guna.UI2.WinForms.Guna2TextBox txtSearch;
+        private System.Windows.Forms.Label lblTrangHienTai;
+        private Guna.UI2.WinForms.Guna2Button btnTrangTruoc;
+        private Guna.UI2.WinForms.Guna2Button btnTrangSau;
     }
 }

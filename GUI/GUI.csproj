@@ -204,6 +204,12 @@
     <Compile Include="GUIClass\CaiDat\CaiDat.Designer.cs">
       <DependentUpon>CaiDat.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUIClass\CaiDat\FrmThanhTich.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\CaiDat\FrmThanhTich.Designer.cs">
+      <DependentUpon>FrmThanhTich.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUIClass\CardHoatDongNoiBatDashboard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -653,6 +659,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\CaiDat\CaiDat.resx">
       <DependentUpon>CaiDat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\CaiDat\FrmThanhTich.resx">
+      <DependentUpon>FrmThanhTich.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\CardHoatDongNoiBatDashboard.resx">
       <DependentUpon>CardHoatDongNoiBatDashboard.cs</DependentUpon>

@@ -1,10 +1,12 @@
 using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.BUS.Utils;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,50 +102,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tableGiaoVien.Columns["Sdt"].FillWeight = 10; tableGiaoVien.Columns["Sdt"].MinimumWidth = 70;
             tableGiaoVien.Columns["TrangThai"].FillWeight = 10; tableGiaoVien.Columns["TrangThai"].MinimumWidth = 90;
 
-            // ====== CỘT ICON (Xem, Sửa, Xóa) ======
-            var colView = new DataGridViewImageColumn()
-            {
-                Name = "View",
-                HeaderText = "Xem",
-                ImageLayout = DataGridViewImageCellLayout.Zoom,
-            };
-            var colEdit = new DataGridViewImageColumn()
-            {
-                Name = "Edit",
-                HeaderText = "Sửa",
-                ImageLayout = DataGridViewImageCellLayout.Zoom,
-            };
-            var colDel = new DataGridViewImageColumn()
-            {
-                Name = "Delete",
-                HeaderText = "Xóa",
-                ImageLayout = DataGridViewImageCellLayout.Zoom,
-            };
-
-            tableGiaoVien.Columns.Add(colView);
-            tableGiaoVien.Columns.Add(colEdit);
-            tableGiaoVien.Columns.Add(colDel);
-
-            int viewColWidth = 60;
-            int editColWidth = 60;
-            int delColWidth = 60;
-
-            tableGiaoVien.Columns["View"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            tableGiaoVien.Columns["Edit"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            tableGiaoVien.Columns["Delete"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            tableGiaoVien.Columns["View"].Width = viewColWidth;
-            tableGiaoVien.Columns["Edit"].Width = editColWidth;
-            tableGiaoVien.Columns["Delete"].Width = delColWidth;
-
-            tableGiaoVien.Columns["View"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            tableGiaoVien.Columns["Edit"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            tableGiaoVien.Columns["Delete"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            tableGiaoVien.Columns["View"].DefaultCellStyle.Padding = new Padding(6);
-            tableGiaoVien.Columns["Edit"].DefaultCellStyle.Padding = new Padding(6);
-            tableGiaoVien.Columns["Delete"].DefaultCellStyle.Padding = new Padding(6);
+            // ====== CỘT THAO TÁC (Xem, Sửa, Xóa) - Sử dụng CellPainting để vẽ icon ======
+            tableGiaoVien.Columns.Add("ThaoTacGV", "Thao tác");
+            tableGiaoVien.Columns["ThaoTacGV"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            tableGiaoVien.Columns["ThaoTacGV"].Width = 200; // Đủ rộng cho 3 icon lớn hơn
+            tableGiaoVien.Columns["ThaoTacGV"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             // Event
             tableGiaoVien.CellFormatting += tableGiaoVien_CellFormatting;
+            tableGiaoVien.CellPainting += tableGiaoVien_CellPainting;
             tableGiaoVien.CellClick += tableGiaoVien_CellContentClick;
 
             tableGiaoVien.CellMouseEnter += (s, e) =>
@@ -190,6 +157,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             if (rowIndex < 0 || rowIndex >= tableGiaoVien.Rows.Count)
                 return;
 
+            // ✅ Kiểm tra quyền UPDATE
+            if (!PermissionHelper.CheckDataGridIconPermission(tableGiaoVien, "edit", "Quản lý giáo viên"))
+                return;
+
             // Lấy MaGiaoVien từ row để tránh lỗi khi sắp xếp
             string maGiaoVien = tableGiaoVien.Rows[rowIndex].Cells["MaGv"].Value?.ToString();
             if (string.IsNullOrEmpty(maGiaoVien))
@@ -212,6 +183,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void HandleDelClick(int rowIndex)
         {
             if (rowIndex < 0 || rowIndex >= tableGiaoVien.Rows.Count)
+                return;
+
+            // ✅ Kiểm tra quyền DELETE
+            if (!PermissionHelper.CheckDataGridIconPermission(tableGiaoVien, "delete", "Quản lý giáo viên"))
                 return;
 
             // Lấy MaGiaoVien từ row để tránh lỗi khi sắp xếp
@@ -298,6 +273,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
+                // ✅ Kiểm tra quyền truy cập
+                if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLGIAOVIEN, "Quản lý giáo viên"))
+                {
+                    this.Enabled = false;
+                    return;
+                }
+
+                // ✅ Áp dụng phân quyền
+                PermissionHelper.ApplyPermissionGiaoVien(btnThemGiaoVien, tableGiaoVien);
+
                 // Load danh sách môn học cho combobox
                 LoadDanhSachMonHoc();
 
@@ -483,22 +468,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     gv.ChuyenMon,
                     gv.SoDienThoai,
                     gv.TrangThai,
-                    null,  // View
-                    null,  // Edit
-                    null   // Delete
+                    ""  // ThaoTacGV - sẽ được vẽ trong CellPainting
                 );
-
-                try
-                {
-                    tableGiaoVien.Rows[idx].Cells["View"].Value = Properties.Resources.icon_eye;
-                    tableGiaoVien.Rows[idx].Cells["Edit"].Value = Properties.Resources.edit_icon;
-                    tableGiaoVien.Rows[idx].Cells["Delete"].Value = Properties.Resources.deleteicon;
-                }
-                catch (Exception ex)
-                {
-                    // Nếu không load được icon, bỏ qua
-                    Console.WriteLine($"Không thể load icon: {ex.Message}");
-                }
             });
         }
 
@@ -572,6 +543,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void BtnThemGiaoVien_Click(object sender, EventArgs e)
         {
+            // ✅ Kiểm tra quyền CREATE
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLGIAOVIEN, "Quản lý giáo viên"))
+                return;
+
             var formThem = new ThemGiaoVien();
             if (formThem.ShowDialog() == DialogResult.OK)
             {
@@ -583,14 +558,41 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             if (e.RowIndex < 0) return;
 
-            string column = tableGiaoVien.Columns[e.ColumnIndex].Name;
+            // ✅ Xử lý click vào cột ThaoTacGV
+            if (e.ColumnIndex == tableGiaoVien.Columns["ThaoTacGV"].Index)
+            {
+                Rectangle cellBounds = tableGiaoVien.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+                Point clickPosInCell = tableGiaoVien.PointToClient(Cursor.Position);
+                int xClick = clickPosInCell.X - cellBounds.Left;
 
-            if (column == "View")
-                HandleViewClick(e.RowIndex);
-            else if (column == "Edit")
-                HandleEditClick(e.RowIndex);
-            else if (column == "Delete")
-                HandleDelClick(e.RowIndex);
+                int iconSize = 22; // ✅ Phóng to icon từ 18 lên 22
+                int spacing = 14; // ✅ Tăng khoảng cách từ 12 lên 14
+                int totalWidth = iconSize * 3 + spacing * 2; // 3 icon: Xem, Sửa, Xóa
+                int startXInCell = (cellBounds.Width - totalWidth) / 2;
+
+                // ✅ Tính toán vị trí các icon
+                int viewIconEndX = startXInCell + iconSize;
+                int editIconStartX = startXInCell + iconSize + spacing;
+                int editIconEndX = editIconStartX + iconSize;
+                int deleteIconStartX = editIconStartX + iconSize + spacing;
+                int deleteIconEndX = deleteIconStartX + iconSize;
+
+                // ✅ Click Xem chi tiết (icon đầu tiên)
+                if (xClick >= startXInCell && xClick < viewIconEndX)
+                {
+                    HandleViewClick(e.RowIndex);
+                }
+                // ✅ Click Sửa (icon thứ hai)
+                else if (xClick >= editIconStartX && xClick < editIconEndX)
+                {
+                    HandleEditClick(e.RowIndex);
+                }
+                // ✅ Click Xóa (icon thứ ba)
+                else if (xClick >= deleteIconStartX && xClick < deleteIconEndX)
+                {
+                    HandleDelClick(e.RowIndex);
+                }
+            }
         }
 
         private void tableGiaoVien_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -625,6 +627,137 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     e.CellStyle.ForeColor = Color.Gray;
                 }
             }
+        }
+
+        // ✅ Vẽ icon cho bảng Giáo Viên (Xem, Sửa, Xóa)
+        private void tableGiaoVien_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex == tableGiaoVien.Columns["ThaoTacGV"].Index)
+            {
+                e.PaintBackground(e.ClipBounds, true);
+
+                // ✅ Lấy permission từ Tag - Sử dụng cách an toàn hơn (không dùng dynamic)
+                bool canUpdate = true; // Mặc định true
+                bool canDelete = true; // Mặc định true
+                
+                if (tableGiaoVien.Tag != null)
+                {
+                    // ✅ Sử dụng reflection thay vì dynamic để tránh RuntimeBinderException
+                    try
+                    {
+                        var tagType = tableGiaoVien.Tag.GetType();
+                        var canUpdateProp = tagType.GetProperty("CanUpdate");
+                        var canDeleteProp = tagType.GetProperty("CanDelete");
+                        
+                        if (canUpdateProp != null)
+                        {
+                            var value = canUpdateProp.GetValue(tableGiaoVien.Tag);
+                            if (value is bool) canUpdate = (bool)value;
+                        }
+                        
+                        if (canDeleteProp != null)
+                        {
+                            var value = canDeleteProp.GetValue(tableGiaoVien.Tag);
+                            if (value is bool) canDelete = (bool)value;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore errors - sử dụng giá trị mặc định
+                        canUpdate = true;
+                        canDelete = true;
+                    }
+                }
+
+                // ✅ Icon Xem (luôn hiển thị - không cần quyền)
+                Image viewIcon = CreateViewIcon();
+                Image editIcon = Properties.Resources.edit_icon ?? Properties.Resources.repair;
+                Image deleteIcon = Properties.Resources.deleteicon ?? Properties.Resources.bin;
+
+                int iconSize = 22; // ✅ Phóng to icon từ 18 lên 22
+                int spacing = 14; // ✅ Tăng khoảng cách từ 12 lên 14
+                int totalWidth = iconSize * 3 + spacing * 2; // 3 icon với 2 khoảng cách
+                int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
+                int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
+
+                Rectangle viewRect = new Rectangle(startX, y, iconSize, iconSize);
+                Rectangle editRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
+                Rectangle deleteRect = new Rectangle(startX + (iconSize + spacing) * 2, y, iconSize, iconSize);
+
+                // ✅ Vẽ icon Xem (luôn hiển thị)
+                e.Graphics.DrawImage(viewIcon, viewRect);
+
+                // ✅ Vẽ icon Sửa với độ mờ nếu không có quyền
+                if (canUpdate)
+                {
+                    e.Graphics.DrawImage(editIcon, editRect);
+                }
+                else
+                {
+                    var grayScaleMatrix = new ColorMatrix(
+                        new float[][] {
+                    new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                    new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                    new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                    new float[] {0, 0, 0, 0.3f, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                        });
+                    using (var attributes = new ImageAttributes())
+                    {
+                        attributes.SetColorMatrix(grayScaleMatrix);
+                        e.Graphics.DrawImage(editIcon, editRect, 0, 0, editIcon.Width, editIcon.Height,
+                            GraphicsUnit.Pixel, attributes);
+                    }
+                }
+
+                // ✅ Vẽ icon Xóa với độ mờ nếu không có quyền
+                if (canDelete)
+                {
+                    e.Graphics.DrawImage(deleteIcon, deleteRect);
+                }
+                else
+                {
+                    var grayScaleMatrix = new ColorMatrix(
+                        new float[][] {
+                    new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                    new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                    new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                    new float[] {0, 0, 0, 0.3f, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                        });
+                    using (var attributes = new ImageAttributes())
+                    {
+                        attributes.SetColorMatrix(grayScaleMatrix);
+                        e.Graphics.DrawImage(deleteIcon, deleteRect, 0, 0, deleteIcon.Width, deleteIcon.Height,
+                            GraphicsUnit.Pixel, attributes);
+                    }
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        // ✅ Tạo icon "Xem" (eye icon) bằng code
+        private Image CreateViewIcon()
+        {
+            Bitmap bmp = new Bitmap(22, 22); // ✅ Phóng to icon từ 18x18 lên 22x22
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                
+                // Vẽ hình mắt đơn giản
+                // Màu xanh dương cho icon "Xem"
+                Pen pen = new Pen(Color.FromArgb(30, 136, 229), 2.5f); // ✅ Tăng độ dày nét vẽ
+                Brush brush = new SolidBrush(Color.FromArgb(30, 136, 229));
+                
+                // ✅ Điều chỉnh vị trí và kích thước cho icon 22x22
+                // Vẽ hình oval (mắt)
+                g.DrawEllipse(pen, 3, 5, 16, 12);
+                
+                // Vẽ con ngươi
+                g.FillEllipse(brush, 8, 9, 5, 5);
+            }
+            return bmp;
         }
     }
 }
