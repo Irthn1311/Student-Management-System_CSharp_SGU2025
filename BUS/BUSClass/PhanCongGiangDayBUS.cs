@@ -3,6 +3,7 @@ using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.BUS.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
@@ -630,5 +631,295 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 throw new Exception($"Lỗi khi sinh phân công tự động (có lọc): {ex.Message}", ex);
             }
         }
+
+        #region Statistics & Filter Methods (tách từ GUI)
+
+        /// <summary>
+        /// Lấy thống kê phân công giảng dạy
+        /// </summary>
+        /// <param name="maHocKyFilter">Filter theo học kỳ (optional)</param>
+        /// <returns>Dictionary chứa các thống kê: TongPhanCong, TongGiaoVien, TongMonHoc, TongLopHoc</returns>
+        public Dictionary<string, int> GetStatistics(int? maHocKyFilter = null)
+        {
+            try
+            {
+                List<PhanCongGiangDayDTO> dsPhanCong = DocDSPhanCong();
+                
+                // Áp dụng filter học kỳ nếu có
+                if (maHocKyFilter.HasValue)
+                {
+                    dsPhanCong = dsPhanCong?.Where(pc => pc.MaHocKy == maHocKyFilter.Value).ToList();
+                }
+                
+                int tongPhanCong = dsPhanCong?.Count ?? 0;
+                int tongGiaoVien = dsPhanCong?.Select(pc => pc.MaGiaoVien).Distinct().Count() ?? 0;
+                int tongMonHoc = dsPhanCong?.Select(pc => pc.MaMonHoc).Distinct().Count() ?? 0;
+                int tongLopHoc = dsPhanCong?.Select(pc => pc.MaLop).Distinct().Count() ?? 0;
+
+                return new Dictionary<string, int>
+                {
+                    { "TongPhanCong", tongPhanCong },
+                    { "TongGiaoVien", tongGiaoVien },
+                    { "TongMonHoc", tongMonHoc },
+                    { "TongLopHoc", tongLopHoc }
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi tính thống kê: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lọc phân công theo nhiều tiêu chí (học kỳ/năm học, khối, lớp, môn học)
+        /// </summary>
+        /// <param name="dsPhanCong">Danh sách phân công cần filter</param>
+        /// <param name="filterCriteria">Điều kiện filter</param>
+        /// <param name="skipHocKyFilter">Bỏ qua filter học kỳ nếu đã filter ở database level</param>
+        /// <returns>Danh sách phân công đã được filter</returns>
+        public List<PhanCongGiangDayDTO> ApplyFilters(
+            List<PhanCongGiangDayDTO> dsPhanCong, 
+            PhanCongFilterCriteria filterCriteria,
+            bool skipHocKyFilter = false)
+        {
+            if (dsPhanCong == null || dsPhanCong.Count == 0)
+                return dsPhanCong ?? new List<PhanCongGiangDayDTO>();
+
+            // Nếu không có criteria hoặc criteria rỗng, trả về nguyên danh sách
+            if (filterCriteria == null)
+                return dsPhanCong;
+
+            // Kiểm tra xem có filter nào được set không
+            bool hasAnyFilter = !string.IsNullOrEmpty(filterCriteria.MaNamHoc) ||
+                                filterCriteria.MaHocKy.HasValue ||
+                                filterCriteria.Khoi.HasValue ||
+                                filterCriteria.MaLop.HasValue ||
+                                filterCriteria.MaMonHoc.HasValue;
+
+            if (!hasAnyFilter)
+                return dsPhanCong;
+
+            try
+            {
+                var filtered = dsPhanCong.AsEnumerable();
+
+                // Filter theo Học kỳ hoặc Năm học (chỉ khi chưa filter ở database level)
+                if (!skipHocKyFilter)
+                {
+                    // Filter theo năm học (nếu có)
+                    if (!string.IsNullOrEmpty(filterCriteria.MaNamHoc))
+                    {
+                        var hocKyDAO = new HocKyDAO();
+                        var dsHocKy = hocKyDAO.DocDSHocKy();
+                        var maHocKyTrongNam = dsHocKy
+                            .Where(hk => hk.MaNamHoc == filterCriteria.MaNamHoc)
+                            .Select(hk => hk.MaHocKy)
+                            .ToList();
+                        
+                        if (maHocKyTrongNam.Count > 0)
+                        {
+                            filtered = filtered.Where(pc => maHocKyTrongNam.Contains(pc.MaHocKy));
+                        }
+                        else
+                        {
+                            filtered = Enumerable.Empty<PhanCongGiangDayDTO>();
+                        }
+                    }
+                    // Filter theo học kỳ cụ thể (nếu có)
+                    else if (filterCriteria.MaHocKy.HasValue)
+                    {
+                        filtered = filtered.Where(pc => pc.MaHocKy == filterCriteria.MaHocKy.Value);
+                    }
+                }
+
+                // Filter theo Khối
+                if (filterCriteria.Khoi.HasValue)
+                {
+                    var lopDAO = new LopDAO();
+                    filtered = filtered.Where(pc =>
+                    {
+                        var lop = lopDAO.LayLopTheoId(pc.MaLop);
+                        if (lop != null)
+                        {
+                            string tenLop = lop.tenLop?.Trim() ?? "";
+                            if (tenLop.Length > 0 && char.IsDigit(tenLop[0]))
+                            {
+                                string khoiStr = new string(tenLop.TakeWhile(char.IsDigit).ToArray());
+                                return int.TryParse(khoiStr, out int lopKhoi) && lopKhoi == filterCriteria.Khoi.Value;
+                            }
+                        }
+                        return false;
+                    });
+                }
+
+                // Filter theo Lớp
+                if (filterCriteria.MaLop.HasValue)
+                {
+                    filtered = filtered.Where(pc => pc.MaLop == filterCriteria.MaLop.Value);
+                }
+
+                // Filter theo Môn học
+                if (filterCriteria.MaMonHoc.HasValue)
+                {
+                    filtered = filtered.Where(pc => pc.MaMonHoc == filterCriteria.MaMonHoc.Value);
+                }
+
+                return filtered.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi apply filters: {ex.Message}");
+                return dsPhanCong;
+            }
+        }
+
+        /// <summary>
+        /// Chuyển đổi danh sách PhanCongGiangDayDTO sang PhanCongGiangDayViewModel
+        /// </summary>
+        /// <param name="dsPhanCong">Danh sách phân công DTO</param>
+        /// <returns>Danh sách ViewModel</returns>
+        public List<PhanCongGiangDayViewModel> ConvertToViewModel(List<PhanCongGiangDayDTO> dsPhanCong)
+        {
+            if (dsPhanCong == null || dsPhanCong.Count == 0)
+                return new List<PhanCongGiangDayViewModel>();
+
+            try
+            {
+                // Cache các lookup để tránh N+1 query
+                var giaoVienBUS = new GiaoVienBUS();
+                var monHocBUS = new MonHocBUS();
+                var lopHocBUS = new LopHocBUS();
+                var hocKyBUS = new HocKyBUS();
+
+                var giaoVienCache = new Dictionary<string, string>();
+                var monHocCache = new Dictionary<int, string>();
+                var lopCache = new Dictionary<int, string>();
+                var hocKyCache = new Dictionary<int, string>();
+
+                // Load tất cả lookup một lần
+                var uniqueGV = dsPhanCong.Select(pc => pc.MaGiaoVien).Distinct().ToList();
+                var uniqueMH = dsPhanCong.Select(pc => pc.MaMonHoc).Distinct().ToList();
+                var uniqueLop = dsPhanCong.Select(pc => pc.MaLop).Distinct().ToList();
+                var uniqueHK = dsPhanCong.Select(pc => pc.MaHocKy).Distinct().ToList();
+
+                // Cache giáo viên
+                foreach (var maGV in uniqueGV)
+                {
+                    if (!giaoVienCache.ContainsKey(maGV))
+                    {
+                        var gv = giaoVienBUS.LayGiaoVienTheoMa(maGV);
+                        giaoVienCache[maGV] = gv != null ? gv.HoTen : maGV;
+                    }
+                }
+
+                // Cache môn học
+                foreach (var maMH in uniqueMH)
+                {
+                    if (!monHocCache.ContainsKey(maMH))
+                    {
+                        var mh = monHocBUS.LayDSMonHocTheoId(maMH);
+                        monHocCache[maMH] = mh != null ? mh.tenMon : $"MH-{maMH}";
+                    }
+                }
+
+                // Cache lớp
+                foreach (var maLop in uniqueLop)
+                {
+                    if (!lopCache.ContainsKey(maLop))
+                    {
+                        var lop = lopHocBUS.LayLopTheoId(maLop);
+                        lopCache[maLop] = lop != null ? lop.tenLop : $"Lớp-{maLop}";
+                    }
+                }
+
+                // Cache học kỳ
+                foreach (var maHK in uniqueHK)
+                {
+                    if (!hocKyCache.ContainsKey(maHK))
+                    {
+                        var hk = hocKyBUS.LayHocKyTheoMa(maHK);
+                        hocKyCache[maHK] = hk != null ? hk.TenHocKy : $"HK-{maHK}";
+                    }
+                }
+
+                // Tạo danh sách ViewModel
+                var viewModels = new List<PhanCongGiangDayViewModel>();
+                foreach (PhanCongGiangDayDTO pc in dsPhanCong)
+                {
+                    viewModels.Add(new PhanCongGiangDayViewModel
+                    {
+                        MaPhanCong = pc.MaPhanCong,
+                        GiaoVien = giaoVienCache.ContainsKey(pc.MaGiaoVien) ? giaoVienCache[pc.MaGiaoVien] : pc.MaGiaoVien,
+                        MonHoc = monHocCache.ContainsKey(pc.MaMonHoc) ? monHocCache[pc.MaMonHoc] : $"MH-{pc.MaMonHoc}",
+                        Lop = lopCache.ContainsKey(pc.MaLop) ? lopCache[pc.MaLop] : $"Lớp-{pc.MaLop}",
+                        HocKy = hocKyCache.ContainsKey(pc.MaHocKy) ? hocKyCache[pc.MaHocKy] : $"HK-{pc.MaHocKy}",
+                        ThoiGian = $"{pc.NgayBatDau:dd/MM/yyyy} - {pc.NgayKetThuc:dd/MM/yyyy}",
+                        ThaoTac = "",
+                        MaGiaoVien = pc.MaGiaoVien,
+                        MaMonHoc = pc.MaMonHoc,
+                        MaLop = pc.MaLop,
+                        MaHocKy = pc.MaHocKy
+                    });
+                }
+
+                return viewModels;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi chuyển đổi sang ViewModel: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách phân công đã được filter và convert sang ViewModel
+        /// </summary>
+        /// <param name="filterCriteria">Điều kiện filter</param>
+        /// <param name="maHocKyFilter">Filter học kỳ từ database level (optional)</param>
+        /// <returns>Danh sách ViewModel</returns>
+        public List<PhanCongGiangDayViewModel> GetFilteredViewModels(
+            PhanCongFilterCriteria filterCriteria = null,
+            int? maHocKyFilter = null)
+        {
+            try
+            {
+                // Lấy dữ liệu từ database
+                List<PhanCongGiangDayDTO> dsPhanCong;
+                if (maHocKyFilter.HasValue)
+                {
+                    dsPhanCong = GetBySemester(maHocKyFilter.Value);
+                }
+                else
+                {
+                    dsPhanCong = DocDSPhanCong();
+                }
+
+                // Áp dụng filters (luôn gọi ApplyFilters, nó sẽ xử lý null/empty criteria)
+                if (dsPhanCong != null && dsPhanCong.Count > 0)
+                {
+                    dsPhanCong = ApplyFilters(dsPhanCong, filterCriteria, skipHocKyFilter: maHocKyFilter.HasValue);
+                }
+
+                // Convert sang ViewModel
+                return ConvertToViewModel(dsPhanCong ?? new List<PhanCongGiangDayDTO>());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lấy danh sách phân công: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Criteria cho filter phân công giảng dạy
+    /// </summary>
+    public class PhanCongFilterCriteria
+    {
+        public int? MaHocKy { get; set; }
+        public string MaNamHoc { get; set; }
+        public int? Khoi { get; set; }
+        public int? MaLop { get; set; }
+        public int? MaMonHoc { get; set; }
     }
 }

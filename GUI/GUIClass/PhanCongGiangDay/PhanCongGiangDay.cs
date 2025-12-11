@@ -15,26 +15,6 @@ using Guna.UI2.WinForms;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
 {
-    /// <summary>
-    /// ViewModel cho hiển thị phân công giảng dạy trên DataGridView
-    /// </summary>
-    public class PhanCongGiangDayViewModel
-    {
-        public int MaPhanCong { get; set; }
-        public string GiaoVien { get; set; }
-        public string MonHoc { get; set; }
-        public string Lop { get; set; }
-        public string HocKy { get; set; }
-        public string ThoiGian { get; set; }
-        public string ThaoTac { get; set; } = "";
-        
-        // Lưu các mã gốc để dùng khi cần
-        public string MaGiaoVien { get; set; }
-        public int MaMonHoc { get; set; }
-        public int MaLop { get; set; }
-        public int MaHocKy { get; set; }
-    }
-
     public partial class PhanCongGiangDay : UserControl
     {
         private PhanCongGiangDayBUS phanCongBUS;
@@ -44,7 +24,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private HocKyBUS hocKyBUS;
         
         // BindingList để bind vào DataGridView
-        private BindingList<PhanCongGiangDayViewModel> bindingList;
+        private BindingList<DTO.PhanCongGiangDayViewModel> bindingList;
 
         public PhanCongGiangDay()
         {
@@ -109,41 +89,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                // Lấy dữ liệu thống kê
-                List<PhanCongGiangDayDTO> dsPhanCong = phanCongBUS.DocDSPhanCong();
-                
-                // Áp dụng filter học kỳ nếu có
-                if (maHocKyFilter.HasValue)
-                {
-                    dsPhanCong = dsPhanCong?.Where(pc => pc.MaHocKy == maHocKyFilter.Value).ToList();
-                }
-                
-                int tongPhanCong = dsPhanCong?.Count ?? 0;
-
-                // Đếm giáo viên được phân công
-                int tongGiaoVien = dsPhanCong?.Select(pc => pc.MaGiaoVien).Distinct().Count() ?? 0;
-
-                // Đếm môn học được phân công
-                int tongMonHoc = dsPhanCong?.Select(pc => pc.MaMonHoc).Distinct().Count() ?? 0;
-
-                // Đếm lớp học có phân công
-                int tongLopHoc = dsPhanCong?.Select(pc => pc.MaLop).Distinct().Count() ?? 0;
+                // ✅ Sử dụng BUS để lấy thống kê
+                var statistics = phanCongBUS.GetStatistics(maHocKyFilter);
 
                 // Cập nhật các card
                 statCardPhanCongGiangDay1.Title = "Tổng phân công";
-                statCardPhanCongGiangDay1.Value = tongPhanCong.ToString();
+                statCardPhanCongGiangDay1.Value = statistics["TongPhanCong"].ToString();
                 statCardPhanCongGiangDay1.TitleColor = Color.FromArgb(30, 136, 229);
 
                 statCardPhanCongGiangDay2.Title = "Giáo viên";
-                statCardPhanCongGiangDay2.Value = tongGiaoVien.ToString();
+                statCardPhanCongGiangDay2.Value = statistics["TongGiaoVien"].ToString();
                 statCardPhanCongGiangDay2.TitleColor = Color.FromArgb(30, 136, 229);
 
                 statCardPhanCongGiangDay3.Title = "Môn học";
-                statCardPhanCongGiangDay3.Value = tongMonHoc.ToString();
+                statCardPhanCongGiangDay3.Value = statistics["TongMonHoc"].ToString();
                 statCardPhanCongGiangDay3.TitleColor = Color.FromArgb(20, 163, 74);
 
                 statCardPhanCongGiangDay4.Title = "Lớp học";
-                statCardPhanCongGiangDay4.Value = tongLopHoc.ToString();
+                statCardPhanCongGiangDay4.Value = statistics["TongLopHoc"].ToString();
                 statCardPhanCongGiangDay4.TitleColor = Color.FromArgb(234, 88, 12);
             }
             catch (Exception ex)
@@ -466,159 +429,112 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// Áp dụng filters vào danh sách phân công
+        /// Tạo PhanCongFilterCriteria từ UI controls
+        /// </summary>
+        private PhanCongFilterCriteria BuildFilterCriteria(bool skipHocKyFilter = false)
+        {
+            var criteria = new PhanCongFilterCriteria();
+
+            // Filter theo Học kỳ hoặc Năm học
+            if (!skipHocKyFilter && cbHocKyNamHoc != null && cbHocKyNamHoc.SelectedIndex >= 0)
+            {
+                ComboBoxItem hkItem = null;
+                if (cbHocKyNamHoc.SelectedIndex < cbHocKyNamHoc.Items.Count)
+                {
+                    hkItem = cbHocKyNamHoc.Items[cbHocKyNamHoc.SelectedIndex] as ComboBoxItem;
+                }
+
+                if (hkItem != null && hkItem.Value != null)
+                {
+                    string valueStr = hkItem.Value.ToString();
+                    if (valueStr.StartsWith("NAM_"))
+                    {
+                        // Filter theo CẢ NĂM HỌC
+                        criteria.MaNamHoc = valueStr.Replace("NAM_", "");
+                    }
+                    else if (int.TryParse(valueStr, out int maHK))
+                    {
+                        // Filter theo HỌC KỲ cụ thể
+                        criteria.MaHocKy = maHK;
+                    }
+                }
+            }
+
+            // Filter theo Khối
+            if (cbKhoi != null && cbKhoi.SelectedIndex > 0)
+            {
+                string khoiText = cbKhoi.SelectedItem.ToString();
+                if (khoiText.Contains("Khối "))
+                {
+                    if (int.TryParse(khoiText.Replace("Khối ", ""), out int khoi))
+                    {
+                        criteria.Khoi = khoi;
+                    }
+                }
+            }
+
+            // Filter theo Lớp
+            if (cbLop != null && cbLop.SelectedIndex > 0)
+            {
+                ComboBoxItem lopItem = null;
+                if (cbLop.SelectedItem is ComboBoxItem)
+                {
+                    lopItem = cbLop.SelectedItem as ComboBoxItem;
+                }
+                else if (cbLop.SelectedIndex >= 0 && cbLop.SelectedIndex < cbLop.Items.Count)
+                {
+                    lopItem = cbLop.Items[cbLop.SelectedIndex] as ComboBoxItem;
+                }
+
+                if (lopItem != null && lopItem.Value != null)
+                {
+                    if (int.TryParse(lopItem.Value.ToString(), out int maLop))
+                    {
+                        criteria.MaLop = maLop;
+                    }
+                }
+            }
+
+            // Filter theo Môn học
+            if (cbMonHoc != null && cbMonHoc.SelectedIndex > 0)
+            {
+                ComboBoxItem monItem = null;
+                if (cbMonHoc.SelectedItem is ComboBoxItem)
+                {
+                    monItem = cbMonHoc.SelectedItem as ComboBoxItem;
+                }
+                else if (cbMonHoc.SelectedIndex >= 0 && cbMonHoc.SelectedIndex < cbMonHoc.Items.Count)
+                {
+                    monItem = cbMonHoc.Items[cbMonHoc.SelectedIndex] as ComboBoxItem;
+                }
+
+                if (monItem != null && monItem.Value != null)
+                {
+                    if (int.TryParse(monItem.Value.ToString(), out int maMon))
+                    {
+                        criteria.MaMonHoc = maMon;
+                    }
+                }
+            }
+
+            return criteria;
+        }
+
+        /// <summary>
+        /// Áp dụng filters vào danh sách phân công (sử dụng BUS)
         /// </summary>
         /// <param name="dsPhanCong">Danh sách phân công cần filter</param>
         /// <param name="skipHocKyFilter">Bỏ qua filter học kỳ nếu đã filter ở database level</param>
         private List<PhanCongGiangDayDTO> ApplyFilters(List<PhanCongGiangDayDTO> dsPhanCong, bool skipHocKyFilter = false)
         {
             if (dsPhanCong == null || dsPhanCong.Count == 0)
-                return dsPhanCong;
+                return dsPhanCong ?? new List<PhanCongGiangDayDTO>();
 
             try
             {
-                var filtered = dsPhanCong.AsEnumerable();
-
-                // Filter theo Học kỳ hoặc Năm học (chỉ khi chưa filter ở database level)
-                if (!skipHocKyFilter && cbHocKyNamHoc != null && cbHocKyNamHoc.SelectedIndex >= 0)
-                {
-                    Console.WriteLine($"🔍 ApplyFilters: SelectedIndex={cbHocKyNamHoc.SelectedIndex}, Items.Count={cbHocKyNamHoc.Items.Count}");
-                    
-                    ComboBoxItem hkItem = null;
-                    
-                    // ✅ Lấy ComboBoxItem từ Items[SelectedIndex] (Guna2ComboBox lưu object trực tiếp)
-                    if (cbHocKyNamHoc.SelectedIndex < cbHocKyNamHoc.Items.Count)
-                    {
-                        hkItem = cbHocKyNamHoc.Items[cbHocKyNamHoc.SelectedIndex] as ComboBoxItem;
-                        Console.WriteLine($"🔍 ApplyFilters: hkItem={(hkItem != null ? "found" : "null")}, Value={(hkItem?.Value?.ToString() ?? "null")}");
-                    }
-                    
-                    if (hkItem != null && hkItem.Value != null)
-                    {
-                        string valueStr = hkItem.Value.ToString();
-                        Console.WriteLine($"🔍 ApplyFilters: valueStr={valueStr}");
-                        
-                        if (valueStr.StartsWith("NAM_"))
-                        {
-                            // Filter theo CẢ NĂM HỌC - lấy danh sách học kỳ trong năm học đó
-                            string namHoc = valueStr.Replace("NAM_", "");
-                            Console.WriteLine($"🔍 ApplyFilters: Filter theo năm học: {namHoc}");
-                            
-                            // ✅ SỬA: Lấy danh sách học kỳ trong năm học này (filter theo MaNamHoc)
-                            var dsHocKy = hocKyBUS.DocDSHocKy();
-                            var maHocKyTrongNam = dsHocKy
-                                .Where(hk => hk.MaNamHoc == namHoc) // So sánh trực tiếp MaNamHoc
-                                .Select(hk => hk.MaHocKy)
-                                .ToList();
-                            
-                            Console.WriteLine($"🔍 ApplyFilters: Tìm thấy {maHocKyTrongNam.Count} học kỳ trong năm {namHoc}");
-                            
-                            if (maHocKyTrongNam.Count > 0)
-                            {
-                                filtered = filtered.Where(pc => maHocKyTrongNam.Contains(pc.MaHocKy));
-                            }
-                            else
-                            {
-                                // Không có học kỳ nào trong năm học này
-                                filtered = Enumerable.Empty<PhanCongGiangDayDTO>();
-                            }
-                        }
-                        else
-                        {
-                            // Filter theo HỌC KỲ cụ thể
-                            if (int.TryParse(valueStr, out int maHK))
-                            {
-                                Console.WriteLine($"🔍 ApplyFilters: Filter theo học kỳ cụ thể: MaHocKy={maHK}");
-                                filtered = filtered.Where(pc => pc.MaHocKy == maHK);
-                            }
-                            else
-                            {
-                                Console.WriteLine($"⚠️ ApplyFilters: Không parse được '{valueStr}' thành int");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"ℹ️ ApplyFilters: Value == null hoặc hkItem == null (có thể là 'Tất cả'), không filter học kỳ");
-                    }
-                    // Nếu Value == null (Tất cả) thì không filter, giữ nguyên filtered
-                }
-                else
-                {
-                    Console.WriteLine($"ℹ️ ApplyFilters: skipHocKyFilter={skipHocKyFilter}, SelectedIndex={cbHocKyNamHoc?.SelectedIndex ?? -1}");
-                }
-
-                // Filter theo Khối
-                if (cbKhoi != null && cbKhoi.SelectedIndex > 0)
-                {
-                    string khoiText = cbKhoi.SelectedItem.ToString();
-                    if (khoiText.Contains("Khối "))
-                    {
-                        if (int.TryParse(khoiText.Replace("Khối ", ""), out int khoi))
-                        {
-                            filtered = filtered.Where(pc =>
-                            {
-                                var lop = lopHocBUS.LayLopTheoId(pc.MaLop);
-                                if (lop != null)
-                                {
-                                    string tenLop = lop.tenLop?.Trim() ?? "";
-                                    if (tenLop.Length > 0 && char.IsDigit(tenLop[0]))
-                                    {
-                                        string khoiStr = new string(tenLop.TakeWhile(char.IsDigit).ToArray());
-                                        return int.TryParse(khoiStr, out int lopKhoi) && lopKhoi == khoi;
-                                    }
-                                }
-                                return false;
-                            });
-                        }
-                    }
-                }
-
-                // Filter theo Lớp
-                if (cbLop != null && cbLop.SelectedIndex > 0)
-                {
-                    ComboBoxItem lopItem = null;
-                    if (cbLop.SelectedItem is ComboBoxItem)
-                    {
-                        lopItem = cbLop.SelectedItem as ComboBoxItem;
-                    }
-                    else if (cbLop.SelectedIndex >= 0 && cbLop.SelectedIndex < cbLop.Items.Count)
-                    {
-                        lopItem = cbLop.Items[cbLop.SelectedIndex] as ComboBoxItem;
-                    }
-                    
-                    if (lopItem != null && lopItem.Value != null)
-                    {
-                        if (int.TryParse(lopItem.Value.ToString(), out int maLop))
-                        {
-                            filtered = filtered.Where(pc => pc.MaLop == maLop);
-                        }
-                    }
-                }
-
-                // Filter theo Môn học
-                if (cbMonHoc != null && cbMonHoc.SelectedIndex > 0)
-                {
-                    ComboBoxItem monItem = null;
-                    if (cbMonHoc.SelectedItem is ComboBoxItem)
-                    {
-                        monItem = cbMonHoc.SelectedItem as ComboBoxItem;
-                    }
-                    else if (cbMonHoc.SelectedIndex >= 0 && cbMonHoc.SelectedIndex < cbMonHoc.Items.Count)
-                    {
-                        monItem = cbMonHoc.Items[cbMonHoc.SelectedIndex] as ComboBoxItem;
-                    }
-                    
-                    if (monItem != null && monItem.Value != null)
-                    {
-                        if (int.TryParse(monItem.Value.ToString(), out int maMon))
-                        {
-                            filtered = filtered.Where(pc => pc.MaMonHoc == maMon);
-                        }
-                    }
-                }
-
-                return filtered.ToList();
+                // ✅ Sử dụng BUS để apply filters
+                var criteria = BuildFilterCriteria(skipHocKyFilter);
+                return phanCongBUS.ApplyFilters(dsPhanCong, criteria, skipHocKyFilter);
             }
             catch (Exception ex)
             {
@@ -681,8 +597,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                Console.WriteLine($"📊 LoadData được gọi với maHocKyFilter={maHocKyFilter?.ToString() ?? "null"}");
-                
                 // ✅ Tắt sự kiện tạm thời để tăng tốc độ
                 dgvPhanCong.SuspendLayout();
                 
@@ -697,113 +611,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     dgvPhanCong.DataSource = null;
                 }
 
-                // ✅ Lấy dữ liệu từ database
-                // Nếu có filter học kỳ cụ thể từ parameter, lấy trực tiếp từ database (hiệu quả hơn)
-                List<PhanCongGiangDayDTO> dsPhanCong;
-                if (maHocKyFilter.HasValue)
-                {
-                    Console.WriteLine($"✅ LoadData: Lấy dữ liệu từ database theo học kỳ {maHocKyFilter.Value}");
-                    dsPhanCong = phanCongBUS.GetBySemester(maHocKyFilter.Value);
-                    Console.WriteLine($"✅ LoadData: Đã lấy được {dsPhanCong?.Count ?? 0} phân công từ database");
-                }
-                else
-                {
-                    Console.WriteLine($"✅ LoadData: Lấy tất cả phân công từ database");
-                    // Lấy tất cả rồi filter bằng ApplyFilters
-                    dsPhanCong = phanCongBUS.DocDSPhanCong();
-                    Console.WriteLine($"✅ LoadData: Đã lấy được {dsPhanCong?.Count ?? 0} phân công từ database");
-                }
-
-                // ✅ Áp dụng filters (học kỳ/năm học, khối, lớp, môn học)
-                if (dsPhanCong != null && dsPhanCong.Count > 0)
-                {
-                    int countBeforeFilter = dsPhanCong.Count;
-                    dsPhanCong = ApplyFilters(dsPhanCong, skipHocKyFilter: maHocKyFilter.HasValue);
-                    Console.WriteLine($"✅ LoadData: Sau filter: {dsPhanCong.Count} phân công (trước: {countBeforeFilter})");
-                }
-                else
-                {
-                    Console.WriteLine($"⚠️ LoadData: Không có dữ liệu phân công");
-                }
-
-                // ✅ Cache các lookup để tránh N+1 query
-                var giaoVienCache = new Dictionary<string, string>();
-                var monHocCache = new Dictionary<int, string>();
-                var lopCache = new Dictionary<int, string>();
-                var hocKyCache = new Dictionary<int, string>();
-
-                // Load tất cả lookup một lần
-                if (dsPhanCong != null && dsPhanCong.Count > 0)
-                {
-                    var uniqueGV = dsPhanCong.Select(pc => pc.MaGiaoVien).Distinct().ToList();
-                    var uniqueMH = dsPhanCong.Select(pc => pc.MaMonHoc).Distinct().ToList();
-                    var uniqueLop = dsPhanCong.Select(pc => pc.MaLop).Distinct().ToList();
-                    var uniqueHK = dsPhanCong.Select(pc => pc.MaHocKy).Distinct().ToList();
-
-                    // Cache giáo viên
-                    foreach (var maGV in uniqueGV)
-                    {
-                        if (!giaoVienCache.ContainsKey(maGV))
-                        {
-                            var gv = giaoVienBUS.LayGiaoVienTheoMa(maGV);
-                            giaoVienCache[maGV] = gv != null ? gv.HoTen : maGV;
-                        }
-                    }
-
-                    // Cache môn học
-                    foreach (var maMH in uniqueMH)
-                    {
-                        if (!monHocCache.ContainsKey(maMH))
-                        {
-                            var mh = monHocBUS.LayDSMonHocTheoId(maMH);
-                            monHocCache[maMH] = mh != null ? mh.tenMon : $"MH-{maMH}";
-                        }
-                    }
-
-                    // Cache lớp
-                    foreach (var maLop in uniqueLop)
-                    {
-                        if (!lopCache.ContainsKey(maLop))
-                        {
-                            var lop = lopHocBUS.LayLopTheoId(maLop);
-                            lopCache[maLop] = lop != null ? lop.tenLop : $"Lớp-{maLop}";
-                        }
-                    }
-
-                    // Cache học kỳ
-                    foreach (var maHK in uniqueHK)
-                    {
-                        if (!hocKyCache.ContainsKey(maHK))
-                        {
-                            var hk = hocKyBUS.LayHocKyTheoMa(maHK);
-                            hocKyCache[maHK] = hk != null ? hk.TenHocKy : $"HK-{maHK}";
-                        }
-                    }
-                }
+                // ✅ Sử dụng BUS để lấy và transform dữ liệu
+                var criteria = BuildFilterCriteria(skipHocKyFilter: maHocKyFilter.HasValue);
+                var viewModels = phanCongBUS.GetFilteredViewModels(criteria, maHocKyFilter);
 
                 // ✅ Tạo BindingList từ ViewModel
-                bindingList = new BindingList<PhanCongGiangDayViewModel>();
-                
-                if (dsPhanCong != null && dsPhanCong.Count > 0)
-                {
-                    foreach (PhanCongGiangDayDTO pc in dsPhanCong)
-                    {
-                        bindingList.Add(new PhanCongGiangDayViewModel
-                        {
-                            MaPhanCong = pc.MaPhanCong,
-                            GiaoVien = giaoVienCache.ContainsKey(pc.MaGiaoVien) ? giaoVienCache[pc.MaGiaoVien] : pc.MaGiaoVien,
-                            MonHoc = monHocCache.ContainsKey(pc.MaMonHoc) ? monHocCache[pc.MaMonHoc] : $"MH-{pc.MaMonHoc}",
-                            Lop = lopCache.ContainsKey(pc.MaLop) ? lopCache[pc.MaLop] : $"Lớp-{pc.MaLop}",
-                            HocKy = hocKyCache.ContainsKey(pc.MaHocKy) ? hocKyCache[pc.MaHocKy] : $"HK-{pc.MaHocKy}",
-                            ThoiGian = $"{pc.NgayBatDau:dd/MM/yyyy} - {pc.NgayKetThuc:dd/MM/yyyy}",
-                            ThaoTac = "",
-                            MaGiaoVien = pc.MaGiaoVien,
-                            MaMonHoc = pc.MaMonHoc,
-                            MaLop = pc.MaLop,
-                            MaHocKy = pc.MaHocKy
-                        });
-                    }
-                }
+                bindingList = new BindingList<DTO.PhanCongGiangDayViewModel>(viewModels ?? new List<DTO.PhanCongGiangDayViewModel>());
 
                 // ✅ Gán BindingList vào DataSource
                 dgvPhanCong.DataSource = bindingList;
@@ -1003,7 +816,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 int deleteLeft = eyeRight + (4 * padding);
 
                 // ✅ Lấy dữ liệu từ DataBoundItem (BindingList)
-                var viewModel = dgvPhanCong.Rows[e.RowIndex].DataBoundItem as PhanCongGiangDayViewModel;
+                var viewModel = dgvPhanCong.Rows[e.RowIndex].DataBoundItem as DTO.PhanCongGiangDayViewModel;
                 if (viewModel == null) return;
 
                 int maPhanCong = viewModel.MaPhanCong;

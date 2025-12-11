@@ -447,7 +447,9 @@
     <Compile Include="GUIClass\PhanCongGiangDay\frmAutoPhanCongPreview.Designer.cs">
       <DependentUpon>frmAutoPhanCongPreview.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUIClass\PhanCongGiangDay\PhanCongGiangDay.cs" />
+    <Compile Include="GUIClass\PhanCongGiangDay\PhanCongGiangDay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="GUIClass\PhanCongGiangDay\PhanCongGiangDay.Designer.cs">
       <DependentUpon>PhanCongGiangDay.cs</DependentUpon>
     </Compile>
