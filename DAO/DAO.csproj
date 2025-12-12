@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConnectDatabase\ConnectionDatabase.cs" />
+    <Compile Include="ConnectDatabase\DatabaseConfig.cs" />
     <Compile Include="DAOClass\DiemSoDAO.cs" />
     <Compile Include="DAOClass\GiaoVienDAO.cs" />
     <Compile Include="DAOClass\HanhKiemDAO.cs" />

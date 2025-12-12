@@ -390,6 +390,12 @@
     <Compile Include="GUIClass\TaiKhoan\frmEditPhanQuyen.Designer.cs">
       <DependentUpon>frmEditPhanQuyen.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUIClass\ThoiKhoaBieu\FrmAutoTKBPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\ThoiKhoaBieu\FrmAutoTKBPreview.Designer.cs">
+      <DependentUpon>FrmAutoTKBPreview.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUIClass\ThongBao\FrmSuaThongBao.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -623,9 +629,6 @@
     </Compile>
     <Compile Include="GUIClass\ThemSua%28Phuc%29\ThemLopHoc.Designer.cs">
       <DependentUpon>ThemLopHoc.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUIClass\ThoiKhoaBieu\FrmAutoTKBPreview.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUIClass\ThoiKhoaBieu\ThoiKhoaBieu.cs">
       <SubType>UserControl</SubType>
@@ -866,6 +869,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\ThemSua%28Phuc%29\ThemLopHoc.resx">
       <DependentUpon>ThemLopHoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\ThoiKhoaBieu\FrmAutoTKBPreview.resx">
+      <DependentUpon>FrmAutoTKBPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\ThoiKhoaBieu\ThoiKhoaBieu.resx">
       <DependentUpon>ThoiKhoaBieu.cs</DependentUpon>
