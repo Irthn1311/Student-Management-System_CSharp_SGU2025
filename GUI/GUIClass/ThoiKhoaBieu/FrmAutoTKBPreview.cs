@@ -110,7 +110,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // Title
             lblTitle = new Guna2HtmlLabel
             {
-                Text = "<b>🤖 Auto Tạo Thời khóa biểu - Config-driven (Greedy + Tabu Search)</b>",
+                Text = "<b>Auto Tạo Thời khóa biểu - Config-driven (Greedy + Tabu Search)</b>",
                 Font = new Font("Segoe UI", 16F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(30, 41, 59),
                 Location = new Point(30, 20),
