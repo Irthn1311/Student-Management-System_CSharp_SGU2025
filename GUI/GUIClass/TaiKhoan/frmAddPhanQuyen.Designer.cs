@@ -152,10 +152,10 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableChucNang.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableChucNang.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableChucNang.Location = new System.Drawing.Point(37, 139);
+            this.tableChucNang.Location = new System.Drawing.Point(37, 131);
             this.tableChucNang.Name = "tableChucNang";
             this.tableChucNang.RowHeadersVisible = false;
-            this.tableChucNang.Size = new System.Drawing.Size(804, 736);
+            this.tableChucNang.Size = new System.Drawing.Size(804, 744);
             this.tableChucNang.TabIndex = 20;
             this.tableChucNang.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableChucNang.ThemeStyle.AlternatingRowsStyle.Font = null;

@@ -442,5 +442,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             this.Close();
         }
+
+        private void lblTongSo_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -1060,13 +1060,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 {
                     Cursor = Cursors.WaitCursor;
 
+                    // Lấy danh sách tất cả môn học
+                    List<MonHocDTO> danhSachMonHoc = nhapDiemBUS.GetDanhSachMonHoc();
+                    // Sắp xếp theo mã môn học để đảm bảo thứ tự nhất quán
+                    danhSachMonHoc = danhSachMonHoc.OrderBy(m => m.maMon).ToList();
+
                     // Tạo workbook và worksheet
                     var workbook = new XLWorkbook();
                     var worksheet = workbook.Worksheets.Add("Bảng Điểm");
 
+                    // Tính số cột: Mã HS + Họ Tên + Số môn học + Điểm TB chung
+                    int totalColumns = 2 + danhSachMonHoc.Count + 1;
+
                     // === TIÊU ĐỀ ===
                     worksheet.Cell(1, 1).Value = "BẢNG ĐIỂM HỌC SINH";
-                    worksheet.Range(1, 1, 1, 8).Merge();
+                    worksheet.Range(1, 1, 1, totalColumns).Merge();
                     worksheet.Cell(1, 1).Style.Font.Bold = true;
                     worksheet.Cell(1, 1).Style.Font.FontSize = 16;
                     worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -1078,69 +1086,105 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     // === HEADER ===
                     int headerRow = 5;
-                    for (int i = 0; i < tableXemBangDiem.Columns.Count; i++)
+                    int colIndex = 1;
+
+                    // Cột Mã HS
+                    worksheet.Cell(headerRow, colIndex).Value = "Mã HS";
+                    worksheet.Cell(headerRow, colIndex).Style.Font.Bold = true;
+                    worksheet.Cell(headerRow, colIndex).Style.Fill.BackgroundColor = XLColor.LightGray;
+                    worksheet.Cell(headerRow, colIndex).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(headerRow, colIndex).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    colIndex++;
+
+                    // Cột Họ Tên
+                    worksheet.Cell(headerRow, colIndex).Value = "Học sinh";
+                    worksheet.Cell(headerRow, colIndex).Style.Font.Bold = true;
+                    worksheet.Cell(headerRow, colIndex).Style.Fill.BackgroundColor = XLColor.LightGray;
+                    worksheet.Cell(headerRow, colIndex).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(headerRow, colIndex).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    colIndex++;
+
+                    // Các cột môn học
+                    foreach (var monHoc in danhSachMonHoc)
                     {
-                        worksheet.Cell(headerRow, i + 1).Value = tableXemBangDiem.Columns[i].HeaderText;
-                        worksheet.Cell(headerRow, i + 1).Style.Font.Bold = true;
-                        worksheet.Cell(headerRow, i + 1).Style.Fill.BackgroundColor = XLColor.LightGray;
-                        worksheet.Cell(headerRow, i + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                        worksheet.Cell(headerRow, i + 1).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(headerRow, colIndex).Value = monHoc.tenMon;
+                        worksheet.Cell(headerRow, colIndex).Style.Font.Bold = true;
+                        worksheet.Cell(headerRow, colIndex).Style.Fill.BackgroundColor = XLColor.LightGray;
+                        worksheet.Cell(headerRow, colIndex).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Cell(headerRow, colIndex).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        colIndex++;
                     }
+
+                    // Cột Điểm TB chung
+                    worksheet.Cell(headerRow, colIndex).Value = "TB Chung";
+                    worksheet.Cell(headerRow, colIndex).Style.Font.Bold = true;
+                    worksheet.Cell(headerRow, colIndex).Style.Fill.BackgroundColor = XLColor.LightGray;
+                    worksheet.Cell(headerRow, colIndex).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(headerRow, colIndex).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    int colDiemTB = colIndex;
 
                     // === DỮ LIỆU - ✅ XUẤT TOÀN BỘ TỪ fullListXemBangDiem ===
                     int currentRow = headerRow + 1;
                     foreach (var item in fullListXemBangDiem)
                     {
-                        string diemToan = item.DiemToan.HasValue ? item.DiemToan.Value.ToString("0.0") : "";
-                        string diemVan = item.DiemVan.HasValue ? item.DiemVan.Value.ToString("0.0") : "";
-                        string diemAnh = item.DiemAnh.HasValue ? item.DiemAnh.Value.ToString("0.0") : "";
-                        string diemLy = item.DiemLy.HasValue ? item.DiemLy.Value.ToString("0.0") : "";
-                        string diemHoa = item.DiemHoa.HasValue ? item.DiemHoa.Value.ToString("0.0") : "";
-                        string diemTB = item.DiemTB.HasValue ? item.DiemTB.Value.ToString("0.0") : "";
+                        colIndex = 1;
 
-                        // Thêm dòng dữ liệu
-                        worksheet.Cell(currentRow, 1).Value = item.MaHocSinh;
-                        worksheet.Cell(currentRow, 2).Value = item.HoTen;
-                        worksheet.Cell(currentRow, 3).Value = diemToan;
-                        worksheet.Cell(currentRow, 4).Value = diemVan;
-                        worksheet.Cell(currentRow, 5).Value = diemAnh;
-                        worksheet.Cell(currentRow, 6).Value = diemLy;
-                        worksheet.Cell(currentRow, 7).Value = diemHoa;
-                        worksheet.Cell(currentRow, 8).Value = diemTB;
+                        // Mã HS
+                        worksheet.Cell(currentRow, colIndex).Value = item.MaHocSinh;
+                        worksheet.Cell(currentRow, colIndex).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        colIndex++;
 
-                        // Căn giữa các cột điểm (từ cột 3 trở đi)
-                        for (int i = 3; i <= 8; i++)
+                        // Họ Tên
+                        worksheet.Cell(currentRow, colIndex).Value = item.HoTen;
+                        worksheet.Cell(currentRow, colIndex).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        colIndex++;
+
+                        // Điểm các môn học
+                        foreach (var monHoc in danhSachMonHoc)
                         {
-                            worksheet.Cell(currentRow, i).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                            string diemMon = "";
+                            if (item.DiemCacMon != null && item.DiemCacMon.ContainsKey(monHoc.maMon))
+                            {
+                                float? diem = item.DiemCacMon[monHoc.maMon];
+                                if (diem.HasValue)
+                                {
+                                    diemMon = diem.Value.ToString("0.0");
+                                }
+                            }
+
+                            worksheet.Cell(currentRow, colIndex).Value = diemMon;
+                            worksheet.Cell(currentRow, colIndex).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                            worksheet.Cell(currentRow, colIndex).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                            colIndex++;
                         }
 
-                        // Tô màu cho điểm trung bình (cột cuối)
+                        // Điểm TB chung
+                        string diemTB = item.DiemTB.HasValue ? item.DiemTB.Value.ToString("0.0") : "";
+                        worksheet.Cell(currentRow, colDiemTB).Value = diemTB;
+                        worksheet.Cell(currentRow, colDiemTB).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Cell(currentRow, colDiemTB).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+
+                        // Tô màu cho điểm trung bình
                         if (!string.IsNullOrEmpty(diemTB))
                         {
                             if (float.TryParse(diemTB, out float score))
                             {
                                 if (score >= 8.0)
                                 {
-                                    worksheet.Cell(currentRow, 8).Style.Font.FontColor = XLColor.Green;
-                                    worksheet.Cell(currentRow, 8).Style.Font.Bold = true;
+                                    worksheet.Cell(currentRow, colDiemTB).Style.Font.FontColor = XLColor.Green;
+                                    worksheet.Cell(currentRow, colDiemTB).Style.Font.Bold = true;
                                 }
                                 else if (score >= 6.5)
                                 {
-                                    worksheet.Cell(currentRow, 8).Style.Font.FontColor = XLColor.Blue;
-                                    worksheet.Cell(currentRow, 8).Style.Font.Bold = true;
+                                    worksheet.Cell(currentRow, colDiemTB).Style.Font.FontColor = XLColor.Blue;
+                                    worksheet.Cell(currentRow, colDiemTB).Style.Font.Bold = true;
                                 }
                                 else
                                 {
-                                    worksheet.Cell(currentRow, 8).Style.Font.FontColor = XLColor.Red;
-                                    worksheet.Cell(currentRow, 8).Style.Font.Bold = true;
+                                    worksheet.Cell(currentRow, colDiemTB).Style.Font.FontColor = XLColor.Red;
+                                    worksheet.Cell(currentRow, colDiemTB).Style.Font.Bold = true;
                                 }
                             }
-                        }
-
-                        // Thêm border cho tất cả các ô
-                        for (int i = 1; i <= 8; i++)
-                        {
-                            worksheet.Cell(currentRow, i).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                         }
 
                         currentRow++;
@@ -1174,6 +1218,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     // Đảm bảo cột tên không quá hẹp
                     if (worksheet.Column(2).Width < 30)
                         worksheet.Column(2).Width = 30;
+
+                    // Đảm bảo cột mã HS không quá hẹp
+                    if (worksheet.Column(1).Width < 15)
+                        worksheet.Column(1).Width = 15;
 
                     // === LƯU FILE ===
                     workbook.SaveAs(saveDialog.FileName);
