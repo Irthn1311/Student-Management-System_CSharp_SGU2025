@@ -1255,7 +1255,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
 
                 // Kiểm tra trạng thái học kỳ
-                string trangThaiHK1 = SemesterHelper.GetStatus(hk1.MaHocKy);
+                string trangThaiHK1 = SemesterHelper.GetStatus(hk1.MaHocKy);// SemesterHelper là class helper để lấy trạng thái của học kỳ
                 string trangThaiHK2 = SemesterHelper.GetStatus(hk2.MaHocKy);
                 bool hk1DangDienRa = trangThaiHK1 == "Đang diễn ra";
                 bool hk2DangDienRa = trangThaiHK2 == "Đang diễn ra";
