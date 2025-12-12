@@ -649,31 +649,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                int tongHS = 0;
                 int soTot = 0, soKha = 0, soTrungBinh = 0, soYeu = 0, chuaDanhGia = 0;
 
-                // Đếm số học sinh có xếp loại (từ bảng)
-                foreach (DataGridViewRow row in tableHanhKiem.Rows)
-                {
-                    if (row.IsNewRow) continue;
-                    tongHS++;
-
-                    string xepLoai = row.Cells[4].Value?.ToString()?.Trim();
-
-                    if (string.IsNullOrEmpty(xepLoai)) continue;
-
-                    if (xepLoai.Equals("Tốt", StringComparison.OrdinalIgnoreCase))
-                        soTot++;
-                    else if (xepLoai.Equals("Khá", StringComparison.OrdinalIgnoreCase))
-                        soKha++;
-                    else if (xepLoai.Equals("Trung Bình", StringComparison.OrdinalIgnoreCase) ||
-                             xepLoai.Equals("Trung binh", StringComparison.OrdinalIgnoreCase))
-                        soTrungBinh++;
-                    else if (xepLoai.Equals("Yếu", StringComparison.OrdinalIgnoreCase))
-                        soYeu++;
-                }
-
-                // Đếm tổng số học sinh trong học kỳ (bao gồm cả chưa xếp loại)
+                // ⭐ ĐẾM TRỰC TIẾP TỪ DATABASE THAY VÌ TỪ TABLE (VÌ TABLE CHỈ HIỂN THỊ 1 TRANG)
                 int? maLop = null;
                 if (cbLop.SelectedItem != null)
                 {
@@ -692,25 +670,32 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     }
                 }
 
-                List<HocSinhDTO> dsTatCaHocSinh;
-                if (maLop.HasValue)
+                // Lấy danh sách hạnh kiểm từ database (toàn bộ, không phân trang)
+                var dsHanhKiemDisplay = hanhKiemDAO.LayDanhSachHanhKiemDisplay(maHocKy, maLop);
+                
+                // Đếm số học sinh có xếp loại từ database
+                foreach (var hk in dsHanhKiemDisplay)
                 {
-                    dsTatCaHocSinh = phanLopDAO.LayDanhSachHocSinhTrongLop(maLop.Value, maHocKy);
-                }
-                else
-                {
-                    dsTatCaHocSinh = new List<HocSinhDTO>();
-                    List<LopDTO> dsLop = lopDAO.GetDanhSachLopTheoHocKy(maHocKy);
-                    foreach (var lop in dsLop)
+                    string xepLoai = hk.XepLoai?.Trim();
+                    
+                    if (string.IsNullOrEmpty(xepLoai))
                     {
-                        var hsLop = phanLopDAO.LayDanhSachHocSinhTrongLop(lop.MaLop, maHocKy);
-                        dsTatCaHocSinh.AddRange(hsLop);
+                        chuaDanhGia++;
+                        continue;
                     }
-                    dsTatCaHocSinh = dsTatCaHocSinh.Distinct().ToList();
+
+                    if (xepLoai.Equals("Tốt", StringComparison.OrdinalIgnoreCase))
+                        soTot++;
+                    else if (xepLoai.Equals("Khá", StringComparison.OrdinalIgnoreCase))
+                        soKha++;
+                    else if (xepLoai.Equals("Trung Bình", StringComparison.OrdinalIgnoreCase) ||
+                             xepLoai.Equals("Trung binh", StringComparison.OrdinalIgnoreCase))
+                        soTrungBinh++;
+                    else if (xepLoai.Equals("Yếu", StringComparison.OrdinalIgnoreCase))
+                        soYeu++;
                 }
 
-                int tongTatCaHS = dsTatCaHocSinh.Count;
-                chuaDanhGia = tongTatCaHS - tongHS;
+                int tongTatCaHS = dsHanhKiemDisplay.Count;
 
                 // Cập nhật các card
                 statCarHanhKiemTot.lbCardValue.Text = soTot.ToString();
