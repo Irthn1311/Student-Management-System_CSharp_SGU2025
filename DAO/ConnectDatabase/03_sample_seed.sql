@@ -483,22 +483,26 @@ INSERT INTO HocSinhPhuHuynh (MaHocSinh, MaPhuHuynh, MoiQuanHe) VALUES
 (78, 78, 'Mẹ'), (79, 79, 'Cha'), (80, 80, 'Mẹ'), (81, 81, 'Cha'), (82, 82, 'Mẹ'),
 (83, 83, 'Cha'), (84, 84, 'Mẹ');
 
--- Phân lớp học sinh vào lớp 10A1 (30 học sinh thay vì 42)
+-- Phân lớp học sinh vào lớp 10A1 (42 học sinh: HS 1-42)
 INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy) VALUES
 (1, 1, 1), (2, 1, 1), (3, 1, 1), (4, 1, 1), (5, 1, 1), (6, 1, 1), (7, 1, 1), (8, 1, 1),
 (9, 1, 1), (10, 1, 1), (11, 1, 1), (12, 1, 1), (13, 1, 1), (14, 1, 1), (15, 1, 1), (16, 1, 1),
 (17, 1, 1), (18, 1, 1), (19, 1, 1), (20, 1, 1), (21, 1, 1), (22, 1, 1), (23, 1, 1), (24, 1, 1),
-(25, 1, 1), (26, 1, 1), (27, 1, 1), (28, 1, 1), (29, 1, 1), (30, 1, 1);
+(25, 1, 1), (26, 1, 1), (27, 1, 1), (28, 1, 1), (29, 1, 1), (30, 1, 1),
+(31, 1, 1), (32, 1, 1), (33, 1, 1), (34, 1, 1), (35, 1, 1), (36, 1, 1), (37, 1, 1), (38, 1, 1),
+(39, 1, 1), (40, 1, 1), (41, 1, 1), (42, 1, 1);
 
--- Phân lớp học sinh vào lớp 10A2 (30 học sinh thay vì 42)
+-- Phân lớp học sinh vào lớp 10A2 (42 học sinh: HS 43-84)
 INSERT INTO PhanLop (MaHocSinh, MaLop, MaHocKy) VALUES
 (43, 2, 1), (44, 2, 1), (45, 2, 1), (46, 2, 1), (47, 2, 1), (48, 2, 1), (49, 2, 1), (50, 2, 1),
 (51, 2, 1), (52, 2, 1), (53, 2, 1), (54, 2, 1), (55, 2, 1), (56, 2, 1), (57, 2, 1), (58, 2, 1),
 (59, 2, 1), (60, 2, 1), (61, 2, 1), (62, 2, 1), (63, 2, 1), (64, 2, 1), (65, 2, 1), (66, 2, 1),
-(67, 2, 1), (68, 2, 1), (69, 2, 1), (70, 2, 1), (71, 2, 1), (72, 2, 1);
+(67, 2, 1), (68, 2, 1), (69, 2, 1), (70, 2, 1), (71, 2, 1), (72, 2, 1),
+(73, 2, 1), (74, 2, 1), (75, 2, 1), (76, 2, 1), (77, 2, 1), (78, 2, 1), (79, 2, 1), (80, 2, 1),
+(81, 2, 1), (82, 2, 1), (83, 2, 1), (84, 2, 1);
 
 -- Phân lớp cho các lớp còn lại (10A3-10A8, 11A1-11A8, 12A1-12A8)
--- Mỗi lớp 30 học sinh thay vì 42 (giảm 12 học sinh/lớp để có chỗ trống cho test phân lớp)
+-- Mỗi lớp 30 học sinh (giảm 12 học sinh/lớp so với 42 để có chỗ trống cho test phân lớp)
 -- Lớp 10A3-10A8: 6 lớp × 30 = 180 học sinh (HS 85-264)
 -- Lớp 11A1-11A8: 8 lớp × 30 = 240 học sinh (HS 265-504)
 -- Lớp 12A1-12A8: 8 lớp × 30 = 240 học sinh (HS 505-720)
@@ -509,7 +513,7 @@ SELECT
     1 as MaHocKy
 FROM (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29) t
 CROSS JOIN (SELECT 0 n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION SELECT 21) r
-WHERE (85 + t.n + r.n * 30) <= 720  -- Chỉ tạo đến HS 720 (đủ 24 lớp × 30 học sinh)
+WHERE (85 + t.n + r.n * 30) <= 720  -- Chỉ tạo đến HS 720
 LIMIT 636;  -- 636 học sinh (720 - 84 đã phân lớp = 636)
 
 -- Liên kết học sinh - phụ huynh cho tất cả học sinh (85-720)
