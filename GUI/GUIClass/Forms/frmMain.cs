@@ -74,57 +74,178 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 case "BangTin":
                     ShowDashboard();
+                    SetActiveMenuButton("BangTin");
                     break;
                 case "HocSinh":
                     ShowHocSinh();
+                    SetActiveMenuButton("HocSinh");
                     break;
                 case "GiaoVien":
                     ShowGiaoVien();
+                    SetActiveMenuButton("GiaoVien");
                     break;
                 case "LopHoc":
                     ShowLopKhoi();
+                    SetActiveMenuButton("LopHoc");
                     break;
                 case "MonHoc":
                     ShowFrmMonHoc();
+                    SetActiveMenuButton("MonHoc");
                     break;
                 case "DiemSo":
                     ShowDiemSo();
+                    SetActiveMenuButton("DiemSo");
                     break;
                 case "XepLoai":
                     ShowXepLoai();
+                    SetActiveMenuButton("XepLoai");
                     break;
                 case "HanhKiem":
                     ShowHanhKiem();
+                    SetActiveMenuButton("HanhKiem");
                     break;
                 case "DanhGia":
                     ShowDanhGia();
+                    SetActiveMenuButton("DanhGia");
                     break;
                 case "PhanCong":
                     ShowPhanCongGiangDay();
+                    SetActiveMenuButton("PhanCong");
                     break;
                 case "ThoiKhoaBieu":
                     ShowThoiKhoaBieu();
+                    SetActiveMenuButton("ThoiKhoaBieu");
                     break;
                 case "ThongBao":
                     ShowThongBao();
+                    SetActiveMenuButton("ThongBao");
                     break;
                 case "NamHoc":
                     ShowNamHoc();
+                    SetActiveMenuButton("NamHoc");
                     break;
                 case "BaoCao":
                     ShowBaoCao();
+                    SetActiveMenuButton("BaoCao");
                     break;
                 case "TaiKhoan":
                     ShowTaiKhoan();
+                    SetActiveMenuButton("TaiKhoan");
                     break;
                 case "CaiDat":
                     ShowCaiDat();
+                    SetActiveMenuButton("CaiDat");
                     break;
                 default:
                     MessageBox.Show($"Chức năng '{screenName}' chưa được triển khai.", 
                         "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }
+        }
+
+        /// <summary>
+        /// ✅ Set active menu button (highlight) dựa trên screenName
+        /// </summary>
+        private void SetActiveMenuButton(string screenName)
+        {
+            if (ucSidebar1 == null) return;
+
+            // Uncheck tất cả buttons trước
+            UncheckAllMenuButtons();
+
+            // Set Checked = true cho button tương ứng
+            switch (screenName)
+            {
+                case "BangTin":
+                    if (ucSidebar1.BangTinButton != null)
+                        ucSidebar1.BangTinButton.Checked = true;
+                    break;
+                case "HocSinh":
+                    if (ucSidebar1.HocSinhButton != null)
+                        ucSidebar1.HocSinhButton.Checked = true;
+                    break;
+                case "GiaoVien":
+                    if (ucSidebar1.GiaoVienButton != null)
+                        ucSidebar1.GiaoVienButton.Checked = true;
+                    break;
+                case "LopHoc":
+                    if (ucSidebar1.LopHocButton != null)
+                        ucSidebar1.LopHocButton.Checked = true;
+                    break;
+                case "MonHoc":
+                    if (ucSidebar1.MonHocButton != null)
+                        ucSidebar1.MonHocButton.Checked = true;
+                    break;
+                case "DiemSo":
+                    if (ucSidebar1.DiemSoButton != null)
+                        ucSidebar1.DiemSoButton.Checked = true;
+                    break;
+                case "XepLoai":
+                    if (ucSidebar1.XepLoaiButton != null)
+                        ucSidebar1.XepLoaiButton.Checked = true;
+                    break;
+                case "HanhKiem":
+                    if (ucSidebar1.HanhKiemButton != null)
+                        ucSidebar1.HanhKiemButton.Checked = true;
+                    break;
+                case "DanhGia":
+                    if (ucSidebar1.DanhGiaButton != null)
+                        ucSidebar1.DanhGiaButton.Checked = true;
+                    break;
+                case "PhanCong":
+                    if (ucSidebar1.PhanCongButton != null)
+                        ucSidebar1.PhanCongButton.Checked = true;
+                    break;
+                case "ThoiKhoaBieu":
+                    if (ucSidebar1.ThoiKhoaBieuButton != null)
+                        ucSidebar1.ThoiKhoaBieuButton.Checked = true;
+                    break;
+                case "ThongBao":
+                    if (ucSidebar1.ThongBaoButton != null)
+                        ucSidebar1.ThongBaoButton.Checked = true;
+                    break;
+                case "NamHoc":
+                    if (ucSidebar1.NamHocButton != null)
+                        ucSidebar1.NamHocButton.Checked = true;
+                    break;
+                case "BaoCao":
+                    if (ucSidebar1.BaoCaoButton != null)
+                        ucSidebar1.BaoCaoButton.Checked = true;
+                    break;
+                case "TaiKhoan":
+                    if (ucSidebar1.TaiKhoanButton != null)
+                        ucSidebar1.TaiKhoanButton.Checked = true;
+                    break;
+                case "CaiDat":
+                    if (ucSidebar1.CaiDatButton != null)
+                        ucSidebar1.CaiDatButton.Checked = true;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// ✅ Uncheck tất cả menu buttons
+        /// </summary>
+        private void UncheckAllMenuButtons()
+        {
+            if (ucSidebar1 == null) return;
+
+            if (ucSidebar1.BangTinButton != null) ucSidebar1.BangTinButton.Checked = false;
+            if (ucSidebar1.HocSinhButton != null) ucSidebar1.HocSinhButton.Checked = false;
+            if (ucSidebar1.GiaoVienButton != null) ucSidebar1.GiaoVienButton.Checked = false;
+            if (ucSidebar1.LopHocButton != null) ucSidebar1.LopHocButton.Checked = false;
+            if (ucSidebar1.MonHocButton != null) ucSidebar1.MonHocButton.Checked = false;
+            if (ucSidebar1.DiemSoButton != null) ucSidebar1.DiemSoButton.Checked = false;
+            if (ucSidebar1.XepLoaiButton != null) ucSidebar1.XepLoaiButton.Checked = false;
+            if (ucSidebar1.HanhKiemButton != null) ucSidebar1.HanhKiemButton.Checked = false;
+            if (ucSidebar1.DanhGiaButton != null) ucSidebar1.DanhGiaButton.Checked = false;
+            if (ucSidebar1.PhanCongButton != null) ucSidebar1.PhanCongButton.Checked = false;
+            if (ucSidebar1.ThoiKhoaBieuButton != null) ucSidebar1.ThoiKhoaBieuButton.Checked = false;
+            if (ucSidebar1.ThongBaoButton != null) ucSidebar1.ThongBaoButton.Checked = false;
+            if (ucSidebar1.NamHocButton != null) ucSidebar1.NamHocButton.Checked = false;
+            if (ucSidebar1.BaoCaoButton != null) ucSidebar1.BaoCaoButton.Checked = false;
+            if (ucSidebar1.TaiKhoanButton != null) ucSidebar1.TaiKhoanButton.Checked = false;
+            if (ucSidebar1.CaiDatButton != null) ucSidebar1.CaiDatButton.Checked = false;
         }
 
         private void InitializeNavigation()
@@ -223,6 +344,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             // Dispose current user control if exists
             DisposeCurrentUserControl();
+
+            // Set active menu button
+            SetActiveMenuButton("BangTin");
 
             // Create and show Dashboard
             var dashboard = new ucDashboard();
