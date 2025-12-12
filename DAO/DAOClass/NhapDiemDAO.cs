@@ -342,7 +342,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         /// <summary>
         /// Lấy thống kê điểm theo học kỳ
-        /// CHỈ TÍNH TRÊN HỌC SINH ĐÃ ĐƯỢC PHÂN LỚP TRONG HỌC KỲ ĐÓ
+        /// TÍNH TRÊN TẤT CẢ HỌC SINH ĐÃ ĐƯỢC PHÂN LỚP TRONG HỌC KỲ ĐÓ
         /// </summary>
         public ThongKeDTO GetThongKeDiemTheoHocKy(int maHocKy)
         {
@@ -353,10 +353,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn = ConnectionDatabase.GetConnection();
                 conn.Open();
 
-                // THÊM INNER JOIN với PhanLop
+                // Lấy TẤT CẢ học sinh ĐÃ ĐƯỢC PHÂN LỚP trong học kỳ đó
                 string query = @"
             SELECT 
-                -- Điểm TB chung (tính trên các học sinh có đủ 13 môn)
+                -- Điểm TB chung (tính trên các học sinh có đủ tất cả môn)
                 AVG(CASE 
                     WHEN DiemTBChung.DiemTB IS NOT NULL THEN DiemTBChung.DiemTB 
                     ELSE NULL 
@@ -368,10 +368,10 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 -- Điểm thấp nhất (chỉ tính học sinh có điểm)
                 MIN(DiemTBChung.DiemTB) as DiemThapNhat,
                 
-                -- Tổng số học sinh ĐÃ ĐƯỢC PHÂN LỚP
+                -- Tổng số học sinh ĐÃ ĐƯỢC PHÂN LỚP trong học kỳ
                 COUNT(DISTINCT hs.MaHocSinh) as TongHocSinh,
                 
-                -- Số học sinh đã có điểm TB chung
+                -- Số học sinh đã có điểm TB chung (đủ tất cả môn)
                 COUNT(DISTINCT CASE WHEN DiemTBChung.DiemTB IS NOT NULL THEN hs.MaHocSinh END) as HocSinhDaNhap
                 
             FROM HocSinh hs
@@ -379,16 +379,16 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 AND pl.MaHocKy = @MaHocKy
             LEFT JOIN (
                 SELECT 
-                    ds.MaHocSinh,
+                    ds2.MaHocSinh,
                     CASE 
-                        WHEN COUNT(DISTINCT ds.MaMonHoc) = 13 
-                             AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = 13
-                        THEN AVG(ds.DiemTrungBinh)
+                        WHEN COUNT(DISTINCT ds2.MaMonHoc) = (SELECT COUNT(*) FROM MonHoc)
+                             AND COUNT(DISTINCT CASE WHEN ds2.DiemTrungBinh IS NOT NULL THEN ds2.MaMonHoc END) = (SELECT COUNT(*) FROM MonHoc)
+                        THEN AVG(ds2.DiemTrungBinh)
                         ELSE NULL
                     END as DiemTB
-                FROM DiemSo ds
-                WHERE ds.MaHocKy = @MaHocKy
-                GROUP BY ds.MaHocSinh
+                FROM DiemSo ds2
+                WHERE ds2.MaHocKy = @MaHocKy
+                GROUP BY ds2.MaHocSinh
             ) as DiemTBChung ON hs.MaHocSinh = DiemTBChung.MaHocSinh
             WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')";
 
@@ -415,7 +415,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 // Tính số học sinh chưa nhập điểm
                 thongKe.HocSinhChuaNhapDiem = thongKe.TongHocSinh - thongKe.HocSinhDaNhapDiem;
 
-                // Lấy tên học sinh điểm cao nhất (chỉ trong những học sinh đã phân lớp)
+                // Lấy tên học sinh điểm cao nhất (chỉ trong học sinh đã phân lớp)
                 string queryDiemCaoNhat = @"
             SELECT hs.HoTen
             FROM HocSinh hs
@@ -428,8 +428,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 FROM DiemSo ds
                 WHERE ds.MaHocKy = @MaHocKy
                 GROUP BY ds.MaHocSinh
-                HAVING COUNT(DISTINCT ds.MaMonHoc) = 13 
-                    AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = 13
+                HAVING COUNT(DISTINCT ds.MaMonHoc) = (SELECT COUNT(*) FROM MonHoc)
+                    AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = (SELECT COUNT(*) FROM MonHoc)
                 ORDER BY DiemTB DESC
                 LIMIT 1
             ) as DiemCaoNhat ON hs.MaHocSinh = DiemCaoNhat.MaHocSinh";
@@ -441,7 +441,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     thongKe.HocSinhDiemCaoNhat = result?.ToString() ?? "Chưa có";
                 }
 
-                // Lấy tên học sinh điểm thấp nhất (chỉ trong những học sinh đã phân lớp)
+                // Lấy tên học sinh điểm thấp nhất (chỉ trong học sinh đã phân lớp)
                 string queryDiemThapNhat = @"
             SELECT hs.HoTen
             FROM HocSinh hs
@@ -454,8 +454,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 FROM DiemSo ds
                 WHERE ds.MaHocKy = @MaHocKy
                 GROUP BY ds.MaHocSinh
-                HAVING COUNT(DISTINCT ds.MaMonHoc) = 13 
-                    AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = 13
+                HAVING COUNT(DISTINCT ds.MaMonHoc) = (SELECT COUNT(*) FROM MonHoc)
+                    AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = (SELECT COUNT(*) FROM MonHoc)
                 ORDER BY DiemTB ASC
                 LIMIT 1
             ) as DiemThapNhat ON hs.MaHocSinh = DiemThapNhat.MaHocSinh";
@@ -480,8 +480,8 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     AND pl.MaHocKy = hk.MaHocKy
                 WHERE hk.MaHocKy < @MaHocKy
                 GROUP BY ds.MaHocSinh, ds.MaHocKy
-                HAVING COUNT(DISTINCT ds.MaMonHoc) = 13 
-                    AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = 13
+                HAVING COUNT(DISTINCT ds.MaMonHoc) = (SELECT COUNT(*) FROM MonHoc)
+                    AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = (SELECT COUNT(*) FROM MonHoc)
                 ORDER BY hk.MaHocKy DESC
             ) as DiemKyTruoc
             LIMIT 1";
@@ -558,7 +558,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         /// <summary>
         /// Lấy bảng điểm theo học kỳ và lọc theo lớp (nếu có)
-        /// CHỈ LẤY HỌC SINH ĐÃ ĐƯỢC PHÂN LỚP TRONG HỌC KỲ ĐÓ
+        /// LẤY TẤT CẢ HỌC SINH ĐÃ ĐƯỢC PHÂN LỚP TRONG HỌC KỲ ĐÓ (kể cả chưa có điểm)
         /// </summary>
         public List<XemBangDiemDTO> GetBangDiemTheoHocKyVaLop(int maHocKy, int? maLop = null)
         {
@@ -570,8 +570,9 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn.Open();
 
                 // Query lấy danh sách học sinh và điểm TB
+                // LUÔN JOIN với PhanLop để chỉ lấy học sinh đã được phân lớp trong học kỳ đó
                 string queryHocSinh = @"
-            SELECT 
+            SELECT DISTINCT
                 hs.MaHocSinh,
                 hs.HoTen,
                 CASE 
@@ -579,7 +580,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                           FROM DiemSo ds2
                           WHERE ds2.MaHocSinh = hs.MaHocSinh 
                             AND ds2.MaHocKy = @MaHocKy
-                            AND ds2.DiemTrungBinh IS NOT NULL) = 13
+                            AND ds2.DiemTrungBinh IS NOT NULL) = (SELECT COUNT(*) FROM MonHoc)
                     THEN (SELECT AVG(ds2.DiemTrungBinh)
                           FROM DiemSo ds2
                           WHERE ds2.MaHocSinh = hs.MaHocSinh 
@@ -602,6 +603,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             ORDER BY hs.MaHocSinh";
 
                 // Query lấy điểm của tất cả môn học
+                // LUÔN JOIN với PhanLop để chỉ lấy điểm của học sinh đã được phân lớp
                 string queryDiem = @"
             SELECT 
                 ds.MaHocSinh,
@@ -609,13 +611,16 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 ds.DiemTrungBinh
             FROM DiemSo ds
             INNER JOIN PhanLop pl ON ds.MaHocSinh = pl.MaHocSinh 
-                AND pl.MaHocKy = @MaHocKy
-            WHERE ds.MaHocKy = @MaHocKy";
+                AND pl.MaHocKy = @MaHocKy";
 
+                // Thêm điều kiện lọc theo lớp nếu có
                 if (maLop.HasValue && maLop.Value > 0)
                 {
                     queryDiem += " AND pl.MaLop = @MaLop";
                 }
+
+                queryDiem += @"
+            WHERE ds.MaHocKy = @MaHocKy";
 
                 // Lấy danh sách học sinh
                 Dictionary<string, XemBangDiemDTO> dictHocSinh = new Dictionary<string, XemBangDiemDTO>();

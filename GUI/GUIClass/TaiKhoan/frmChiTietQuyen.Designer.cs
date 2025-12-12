@@ -79,10 +79,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableChucNang.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableChucNang.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableChucNang.Location = new System.Drawing.Point(37, 152);
+            this.tableChucNang.Location = new System.Drawing.Point(37, 119);
             this.tableChucNang.Name = "tableChucNang";
             this.tableChucNang.RowHeadersVisible = false;
-            this.tableChucNang.Size = new System.Drawing.Size(804, 323);
+            this.tableChucNang.Size = new System.Drawing.Size(804, 744);
             this.tableChucNang.TabIndex = 1;
             this.tableChucNang.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableChucNang.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -139,12 +139,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.lblTongSo.AutoSize = false;
             this.lblTongSo.BackColor = System.Drawing.Color.Transparent;
             this.lblTongSo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTongSo.Location = new System.Drawing.Point(37, 510);
+            this.lblTongSo.Location = new System.Drawing.Point(37, 80);
             this.lblTongSo.Margin = new System.Windows.Forms.Padding(2);
             this.lblTongSo.Name = "lblTongSo";
             this.lblTongSo.Size = new System.Drawing.Size(300, 22);
             this.lblTongSo.TabIndex = 3;
             this.lblTongSo.Text = "Tổng số chức năng: 0";
+            this.lblTongSo.Click += new System.EventHandler(this.lblTongSo_Click);
             // 
             // lblThongBao
             // 
@@ -158,7 +159,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.lblThongBao.Size = new System.Drawing.Size(804, 22);
             this.lblThongBao.TabIndex = 4;
             this.lblThongBao.Text = "Vai trò này chưa có quyền nào!";
-            
             this.lblThongBao.Visible = false;
             // 
             // frmChiTietQuyen
@@ -166,7 +166,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(866, 550);
+            this.ClientSize = new System.Drawing.Size(866, 887);
             this.ControlBox = false;
             this.Controls.Add(this.lblThongBao);
             this.Controls.Add(this.lblTongSo);

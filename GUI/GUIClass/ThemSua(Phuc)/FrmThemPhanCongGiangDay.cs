@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.BUS.Services;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.GUI;
 using System;
@@ -17,6 +18,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private MonHocBUS monHocBUS;
         private LopHocBUS lopHocBUS;
         private HocKyBUS hocKyBUS;
+        private MonHocFilterService monHocFilterService;
 
         public FrmThemPhanCongGiangDay()
         {
@@ -26,6 +28,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             monHocBUS = new MonHocBUS();
             lopHocBUS = new LopHocBUS();
             hocKyBUS = new HocKyBUS();
+            monHocFilterService = new MonHocFilterService();
         }
 
         private void FrmThemPhanCongGiangDay_Load(object sender, EventArgs e)
@@ -369,6 +372,27 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 int maMonHoc = giaoVien.MaMonChuyenMon.Value; // ✅ Lấy từ MaMonChuyenMon
 
+                // ✅ Lấy giá trị từ ComboBox
+                int maLop = Convert.ToInt32(((ComboBoxItem)cbLop.SelectedItem).Value);
+                int maHocKy = Convert.ToInt32(((ComboBoxItem)cbHocKy.SelectedItem).Value);
+
+                // ✅ Validate: Kiểm tra môn học có hợp lệ cho lớp và năm học không
+                var hocKy = hocKyBUS.LayHocKyTheoMa(maHocKy);
+                if (hocKy != null && !string.IsNullOrEmpty(hocKy.MaNamHoc))
+                {
+                    if (!monHocFilterService.IsSubjectValidForClass(maMonHoc, maLop, hocKy.MaNamHoc))
+                    {
+                        MessageBox.Show(
+                            $"⚠️ Môn học '{giaoVien.TenMonChuyenMon}' không được dạy cho khối lớp này trong năm học {hocKy.MaNamHoc}!\n\n" +
+                            "Vui lòng kiểm tra lại cấu hình môn học cho năm học và khối lớp.",
+                            "Môn học không hợp lệ",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
+                        return;
+                    }
+                }
+
                 // Validate ngày tháng
                 if (dtpNgayKetThuc.Value <= dtpNgayBatDau.Value)
                 {
@@ -377,10 +401,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     dtpNgayKetThuc.Focus();
                     return;
                 }
-
-                // ✅ Lấy giá trị từ ComboBox (maMonHoc đã được lấy ở trên từ MaMonChuyenMon)
-                int maLop = Convert.ToInt32(((ComboBoxItem)cbLop.SelectedItem).Value);
-                int maHocKy = Convert.ToInt32(((ComboBoxItem)cbHocKy.SelectedItem).Value);
 
                 // Kiểm tra trùng lặp
                 if (phanCongBUS.KiemTraPhanCongTonTai(maLop, maGiaoVien, maMonHoc, maHocKy))

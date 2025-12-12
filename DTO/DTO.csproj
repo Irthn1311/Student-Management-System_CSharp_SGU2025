@@ -154,6 +154,7 @@
     <Compile Include="LopDTO.cs" />
     <Compile Include="LopHocDTO.cs" />
     <Compile Include="MonHocDTO.cs" />
+    <Compile Include="MonHoc_NamHoc_KhoiDTO.cs" />
     <Compile Include="NamHocDTO.cs" />
     <Compile Include="NguoiDungDTO.cs" />
     <Compile Include="NhapDiemDTO.cs" />

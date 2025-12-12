@@ -834,6 +834,12 @@
     <EmbeddedResource Include="GUIClass\TaiKhoan\frmAddPhanQuyen.resx">
       <DependentUpon>frmAddPhanQuyen.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\TaiKhoan\frmChiTietQuyen.resx">
+      <DependentUpon>frmChiTietQuyen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\TaiKhoan\frmEditPhanQuyen.resx">
+      <DependentUpon>frmEditPhanQuyen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\TaiKhoan\frmPhanQuyen.resx">
       <DependentUpon>frmPhanQuyen.cs</DependentUpon>
     </EmbeddedResource>

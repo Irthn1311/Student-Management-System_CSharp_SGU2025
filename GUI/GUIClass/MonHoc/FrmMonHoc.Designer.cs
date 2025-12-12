@@ -35,6 +35,11 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelMonHoc = new Guna.UI2.WinForms.Guna2Panel();
             this.panelThongTin = new Guna.UI2.WinForms.Guna2Panel();
+            this.chkApDungTatCaKhoi = new Guna.UI2.WinForms.Guna2CheckBox();
+            this.lblApDungTatCaKhoi = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.cbNamHocBatDau = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.chkApDungTuNamHoc = new Guna.UI2.WinForms.Guna2CheckBox();
+            this.lblApDungTuNamHoc = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.cboLoaiMon = new Guna.UI2.WinForms.Guna2ComboBox();
             this.txtSoTiet = new Guna.UI2.WinForms.Guna2TextBox();
             this.txtTenMon = new Guna.UI2.WinForms.Guna2TextBox();
@@ -45,9 +50,11 @@
             this.lblMaMon = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblThongTin = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.panelButtons = new Guna.UI2.WinForms.Guna2Panel();
-            this.btnHuy = new Guna.UI2.WinForms.Guna2Button();
-            this.btnLuu = new Guna.UI2.WinForms.Guna2Button();
+            this.btnThemMoi = new Guna.UI2.WinForms.Guna2Button();
+            this.btnXoaMoi = new Guna.UI2.WinForms.Guna2Button();
             this.btnSua = new Guna.UI2.WinForms.Guna2Button();
+            this.btnLuu = new Guna.UI2.WinForms.Guna2Button();
+            this.btnHuy = new Guna.UI2.WinForms.Guna2Button();
             this.dgvMonHoc = new Guna.UI2.WinForms.Guna2DataGridView();
             this.MaMon = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TenMon = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -78,6 +85,11 @@
             this.panelThongTin.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.panelThongTin.BorderRadius = 10;
             this.panelThongTin.BorderThickness = 1;
+            this.panelThongTin.Controls.Add(this.chkApDungTatCaKhoi);
+            this.panelThongTin.Controls.Add(this.lblApDungTatCaKhoi);
+            this.panelThongTin.Controls.Add(this.cbNamHocBatDau);
+            this.panelThongTin.Controls.Add(this.chkApDungTuNamHoc);
+            this.panelThongTin.Controls.Add(this.lblApDungTuNamHoc);
             this.panelThongTin.Controls.Add(this.cboLoaiMon);
             this.panelThongTin.Controls.Add(this.txtSoTiet);
             this.panelThongTin.Controls.Add(this.txtTenMon);
@@ -89,9 +101,79 @@
             this.panelThongTin.Controls.Add(this.lblThongTin);
             this.panelThongTin.Location = new System.Drawing.Point(20, 17);
             this.panelThongTin.Name = "panelThongTin";
-            this.panelThongTin.Size = new System.Drawing.Size(1128, 180);
+            this.panelThongTin.Size = new System.Drawing.Size(1128, 220);
             this.panelThongTin.TabIndex = 0;
             this.panelThongTin.Paint += new System.Windows.Forms.PaintEventHandler(this.panelThongTin_Paint);
+            // 
+            // chkApDungTatCaKhoi
+            // 
+            this.chkApDungTatCaKhoi.CheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.chkApDungTatCaKhoi.CheckedState.BorderRadius = 3;
+            this.chkApDungTatCaKhoi.CheckedState.BorderThickness = 2;
+            this.chkApDungTatCaKhoi.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.chkApDungTatCaKhoi.Enabled = false;
+            this.chkApDungTatCaKhoi.Location = new System.Drawing.Point(761, 181);
+            this.chkApDungTatCaKhoi.Name = "chkApDungTatCaKhoi";
+            this.chkApDungTatCaKhoi.Size = new System.Drawing.Size(20, 20);
+            this.chkApDungTatCaKhoi.TabIndex = 7;
+            this.chkApDungTatCaKhoi.UncheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
+            this.chkApDungTatCaKhoi.UncheckedState.BorderRadius = 3;
+            this.chkApDungTatCaKhoi.UncheckedState.BorderThickness = 2;
+            this.chkApDungTatCaKhoi.UncheckedState.FillColor = System.Drawing.Color.White;
+            // 
+            // lblApDungTatCaKhoi
+            // 
+            this.lblApDungTatCaKhoi.BackColor = System.Drawing.Color.Transparent;
+            this.lblApDungTatCaKhoi.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            this.lblApDungTatCaKhoi.Location = new System.Drawing.Point(588, 181);
+            this.lblApDungTatCaKhoi.Name = "lblApDungTatCaKhoi";
+            this.lblApDungTatCaKhoi.Size = new System.Drawing.Size(153, 19);
+            this.lblApDungTatCaKhoi.TabIndex = 0;
+            this.lblApDungTatCaKhoi.Text = "Áp dụng cho tất cả khối:";
+            // 
+            // cbNamHocBatDau
+            // 
+            this.cbNamHocBatDau.BackColor = System.Drawing.Color.Transparent;
+            this.cbNamHocBatDau.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(213)))), ((int)(((byte)(218)))), ((int)(((byte)(223)))));
+            this.cbNamHocBatDau.BorderRadius = 6;
+            this.cbNamHocBatDau.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbNamHocBatDau.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbNamHocBatDau.Enabled = false;
+            this.cbNamHocBatDau.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.cbNamHocBatDau.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.cbNamHocBatDau.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cbNamHocBatDau.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbNamHocBatDau.ItemHeight = 30;
+            this.cbNamHocBatDau.Location = new System.Drawing.Point(202, 169);
+            this.cbNamHocBatDau.Name = "cbNamHocBatDau";
+            this.cbNamHocBatDau.Size = new System.Drawing.Size(347, 36);
+            this.cbNamHocBatDau.TabIndex = 6;
+            // 
+            // chkApDungTuNamHoc
+            // 
+            this.chkApDungTuNamHoc.CheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.chkApDungTuNamHoc.CheckedState.BorderRadius = 3;
+            this.chkApDungTuNamHoc.CheckedState.BorderThickness = 2;
+            this.chkApDungTuNamHoc.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.chkApDungTuNamHoc.Location = new System.Drawing.Point(176, 181);
+            this.chkApDungTuNamHoc.Name = "chkApDungTuNamHoc";
+            this.chkApDungTuNamHoc.Size = new System.Drawing.Size(20, 20);
+            this.chkApDungTuNamHoc.TabIndex = 5;
+            this.chkApDungTuNamHoc.UncheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
+            this.chkApDungTuNamHoc.UncheckedState.BorderRadius = 3;
+            this.chkApDungTuNamHoc.UncheckedState.BorderThickness = 2;
+            this.chkApDungTuNamHoc.UncheckedState.FillColor = System.Drawing.Color.White;
+            this.chkApDungTuNamHoc.CheckedChanged += new System.EventHandler(this.ChkApDungTuNamHoc_CheckedChanged);
+            // 
+            // lblApDungTuNamHoc
+            // 
+            this.lblApDungTuNamHoc.BackColor = System.Drawing.Color.Transparent;
+            this.lblApDungTuNamHoc.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            this.lblApDungTuNamHoc.Location = new System.Drawing.Point(37, 182);
+            this.lblApDungTuNamHoc.Name = "lblApDungTuNamHoc";
+            this.lblApDungTuNamHoc.Size = new System.Drawing.Size(133, 19);
+            this.lblApDungTuNamHoc.TabIndex = 0;
+            this.lblApDungTuNamHoc.Text = "Áp dụng từ năm học:";
             // 
             // cboLoaiMon
             // 
@@ -234,13 +316,93 @@
             // 
             // panelButtons
             // 
-            this.panelButtons.Controls.Add(this.btnHuy);
-            this.panelButtons.Controls.Add(this.btnLuu);
+            this.panelButtons.Controls.Add(this.btnThemMoi);
+            this.panelButtons.Controls.Add(this.btnXoaMoi);
             this.panelButtons.Controls.Add(this.btnSua);
-            this.panelButtons.Location = new System.Drawing.Point(20, 210);
+            this.panelButtons.Controls.Add(this.btnLuu);
+            this.panelButtons.Controls.Add(this.btnHuy);
+            this.panelButtons.Location = new System.Drawing.Point(20, 250);
             this.panelButtons.Name = "panelButtons";
             this.panelButtons.Size = new System.Drawing.Size(1128, 50);
             this.panelButtons.TabIndex = 1;
+            // 
+            // btnThemMoi
+            // 
+            this.btnThemMoi.BorderRadius = 8;
+            this.btnThemMoi.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemMoi.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnThemMoi.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnThemMoi.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnThemMoi.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(136)))), ((int)(((byte)(229)))));
+            this.btnThemMoi.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            this.btnThemMoi.ForeColor = System.Drawing.Color.White;
+            this.btnThemMoi.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.add;
+            this.btnThemMoi.ImageSize = new System.Drawing.Size(18, 18);
+            this.btnThemMoi.Location = new System.Drawing.Point(6, 5);
+            this.btnThemMoi.Name = "btnThemMoi";
+            this.btnThemMoi.Size = new System.Drawing.Size(120, 40);
+            this.btnThemMoi.TabIndex = 0;
+            this.btnThemMoi.Text = "Thêm";
+            this.btnThemMoi.Click += new System.EventHandler(this.btnThemMoi_Click);
+            // 
+            // btnXoaMoi
+            // 
+            this.btnXoaMoi.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.btnXoaMoi.BorderRadius = 8;
+            this.btnXoaMoi.BorderThickness = 1;
+            this.btnXoaMoi.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnXoaMoi.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnXoaMoi.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnXoaMoi.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnXoaMoi.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.btnXoaMoi.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            this.btnXoaMoi.ForeColor = System.Drawing.Color.White;
+            this.btnXoaMoi.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.delete_icon;
+            this.btnXoaMoi.ImageSize = new System.Drawing.Size(18, 18);
+            this.btnXoaMoi.Location = new System.Drawing.Point(974, 5);
+            this.btnXoaMoi.Name = "btnXoaMoi";
+            this.btnXoaMoi.Size = new System.Drawing.Size(120, 40);
+            this.btnXoaMoi.TabIndex = 5;
+            this.btnXoaMoi.Text = "Xóa";
+            this.btnXoaMoi.Click += new System.EventHandler(this.btnXoaMoi_Click);
+            // 
+            // btnSua
+            // 
+            this.btnSua.BorderRadius = 8;
+            this.btnSua.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnSua.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnSua.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnSua.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnSua.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(146)))), ((int)(((byte)(60)))));
+            this.btnSua.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            this.btnSua.ForeColor = System.Drawing.Color.White;
+            this.btnSua.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.edit_icon;
+            this.btnSua.ImageSize = new System.Drawing.Size(18, 18);
+            this.btnSua.Location = new System.Drawing.Point(233, 5);
+            this.btnSua.Name = "btnSua";
+            this.btnSua.Size = new System.Drawing.Size(120, 40);
+            this.btnSua.TabIndex = 1;
+            this.btnSua.Text = "Sửa";
+            this.btnSua.Click += new System.EventHandler(this.btnSua_Click);
+            // 
+            // btnLuu
+            // 
+            this.btnLuu.BorderRadius = 8;
+            this.btnLuu.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnLuu.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnLuu.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnLuu.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnLuu.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
+            this.btnLuu.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            this.btnLuu.ForeColor = System.Drawing.Color.White;
+            this.btnLuu.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.save;
+            this.btnLuu.ImageSize = new System.Drawing.Size(18, 18);
+            this.btnLuu.Location = new System.Drawing.Point(460, 5);
+            this.btnLuu.Name = "btnLuu";
+            this.btnLuu.Size = new System.Drawing.Size(120, 40);
+            this.btnLuu.TabIndex = 3;
+            this.btnLuu.Text = "Lưu";
+            this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
             // 
             // btnHuy
             // 
@@ -262,44 +424,6 @@
             this.btnHuy.TabIndex = 4;
             this.btnHuy.Text = "Hủy";
             this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
-            // 
-            // btnLuu
-            // 
-            this.btnLuu.BorderRadius = 8;
-            this.btnLuu.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnLuu.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnLuu.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnLuu.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnLuu.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
-            this.btnLuu.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
-            this.btnLuu.ForeColor = System.Drawing.Color.White;
-            this.btnLuu.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.save;
-            this.btnLuu.ImageSize = new System.Drawing.Size(18, 18);
-            this.btnLuu.Location = new System.Drawing.Point(460, 5);
-            this.btnLuu.Name = "btnLuu";
-            this.btnLuu.Size = new System.Drawing.Size(120, 40);
-            this.btnLuu.TabIndex = 3;
-            this.btnLuu.Text = "Lưu";
-            this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
-            // 
-            // btnSua
-            // 
-            this.btnSua.BorderRadius = 8;
-            this.btnSua.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnSua.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnSua.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnSua.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnSua.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(146)))), ((int)(((byte)(60)))));
-            this.btnSua.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSua.ForeColor = System.Drawing.Color.White;
-            this.btnSua.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.edit_icon;
-            this.btnSua.ImageSize = new System.Drawing.Size(18, 18);
-            this.btnSua.Location = new System.Drawing.Point(233, 5);
-            this.btnSua.Name = "btnSua";
-            this.btnSua.Size = new System.Drawing.Size(120, 40);
-            this.btnSua.TabIndex = 1;
-            this.btnSua.Text = "Sửa";
-            this.btnSua.Click += new System.EventHandler(this.btnSua_Click);
             // 
             // dgvMonHoc
             // 
@@ -331,7 +455,7 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvMonHoc.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvMonHoc.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.dgvMonHoc.Location = new System.Drawing.Point(20, 275);
+            this.dgvMonHoc.Location = new System.Drawing.Point(20, 315);
             this.dgvMonHoc.MultiSelect = false;
             this.dgvMonHoc.Name = "dgvMonHoc";
             this.dgvMonHoc.ReadOnly = true;
@@ -346,7 +470,7 @@
             this.dgvMonHoc.RowHeadersVisible = false;
             this.dgvMonHoc.RowHeadersWidth = 51;
             this.dgvMonHoc.RowTemplate.Height = 40;
-            this.dgvMonHoc.Size = new System.Drawing.Size(1128, 478);
+            this.dgvMonHoc.Size = new System.Drawing.Size(1128, 438);
             this.dgvMonHoc.TabIndex = 2;
             this.dgvMonHoc.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvMonHoc.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -439,10 +563,17 @@
         private Guna.UI2.WinForms.Guna2TextBox txtTenMon;
         private Guna.UI2.WinForms.Guna2TextBox txtSoTiet;
         private Guna.UI2.WinForms.Guna2ComboBox cboLoaiMon;
+        private Guna.UI2.WinForms.Guna2HtmlLabel lblApDungTuNamHoc;
+        private Guna.UI2.WinForms.Guna2CheckBox chkApDungTuNamHoc;
+        private Guna.UI2.WinForms.Guna2ComboBox cbNamHocBatDau;
+        private Guna.UI2.WinForms.Guna2HtmlLabel lblApDungTatCaKhoi;
+        private Guna.UI2.WinForms.Guna2CheckBox chkApDungTatCaKhoi;
         private Guna.UI2.WinForms.Guna2Panel panelButtons;
         private Guna.UI2.WinForms.Guna2Button btnSua;
         private Guna.UI2.WinForms.Guna2Button btnLuu;
         private Guna.UI2.WinForms.Guna2Button btnHuy;
+        private Guna.UI2.WinForms.Guna2Button btnThemMoi;
+        private Guna.UI2.WinForms.Guna2Button btnXoaMoi;
         private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }
