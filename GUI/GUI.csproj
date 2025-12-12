@@ -378,6 +378,18 @@
     <Compile Include="GUIClass\HocSinh\XemChiTietHocSinh.Designer.cs">
       <DependentUpon>XemChiTietHocSinh.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUIClass\TaiKhoan\frmChiTietQuyen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\TaiKhoan\frmChiTietQuyen.Designer.cs">
+      <DependentUpon>frmChiTietQuyen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUIClass\TaiKhoan\frmEditPhanQuyen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\TaiKhoan\frmEditPhanQuyen.Designer.cs">
+      <DependentUpon>frmEditPhanQuyen.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUIClass\ThongBao\FrmSuaThongBao.cs">
       <SubType>Form</SubType>
     </Compile>

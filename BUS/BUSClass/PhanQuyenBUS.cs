@@ -178,6 +178,44 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
         #endregion
 
+        #region Cập nhật vai trò với quyền
+
+        /// <summary>
+        /// Cập nhật vai trò với các quyền được chọn
+        /// </summary>
+        /// <param name="maVaiTro">Mã vai trò cần cập nhật</param>
+        /// <param name="danhSachQuyen">Danh sách quyền: Key = MaChucNang, Value = List hành động (read, create, update, delete)</param>
+        public bool CapNhatVaiTroVoiQuyen(string maVaiTro, Dictionary<string, List<string>> danhSachQuyen)
+        {
+            try
+            {
+                // Validate
+                if (string.IsNullOrWhiteSpace(maVaiTro))
+                    throw new Exception("Mã vai trò không được để trống!");
+
+                if (danhSachQuyen == null || danhSachQuyen.Count == 0)
+                    throw new Exception("Vui lòng chọn ít nhất một quyền!");
+
+                // Cập nhật vào database
+                return phanQuyenDAO.CapNhatVaiTroVoiQuyen(maVaiTro, danhSachQuyen);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Lấy vai trò theo mã vai trò
+        /// </summary>
+        public VaiTroDTO GetVaiTroByMa(string maVaiTro)
+        {
+            var danhSach = phanQuyenDAO.GetAllVaiTro();
+            return danhSach.FirstOrDefault(x => x.MaVaiTro == maVaiTro);
+        }
+
+        #endregion
+
         #region Lấy thông tin vai trò
 
         /// <summary>
@@ -281,6 +319,8 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             switch (hanhDong.ToLower())
             {
+                case "read":
+                    return "Đọc";
                 case "create":
                     return "Thêm";
                 case "update":

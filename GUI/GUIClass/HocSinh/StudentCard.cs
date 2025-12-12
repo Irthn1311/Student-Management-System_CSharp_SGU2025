@@ -304,7 +304,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                // Lấy URL từ web server (nếu có) hoặc tạo URL mặc định
+                // Lấy URL từ web server  hoặc tạo URL mặc định
                 string qrUrl = GetQRCodeUrl();
                 
                 System.Diagnostics.Debug.WriteLine($"QR Code URL: {qrUrl}");
@@ -349,34 +349,60 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         /// <summary>
         /// Lấy URL cho QR code từ UrlResolver
         /// </summary>
+        //private string GetQRCodeUrl()
+        //{
+        //    try
+        //    {
+        //        // Đảm bảo server đang chạy
+        //        StudentWebServerManager.Instance?.StartServer();
+
+        //        // Lấy URL từ UrlResolver
+        //        string baseUrl = UrlResolver.ResolveBaseUrl();
+
+        //        if (string.IsNullOrEmpty(baseUrl))
+        //        {
+        //            // Fallback: Tạo URL mặc định
+        //            int port = int.Parse(ConfigurationManager.AppSettings["WebServerPort"] ?? "8080");
+        //            baseUrl = $"http://localhost:{port}";
+        //        }
+
+        //        // Tạo URL đầy đủ với mã học sinh
+        //        return $"{baseUrl.TrimEnd('/')}/student/{hocSinh.MaHS}";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine($"Error getting QR URL: {ex.Message}");
+        //        // Fallback: Tạo URL mặc định
+        //        int port = int.Parse(ConfigurationManager.AppSettings["WebServerPort"] ?? "8080");
+        //        return $"http://localhost:{port}/student/{hocSinh.MaHS}";
+        //    }
+        //}
+        // ...existing code...
+
         private string GetQRCodeUrl()
         {
             try
             {
-                // Đảm bảo server đang chạy
-                StudentWebServerManager.Instance?.StartServer();
-                
-                // Lấy URL từ UrlResolver
-                string baseUrl = UrlResolver.ResolveBaseUrl();
-                
-                if (string.IsNullOrEmpty(baseUrl))
-                {
-                    // Fallback: Tạo URL mặc định
-                    int port = int.Parse(ConfigurationManager.AppSettings["WebServerPort"] ?? "8080");
-                    baseUrl = $"http://localhost:{port}";
-                }
-                
-                // Tạo URL đầy đủ với mã học sinh
-                return $"{baseUrl.TrimEnd('/')}/student/{hocSinh.MaHS}";
+                StudentWebServerManager.Instance?.StartServer(); //Server mini trên laptop chạy và lắng nghe request
+
+                // ✅ HARDCODE IP TẠM THỜI ĐỂ TEST
+                string serverIP = "172.20.10.2"; // ← IP WiFi thật của bạn
+                int port = int.Parse(ConfigurationManager.AppSettings["WebServerPort"] ?? "8080");
+
+                string qrUrl = $"http://{serverIP}:{port}/student/{hocSinh.MaHS}";
+
+                System.Diagnostics.Debug.WriteLine($"[QR URL] {qrUrl}");
+
+                return qrUrl;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error getting QR URL: {ex.Message}");
-                // Fallback: Tạo URL mặc định
-                int port = int.Parse(ConfigurationManager.AppSettings["WebServerPort"] ?? "8080");
-                return $"http://localhost:{port}/student/{hocSinh.MaHS}";
+                System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
+                return $"http://172.20.10.2:8080/student/{hocSinh.MaHS}";
             }
         }
+
+        // ...existing code...
 
         /// <summary>
         /// Tạo QR code lỗi

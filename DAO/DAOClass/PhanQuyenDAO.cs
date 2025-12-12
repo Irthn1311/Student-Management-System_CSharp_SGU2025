@@ -341,6 +341,77 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 
         #endregion
 
+        #region Cập nhật vai trò với quyền
+
+        /// <summary>
+        /// Cập nhật vai trò với các quyền được chọn (Transaction)
+        /// </summary>
+        public bool CapNhatVaiTroVoiQuyen(string maVaiTro, Dictionary<string, List<string>> danhSachQuyen)
+        {
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                MySqlTransaction transaction = conn.BeginTransaction();
+
+                try
+                {
+                    // 1. Xóa tất cả quyền cũ của vai trò
+                    string query1 = "DELETE FROM VaiTroChucNangHanhDong WHERE MaVaiTro = @MaVaiTro";
+                    MySqlCommand cmd1 = new MySqlCommand(query1, conn, transaction);
+                    cmd1.Parameters.AddWithValue("@MaVaiTro", maVaiTro);
+                    cmd1.ExecuteNonQuery();
+
+                    string query2 = "DELETE FROM VaiTroChucNang WHERE MaVaiTro = @MaVaiTro";
+                    MySqlCommand cmd2 = new MySqlCommand(query2, conn, transaction);
+                    cmd2.Parameters.AddWithValue("@MaVaiTro", maVaiTro);
+                    cmd2.ExecuteNonQuery();
+
+                    // 2. Thêm lại các quyền mới
+                    foreach (var item in danhSachQuyen)
+                    {
+                        string maChucNang = item.Key;
+                        List<string> hanhDongs = item.Value;
+
+                        // Thêm vào VaiTroChucNang
+                        string query3 = "INSERT IGNORE INTO VaiTroChucNang (MaVaiTro, MaChucNang) VALUES (@MaVaiTro, @MaChucNang)";
+                        MySqlCommand cmd3 = new MySqlCommand(query3, conn, transaction);
+                        cmd3.Parameters.AddWithValue("@MaVaiTro", maVaiTro);
+                        cmd3.Parameters.AddWithValue("@MaChucNang", maChucNang);
+                        cmd3.ExecuteNonQuery();
+
+                        // Thêm vào ChucNangHanhDong (nếu chưa có)
+                        foreach (string hanhDong in hanhDongs)
+                        {
+                            string query4 = "INSERT IGNORE INTO ChucNangHanhDong (MaChucNang, HanhDong) VALUES (@MaChucNang, @HanhDong)";
+                            MySqlCommand cmd4 = new MySqlCommand(query4, conn, transaction);
+                            cmd4.Parameters.AddWithValue("@MaChucNang", maChucNang);
+                            cmd4.Parameters.AddWithValue("@HanhDong", hanhDong);
+                            cmd4.ExecuteNonQuery();
+
+                            // Thêm vào VaiTroChucNangHanhDong
+                            string query5 = "INSERT INTO VaiTroChucNangHanhDong (MaVaiTro, MaChucNang, HanhDong) " +
+                                           "VALUES (@MaVaiTro, @MaChucNang, @HanhDong)";
+                            MySqlCommand cmd5 = new MySqlCommand(query5, conn, transaction);
+                            cmd5.Parameters.AddWithValue("@MaVaiTro", maVaiTro);
+                            cmd5.Parameters.AddWithValue("@MaChucNang", maChucNang);
+                            cmd5.Parameters.AddWithValue("@HanhDong", hanhDong);
+                            cmd5.ExecuteNonQuery();
+                        }
+                    }
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Kiểm tra vai trò đã được gán cho người dùng nào chưa
         /// </summary>
