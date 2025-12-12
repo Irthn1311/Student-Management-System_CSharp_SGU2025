@@ -687,6 +687,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 if (!currentMaLop.HasValue || currentMaLop.Value <= 0)
                 {
                     // Điều chỉnh layout: chartBar full width, ẩn chartLine
+                    chartBar.Visible = true; // ✅ Đảm bảo chartBar hiển thị khi chọn "Tất cả lớp"
                     chartBar.Location = new Point(20, 62);
                     chartBar.Size = new Size(1080, 258);
                     chartLine.Visible = false;

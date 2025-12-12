@@ -423,6 +423,12 @@
     <Compile Include="GUIClass\LopKhoi\FormDuyetYeuCau.Designer.cs">
       <DependentUpon>FormDuyetYeuCau.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUIClass\LopKhoi\FormChiTietYeuCau.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\LopKhoi\FormChiTietYeuCau.Designer.cs">
+      <DependentUpon>FormChiTietYeuCau.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUIClass\LopKhoi\FormGuiYeuCauChuyenLop.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -773,6 +779,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\LopKhoi\FormDuyetYeuCau.resx">
       <DependentUpon>FormDuyetYeuCau.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\LopKhoi\FormChiTietYeuCau.resx">
+      <DependentUpon>FormChiTietYeuCau.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\LopKhoi\FormGuiYeuCauChuyenLop.resx">
       <DependentUpon>FormGuiYeuCauChuyenLop.cs</DependentUpon>

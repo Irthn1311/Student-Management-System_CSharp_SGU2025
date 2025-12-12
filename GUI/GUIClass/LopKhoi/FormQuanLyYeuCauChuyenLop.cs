@@ -128,6 +128,23 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     // Đặt font cho các cell
                     row.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
                     
+                    // ✅ Format cột "Lớp admin duyệt" - hiển thị "Chưa duyệt" nếu chưa có
+                    if (row.Cells["TenLopDuocDuyet"] != null)
+                    {
+                        if (string.IsNullOrWhiteSpace(yc.TenLopDuocDuyet))
+                        {
+                            row.Cells["TenLopDuocDuyet"].Value = "Chưa duyệt";
+                            row.Cells["TenLopDuocDuyet"].Style.ForeColor = Color.FromArgb(100, 100, 100); // Xám
+                            row.Cells["TenLopDuocDuyet"].Style.Font = new Font("Segoe UI", 9.5F, FontStyle.Italic);
+                        }
+                        else
+                        {
+                            row.Cells["TenLopDuocDuyet"].Value = yc.TenLopDuocDuyet;
+                            row.Cells["TenLopDuocDuyet"].Style.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
+                            row.Cells["TenLopDuocDuyet"].Style.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
+                        }
+                    }
+                    
                     if (yc.TrangThai == "Chờ duyệt")
                     {
                         row.DefaultCellStyle.BackColor = Color.FromArgb(255, 251, 235); // Vàng nhạt
@@ -211,37 +228,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void ShowChiTietYeuCau(YeuCauChuyenLopDTO yeuCau)
         {
-            string message = $" CHI TIẾT YÊU CẦU CHUYỂN LỚP\n\n" +
-                $"Mã yêu cầu: {yeuCau.MaYeuCau}\n" +
-                $"Trạng thái: {yeuCau.TrangThai}\n\n" +
-                $"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
-                $" Học sinh: {yeuCau.TenHocSinh}\n" +
-                $" Từ lớp: {yeuCau.TenLopHienTai}\n" +
-                $" Lớp mong muốn: {yeuCau.TenLopMongMuon ?? "Để admin quyết định"}\n" +
-                $" Học kỳ: {yeuCau.TenHocKy} - {yeuCau.TenNamHoc}\n\n" +
-                $" Lý do:\n{yeuCau.LyDoYeuCau}\n\n" +
-                $"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
-                $" Ngày tạo: {yeuCau.NgayTao:dd/MM/yyyy HH:mm}\n" +
-                $" Người tạo: {yeuCau.NguoiTao}\n";
-
-            if (yeuCau.TrangThai != "Chờ duyệt")
-            {
-                message += $"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
-                    $" Ngày xử lý: {yeuCau.NgayXuLy?.ToString("dd/MM/yyyy HH:mm") ?? "N/A"}\n" +
-                    $" Người xử lý: {yeuCau.NguoiXuLy ?? "N/A"}\n";
-
-                if (yeuCau.TrangThai == "Đã duyệt")
-                {
-                    message += $"✅ Lớp được duyệt: {yeuCau.TenLopDuocDuyet}\n";
-                }
-
-                if (!string.IsNullOrWhiteSpace(yeuCau.GhiChuAdmin))
-                {
-                    message += $"\n💬 Ghi chú admin:\n{yeuCau.GhiChuAdmin}\n";
-                }
-            }
-
-            MessageBox.Show(message, "Chi tiết yêu cầu", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // ✅ Sử dụng form xem chi tiết mới thay vì MessageBox
+            FormChiTietYeuCau formChiTiet = new FormChiTietYeuCau(yeuCau);
+            formChiTiet.ShowDialog();
         }
 
         private void btnDuyet_Click(object sender, EventArgs e)
@@ -396,6 +385,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 "TenHocSinh",          // Học sinh
                 "TenLopHienTai",       // Lớp hiện tại
                 "TenLopMongMuon",      // Lớp mong muốn
+                "TenLopDuocDuyet",     // ✅ Lớp admin duyệt
                 "LyDoYeuCau",          // Lý do
                 "TrangThai",           // Trạng thái
                 "NgayTao",             // Ngày tạo
@@ -414,7 +404,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 dgvYeuCau.Columns["MaYeuCau"].Visible = true;
                 dgvYeuCau.Columns["MaYeuCau"].HeaderText = "Mã YC";
-                dgvYeuCau.Columns["MaYeuCau"].Width = 80;
+                dgvYeuCau.Columns["MaYeuCau"].Width = 70; // ✅ Giảm từ 80
                 dgvYeuCau.Columns["MaYeuCau"].DisplayIndex = displayIndex++;
             }
             
@@ -422,7 +412,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 dgvYeuCau.Columns["NgayTao"].Visible = true;
                 dgvYeuCau.Columns["NgayTao"].HeaderText = " Ngày tạo";
-                dgvYeuCau.Columns["NgayTao"].Width = 130;
+                dgvYeuCau.Columns["NgayTao"].Width = 140; // ✅ Tăng từ 130
                 dgvYeuCau.Columns["NgayTao"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
                 dgvYeuCau.Columns["NgayTao"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 dgvYeuCau.Columns["NgayTao"].DisplayIndex = displayIndex++;
@@ -432,7 +422,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 dgvYeuCau.Columns["TenHocSinh"].Visible = true;
                 dgvYeuCau.Columns["TenHocSinh"].HeaderText = " Học sinh";
-                dgvYeuCau.Columns["TenHocSinh"].Width = 180;
+                dgvYeuCau.Columns["TenHocSinh"].Width = 150; // ✅ Giảm từ 180
                 dgvYeuCau.Columns["TenHocSinh"].DisplayIndex = displayIndex++;
             }
             
@@ -440,7 +430,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 dgvYeuCau.Columns["TenLopHienTai"].Visible = true;
                 dgvYeuCau.Columns["TenLopHienTai"].HeaderText = " Lớp hiện tại";
-                dgvYeuCau.Columns["TenLopHienTai"].Width = 120;
+                dgvYeuCau.Columns["TenLopHienTai"].Width = 110; // ✅ Giảm từ 120
                 dgvYeuCau.Columns["TenLopHienTai"].DisplayIndex = displayIndex++;
             }
             
@@ -448,15 +438,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 dgvYeuCau.Columns["TenLopMongMuon"].Visible = true;
                 dgvYeuCau.Columns["TenLopMongMuon"].HeaderText = " Lớp mong muốn";
-                dgvYeuCau.Columns["TenLopMongMuon"].Width = 140;
+                dgvYeuCau.Columns["TenLopMongMuon"].Width = 130; // ✅ Giảm từ 140
                 dgvYeuCau.Columns["TenLopMongMuon"].DisplayIndex = displayIndex++;
+            }
+            
+            // ✅ Thêm cột "Lớp admin duyệt" ngay sau "Lớp mong muốn"
+            if (dgvYeuCau.Columns["TenLopDuocDuyet"] != null)
+            {
+                dgvYeuCau.Columns["TenLopDuocDuyet"].Visible = true;
+                dgvYeuCau.Columns["TenLopDuocDuyet"].HeaderText = " Lớp admin duyệt";
+                dgvYeuCau.Columns["TenLopDuocDuyet"].Width = 130; // ✅ Giảm từ 150 để đều với "Lớp mong muốn"
+                dgvYeuCau.Columns["TenLopDuocDuyet"].DefaultCellStyle.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
+                dgvYeuCau.Columns["TenLopDuocDuyet"].DefaultCellStyle.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
+                dgvYeuCau.Columns["TenLopDuocDuyet"].DisplayIndex = displayIndex++;
             }
             
             if (dgvYeuCau.Columns["LyDoYeuCau"] != null)
             {
                 dgvYeuCau.Columns["LyDoYeuCau"].Visible = true;
                 dgvYeuCau.Columns["LyDoYeuCau"].HeaderText = " Lý do";
-                dgvYeuCau.Columns["LyDoYeuCau"].Width = 250;
+                // ✅ Không đặt Width cụ thể, để Fill tự động chiếm không gian còn lại
                 dgvYeuCau.Columns["LyDoYeuCau"].DisplayIndex = displayIndex++;
             }
             
@@ -464,7 +465,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 dgvYeuCau.Columns["TrangThai"].Visible = true;
                 dgvYeuCau.Columns["TrangThai"].HeaderText = " Trạng thái";
-                dgvYeuCau.Columns["TrangThai"].Width = 130;
+                dgvYeuCau.Columns["TrangThai"].Width = 120; // ✅ Giảm từ 130
                 dgvYeuCau.Columns["TrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 dgvYeuCau.Columns["TrangThai"].DisplayIndex = displayIndex++;
             }
@@ -473,7 +474,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 dgvYeuCau.Columns["NguoiTao"].Visible = true;
                 dgvYeuCau.Columns["NguoiTao"].HeaderText = " Người tạo";
-                dgvYeuCau.Columns["NguoiTao"].Width = 120;
+                dgvYeuCau.Columns["NguoiTao"].Width = 110; // ✅ Giảm từ 120
                 dgvYeuCau.Columns["NguoiTao"].DisplayIndex = displayIndex++;
             }
 
@@ -501,7 +502,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             btnColumn.HeaderText = "Xem chi tiết";
             btnColumn.Text = "Xem PDF";
             btnColumn.UseColumnTextForButtonValue = true;
-            btnColumn.Width = 120;
+            btnColumn.Width = 110; // ✅ Giảm từ 120 để đều hơn
             btnColumn.DefaultCellStyle.BackColor = Color.FromArgb(30, 136, 229);
             btnColumn.DefaultCellStyle.ForeColor = Color.White;
             btnColumn.DefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
