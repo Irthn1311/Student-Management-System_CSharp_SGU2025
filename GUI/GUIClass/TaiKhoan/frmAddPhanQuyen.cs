@@ -70,12 +70,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                                         cellRect.Y >= tableChucNang.ColumnHeadersHeight &&
                                         cellRect.Y < tableChucNang.Height;
 
+                        if (checkBoxes.ContainsKey("xem"))
+                        {
+                            checkBoxes["xem"].Visible = isVisible;
+                            if (isVisible)
+                            {
+                                checkBoxes["xem"].Location = new Point(cellRect.X + 5, cellRect.Y + 6);
+                                checkBoxes["xem"].BringToFront();
+                            }
+                        }
+
                         if (checkBoxes.ContainsKey("them"))
                         {
                             checkBoxes["them"].Visible = isVisible;
                             if (isVisible)
                             {
-                                checkBoxes["them"].Location = new Point(cellRect.X + 5, cellRect.Y + 6);
+                                checkBoxes["them"].Location = new Point(cellRect.X + 75, cellRect.Y + 6);
                                 checkBoxes["them"].BringToFront();
                             }
                         }
@@ -85,7 +95,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             checkBoxes["sua"].Visible = isVisible;
                             if (isVisible)
                             {
-                                checkBoxes["sua"].Location = new Point(cellRect.X + 75, cellRect.Y + 6);
+                                checkBoxes["sua"].Location = new Point(cellRect.X + 145, cellRect.Y + 6);
                                 checkBoxes["sua"].BringToFront();
                             }
                         }
@@ -95,7 +105,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             checkBoxes["xoa"].Visible = isVisible;
                             if (isVisible)
                             {
-                                checkBoxes["xoa"].Location = new Point(cellRect.X + 130, cellRect.Y + 6);
+                                checkBoxes["xoa"].Location = new Point(cellRect.X + 215, cellRect.Y + 6);
                                 checkBoxes["xoa"].BringToFront();
                             }
                         }
@@ -103,6 +113,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     catch
                     {
                         // Nếu cell không hiển thị, ẩn các checkbox
+                        if (checkBoxes.ContainsKey("xem"))
+                            checkBoxes["xem"].Visible = false;
                         if (checkBoxes.ContainsKey("them"))
                             checkBoxes["them"].Visible = false;
                         if (checkBoxes.ContainsKey("sua"))
@@ -114,6 +126,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 else
                 {
                     // Row không tồn tại, ẩn checkbox
+                    if (checkBoxes.ContainsKey("xem"))
+                        checkBoxes["xem"].Visible = false;
                     if (checkBoxes.ContainsKey("them"))
                         checkBoxes["them"].Visible = false;
                     if (checkBoxes.ContainsKey("sua"))
@@ -154,23 +168,31 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                     List<string> hanhDongs = new List<string>();
 
-                    // ✅ THÊM: Tự động thêm quyền READ cho mọi chức năng được chọn
+                    // ✅ Xử lý checkbox "Xem" (READ) - có thể chỉ chọn Xem mà không cần quyền khác
                     bool coQuyenKhac = false;
 
                     foreach (var cb in checkBoxes)
                     {
                         if (cb.Value.Checked)
                         {
-                            string hanhDong = phanQuyenBUS.MapCheckBoxToHanhDong(cb.Key);
-                            if (!string.IsNullOrEmpty(hanhDong))
+                            // Xử lý checkbox "Xem"
+                            if (cb.Key == "xem")
                             {
-                                hanhDongs.Add(hanhDong);
-                                coQuyenKhac = true;
+                                hanhDongs.Add("read");
+                            }
+                            else
+                            {
+                                string hanhDong = phanQuyenBUS.MapCheckBoxToHanhDong(cb.Key);
+                                if (!string.IsNullOrEmpty(hanhDong))
+                                {
+                                    hanhDongs.Add(hanhDong);
+                                    coQuyenKhac = true;
+                                }
                             }
                         }
                     }
 
-                    // ✅ THÊM: Nếu có bất kỳ quyền nào được chọn, tự động thêm READ
+                    // ✅ THÊM: Nếu có quyền khác (Thêm/Sửa/Xóa) nhưng chưa có READ, tự động thêm READ
                     if (coQuyenKhac && !hanhDongs.Contains("read"))
                     {
                         hanhDongs.Add("read");
@@ -329,8 +351,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             return checkBoxDict.ContainsKey(maChucNang);
         }
 
-        // Trong hàm AddCheckBoxesToRow, BỎ cbXem:
-
         private void AddCheckBoxesToRow(DataGridViewCellPaintingEventArgs e)
         {
             Rectangle cellRect = e.CellBounds;
@@ -345,12 +365,23 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 checkBoxDict[maChucNang] = new Dictionary<string, Guna.UI2.WinForms.Guna2CheckBox>();
 
+                // ✅ Checkbox Xem (READ)
+                var cbXem = new Guna.UI2.WinForms.Guna2CheckBox();
+                cbXem.Text = "Xem";
+                cbXem.AutoSize = true;
+                cbXem.Tag = new CheckBoxTag { Row = row, Action = "xem", MaChucNang = maChucNang };
+                cbXem.Location = new Point(cellRect.X + 5, cellRect.Y + 6);
+                checkBoxDict[maChucNang]["xem"] = cbXem;
+                tableChucNang.Controls.Add(cbXem);
+                cbXem.BringToFront();
+                cbXem.Enabled = true; // Cho phép chọn/bỏ chọn
+
                 // Checkbox Thêm
                 var cbThem = new Guna.UI2.WinForms.Guna2CheckBox();
                 cbThem.Text = "Thêm";
                 cbThem.AutoSize = true;
                 cbThem.Tag = new CheckBoxTag { Row = row, Action = "them", MaChucNang = maChucNang };
-                cbThem.Location = new Point(cellRect.X + 5, cellRect.Y + 6);
+                cbThem.Location = new Point(cellRect.X + 75, cellRect.Y + 6);
                 checkBoxDict[maChucNang]["them"] = cbThem;
                 tableChucNang.Controls.Add(cbThem);
                 cbThem.BringToFront();
@@ -367,7 +398,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 cbSua.Text = "Sửa";
                 cbSua.AutoSize = true;
                 cbSua.Tag = new CheckBoxTag { Row = row, Action = "sua", MaChucNang = maChucNang };
-                cbSua.Location = new Point(cellRect.X + 75, cellRect.Y + 6);
+                cbSua.Location = new Point(cellRect.X + 145, cellRect.Y + 6);
                 checkBoxDict[maChucNang]["sua"] = cbSua;
                 tableChucNang.Controls.Add(cbSua);
                 cbSua.BringToFront();
@@ -385,7 +416,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 cbXoa.Text = "Xóa";
                 cbXoa.AutoSize = true;
                 cbXoa.Tag = new CheckBoxTag { Row = row, Action = "xoa", MaChucNang = maChucNang };
-                cbXoa.Location = new Point(cellRect.X + 130, cellRect.Y + 6);
+                cbXoa.Location = new Point(cellRect.X + 215, cellRect.Y + 6);
                 checkBoxDict[maChucNang]["xoa"] = cbXoa;
 
                 // ✅ Disable checkbox Xóa cho Điểm số và Hạnh kiểm
@@ -402,21 +433,27 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             else
             {
                 // Cập nhật vị trí nếu đã tồn tại
+                if (checkBoxDict[maChucNang].ContainsKey("xem"))
+                {
+                    checkBoxDict[maChucNang]["xem"].Location = new Point(cellRect.X + 5, cellRect.Y + 6);
+                    checkBoxDict[maChucNang]["xem"].Visible = true;
+                    checkBoxDict[maChucNang]["xem"].BringToFront();
+                }
                 if (checkBoxDict[maChucNang].ContainsKey("them"))
                 {
-                    checkBoxDict[maChucNang]["them"].Location = new Point(cellRect.X + 5, cellRect.Y + 6);
+                    checkBoxDict[maChucNang]["them"].Location = new Point(cellRect.X + 75, cellRect.Y + 6);
                     checkBoxDict[maChucNang]["them"].Visible = true;
                     checkBoxDict[maChucNang]["them"].BringToFront();
                 }
                 if (checkBoxDict[maChucNang].ContainsKey("sua"))
                 {
-                    checkBoxDict[maChucNang]["sua"].Location = new Point(cellRect.X + 75, cellRect.Y + 6);
+                    checkBoxDict[maChucNang]["sua"].Location = new Point(cellRect.X + 145, cellRect.Y + 6);
                     checkBoxDict[maChucNang]["sua"].Visible = true;
                     checkBoxDict[maChucNang]["sua"].BringToFront();
                 }
                 if (checkBoxDict[maChucNang].ContainsKey("xoa"))
                 {
-                    checkBoxDict[maChucNang]["xoa"].Location = new Point(cellRect.X + 130, cellRect.Y + 6);
+                    checkBoxDict[maChucNang]["xoa"].Location = new Point(cellRect.X + 215, cellRect.Y + 6);
                     checkBoxDict[maChucNang]["xoa"].Visible = true;
                     checkBoxDict[maChucNang]["xoa"].BringToFront();
                 }
@@ -470,7 +507,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     var checkBoxes = maChucNangEntry.Value;
 
                     // Kiểm tra nếu có bất kỳ checkbox enabled nào chưa được chọn
-                    if ((checkBoxes.ContainsKey("them") && checkBoxes["them"].Enabled && !checkBoxes["them"].Checked) ||
+                    if ((checkBoxes.ContainsKey("xem") && checkBoxes["xem"].Enabled && !checkBoxes["xem"].Checked) ||
+                        (checkBoxes.ContainsKey("them") && checkBoxes["them"].Enabled && !checkBoxes["them"].Checked) ||
                         (checkBoxes.ContainsKey("sua") && checkBoxes["sua"].Enabled && !checkBoxes["sua"].Checked) ||
                         (checkBoxes.ContainsKey("xoa") && checkBoxes["xoa"].Enabled && !checkBoxes["xoa"].Checked))
                     {
@@ -483,6 +521,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 foreach (var maChucNangEntry in checkBoxDict)
                 {
                     var checkBoxes = maChucNangEntry.Value;
+
+                    // Xử lý checkbox "Xem"
+                    if (checkBoxes.ContainsKey("xem") && checkBoxes["xem"].Enabled)
+                    {
+                        checkBoxes["xem"].Checked = !tatCaDaChon;
+                    }
 
                     // Xử lý checkbox "Thêm"
                     if (checkBoxes.ContainsKey("them") && checkBoxes["them"].Enabled)

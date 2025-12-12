@@ -38,6 +38,14 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 			_dao.AcceptTempToOfficial(semesterId, weekNo);
 		}
 
+		/// <summary>
+		/// ✅ Chấp nhận tất cả các tuần của học kỳ từ TKB_Temp vào ThoiKhoaBieu chính thức
+		/// </summary>
+		public void AcceptAllWeeksForSemester(int semesterId)
+		{
+			_dao.AcceptAllWeeksForSemester(semesterId);
+		}
+
 		public List<AssignmentSlot> GetWeek(int semesterId, int weekNo)
 		{
 			// AssignmentSlot is a type alias for AssignmentSlotDTO, so we can return directly

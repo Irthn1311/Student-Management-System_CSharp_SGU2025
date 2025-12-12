@@ -887,6 +887,15 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Scheduling
 	}
 
 	/// <summary>
+	/// ✅ Chấp nhận tất cả các tuần của học kỳ từ TKB_Temp vào ThoiKhoaBieu chính thức
+	/// </summary>
+	public void AcceptAllWeeksForSemester(int semesterId)
+	{
+		var bus = new ThoiKhoaBieuBUS();
+		bus.AcceptAllWeeksForSemester(semesterId);
+	}
+
+	/// <summary>
 	/// Convenience wrapper: Rollback temp schedule, optionally filtered by semester/week.
 	/// </summary>
 	public void RollbackTempForSemester(int semesterId, int? weekNo = null)
