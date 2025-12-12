@@ -30,6 +30,7 @@
         {
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             this.btnXemRole = new Guna.UI2.WinForms.Guna2Button();
+            this.btnSuaRole = new Guna.UI2.WinForms.Guna2Button();
             this.btnXoaRole = new Guna.UI2.WinForms.Guna2Button();
             this.lblRoleName = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2Panel1.SuspendLayout();
@@ -41,6 +42,7 @@
             this.guna2Panel1.BorderRadius = 6;
             this.guna2Panel1.BorderThickness = 1;
             this.guna2Panel1.Controls.Add(this.btnXemRole);
+            this.guna2Panel1.Controls.Add(this.btnSuaRole);
             this.guna2Panel1.Controls.Add(this.btnXoaRole);
             this.guna2Panel1.Controls.Add(this.lblRoleName);
             this.guna2Panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -67,7 +69,25 @@
             this.btnXemRole.Size = new System.Drawing.Size(95, 37);
             this.btnXemRole.TabIndex = 7;
             this.btnXemRole.Text = "Xem";
-            this.btnXemRole.Click += new System.EventHandler(this.btnEditRole_Click);
+            this.btnXemRole.Click += new System.EventHandler(this.btnViewRole_Click);
+            // 
+            // btnSuaRole
+            // 
+            this.btnSuaRole.BorderRadius = 10;
+            this.btnSuaRole.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnSuaRole.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnSuaRole.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnSuaRole.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnSuaRole.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
+            this.btnSuaRole.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSuaRole.ForeColor = System.Drawing.Color.White;
+            this.btnSuaRole.Location = new System.Drawing.Point(448, 11);
+            this.btnSuaRole.Margin = new System.Windows.Forms.Padding(2);
+            this.btnSuaRole.Name = "btnSuaRole";
+            this.btnSuaRole.Size = new System.Drawing.Size(95, 37);
+            this.btnSuaRole.TabIndex = 8;
+            this.btnSuaRole.Text = "Sửa";
+            this.btnSuaRole.Click += new System.EventHandler(this.btnSuaRole_Click);
             // 
             // btnXoaRole
             // 
@@ -119,6 +139,7 @@
 
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private Guna.UI2.WinForms.Guna2Button btnXemRole;
+        private Guna.UI2.WinForms.Guna2Button btnSuaRole;
         private Guna.UI2.WinForms.Guna2Button btnXoaRole;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblRoleName;
     }

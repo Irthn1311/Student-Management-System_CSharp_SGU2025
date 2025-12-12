@@ -1138,7 +1138,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    // Có thể thêm thông báo hoặc refresh dữ liệu nếu cần
+                    
                 }
             }
             catch (Exception ex)

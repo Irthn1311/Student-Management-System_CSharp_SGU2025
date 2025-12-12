@@ -137,8 +137,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     if (siSoConLai < 0) siSoConLai = 0;
 
                     string siSoTag = siSoConLai <= 0
-                        ? " ❌ ĐẦY"
-                        : $" ✅ Còn {siSoConLai} chỗ";
+                        ? "  ĐẦY"
+                        : $"  Còn {siSoConLai} chỗ";
 
                     string displayText =
                         $"{lop.tenLop} (Khối {lop.maKhoi}) [{siSo}/{siSoToiDa}]{siSoTag}";
@@ -188,10 +188,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 // Xác nhận
                 string message = $"Xác nhận gửi yêu cầu chuyển lớp:\n\n" +
-                    $"📌 Học sinh: {tenHocSinh}\n" +
-                    $"📤 Từ lớp: {tenLopHienTai} (Khối {khoiHienTai})\n" +
-                    $"📥 Lớp mong muốn: {tenLopMongMuon}\n" +
-                    $"📝 Lý do: {txtLyDo.Text.Trim()}\n\n" +
+                    $" Học sinh: {tenHocSinh}\n" +
+                    $" Từ lớp: {tenLopHienTai} (Khối {khoiHienTai})\n" +
+                    $"Lớp mong muốn: {tenLopMongMuon}\n" +
+                    $"Lý do: {txtLyDo.Text.Trim()}\n\n" +
                     $"Yêu cầu sẽ được gửi đến admin để xem xét.";
                 
                 var result = MessageBox.Show(message, "Xác nhận gửi yêu cầu", 

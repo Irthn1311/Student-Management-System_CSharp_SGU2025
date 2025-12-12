@@ -29,6 +29,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         public event EventHandler DeleteClicked;
         public event EventHandler ViewClicked;
+        public event EventHandler EditClicked;
 
         private void txtRoleName_Click(object sender, EventArgs e)
         {
@@ -46,9 +47,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         }
 
-        private void btnEditRole_Click(object sender, EventArgs e)
+        private void btnViewRole_Click(object sender, EventArgs e)
         {
             ViewClicked?.Invoke(this, e);
+        }
+
+        private void btnSuaRole_Click(object sender, EventArgs e)
+        {
+            EditClicked?.Invoke(this, e);
         }
 
         private void RoleItem_Load(object sender, EventArgs e)

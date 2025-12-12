@@ -498,7 +498,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // Tạo cột button "Xem chi tiết"
             DataGridViewButtonColumn btnColumn = new DataGridViewButtonColumn();
             btnColumn.Name = "colXemChiTiet";
-            btnColumn.HeaderText = "📄 Xem chi tiết";
+            btnColumn.HeaderText = "Xem chi tiết";
             btnColumn.Text = "Xem PDF";
             btnColumn.UseColumnTextForButtonValue = true;
             btnColumn.Width = 120;

@@ -68,6 +68,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     // Đăng ký sự kiện
                     roleItem.DeleteClicked += RoleItem_DeleteClicked;
                     roleItem.ViewClicked += RoleItem_ViewClicked;
+                    roleItem.EditClicked += RoleItem_EditClicked;
 
                     // Thêm vào panel
                     pnlRoleContainer.Controls.Add(roleItem);
@@ -99,7 +100,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// ✅ Xử lý sự kiện View - HIỂN THỊ CHI TIẾT VAI TRÒ
+        /// ✅ Xử lý sự kiện View - HIỂN THỊ CHI TIẾT VAI TRÒ (Form riêng)
         /// </summary>
         private void RoleItem_ViewClicked(object sender, EventArgs e)
         {
@@ -111,55 +112,43 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             try
             {
-                // Lấy chi tiết vai trò
-                Dictionary<string, List<string>> chiTietVaiTro = phanQuyenBUS.GetChiTietVaiTro(maVaiTro);
-
-                if (chiTietVaiTro.Count == 0)
-                {
-                    MessageBox.Show(
-                        $"Vai trò '{tenVaiTro}' chưa có quyền nào!",
-                        "Thông báo",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Tạo nội dung hiển thị
-                StringBuilder message = new StringBuilder();
-                message.AppendLine($"📋 CHI TIẾT VAI TRÒ: {tenVaiTro.ToUpper()}");
-                message.AppendLine("".PadLeft(39, '='));
-                message.AppendLine();
-
-                int stt = 1;
-                foreach (var item in chiTietVaiTro)
-                {
-                    string tenChucNang = item.Key;
-                    List<string> hanhDongs = item.Value;
-
-                    // Chuyển đổi hành động sang tiếng Việt
-                    List<string> hanhDongsVN = hanhDongs
-                        .Select(h => phanQuyenBUS.MapHanhDongToVietnamese(h))
-                        .ToList();
-
-                    message.AppendLine($"{stt}. 🔹 {tenChucNang}");
-                    message.AppendLine($"   Quyền: {string.Join(", ", hanhDongsVN)}");
-                    message.AppendLine();
-                    stt++;
-                }
-
-                message.AppendLine("".PadLeft(39, '='));
-                message.AppendLine($"Tổng số chức năng: {chiTietVaiTro.Count}");
-
-                // Hiển thị MessageBox với scroll
-                MessageBox.Show(
-                    message.ToString(),
-                    $"Chi tiết vai trò: {tenVaiTro}",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                // Mở form chi tiết quyền
+                frmChiTietQuyen chiTietForm = new frmChiTietQuyen(maVaiTro, tenVaiTro);
+                chiTietForm.StartPosition = FormStartPosition.CenterParent;
+                chiTietForm.ShowDialog(this);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi xem chi tiết vai trò: {ex.Message}", "Lỗi",
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// ✅ Xử lý sự kiện Edit - SỬA QUYỀN VAI TRÒ
+        /// </summary>
+        private void RoleItem_EditClicked(object sender, EventArgs e)
+        {
+            RoleItem roleItem = sender as RoleItem;
+            if (roleItem == null) return;
+
+            string maVaiTro = roleItem.Tag?.ToString() ?? "";
+
+            try
+            {
+                // Mở form sửa quyền
+                frmEditPhanQuyen editForm = new frmEditPhanQuyen(maVaiTro);
+                editForm.StartPosition = FormStartPosition.CenterParent;
+
+                if (editForm.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Reload lại danh sách vai trò sau khi sửa thành công
+                    LoadRoles();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở form sửa quyền: {ex.Message}", "Lỗi",
                                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
