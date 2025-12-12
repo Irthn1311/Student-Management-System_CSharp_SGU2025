@@ -54,7 +54,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.panelPhanCongGiangDay.Name = "panelPhanCongGiangDay";
             this.panelPhanCongGiangDay.Size = new System.Drawing.Size(1168, 768);
             this.panelPhanCongGiangDay.TabIndex = 0;
-            this.panelPhanCongGiangDay.Paint += new System.Windows.Forms.PaintEventHandler(this.panelPhanCongGiangDay_Paint);
             // 
             // btnPhanCongMoi
             // 

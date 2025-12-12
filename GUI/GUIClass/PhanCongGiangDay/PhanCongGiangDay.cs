@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -623,14 +625,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 HeaderText = "Thao tác",
                 DataPropertyName = "ThaoTac",
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
-                Width = 100
+                Width = 150 // Tăng width để chứa 3 icon
             };
             dgvPhanCong.Columns.Add(colThaoTac);
 
             // Thiết lập chế độ co giãn
             dgvPhanCong.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvPhanCong.Columns["ThaoTac"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dgvPhanCong.Columns["ThaoTac"].Width = 100;
+            dgvPhanCong.Columns["ThaoTac"].Width = 150; // Tăng width để chứa 3 icon
 
             // Gắn sự kiện (chỉ gắn một lần)
             dgvPhanCong.CellPainting += dgvPhanCong_CellPainting;
@@ -660,11 +662,103 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
             }
 
+            // Vẽ icon cho cột "ThaoTac" (Xem, Sửa và Xóa)
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvPhanCong.Columns["ThaoTac"].Index)
             {
-                e.Paint(e.CellBounds, DataGridViewPaintParts.All);
+                e.PaintBackground(e.ClipBounds, true);
+
+                // Kiểm tra quyền
+                bool canUpdate = PermissionHelper.CheckDataGridIconPermission(dgvPhanCong, "update", "Phân công giảng dạy");
+                bool canDelete = PermissionHelper.CheckDataGridIconPermission(dgvPhanCong, "delete", "Phân công giảng dạy");
+
+                // Chỉ giữ lại 3 icon: Xem, Sửa, Xóa
+                Image viewIcon = CreateViewIcon();
+                Image editIcon = Properties.Resources.edit_icon ?? Properties.Resources.repair;
+                Image deleteIcon = Properties.Resources.deleteicon ?? Properties.Resources.bin;
+
+                int iconSize = 22;
+                int spacing = 14;
+                int totalWidth = iconSize * 3 + spacing * 2; // 3 icon: Xem, Sửa, Xóa
+                int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
+                int y = e.CellBounds.Top + (e.CellBounds.Height - iconSize) / 2;
+
+                Rectangle viewRect = new Rectangle(startX, y, iconSize, iconSize);
+                Rectangle editRect = new Rectangle(startX + iconSize + spacing, y, iconSize, iconSize);
+                Rectangle deleteRect = new Rectangle(startX + (iconSize + spacing) * 2, y, iconSize, iconSize);
+
+                // Vẽ icon Xem (luôn hiển thị)
+                e.Graphics.DrawImage(viewIcon, viewRect);
+
+                // Vẽ icon Sửa với độ mờ nếu không có quyền
+                if (canUpdate)
+                {
+                    e.Graphics.DrawImage(editIcon, editRect);
+                }
+                else
+                {
+                    var grayScaleMatrix = new ColorMatrix(
+                        new float[][] {
+                    new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                    new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                    new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                    new float[] {0, 0, 0, 0.3f, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                        });
+                    using (var attributes = new ImageAttributes())
+                    {
+                        attributes.SetColorMatrix(grayScaleMatrix);
+                        e.Graphics.DrawImage(editIcon, editRect, 0, 0, editIcon.Width, editIcon.Height,
+                            GraphicsUnit.Pixel, attributes);
+                    }
+                }
+
+                // Vẽ icon Xóa với độ mờ nếu không có quyền
+                if (canDelete)
+                {
+                    e.Graphics.DrawImage(deleteIcon, deleteRect);
+                }
+                else
+                {
+                    var grayScaleMatrix = new ColorMatrix(
+                        new float[][] {
+                    new float[] {0.3f, 0.3f, 0.3f, 0, 0},
+                    new float[] {0.59f, 0.59f, 0.59f, 0, 0},
+                    new float[] {0.11f, 0.11f, 0.11f, 0, 0},
+                    new float[] {0, 0, 0, 0.3f, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                        });
+                    using (var attributes = new ImageAttributes())
+                    {
+                        attributes.SetColorMatrix(grayScaleMatrix);
+                        e.Graphics.DrawImage(deleteIcon, deleteRect, 0, 0, deleteIcon.Width, deleteIcon.Height,
+                            GraphicsUnit.Pixel, attributes);
+                    }
+                }
+
                 e.Handled = true;
             }
+        }
+
+        // Tạo icon "Xem" (eye icon) bằng code
+        private Image CreateViewIcon()
+        {
+            Bitmap bmp = new Bitmap(22, 22);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                
+                // Vẽ hình mắt đơn giản
+                // Màu xanh dương cho icon "Xem"
+                Pen pen = new Pen(Color.FromArgb(30, 136, 229), 2.5f);
+                Brush brush = new SolidBrush(Color.FromArgb(30, 136, 229));
+                
+                // Vẽ hình oval (mắt)
+                g.DrawEllipse(pen, 3, 5, 16, 12);
+                
+                // Vẽ con ngươi
+                g.FillEllipse(brush, 8, 9, 5, 5);
+            }
+            return bmp;
         }
 
         private void dgvPhanCong_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -677,13 +771,42 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 int maPhanCong = viewModel.MaPhanCong;
                 string tenGV = viewModel.GiaoVien;
 
-                if (!PermissionHelper.CheckDataGridIconPermission(dgvPhanCong, "delete", "Phân công giảng dạy"))
+                // Tính toán vị trí click để xác định icon nào được click
+                Rectangle cellBounds = dgvPhanCong.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+                Point clickPosInCell = dgvPhanCong.PointToClient(Cursor.Position);
+                int xClick = clickPosInCell.X - cellBounds.Left;
+
+                int iconSize = 22;
+                int spacing = 14;
+                int totalWidth = iconSize * 3 + spacing * 2; // 3 icon: Xem, Sửa, Xóa
+                int startXInCell = (cellBounds.Width - totalWidth) / 2;
+
+                int viewIconEndX = startXInCell + iconSize;
+                int editIconStartX = startXInCell + iconSize + spacing;
+                int editIconEndX = editIconStartX + iconSize;
+                int deleteIconStartX = editIconStartX + iconSize + spacing;
+                int deleteIconEndX = deleteIconStartX + iconSize;
+
+                // Click vào icon Xem
+                if (xClick >= startXInCell && xClick < viewIconEndX)
                 {
                     XemChiTietPhanCong(maPhanCong);
                 }
-                else
+                // Click vào icon Sửa
+                else if (xClick >= editIconStartX && xClick < editIconEndX)
                 {
-                    XoaPhanCong(maPhanCong, tenGV, e.RowIndex);
+                    if (PermissionHelper.CheckDataGridIconPermission(dgvPhanCong, "update", "Phân công giảng dạy"))
+                    {
+                        SuaPhanCong(maPhanCong, e.RowIndex);
+                    }
+                }
+                // Click vào icon Xóa
+                else if (xClick >= deleteIconStartX && xClick < deleteIconEndX)
+                {
+                    if (PermissionHelper.CheckDataGridIconPermission(dgvPhanCong, "delete", "Phân công giảng dạy"))
+                    {
+                        XoaPhanCong(maPhanCong, tenGV, e.RowIndex);
+                    }
                 }
             }
         }
@@ -692,37 +815,32 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                PhanCongGiangDayDTO pc = phanCongBUS.LayPhanCongTheoMa(maPhanCong);
-
-                if (pc != null)
-                {
-                    // Lấy thông tin chi tiết
-                    GiaoVienDTO gv = giaoVienBUS.LayGiaoVienTheoMa(pc.MaGiaoVien);
-                    MonHocDTO mh = monHocBUS.LayDSMonHocTheoId(pc.MaMonHoc);
-                    LopDTO lop = lopHocBUS.LayLopTheoId(pc.MaLop);
-                    HocKyDTO hk = hocKyBUS.LayHocKyTheoMa(pc.MaHocKy);
-
-                    string thongTin = $"📚 THÔNG TIN PHÂN CÔNG GIẢNG DẠY\n\n" +
-                                    $"🔑 Mã phân công: {pc.MaPhanCong}\n" +
-                                    $"👨‍🏫 Giáo viên: {(gv != null ? gv.HoTen : pc.MaGiaoVien)}\n" +
-                                    $"📖 Môn học: {(mh != null ? mh.tenMon : $"MH-{pc.MaMonHoc}")}\n" +
-                                    $"🏫 Lớp: {(lop != null ? lop.tenLop : $"Lớp-{pc.MaLop}")}\n" +
-                                    $"📅 Học kỳ: {(hk != null ? hk.TenHocKy : $"HK-{pc.MaHocKy}")}\n" +
-                                    $"📅 Ngày bắt đầu: {pc.NgayBatDau:dd/MM/yyyy}\n" +
-                                    $"📅 Ngày kết thúc: {pc.NgayKetThuc:dd/MM/yyyy}";
-
-                    MessageBox.Show(thongTin, "Chi tiết phân công",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Không tìm thấy thông tin phân công!", "Lỗi",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                FrmXemChiTietPhanCongGiangDay frm = new FrmXemChiTietPhanCongGiangDay(maPhanCong);
+                frm.ShowDialog();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi xem chi tiết:\n{ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SuaPhanCong(int maPhanCong, int rowIndex)
+        {
+            try
+            {
+                FrmSuaPhanCongGiangDay frm = new FrmSuaPhanCongGiangDay(maPhanCong);
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    // Reload dữ liệu sau khi sửa thành công
+                    LoadData();
+                    MessageBox.Show("Đã cập nhật phân công thành công!", "Thành công",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi sửa phân công:\n{ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -732,16 +850,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             try
             {
                 string thongTinXoa = $"Bạn có chắc chắn muốn xóa phân công này?\n\n" +
-                                    $"👨‍🏫 Giáo viên: {tenGV}\n" +
-                                    $"🔑 Mã: {maPhanCong}\n\n" +
-                                    $"⚠️ CẢNH BÁO:\n" +
+                                    $"Giáo viên: {tenGV}\n" +
+                                    $"Mã: {maPhanCong}\n\n" +
+                                    $"CẢNH BÁO:\n" +
                                     $"• Thao tác này sẽ xóa vĩnh viễn phân công\n" +
                                     $"• KHÔNG THỂ HOÀN TÁC sau khi xóa!\n\n" +
                                     $"Bạn có muốn tiếp tục?";
 
                 DialogResult result = MessageBox.Show(
                     thongTinXoa,
-                    "⚠️ Xác nhận xóa phân công",
+                    "Xác nhận xóa phân công",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning,
                     MessageBoxDefaultButton.Button2
@@ -766,7 +884,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         LoadStatCards();
 
                         MessageBox.Show(
-                            $"✓ Đã xóa phân công của '{tenGV}' thành công!",
+                            $"Đã xóa phân công của '{tenGV}' thành công!",
                             "Xóa thành công",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information
@@ -775,7 +893,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     else
                     {
                         MessageBox.Show(
-                            $"✗ Không thể xóa phân công!\n\nVui lòng kiểm tra lại!",
+                            $"Không thể xóa phân công!\n\nVui lòng kiểm tra lại!",
                             "Lỗi xóa",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error
@@ -788,7 +906,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"❌ Lỗi khi xóa phân công!\n\n{ex.Message}",
+                    $"Lỗi khi xóa phân công!\n\n{ex.Message}",
                     "Lỗi hệ thống",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error

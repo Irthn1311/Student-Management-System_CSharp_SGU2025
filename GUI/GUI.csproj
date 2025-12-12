@@ -447,6 +447,18 @@
     <Compile Include="GUIClass\PhanCongGiangDay\frmAutoPhanCongPreview.Designer.cs">
       <DependentUpon>frmAutoPhanCongPreview.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUIClass\PhanCongGiangDay\FrmSuaPhanCongGiangDay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\PhanCongGiangDay\FrmSuaPhanCongGiangDay.Designer.cs">
+      <DependentUpon>FrmSuaPhanCongGiangDay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUIClass\PhanCongGiangDay\FrmXemChiTietPhanCongGiangDay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\PhanCongGiangDay\FrmXemChiTietPhanCongGiangDay.Designer.cs">
+      <DependentUpon>FrmXemChiTietPhanCongGiangDay.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUIClass\PhanCongGiangDay\PhanCongGiangDay.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -767,6 +779,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\PhanCongGiangDay\frmAutoPhanCongPreview.resx">
       <DependentUpon>frmAutoPhanCongPreview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\PhanCongGiangDay\FrmSuaPhanCongGiangDay.resx">
+      <DependentUpon>FrmSuaPhanCongGiangDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\PhanCongGiangDay\FrmXemChiTietPhanCongGiangDay.resx">
+      <DependentUpon>FrmXemChiTietPhanCongGiangDay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\PhanCongGiangDay\PhanCongGiangDay.resx">
       <DependentUpon>PhanCongGiangDay.cs</DependentUpon>
