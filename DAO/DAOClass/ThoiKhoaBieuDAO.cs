@@ -64,7 +64,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 			// Map TKB_Temp rows to official ThoiKhoaBieu through PhanCongGiangDay to obtain MaPhanCong.
 			// Assumption: a unique PhanCongGiangDay exists for (MaLop, MaGV, MaMon, MaHocKy=SemesterId)
 			
-			// ✅ Xóa TKB cũ của học kỳ này trước khi insert mới (tránh duplicate entry)
+			//  Xóa TKB cũ của học kỳ này trước khi insert mới (tránh duplicate entry)
 			// Lưu ý: Vì bảng ThoiKhoaBieu không có WeekNo, TKB được lưu chung cho tất cả tuần
 			// Nên khi chấp nhận lại một tuần, cần xóa toàn bộ TKB cũ của học kỳ
 			const string deleteSql = @"
@@ -97,14 +97,14 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 				{
 					try
 					{
-						// ✅ Bước 1: Xóa TKB cũ của học kỳ này
+						// Bước 1: Xóa TKB cũ của học kỳ này
 						using (var delCmd = new MySqlCommand(deleteSql, conn, tx))
 						{
 							delCmd.Parameters.AddWithValue("@SemesterId", semesterId);
 							delCmd.ExecuteNonQuery();
 						}
 						
-						// ✅ Bước 2: Insert TKB mới từ TKB_Temp (chỉ tuần được chọn)
+						// Bước 2: Insert TKB mới từ TKB_Temp (chỉ tuần được chọn)
 						using (var cmd = new MySqlCommand(insertSql, conn, tx))
 						{
 							cmd.Parameters.AddWithValue("@SemesterId", semesterId);
@@ -112,7 +112,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 							cmd.ExecuteNonQuery();
 						}
 
-						// ✅ Bước 3: Xóa TKB_Temp sau khi đã chấp nhận
+						// Bước 3: Xóa TKB_Temp sau khi đã chấp nhận
 						using (var clear = new MySqlCommand("DELETE FROM TKB_Temp WHERE SemesterId=@SemesterId AND WeekNo=@WeekNo", conn, tx))
 						{
 							clear.Parameters.AddWithValue("@SemesterId", semesterId);

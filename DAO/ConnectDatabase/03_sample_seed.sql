@@ -20,20 +20,20 @@ INSERT INTO KhoiLop (MaKhoi, TenKhoi) VALUES
 (12, 'Khối 12');
 
 -- Môn học (13 môn theo chương trình THPT)
-INSERT INTO MonHoc (MaMonHoc, TenMonHoc, SoTiet, GhiChu) VALUES
-(1, 'Ngữ văn', 51, 'Môn chính'),
-(2, 'Toán', 51, 'Môn chính'),
-(3, 'Tiếng Anh', 51, 'Môn chính'),
-(4, 'Lịch sử', 34, 'Khoa học xã hội'),
-(5, 'Địa lý', 34, 'Khoa học xã hội'),
-(6, 'GD Kinh tế & Pháp luật', 34, 'Khoa học xã hội'),
-(7, 'Vật lý', 34, 'Khoa học tự nhiên'),
-(8, 'Hóa học', 34, 'Khoa học tự nhiên'),
-(9, 'Sinh học', 34, 'Khoa học tự nhiên'),
-(10, 'Công nghệ', 34, 'Khoa học xã hội'),
-(11, 'Tin học', 34, 'Kỹ năng khác'),
-(12, 'Giáo dục thể chất', 34, 'Kỹ năng khác'),
-(13, 'GDQP-AN', 17, 'Kỹ năng khác');
+INSERT INTO MonHoc (MaMonHoc, TenMonHoc, SoTiet, GhiChu, NamHocBatDau) VALUES
+(1, 'Ngữ văn', 51, 'Môn chính', '2024-2025'),
+(2, 'Toán', 51, 'Môn chính', '2024-2025'),
+(3, 'Tiếng Anh', 51, 'Môn chính', '2024-2025'),
+(4, 'Lịch sử', 34, 'Khoa học xã hội', '2024-2025'),
+(5, 'Địa lý', 34, 'Khoa học xã hội', '2024-2025'),
+(6, 'GD Kinh tế & Pháp luật', 34, 'Khoa học xã hội', '2024-2025'),
+(7, 'Vật lý', 34, 'Khoa học tự nhiên', '2024-2025'),
+(8, 'Hóa học', 34, 'Khoa học tự nhiên', '2024-2025'),
+(9, 'Sinh học', 34, 'Khoa học tự nhiên', '2024-2025'),
+(10, 'Công nghệ', 34, 'Khoa học xã hội', '2024-2025'),
+(11, 'Tin học', 34, 'Kỹ năng khác', '2024-2025'),
+(12, 'Giáo dục thể chất', 34, 'Kỹ năng khác', '2024-2025'),
+(13, 'GDQP-AN', 17, 'Kỹ năng khác', '2024-2025');
 
 
 
@@ -55,6 +55,13 @@ INSERT INTO HocKy (MaHocKy, TenHocKy, MaNamHoc, TrangThai, NgayBD, NgayKT) VALUE
 -- Năm 2026-2027: Sẵn sàng cho test kịch bản HK2 -> HK1 năm sau
 (3, 'Học kỳ I', '2026-2027', 'Chưa bắt đầu', '2026-09-01', '2027-01-15'),
 (4, 'Học kỳ II', '2026-2027', 'Chưa bắt đầu', '2027-01-16', '2027-05-31');
+
+-- MonHoc_NamHoc_Khoi: Gán tất cả môn học cho tất cả năm học và khối (backward compatibility)
+INSERT INTO MonHoc_NamHoc_Khoi (MaMonHoc, MaNamHoc, MaKhoi)
+SELECT mh.MaMonHoc, nh.MaNamHoc, kl.MaKhoi
+FROM MonHoc mh
+CROSS JOIN NamHoc nh
+CROSS JOIN KhoiLop kl;
 
 -- =====================================================================
 -- PHẦN 3: GIÁO VIÊN (65-70 giáo viên)

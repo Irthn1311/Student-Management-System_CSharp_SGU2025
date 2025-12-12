@@ -247,7 +247,14 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         /// </summary>
         public bool KiemTraQuyenNguoiDung(string tenDangNhap, string maChucNang, string hanhDong)
         {
+            // ✅ Admin luôn có toàn quyền
             List<string> danhSachVaiTro = GetVaiTroByNguoiDung(tenDangNhap);
+            if (danhSachVaiTro != null && danhSachVaiTro.Any(vt => 
+                vt.Equals("admin", StringComparison.OrdinalIgnoreCase) || 
+                vt.Equals("ADMIN", StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
 
             foreach (string maVaiTro in danhSachVaiTro)
             {

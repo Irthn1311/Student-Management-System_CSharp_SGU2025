@@ -1,4 +1,5 @@
 using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.BUS.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,6 +22,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     {
 
         private NhapDiemBUS nhapDiemBUS;
+        private MonHocFilterService monHocFilterService;
+        private HocKyBUS hocKyBUS;
+        private LopHocBUS lopHocBUS;
         // Khai báo màu sắc
         private Color selectedColor = Color.FromArgb(33, 150, 243); // Màu xanh dương
         private Color normalColor = Color.White;
@@ -56,6 +60,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             tableNhapDiem.Columns[5].ReadOnly = true;
 
             nhapDiemBUS = new NhapDiemBUS();
+            monHocFilterService = new MonHocFilterService();
+            hocKyBUS = new HocKyBUS();
+            lopHocBUS = new LopHocBUS();
 
             // Không cho phép chỉnh sửa cột Trung Bình
             tableNhapDiem.Columns[5].ReadOnly = true;
@@ -701,17 +708,34 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             try
             {
-                List<MonHocDTO> danhSachMonHoc = nhapDiemBUS.GetDanhSachMonHoc();
-
                 cbMonHoc.DataSource = null;
                 cbMonHoc.Items.Clear();
+
+                List<MonHocDTO> danhSachMonHoc;
+
+                // ✅ Filter môn học theo học kỳ và lớp (nếu có)
+                if (selectedMaHocKy.HasValue && selectedMaLop.HasValue && selectedMaLop.Value > 0)
+                {
+                    // Lấy danh sách môn học hợp lệ cho lớp và học kỳ
+                    danhSachMonHoc = monHocFilterService.GetSubjectsForSemesterAndClass(selectedMaHocKy.Value, selectedMaLop.Value);
+                }
+                else if (selectedMaHocKy.HasValue)
+                {
+                    // Nếu chỉ có học kỳ, lấy tất cả môn học (sẽ filter sau khi chọn lớp)
+                    danhSachMonHoc = nhapDiemBUS.GetDanhSachMonHoc();
+                }
+                else
+                {
+                    // Nếu chưa chọn học kỳ, load tất cả môn học
+                    danhSachMonHoc = nhapDiemBUS.GetDanhSachMonHoc();
+                }
 
                 foreach (var mon in danhSachMonHoc)
                 {
                     cbMonHoc.Items.Add(new ComboBoxItem
                     {
                         Text = mon.tenMon,
-                        Value =mon.maMon
+                        Value = mon.maMon
                     });
                 }
 
@@ -723,7 +747,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 {
                     cbMonHoc.SelectedIndex = 0;
                     var firstItem = cbMonHoc.SelectedItem as ComboBoxItem;
-                    selectedMaMonHoc = (int)firstItem.Value;
+                    if (firstItem != null && firstItem.Value != null)
+                    {
+                        selectedMaMonHoc = (int)firstItem.Value;
+                    }
+                }
+                else
+                {
+                    selectedMaMonHoc = null;
                 }
             }
             catch (Exception ex)
@@ -863,16 +894,29 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         /// </summary>
         private void cbLop_SelectedIndexChanged(object sender, EventArgs e)
         {
-           
-
             if (isLoadingData) return;
 
-            if (cbLop.SelectedItem is ComboBoxItem item)
+            try
             {
-                int value = (int)item.Value;
-                selectedMaLop = value == -1 ? null : (int?)value; // null = tất cả
-                currentPageNhapDiem = 1;
-                ApplyFilter();
+                if (cbLop.SelectedItem is ComboBoxItem item && item.Value != null)
+                {
+                    int value = (int)item.Value;
+                    selectedMaLop = value == -1 ? null : (int?)value; // null = tất cả
+                    currentPageNhapDiem = 1;
+                    
+                    // ✅ Reload môn học khi lớp thay đổi (để filter theo lớp và học kỳ)
+                    if (selectedMaHocKy.HasValue && selectedMaLop.HasValue && selectedMaLop.Value > 0)
+                    {
+                        LoadComboBoxMonHoc();
+                    }
+                    
+                    ApplyFilter();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi chọn lớp: " + ex.Message, "Lỗi",
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -907,6 +951,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 // Load lại danh sách lớp theo học kỳ mới
                 LoadComboBoxLop();
+                
+                // ✅ Reload môn học khi học kỳ thay đổi
+                LoadComboBoxMonHoc();
 
                 // Load thống kê và dữ liệu
                 LoadThongKe(selectedMaHocKy);
