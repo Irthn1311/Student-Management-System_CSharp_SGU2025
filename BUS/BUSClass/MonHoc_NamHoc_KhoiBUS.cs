@@ -151,6 +151,50 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
             return monHocNamHocKhoiDAO.KiemTraMonHocTonTaiTrongNamHocKhoi(maMonHoc, maNamHoc, maKhoi);
         }
+
+        /// <summary>
+        /// Lấy danh sách năm học mà môn học đang được sử dụng
+        /// </summary>
+        public List<string> LayDanhSachNamHocTheoMonHoc(int maMonHoc)
+        {
+            if (maMonHoc <= 0)
+            {
+                return new List<string>();
+            }
+
+            return monHocNamHocKhoiDAO.LayDanhSachNamHocTheoMonHoc(maMonHoc);
+        }
+
+        /// <summary>
+        /// Copy tất cả môn học từ năm học nguồn sang năm học đích
+        /// </summary>
+        public bool CopyMonHocTuNamHocNaySangNamHocKhac(string maNamHocNguon, string maNamHocDich)
+        {
+            if (string.IsNullOrWhiteSpace(maNamHocNguon) || string.IsNullOrWhiteSpace(maNamHocDich))
+            {
+                throw new ArgumentException("Mã năm học không được để trống.");
+            }
+
+            if (maNamHocNguon == maNamHocDich)
+            {
+                throw new ArgumentException("Năm học nguồn và năm học đích không được giống nhau.");
+            }
+
+            // Kiểm tra năm học có tồn tại không
+            var namHocNguon = namHocDAO.LayNamHocTheoMa(maNamHocNguon);
+            if (namHocNguon == null)
+            {
+                throw new ArgumentException("Năm học nguồn không tồn tại.");
+            }
+
+            var namHocDich = namHocDAO.LayNamHocTheoMa(maNamHocDich);
+            if (namHocDich == null)
+            {
+                throw new ArgumentException("Năm học đích không tồn tại.");
+            }
+
+            return monHocNamHocKhoiDAO.CopyMonHocTuNamHocNaySangNamHocKhac(maNamHocNguon, maNamHocDich);
+        }
     }
 }
 

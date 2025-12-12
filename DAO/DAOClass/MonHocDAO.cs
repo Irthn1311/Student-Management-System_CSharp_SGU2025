@@ -186,6 +186,75 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 }
             }
         }
+        /// <summary>
+        /// Kiểm tra môn học có đang được sử dụng trong các bảng liên quan không
+        /// </summary>
+        public (bool dangSuDung, List<string> danhSachSuDung) KiemTraMonHocDangSuDung(int maMonHoc)
+        {
+            List<string> danhSachSuDung = new List<string>();
+            bool dangSuDung = false;
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+
+                // ✅ QUAN TRỌNG: Kiểm tra trong DiemSo trước - Nếu có điểm thì KHÔNG CHO XÓA
+                string queryDiem = "SELECT COUNT(*) FROM DiemSo WHERE MaMonHoc = @MaMonHoc";
+                using (MySqlCommand cmd = new MySqlCommand(queryDiem, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count > 0)
+                    {
+                        dangSuDung = true;
+                        danhSachSuDung.Add($"Điểm số ({count} bản ghi) - Không thể xóa môn học đã có điểm");
+                    }
+                }
+
+                // Kiểm tra trong PhanCongGiangDay (chỉ thông báo, không chặn xóa)
+                string queryPhanCong = "SELECT COUNT(*) FROM PhanCongGiangDay WHERE MaMonHoc = @MaMonHoc";
+                using (MySqlCommand cmd = new MySqlCommand(queryPhanCong, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count > 0)
+                    {
+                        danhSachSuDung.Add($"Phân công giảng dạy ({count} phân công)");
+                    }
+                }
+
+                // Kiểm tra trong ThoiKhoaBieu (qua PhanCongGiangDay) - chỉ thông báo
+                string queryTKB = @"
+                    SELECT COUNT(*) 
+                    FROM ThoiKhoaBieu tkb
+                    INNER JOIN PhanCongGiangDay pc ON tkb.MaPhanCong = pc.MaPhanCong
+                    WHERE pc.MaMonHoc = @MaMonHoc";
+                using (MySqlCommand cmd = new MySqlCommand(queryTKB, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count > 0)
+                    {
+                        danhSachSuDung.Add($"Thời khóa biểu ({count} tiết)");
+                    }
+                }
+
+                // Kiểm tra trong GiaoVien (chuyên môn) - chỉ thông báo
+                string queryGV = "SELECT COUNT(*) FROM GiaoVien WHERE MaMonChuyenMon = @MaMonHoc";
+                using (MySqlCommand cmd = new MySqlCommand(queryGV, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count > 0)
+                    {
+                        danhSachSuDung.Add($"Giáo viên chuyên môn ({count} giáo viên)");
+                    }
+                }
+            }
+
+            return (dangSuDung, danhSachSuDung);
+        }
+
         public bool DeleteMonHoc(int maMonHoc)
         {
             string query = "delete from MonHoc where MaMonHoc=@MaMonHoc";

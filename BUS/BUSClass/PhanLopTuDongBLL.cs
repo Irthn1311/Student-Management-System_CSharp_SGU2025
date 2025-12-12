@@ -18,6 +18,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         private NhapDiemBUS diemSoBUS;
         private HanhKiemBUS hanhKiemBUS;
         private XepLoaiBUS xepLoaiBUS;
+        private MonHoc_NamHoc_KhoiBUS monHocNamHocKhoiBUS;
 
         public PhanLopTuDongBLL()
         {
@@ -30,6 +31,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             diemSoBUS = new NhapDiemBUS();
             hanhKiemBUS = new HanhKiemBUS();
             xepLoaiBUS = new XepLoaiBUS();
+            monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
         }
 
         #region Phân lớp tự động (Core Logic)
@@ -210,12 +212,39 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                                 continue;
                             }
 
-                            // BƯỚC 3: TÍNH ĐIỂM TRUNG BÌNH CẢ NĂM
-                            double dtbHK1 = diemHK1.Average(d => d.DiemTrungBinh ?? 0);
-                            double dtbHK2 = diemHK2.Average(d => d.DiemTrungBinh ?? 0);
+                            // ✅ BƯỚC 2.5: LẤY KHỐI CỦA HỌC SINH TỪ LỚP CŨ (để filter môn học)
+                            var phanLopNamTruocTemp = phanLopHK2NamTruoc.maHocSinh != 0 ? phanLopHK2NamTruoc : phanLopHK1NamTruoc;
+                            var lopCuTemp = allLop.FirstOrDefault(l => l.MaLop == phanLopNamTruocTemp.maLop);
+                            if (lopCuTemp == null)
+                            {
+                                string loi = $"HS {hs.HoTen}: Không tìm thấy thông tin lớp cũ (ID: {phanLopNamTruocTemp.maLop})";
+                                Console.WriteLine($"  ❌ {loi}");
+                                danhSachLoi.Add(loi);
+                                continue;
+                            }
+                            int khoiCu = lopCuTemp.MaKhoi;
+
+                            // ✅ BƯỚC 2.6: LẤY DANH SÁCH MÔN HỌC HỢP LỆ CHO NĂM HỌC TRƯỚC VÀ KHỐI
+                            var danhSachMonHocHopLe = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHocKhoi(maNamHocTruoc, khoiCu);
+                            var maMonHocHopLe = danhSachMonHocHopLe?.Select(m => m.maMon).ToHashSet() ?? new HashSet<int>();
+
+                            // ✅ BƯỚC 3: TÍNH ĐIỂM TRUNG BÌNH CẢ NĂM (CHỈ XÉT CÁC MÔN HỌC HỢP LỆ)
+                            var diemHK1HopLe = diemHK1.Where(d => maMonHocHopLe.Contains(d.MaMonHoc)).ToList();
+                            var diemHK2HopLe = diemHK2.Where(d => maMonHocHopLe.Contains(d.MaMonHoc)).ToList();
+
+                            if (diemHK1HopLe.Count == 0 || diemHK2HopLe.Count == 0)
+                            {
+                                string loi = $"HS {hs.HoTen} (ID: {hs.MaHS}): Chưa có đủ điểm các môn học hợp lệ cho khối {khoiCu} năm học {maNamHocTruoc}";
+                                Console.WriteLine($"  ⚠️ {loi}");
+                                danhSachLoi.Add(loi);
+                                continue;
+                            }
+
+                            double dtbHK1 = diemHK1HopLe.Average(d => d.DiemTrungBinh ?? 0);
+                            double dtbHK2 = diemHK2HopLe.Average(d => d.DiemTrungBinh ?? 0);
                             double dtbCaNam = (dtbHK1 * 1 + dtbHK2 * 2) / 3.0; // HK2 hệ số 2
 
-                            Console.WriteLine($"  → {hs.HoTen}: ĐTB HK1={dtbHK1:0.00}, HK2={dtbHK2:0.00}, Cả năm={dtbCaNam:0.00}");
+                            Console.WriteLine($"  → {hs.HoTen}: ĐTB HK1={dtbHK1:0.00}, HK2={dtbHK2:0.00}, Cả năm={dtbCaNam:0.00} (Khối {khoiCu}, {maNamHocTruoc})");
 
                             // BƯỚC 4: XÉT HẠNH KIỂM CẢ NĂM
                             string[] thuTuHanhKiem = { "Yếu", "Trung Bình", "Khá", "Tốt" };
@@ -230,8 +259,8 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
                             Console.WriteLine($"       Hạnh kiểm: HK1={hanhKiemHK1.XepLoai}, HK2={hanhKiemHK2.XepLoai}, Cả năm={hanhKiemCaNam}");
 
-                            // BƯỚC 5: ĐẾM MÔN KÉM VÀ YẾU
-                            var tatCaDiemCaNam = diemHK1.Concat(diemHK2).ToList();
+                            // ✅ BƯỚC 5: ĐẾM MÔN KÉM VÀ YẾU (CHỈ XÉT CÁC MÔN HỌC HỢP LỆ)
+                            var tatCaDiemCaNam = diemHK1HopLe.Concat(diemHK2HopLe).ToList();
 
                             // Nhóm theo môn học
                             var diemTheoMon = tatCaDiemCaNam
@@ -246,7 +275,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                             int soMonKem = diemTheoMon.Count(m => m.DiemTBMon < 3.5);
                             int soMonYeu = diemTheoMon.Count(m => m.DiemTBMon >= 3.5 && m.DiemTBMon < 5.0);
 
-                            Console.WriteLine($"       Môn Kém: {soMonKem}, Môn Yếu: {soMonYeu}");
+                            Console.WriteLine($"       Môn Kém: {soMonKem}, Môn Yếu: {soMonYeu} (Trong {diemTheoMon.Count} môn học hợp lệ)");
 
                             // BƯỚC 6: KIỂM TRA ĐIỀU KIỆN LÊN LỚP
                             bool duDieuKienLenLop = true;
@@ -285,16 +314,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                             var phanLopNamTruoc = phanLopHK2NamTruoc.maHocSinh != 0 ? phanLopHK2NamTruoc : phanLopHK1NamTruoc;
 
                             // ✅ Đã kiểm tra ở trên, nên ở đây chắc chắn có phân lớp
-                            var lopCu = allLop.FirstOrDefault(l => l.MaLop == phanLopNamTruoc.maLop);
-                            if (lopCu == null)
-                            {
-                                string loi = $"HS {hs.HoTen}: Không tìm thấy thông tin lớp cũ (ID: {phanLopNamTruoc.maLop})";
-                                Console.WriteLine($"  ❌ {loi}");
-                                danhSachLoi.Add(loi);
-                                continue;
-                            }
-
-                            int khoiCu = lopCu.MaKhoi;
+                            var lopCu = lopCuTemp; // Đã lấy ở BƯỚC 2.5
                             int khoiMoi;
 
                             if (duDieuKienLenLop)

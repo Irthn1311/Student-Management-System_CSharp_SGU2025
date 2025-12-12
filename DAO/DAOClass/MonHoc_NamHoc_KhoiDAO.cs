@@ -238,6 +238,65 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
             return ds;
         }
+
+        /// <summary>
+        /// Lấy danh sách năm học mà môn học đang được sử dụng
+        /// </summary>
+        public List<string> LayDanhSachNamHocTheoMonHoc(int maMonHoc)
+        {
+            List<string> ds = new List<string>();
+            string query = @"SELECT DISTINCT MaNamHoc 
+                           FROM MonHoc_NamHoc_Khoi 
+                           WHERE MaMonHoc = @MaMonHoc
+                           ORDER BY MaNamHoc";
+            
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaMonHoc", maMonHoc);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ds.Add(reader.GetString("MaNamHoc"));
+                        }
+                    }
+                }
+            }
+            return ds;
+        }
+
+        /// <summary>
+        /// Copy tất cả môn học từ năm học nguồn sang năm học đích
+        /// </summary>
+        public bool CopyMonHocTuNamHocNaySangNamHocKhac(string maNamHocNguon, string maNamHocDich)
+        {
+            string query = @"
+                INSERT INTO MonHoc_NamHoc_Khoi (MaMonHoc, MaNamHoc, MaKhoi)
+                SELECT MaMonHoc, @MaNamHocDich, MaKhoi
+                FROM MonHoc_NamHoc_Khoi
+                WHERE MaNamHoc = @MaNamHocNguon
+                AND NOT EXISTS (
+                    SELECT 1 FROM MonHoc_NamHoc_Khoi mhnk
+                    WHERE mhnk.MaMonHoc = MonHoc_NamHoc_Khoi.MaMonHoc
+                    AND mhnk.MaNamHoc = @MaNamHocDich
+                    AND mhnk.MaKhoi = MonHoc_NamHoc_Khoi.MaKhoi
+                )";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaNamHocNguon", maNamHocNguon);
+                    cmd.Parameters.AddWithValue("@MaNamHocDich", maNamHocDich);
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected >= 0; // >= 0 vì có thể không có môn học nào để copy
+                }
+            }
+        }
     }
 }
 

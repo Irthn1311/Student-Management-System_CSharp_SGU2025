@@ -14,6 +14,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     {
         private MonHocBUS monHocBUS;
         private NamHocBUS namHocBUS;
+        private HocKyBUS hocKyBUS;
+        private LopHocBUS lopHocBUS;
+        private PhanLopBLL phanLopBLL;
         private BindingList<MonHocDTO> bindingListMonHoc;
         private MonHocDTO monHocDangChon;
         private bool dangThem = false;
@@ -25,9 +28,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             InitializeComponent();
             monHocBUS = new MonHocBUS();
             namHocBUS = new NamHocBUS();
+            hocKyBUS = new HocKyBUS();
+            lopHocBUS = new LopHocBUS();
+            phanLopBLL = new PhanLopBLL();
             bindingListMonHoc = new BindingList<MonHocDTO>();
             // Controls đã được khởi tạo trong Designer, chỉ cần load dữ liệu
             LoadNamHocComboBox();
+            LoadKhoiComboBox();
         }
 
         private void FrmMonHoc_Load(object sender, EventArgs e)
@@ -47,6 +54,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             SetupDataGridView();
             LoadData();
             LoadNamHocComboBox();
+            LoadKhoiComboBox();
             dgvMonHoc.SelectionChanged += dgvMonHoc_SelectionChanged;
             VoHieuHoaControls();
             txtTenMon.Validating += txtTenMon_Validating;
@@ -203,18 +211,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             cboLoaiMon.SelectedIndex = -1;
             monHocDangChon = null;
             
-            // Reset year selection
-            if (chkApDungTuNamHoc != null)
-                chkApDungTuNamHoc.Checked = false;
+            // Reset year and grade selection
             if (cbNamHocBatDau != null)
             {
                 cbNamHocBatDau.SelectedIndex = -1;
                 cbNamHocBatDau.Enabled = false;
             }
-            if (chkApDungTatCaKhoi != null)
+            if (cbKhoi != null)
             {
-                chkApDungTatCaKhoi.Checked = false;
-                chkApDungTatCaKhoi.Enabled = false;
+                cbKhoi.SelectedIndex = -1;
+                cbKhoi.Enabled = false;
             }
         }
 
@@ -226,13 +232,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             btnLuu.Enabled = false;
             btnHuy.Enabled = false;
             
-            // Disable year selection controls
-            if (chkApDungTuNamHoc != null)
-                chkApDungTuNamHoc.Enabled = false;
+            // Disable year and grade selection controls
             if (cbNamHocBatDau != null)
                 cbNamHocBatDau.Enabled = false;
-            if (chkApDungTatCaKhoi != null)
-                chkApDungTatCaKhoi.Enabled = false;
+            if (cbKhoi != null)
+                cbKhoi.Enabled = false;
         }
 
         private void KichHoatControls()
@@ -243,11 +247,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             btnLuu.Enabled = true;
             btnHuy.Enabled = true;
             
-            // Enable year selection controls only when adding new
+            // Enable year and grade selection controls only when adding new
             if (dangThem)
             {
-                if (chkApDungTuNamHoc != null)
-                    chkApDungTuNamHoc.Enabled = true;
+                if (cbNamHocBatDau != null)
+                    cbNamHocBatDau.Enabled = true;
+                if (cbKhoi != null)
+                    cbKhoi.Enabled = true;
             }
         }
 
@@ -293,6 +299,56 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 return false;
             }
 
+            // Validate năm học bắt đầu (bắt buộc)
+            if (cbNamHocBatDau == null || cbNamHocBatDau.SelectedItem == null)
+            {
+                MessageBox.Show("Vui lòng chọn năm học bắt đầu áp dụng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // Validate khối (bắt buộc)
+            if (cbKhoi == null || cbKhoi.SelectedItem == null)
+            {
+                MessageBox.Show("Vui lòng chọn khối!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // Validate năm học đã phân lớp tự động chưa
+            var namHocItem = cbNamHocBatDau.SelectedItem as ComboBoxItem;
+            if (namHocItem != null && namHocItem.Value != null)
+            {
+                string maNamHoc = namHocItem.Value.ToString();
+                if (KiemTraNamHocDaPhanLopTuDong(maNamHoc))
+                {
+                    MessageBox.Show("Năm học này đã được phân lớp tự động. Không thể thêm môn học vào năm học này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+
+            // Validate năm học "Đang diễn ra" chỉ cho phép thêm trong 1 tuần đầu (cho khối 10)
+            if (namHocItem != null && namHocItem.Value != null)
+            {
+                string maNamHoc = namHocItem.Value.ToString();
+                var namHoc = namHocBUS.LayNamHocTheoMa(maNamHoc);
+                if (namHoc != null)
+                {
+                    DateTime now = DateTime.Now.Date;
+                    DateTime ngayBDNamHoc = namHoc.NgayBD.Date;
+                    DateTime ngayKTNamHoc = namHoc.NgayKT.Date;
+                    
+                    // Kiểm tra năm học có đang diễn ra không
+                    if (now >= ngayBDNamHoc && now <= ngayKTNamHoc)
+                    {
+                        TimeSpan diff = now - ngayBDNamHoc;
+                        if (diff.TotalDays > 7)
+                        {
+                            MessageBox.Show("Năm học đang diễn ra đã quá 1 tuần từ ngày bắt đầu. Không thể thêm môn học vào năm học này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return false;
+                        }
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -312,50 +368,54 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     ghiChu = cboLoaiMon.Text
                 };
 
-                // Kiểm tra nếu có chọn năm học bắt đầu
+                // Lấy năm học và khối được chọn (bắt buộc)
                 string maNamHoc = null;
-                bool apDungTatCaKhoi = false;
+                int maKhoi = 0;
 
-                if (chkApDungTuNamHoc != null && chkApDungTuNamHoc.Checked)
+                if (cbNamHocBatDau != null && cbNamHocBatDau.SelectedItem != null)
                 {
-                    if (cbNamHocBatDau != null && cbNamHocBatDau.SelectedItem != null)
+                    var item = cbNamHocBatDau.SelectedItem as ComboBoxItem;
+                    if (item != null && item.Value != null)
                     {
-                        var item = cbNamHocBatDau.SelectedItem as ComboBoxItem;
-                        if (item != null && item.Value != null)
-                        {
-                            maNamHoc = item.Value.ToString();
-                        }
-                    }
-
-                    if (string.IsNullOrEmpty(maNamHoc))
-                    {
-                        MessageBox.Show("Vui lòng chọn năm học bắt đầu áp dụng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-
-                    if (chkApDungTatCaKhoi != null)
-                    {
-                        apDungTatCaKhoi = chkApDungTatCaKhoi.Checked;
+                        maNamHoc = item.Value.ToString();
                     }
                 }
 
-                // Sử dụng method mới để thêm môn học và liên kết với năm học/khối
-                int maMoiTao = monHocBUS.ThemMonHocVaLienKetNamHocKhoi(monHocMoi, maNamHoc, apDungTatCaKhoi);
+                if (cbKhoi != null && cbKhoi.SelectedItem != null)
+                {
+                    var khoiItem = cbKhoi.SelectedItem as ComboBoxItem;
+                    if (khoiItem != null && khoiItem.Value != null)
+                    {
+                        maKhoi = Convert.ToInt32(khoiItem.Value);
+                    }
+                }
+
+                if (string.IsNullOrEmpty(maNamHoc))
+                {
+                    MessageBox.Show("Vui lòng chọn năm học bắt đầu áp dụng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (maKhoi <= 0)
+                {
+                    MessageBox.Show("Vui lòng chọn khối!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Thêm môn học và lấy ID
+                int maMoiTao = monHocBUS.ThemMonHocVaLayId(monHocMoi);
                 
                 if (maMoiTao > 0)
                 {
+                    // Liên kết với năm học và khối
+                    var monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
+                    monHocNamHocKhoiBUS.ThemMonHocChoNamHocKhoi(maMoiTao, maNamHoc, maKhoi);
+
                     monHocMoi.maMon = maMoiTao;
                     bindingListMonHoc.Add(monHocMoi);
 
-                    string message = "Thêm môn học thành công!";
-                    if (!string.IsNullOrEmpty(maNamHoc) && apDungTatCaKhoi)
-                    {
-                        message += "\nMôn học đã được áp dụng cho tất cả khối (10, 11, 12) từ năm học " + maNamHoc;
-                    }
-                    else if (!string.IsNullOrEmpty(maNamHoc))
-                    {
-                        message += "\nMôn học sẽ bắt đầu từ năm học " + maNamHoc;
-                    }
+                    string tenKhoi = cbKhoi.Text;
+                    string message = $"Thêm môn học thành công!\nMôn học đã được áp dụng cho khối {tenKhoi} từ năm học {maNamHoc}";
 
                     MessageBox.Show(message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     dgvMonHoc.CurrentCell = dgvMonHoc.Rows[bindingListMonHoc.Count - 1].Cells[0];
@@ -418,23 +478,36 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
 
             var dr = MessageBox.Show(
-                $"Bạn có chắc muốn xóa môn học {monHocDangChon.tenMon}?",
-                "Xác nhận",
+                $"Bạn có chắc muốn xóa môn học '{monHocDangChon.tenMon}'?\n\n" +
+                "⚠️ Lưu ý: Môn học đang được sử dụng sẽ không thể xóa.",
+                "Xác nhận xóa",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
 
             if (dr == DialogResult.Yes)
             {
-                if (monHocBUS.DeleteMonHoc(monHocDangChon.maMon))
+                try
                 {
-                    bindingListMonHoc.Remove(monHocDangChon);
-                    XoaDuLieuControls();
-                    MessageBox.Show("Đã xóa môn học!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (monHocBUS.DeleteMonHoc(monHocDangChon.maMon))
+                    {
+                        bindingListMonHoc.Remove(monHocDangChon);
+                        XoaDuLieuControls();
+                        MessageBox.Show("Đã xóa môn học thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không thể xóa môn học!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
-                else
+                catch (InvalidOperationException ex)
                 {
-                    MessageBox.Show("Không thể xóa môn học!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // Lỗi do môn học đang được sử dụng
+                    MessageBox.Show(ex.Message, "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi xóa môn học: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -454,19 +527,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             txtMaMon.Text = "Tự động";
             
             // Reset year selection controls
-            if (chkApDungTuNamHoc != null)
-            {
-                chkApDungTuNamHoc.Checked = false;
-            }
             if (cbNamHocBatDau != null)
             {
                 cbNamHocBatDau.SelectedIndex = -1;
-                cbNamHocBatDau.Enabled = false;
+                cbNamHocBatDau.Enabled = true;
             }
-            if (chkApDungTatCaKhoi != null)
+            
+            // Set mặc định khối 10 khi thêm môn học mới (chỉ có khối 10 trong ComboBox)
+            if (cbKhoi != null)
             {
-                chkApDungTatCaKhoi.Checked = false;
-                chkApDungTatCaKhoi.Enabled = false;
+                cbKhoi.Enabled = true;
+                if (cbKhoi.Items.Count > 0)
+                {
+                    cbKhoi.SelectedIndex = 0; // Chọn khối 10 (mặc định)
+                }
             }
 
             txtTenMon.Focus();
@@ -577,7 +651,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // ✅ Controls đã được khởi tạo trong Designer.cs, không cần InitializeYearSelectionControls() nữa
 
         /// <summary>
-        /// Load danh sách năm học vào ComboBox
+        /// Load danh sách năm học vào ComboBox với trạng thái
+        /// Tính trạng thái dựa trên NgayBD của năm học, không phải HK1
         /// </summary>
         private void LoadNamHocComboBox()
         {
@@ -590,9 +665,34 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 
                 if (dsNamHoc != null && dsNamHoc.Count > 0)
                 {
+                    DateTime now = DateTime.Now.Date;
+                    var namHocHopLe = new List<(NamHocDTO nh, string trangThai)>();
+                    
                     foreach (var nh in dsNamHoc.OrderByDescending(n => n.NgayBD))
                     {
-                        cbNamHocBatDau.Items.Add(new ComboBoxItem { Text = nh.TenNamHoc, Value = nh.MaNamHoc });
+                        // Tính trạng thái dựa trên NgayBD của năm học
+                        string trangThai = "";
+                        DateTime ngayBD = nh.NgayBD.Date;
+                        DateTime ngayKT = nh.NgayKT.Date;
+                        
+                        if (now >= ngayBD && now <= ngayKT)
+                            trangThai = "Đang diễn ra";
+                        else if (now < ngayBD)
+                            trangThai = "Chưa bắt đầu";
+                        else
+                            trangThai = "Đã kết thúc";
+                        
+                        // Chỉ lấy năm học "Đang diễn ra" và "Chưa bắt đầu"
+                        if (trangThai == "Đang diễn ra" || trangThai == "Chưa bắt đầu")
+                        {
+                            namHocHopLe.Add((nh, trangThai));
+                        }
+                    }
+
+                    foreach (var item in namHocHopLe)
+                    {
+                        string displayText = $"{item.nh.TenNamHoc} ({item.trangThai})";
+                        cbNamHocBatDau.Items.Add(new ComboBoxItem { Text = displayText, Value = item.nh.MaNamHoc });
                     }
                 }
             }
@@ -603,21 +703,62 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// Event handler khi checkbox "Áp dụng từ năm học" thay đổi
+        /// Load danh sách khối vào ComboBox - Chỉ load khối 10
         /// </summary>
-        private void ChkApDungTuNamHoc_CheckedChanged(object sender, EventArgs e)
+        private void LoadKhoiComboBox()
         {
-            if (chkApDungTuNamHoc != null && cbNamHocBatDau != null && chkApDungTatCaKhoi != null)
+            try
             {
-                bool isChecked = chkApDungTuNamHoc.Checked;
-                cbNamHocBatDau.Enabled = isChecked;
-                chkApDungTatCaKhoi.Enabled = isChecked;
+                if (cbKhoi == null) return;
+
+                cbKhoi.Items.Clear();
+                var dsKhoi = lopHocBUS.LayDanhSachKhoiLop();
                 
-                if (!isChecked)
+                if (dsKhoi != null && dsKhoi.Count > 0)
                 {
-                    cbNamHocBatDau.SelectedIndex = -1;
-                    chkApDungTatCaKhoi.Checked = false;
+                    // Chỉ load khối 10
+                    var khoi10 = dsKhoi.FirstOrDefault(k => k.MaKhoi == 10);
+                    if (khoi10 != null)
+                    {
+                        cbKhoi.Items.Add(new ComboBoxItem { Text = khoi10.TenKhoi, Value = khoi10.MaKhoi });
+                        // Set mặc định chọn khối 10
+                        cbKhoi.SelectedIndex = 0;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi load danh sách khối: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra năm học đã phân lớp tự động chưa
+        /// </summary>
+        private bool KiemTraNamHocDaPhanLopTuDong(string maNamHoc)
+        {
+            try
+            {
+                var dsHocKy = hocKyBUS.LayDanhSachHocKyTheoNamHoc(maNamHoc);
+                if (dsHocKy == null || dsHocKy.Count == 0)
+                    return false;
+
+                var hk1 = dsHocKy.FirstOrDefault(hk => hk.TenHocKy.Contains("I") || hk.TenHocKy.Contains("1"));
+                var hk2 = dsHocKy.FirstOrDefault(hk => hk.TenHocKy.Contains("II") || hk.TenHocKy.Contains("2"));
+
+                if (hk1 == null || hk2 == null)
+                    return false;
+
+                // Kiểm tra có phân lớp trong HK1 hoặc HK2 không
+                var allPhanLop = phanLopBLL.GetAllPhanLop();
+                bool daPhanLopHK1 = allPhanLop.Any(p => p.maHocKy == hk1.MaHocKy);
+                bool daPhanLopHK2 = allPhanLop.Any(p => p.maHocKy == hk2.MaHocKy);
+
+                return daPhanLopHK1 || daPhanLopHK2;
+            }
+            catch
+            {
+                return false;
             }
         }
 

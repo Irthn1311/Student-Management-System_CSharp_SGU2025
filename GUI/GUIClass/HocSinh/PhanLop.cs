@@ -36,6 +36,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private XepLoaiDAO xepLoaiDAO;
         private MonHocDAO monHocDAO;
         private HocKyDAO hocKyDAO;
+        private MonHoc_NamHoc_KhoiBUS monHocNamHocKhoiBUS;
         private List<DTO.LopDTO> danhSachLop;
         private List<DTO.HocKyDTO> danhSachHocKy;
         private List<(int maHocSinh, int maLop, int maHocKy)> danhSachPhanLop;
@@ -61,6 +62,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             xepLoaiDAO = new XepLoaiDAO();
             monHocDAO = new MonHocDAO();
             hocKyDAO = new HocKyDAO();
+            monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
             danhSachLop = new List<DTO.LopDTO>();
             danhSachHocKy = new List<DTO.HocKyDTO>();
             danhSachPhanLop = new List<(int maHocSinh, int maLop, int maHocKy)>();
@@ -2925,7 +2927,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
             }
 
-            // Lấy danh sách môn học
+            // ✅ Lấy danh sách môn học từ MonHoc_NamHoc_Khoi (sẽ được filter theo từng học sinh)
+            // Tạm thời lấy tất cả để tạo dictionary, nhưng sẽ filter khi kiểm tra
             var danhSachMonHoc = monHocDAO.DocDSMH();
             var monHocDict = danhSachMonHoc.ToDictionary(m => m.maMon, m => m.tenMon);
 
@@ -3436,7 +3439,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     continue;
                 }
 
-                // Kiểm tra đầy đủ điểm cho tất cả học kỳ cần thiết và tất cả môn học
+                // ✅ Kiểm tra đầy đủ điểm cho tất cả học kỳ cần thiết và các môn học hợp lệ (theo MonHoc_NamHoc_Khoi)
                 foreach (var hk in hocKyCanThietCuaHS)
                 {
                     var hocKyKey = (TenHocKy: hk.TenHocKy.Trim(), MaNamHoc: hk.MaNamHoc.Trim());
@@ -3451,7 +3454,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         continue;
                     }
 
-                    foreach (var mon in danhSachMonHoc)
+                    // ✅ Lấy danh sách môn học hợp lệ cho năm học và khối này
+                    int khoi = int.Parse(khoiStr);
+                    var danhSachMonHocHopLe = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHocKhoi(hk.MaNamHoc, khoi);
+                    
+                    if (danhSachMonHocHopLe == null || danhSachMonHocHopLe.Count == 0)
+                    {
+                        errors.AppendLine($"Học sinh {tenHS} (Khối {khoiStr}): Năm học {hk.MaNamHoc} không có môn học nào cho khối {khoiStr}");
+                        errorCount++;
+                        hocSinhDuDieuKien[maHS] = false;
+                        continue;
+                    }
+
+                    // ✅ Chỉ kiểm tra các môn học hợp lệ cho năm học và khối này
+                    foreach (var mon in danhSachMonHocHopLe)
                     {
                         if (!diemTheoHS[maHS][hocKyKey].ContainsKey(mon.maMon))
                         {
