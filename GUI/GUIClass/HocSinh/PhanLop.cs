@@ -1173,7 +1173,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 int soHocSinhDaPhanLopHK2 = allPhanLop.Count(p => p.maHocKy == hk2.MaHocKy);
                 
                 int tongSoHocSinhDangHoc = hocSinhBus.GetTotalHocSinhDangHoc();
-                int nguongToiThieu = Math.Max(50, (int)(tongSoHocSinhDangHoc * 0.3));
+                int nguongToiThieu = Math.Max(50, (int)(tongSoHocSinhDangHoc * 0.3));//nghĩa là tối thiểu 50 học sinh và 30% tổng số học sinh đang học
                 
                 bool daPhanLopTuDongHK1 = soHocSinhDaPhanLopHK1 >= nguongToiThieu;
                 bool daPhanLopTuDongHK2 = soHocSinhDaPhanLopHK2 >= nguongToiThieu;
