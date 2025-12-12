@@ -1301,7 +1301,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 {
                     if (frmPreview.ShowDialog() == DialogResult.OK)
                     {
-                        // Refresh UI sau khi tạo TKB thành công
+                        // ✅ Refresh UI sau khi tạo TKB thành công
                         hasTKBForSemester = true;
                         cbLop.Enabled = true;
                         
@@ -1309,7 +1309,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         btnSapXepTuDong.Enabled = false;
                         btnSapXepTuDong.Text = "Đã có TKB";
                         
-                        LoadData(currentSemesterId);
+                        // ✅ Refresh lại trạng thái học kỳ để cập nhật UI
+                        // Trigger lại event để refresh combobox và load dữ liệu
+                        cbHocKyNamHoc_SelectedIndexChanged(cbHocKyNamHoc, EventArgs.Empty);
+                        
+                        // ✅ Tự động chọn lớp đầu tiên nếu chưa có lớp nào được chọn
+                        if (cbLop.SelectedIndex <= 0 && cbLop.Items.Count > 1)
+                        {
+                            cbLop.SelectedIndex = 1; // Chọn lớp đầu tiên (index 0 là placeholder)
+                        }
+                        
+                        // ✅ Load dữ liệu nếu đã chọn lớp
+                        if (currentLopId > 0)
+                        {
+                            LoadData(currentSemesterId);
+                        }
 
                         MessageBox.Show(
                             "✅ Thời khóa biểu đã được tạo thành công!\n\n" +

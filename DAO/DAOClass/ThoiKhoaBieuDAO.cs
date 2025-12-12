@@ -106,6 +106,54 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 			}
 		}
 
+		/// <summary>
+		/// ✅ Chấp nhận tất cả các tuần của học kỳ từ TKB_Temp vào ThoiKhoaBieu chính thức
+		/// </summary>
+		public void AcceptAllWeeksForSemester(int semesterId)
+		{
+			// Map TKB_Temp rows to official ThoiKhoaBieu through PhanCongGiangDay to obtain MaPhanCong.
+			// Chấp nhận tất cả các tuần của học kỳ này
+			const string insertSql = @"
+				INSERT INTO ThoiKhoaBieu(MaPhanCong, ThuTrongTuan, TietBatDau, SoTiet, PhongHoc)
+				SELECT pc.MaPhanCong,
+					CASE WHEN t.Thu IN (2,3,4,5,6,7) THEN CONCAT('Thu ', t.Thu) ELSE CAST(t.Thu AS CHAR) END AS ThuTrongTuan,
+					t.Tiet AS TietBatDau,
+					1 AS SoTiet,
+					t.Phong
+				FROM TKB_Temp t
+				JOIN PhanCongGiangDay pc ON pc.MaLop = t.MaLop AND pc.MaGiaoVien = t.MaGV AND pc.MaMonHoc = t.MaMon AND pc.MaHocKy = @SemesterId
+				WHERE t.SemesterId = @SemesterId;";
+
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var tx = conn.BeginTransaction())
+				{
+					try
+					{
+						using (var cmd = new MySqlCommand(insertSql, conn, tx))
+						{
+							cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+							cmd.ExecuteNonQuery();
+						}
+
+						using (var clear = new MySqlCommand("DELETE FROM TKB_Temp WHERE SemesterId=@SemesterId", conn, tx))
+						{
+							clear.Parameters.AddWithValue("@SemesterId", semesterId);
+							clear.ExecuteNonQuery();
+						}
+
+						tx.Commit();
+					}
+					catch
+					{
+						tx.Rollback();
+						throw;
+					}
+				}
+			}
+		}
+
 		public List<AssignmentSlotDTO> GetWeek(int semesterId, int weekNo)
 		{
 			const string sql = @"SELECT SemesterId, WeekNo, MaLop, Thu, Tiet, MaMon, MaGV, Phong FROM TKB_Temp WHERE SemesterId=@SemesterId AND WeekNo=@WeekNo";

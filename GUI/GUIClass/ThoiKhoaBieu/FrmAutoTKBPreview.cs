@@ -459,11 +459,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 Cursor.Current = Cursors.WaitCursor;
                 
-                // Accept temp timetable to official
-                _schedulingService.AcceptTempForSemester(_semesterId, _weekNo);
+                // ✅ Accept tất cả các tuần của học kỳ từ TKB_Temp vào ThoiKhoaBieu chính thức
+                _schedulingService.AcceptAllWeeksForSemester(_semesterId);
                 
-                txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] ✅ Đã chấp nhận thời khóa biểu. Dữ liệu đã được ghi vào bảng ThoiKhoaBieu.\r\n");
-                lblStatus.Text = "✅ Đã chấp nhận thời khóa biểu. Dữ liệu đã được ghi vào bảng ThoiKhoaBieu.";
+                txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] ✅ Đã chấp nhận thời khóa biểu cho tất cả các tuần. Dữ liệu đã được ghi vào bảng ThoiKhoaBieu.\r\n");
+                lblStatus.Text = "✅ Đã chấp nhận thời khóa biểu cho tất cả các tuần. Dữ liệu đã được ghi vào bảng ThoiKhoaBieu.";
                 lblStatus.ForeColor = Color.FromArgb(22, 163, 74);
 
                 MessageBox.Show(
