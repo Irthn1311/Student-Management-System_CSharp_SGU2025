@@ -20,18 +20,40 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
     public class PhanCongGiangDayBUS
     {
         private PhanCongGiangDayDAO phanCongDAO;
+        private MonHocFilterService monHocFilterService;
+        private HocKyDAO hocKyDAO;
 
         public PhanCongGiangDayBUS()
         {
             phanCongDAO = new PhanCongGiangDayDAO();
+            monHocFilterService = new MonHocFilterService();
+            hocKyDAO = new HocKyDAO();
         }
 
         /// <summary>
         /// Lấy danh sách phân công theo học kỳ (để sinh thời khóa biểu).
+        /// Chỉ trả về các phân công có môn học hợp lệ cho lớp và năm học.
         /// </summary>
         public List<PhanCongGiangDayDTO> GetBySemester(int semesterId)
         {
-            return phanCongDAO.LayPhanCongTheoHocKy(semesterId);
+            var allAssignments = phanCongDAO.LayPhanCongTheoHocKy(semesterId);
+            
+            // Filter để chỉ lấy các phân công có môn học hợp lệ
+            var hocKy = hocKyDAO.LayHocKyTheoMa(semesterId);
+            if (hocKy != null && !string.IsNullOrEmpty(hocKy.MaNamHoc))
+            {
+                var validAssignments = new List<PhanCongGiangDayDTO>();
+                foreach (var assignment in allAssignments)
+                {
+                    if (monHocFilterService.IsSubjectValidForClass(assignment.MaMonHoc, assignment.MaLop, hocKy.MaNamHoc))
+                    {
+                        validAssignments.Add(assignment);
+                    }
+                }
+                return validAssignments;
+            }
+            
+            return allAssignments;
         }
 
         /// <summary>
@@ -142,6 +164,16 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 if (phanCongDAO.KiemTraTrungLapMonHoc(phanCong.MaLop, phanCong.MaMonHoc, phanCong.MaHocKy))
                 {
                     throw new Exception("Môn học này đã được phân công cho lớp trong học kỳ này!");
+                }
+
+                // ✅ Validate: Kiểm tra môn học có hợp lệ cho lớp và năm học không
+                var hocKy = hocKyDAO.LayHocKyTheoMa(phanCong.MaHocKy);
+                if (hocKy != null && !string.IsNullOrEmpty(hocKy.MaNamHoc))
+                {
+                    if (!monHocFilterService.IsSubjectValidForClass(phanCong.MaMonHoc, phanCong.MaLop, hocKy.MaNamHoc))
+                    {
+                        throw new Exception($"Môn học này không được dạy cho khối lớp này trong năm học {hocKy.MaNamHoc}!");
+                    }
                 }
 
                 return phanCongDAO.ThemPhanCong(phanCong);

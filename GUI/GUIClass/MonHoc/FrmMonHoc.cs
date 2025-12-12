@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
@@ -12,15 +13,21 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
     public partial class FrmMonHoc : UserControl
     {
         private MonHocBUS monHocBUS;
+        private NamHocBUS namHocBUS;
         private BindingList<MonHocDTO> bindingListMonHoc;
         private MonHocDTO monHocDangChon;
         private bool dangThem = false;
+
+        // ✅ UI Controls for year selection đã được khai báo trong Designer.cs
 
         public FrmMonHoc()
         {
             InitializeComponent();
             monHocBUS = new MonHocBUS();
+            namHocBUS = new NamHocBUS();
             bindingListMonHoc = new BindingList<MonHocDTO>();
+            // Controls đã được khởi tạo trong Designer, chỉ cần load dữ liệu
+            LoadNamHocComboBox();
         }
 
         private void FrmMonHoc_Load(object sender, EventArgs e)
@@ -39,6 +46,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             SetupDataGridView();
             LoadData();
+            LoadNamHocComboBox();
             dgvMonHoc.SelectionChanged += dgvMonHoc_SelectionChanged;
             VoHieuHoaControls();
             txtTenMon.Validating += txtTenMon_Validating;
@@ -46,14 +54,70 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             txtMaMon.Validating += txtMaMon_Validating;
             this.AutoValidate = AutoValidate.EnableAllowFocusChange;
 
+            // ✅ Đảm bảo panelButtons được BringToFront trước
+            if (panelButtons != null)
+            {
+                panelButtons.BringToFront();
+                panelButtons.Visible = true;
+            }
+
+            // Áp dụng quyền cho các nút
             PermissionHelper.ApplyPermissionMonHoc(
-                btnThemMonHoc,
+                btnThemMoi,
                 btnSua,
-                btnXoa
-);
+                btnXoaMoi
+            );
+            
+            // ✅ FORCE HIỂN THỊ: Đảm bảo button luôn visible nếu có quyền
+            // Bỏ qua logic ẩn của PermissionHelper nếu có quyền
+            if (btnThemMoi != null)
+            {
+                bool hasCreate = PermissionHelper.HasPermission(PermissionHelper.QLMONHOC, PermissionHelper.CREATE);
+                if (hasCreate)
+                {
+                    btnThemMoi.Visible = true;
+                    btnThemMoi.Enabled = true;
+                    btnThemMoi.BringToFront();
+                    // Đảm bảo button có size và location hợp lý
+                    if (btnThemMoi.Size.Width == 0 || btnThemMoi.Size.Height == 0)
+                    {
+                        btnThemMoi.Size = new System.Drawing.Size(120, 40);
+                    }
+                    if (btnThemMoi.Location.X < 0 || btnThemMoi.Location.Y < 0)
+                    {
+                        btnThemMoi.Location = new System.Drawing.Point(6, 5);
+                    }
+                }
+            }
+            
+            if (btnXoaMoi != null)
+            {
+                bool hasDelete = PermissionHelper.HasPermission(PermissionHelper.QLMONHOC, PermissionHelper.DELETE);
+                if (hasDelete)
+                {
+                    btnXoaMoi.Visible = true;
+                    btnXoaMoi.Enabled = true;
+                    btnXoaMoi.BringToFront();
+                    // Đảm bảo button có size và location hợp lý
+                    if (btnXoaMoi.Size.Width == 0 || btnXoaMoi.Size.Height == 0)
+                    {
+                        btnXoaMoi.Size = new System.Drawing.Size(120, 40);
+                    }
+                    if (btnXoaMoi.Location.X < 0 || btnXoaMoi.Location.Y < 0)
+                    {
+                        btnXoaMoi.Location = new System.Drawing.Point(974, 5);
+                    }
+                }
+            }
+            
+            // ✅ Refresh panelButtons để đảm bảo hiển thị
+            if (panelButtons != null)
+            {
+                panelButtons.Refresh();
+                panelButtons.Invalidate();
+                panelButtons.Update();
+            }
         }
-        private Button btnXoa;
-        private Button btnThemMonHoc;
 
         // =======================================================
         // === PHẦN CHUẨN BỊ VÀ HỖ TRỢ ===
@@ -138,6 +202,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             txtSoTiet.Clear();
             cboLoaiMon.SelectedIndex = -1;
             monHocDangChon = null;
+            
+            // Reset year selection
+            if (chkApDungTuNamHoc != null)
+                chkApDungTuNamHoc.Checked = false;
+            if (cbNamHocBatDau != null)
+            {
+                cbNamHocBatDau.SelectedIndex = -1;
+                cbNamHocBatDau.Enabled = false;
+            }
+            if (chkApDungTatCaKhoi != null)
+            {
+                chkApDungTatCaKhoi.Checked = false;
+                chkApDungTatCaKhoi.Enabled = false;
+            }
         }
 
         private void VoHieuHoaControls()
@@ -147,6 +225,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             cboLoaiMon.Enabled = false;
             btnLuu.Enabled = false;
             btnHuy.Enabled = false;
+            
+            // Disable year selection controls
+            if (chkApDungTuNamHoc != null)
+                chkApDungTuNamHoc.Enabled = false;
+            if (cbNamHocBatDau != null)
+                cbNamHocBatDau.Enabled = false;
+            if (chkApDungTatCaKhoi != null)
+                chkApDungTatCaKhoi.Enabled = false;
         }
 
         private void KichHoatControls()
@@ -156,6 +242,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             cboLoaiMon.Enabled = true;
             btnLuu.Enabled = true;
             btnHuy.Enabled = true;
+            
+            // Enable year selection controls only when adding new
+            if (dangThem)
+            {
+                if (chkApDungTuNamHoc != null)
+                    chkApDungTuNamHoc.Enabled = true;
+            }
         }
 
         // ✅ KÍCH HOẠT CONTROLS CHỈ ĐỂ SỬA SỐ TIẾT
@@ -210,25 +303,85 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // ✅ THÊM MÔN HỌC
         private void ThemMonHoc()
         {
-            var monHocMoi = new MonHocDTO
+            try
             {
-                tenMon = txtTenMon.Text.Trim(),
-                soTiet = int.Parse(txtSoTiet.Text),
-                ghiChu = cboLoaiMon.Text
-            };
+                var monHocMoi = new MonHocDTO
+                {
+                    tenMon = txtTenMon.Text.Trim(),
+                    soTiet = int.Parse(txtSoTiet.Text),
+                    ghiChu = cboLoaiMon.Text
+                };
 
-            int maMoiTao = monHocBUS.ThemMonHocVaLayId(monHocMoi);
-            if (maMoiTao > 0)
-            {
-                monHocMoi.maMon = maMoiTao;
-                bindingListMonHoc.Add(monHocMoi);
+                // Kiểm tra nếu có chọn năm học bắt đầu
+                string maNamHoc = null;
+                bool apDungTatCaKhoi = false;
 
-                MessageBox.Show("Thêm môn học thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                dgvMonHoc.CurrentCell = dgvMonHoc.Rows[bindingListMonHoc.Count - 1].Cells[0];
+                if (chkApDungTuNamHoc != null && chkApDungTuNamHoc.Checked)
+                {
+                    if (cbNamHocBatDau != null && cbNamHocBatDau.SelectedItem != null)
+                    {
+                        var item = cbNamHocBatDau.SelectedItem as ComboBoxItem;
+                        if (item != null && item.Value != null)
+                        {
+                            maNamHoc = item.Value.ToString();
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(maNamHoc))
+                    {
+                        MessageBox.Show("Vui lòng chọn năm học bắt đầu áp dụng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    if (chkApDungTatCaKhoi != null)
+                    {
+                        apDungTatCaKhoi = chkApDungTatCaKhoi.Checked;
+                    }
+                }
+
+                // Sử dụng method mới để thêm môn học và liên kết với năm học/khối
+                int maMoiTao = monHocBUS.ThemMonHocVaLienKetNamHocKhoi(monHocMoi, maNamHoc, apDungTatCaKhoi);
+                
+                if (maMoiTao > 0)
+                {
+                    monHocMoi.maMon = maMoiTao;
+                    bindingListMonHoc.Add(monHocMoi);
+
+                    string message = "Thêm môn học thành công!";
+                    if (!string.IsNullOrEmpty(maNamHoc) && apDungTatCaKhoi)
+                    {
+                        message += "\nMôn học đã được áp dụng cho tất cả khối (10, 11, 12) từ năm học " + maNamHoc;
+                    }
+                    else if (!string.IsNullOrEmpty(maNamHoc))
+                    {
+                        message += "\nMôn học sẽ bắt đầu từ năm học " + maNamHoc;
+                    }
+
+                    MessageBox.Show(message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    dgvMonHoc.CurrentCell = dgvMonHoc.Rows[bindingListMonHoc.Count - 1].Cells[0];
+                }
+                else
+                {
+                    MessageBox.Show("Không thể thêm môn học!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Không thể thêm môn học!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string errorMessage = $"Lỗi khi thêm môn học: {ex.Message}";
+                
+                // ✅ Kiểm tra nếu là lỗi AUTO_INCREMENT
+                if (ex.Message.Contains("doesn't have a default value") || ex.Message.Contains("MaMonHoc"))
+                {
+                    errorMessage += "\n\n" +
+                        "⚠️ VẤN ĐỀ: Bảng MonHoc chưa có AUTO_INCREMENT cho cột MaMonHoc.\n\n" +
+                        "🔧 CÁCH KHẮC PHỤC:\n" +
+                        "1. Mở MySQL Workbench hoặc công cụ quản lý database\n" +
+                        "2. Chạy script: DAO/ConnectDatabase/05_fix_monhoc_autoincrement.sql\n" +
+                        "3. Hoặc chạy lệnh SQL:\n" +
+                        "   ALTER TABLE MonHoc MODIFY COLUMN MaMonHoc INT AUTO_INCREMENT;";
+                }
+                
+                MessageBox.Show(errorMessage, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -290,18 +443,34 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         // === PHẦN GỌI HÀM QUA NÚT NHẤN ===
         // =======================================================
 
-        private void btnThemMonHoc_Click(object sender, EventArgs e)
+        private void btnThemMoi_Click(object sender, EventArgs e)
         {
-            if (!PermissionHelper.CheckUpdatePermission(PermissionHelper.QLMONHOC, "Quản lý môn học"))
+            if (!PermissionHelper.CheckCreatePermission(PermissionHelper.QLMONHOC, "Quản lý môn học"))
                 return;
             dangThem = true;
             XoaDuLieuControls();
             KichHoatControls();
 
             txtMaMon.Text = "Tự động";
-            txtTenMon.Focus();
+            
+            // Reset year selection controls
+            if (chkApDungTuNamHoc != null)
+            {
+                chkApDungTuNamHoc.Checked = false;
+            }
+            if (cbNamHocBatDau != null)
+            {
+                cbNamHocBatDau.SelectedIndex = -1;
+                cbNamHocBatDau.Enabled = false;
+            }
+            if (chkApDungTatCaKhoi != null)
+            {
+                chkApDungTatCaKhoi.Checked = false;
+                chkApDungTatCaKhoi.Enabled = false;
+            }
 
-           btnSua.Enabled =  false;
+            txtTenMon.Focus();
+            btnSua.Enabled = false;
         }
 
         private void btnSua_Click(object sender, EventArgs e)
@@ -319,7 +488,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             btnSua.Enabled = false;
         }
 
-        private void btnXoa_Click(object sender, EventArgs e)
+        private void btnXoaMoi_Click(object sender, EventArgs e)
         {
             if (!PermissionHelper.CheckDeletePermission(PermissionHelper.QLMONHOC, "Quản lý môn học"))
                 return;
@@ -403,6 +572,129 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private void panelThongTin_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        // ✅ Controls đã được khởi tạo trong Designer.cs, không cần InitializeYearSelectionControls() nữa
+
+        /// <summary>
+        /// Load danh sách năm học vào ComboBox
+        /// </summary>
+        private void LoadNamHocComboBox()
+        {
+            try
+            {
+                if (cbNamHocBatDau == null) return;
+
+                cbNamHocBatDau.Items.Clear();
+                var dsNamHoc = namHocBUS.DocDSNamHoc();
+                
+                if (dsNamHoc != null && dsNamHoc.Count > 0)
+                {
+                    foreach (var nh in dsNamHoc.OrderByDescending(n => n.NgayBD))
+                    {
+                        cbNamHocBatDau.Items.Add(new ComboBoxItem { Text = nh.TenNamHoc, Value = nh.MaNamHoc });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi load danh sách năm học: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi checkbox "Áp dụng từ năm học" thay đổi
+        /// </summary>
+        private void ChkApDungTuNamHoc_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkApDungTuNamHoc != null && cbNamHocBatDau != null && chkApDungTatCaKhoi != null)
+            {
+                bool isChecked = chkApDungTuNamHoc.Checked;
+                cbNamHocBatDau.Enabled = isChecked;
+                chkApDungTatCaKhoi.Enabled = isChecked;
+                
+                if (!isChecked)
+                {
+                    cbNamHocBatDau.SelectedIndex = -1;
+                    chkApDungTatCaKhoi.Checked = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// ✅ DEBUG: Kiểm tra trạng thái button
+        /// </summary>
+        private void DebugButtonState(string stage)
+        {
+            StringBuilder debug = new StringBuilder();
+            debug.AppendLine($"=== DEBUG BUTTON STATE: {stage} ===");
+            
+            if (btnThemMoi != null)
+            {
+                debug.AppendLine($"btnThemMoi:");
+                debug.AppendLine($"  - IsNull: {btnThemMoi == null}");
+                debug.AppendLine($"  - Visible: {btnThemMoi.Visible}");
+                debug.AppendLine($"  - Enabled: {btnThemMoi.Enabled}");
+                debug.AppendLine($"  - Location: {btnThemMoi.Location}");
+                debug.AppendLine($"  - Size: {btnThemMoi.Size}");
+                debug.AppendLine($"  - Parent: {btnThemMoi.Parent?.Name ?? "NULL"}");
+                debug.AppendLine($"  - HasPermission(CREATE): {PermissionHelper.HasPermission(PermissionHelper.QLMONHOC, PermissionHelper.CREATE)}");
+            }
+            else
+            {
+                debug.AppendLine("btnThemMoi: NULL!");
+            }
+            
+            if (btnXoaMoi != null)
+            {
+                debug.AppendLine($"btnXoaMoi:");
+                debug.AppendLine($"  - IsNull: {btnXoaMoi == null}");
+                debug.AppendLine($"  - Visible: {btnXoaMoi.Visible}");
+                debug.AppendLine($"  - Enabled: {btnXoaMoi.Enabled}");
+                debug.AppendLine($"  - Location: {btnXoaMoi.Location}");
+                debug.AppendLine($"  - Size: {btnXoaMoi.Size}");
+                debug.AppendLine($"  - Parent: {btnXoaMoi.Parent?.Name ?? "NULL"}");
+                debug.AppendLine($"  - HasPermission(DELETE): {PermissionHelper.HasPermission(PermissionHelper.QLMONHOC, PermissionHelper.DELETE)}");
+            }
+            else
+            {
+                debug.AppendLine("btnXoaMoi: NULL!");
+            }
+            
+            if (panelButtons != null)
+            {
+                debug.AppendLine($"panelButtons:");
+                debug.AppendLine($"  - Visible: {panelButtons.Visible}");
+                debug.AppendLine($"  - Enabled: {panelButtons.Enabled}");
+                debug.AppendLine($"  - Size: {panelButtons.Size}");
+                debug.AppendLine($"  - Controls.Count: {panelButtons.Controls.Count}");
+                debug.AppendLine($"  - Contains btnThemMoi: {panelButtons.Controls.Contains(btnThemMoi)}");
+                debug.AppendLine($"  - Contains btnXoaMoi: {panelButtons.Controls.Contains(btnXoaMoi)}");
+            }
+            else
+            {
+                debug.AppendLine("panelButtons: NULL!");
+            }
+            
+            debug.AppendLine("=====================================");
+            
+            // Ghi vào Console và hiển thị MessageBox
+            Console.WriteLine(debug.ToString());
+            System.Diagnostics.Debug.WriteLine(debug.ToString());
+        }
+
+        /// <summary>
+        /// Helper class cho ComboBox items
+        /// </summary>
+        private class ComboBoxItem
+        {
+            public string Text { get; set; }
+            public object Value { get; set; }
+
+            public override string ToString()
+            {
+                return Text;
+            }
         }
     }
 }

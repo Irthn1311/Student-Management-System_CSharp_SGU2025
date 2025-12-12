@@ -308,3 +308,37 @@ AFTER MaLopDuocDuyet;
 -- Thêm index để tối ưu tìm kiếm (nếu cần)
 -- ALTER TABLE YeuCauChuyenLop ADD INDEX idx_duongdanpdf (DuongDanPDF(255));
 
+-- =====================================================================
+-- MIGRATION: MONHOC_NAMHOC_KHOI TABLE (Populate data)
+-- =====================================================================
+-- Lưu ý: Bảng MonHoc_NamHoc_Khoi đã được tạo trong 01_schema.sql
+-- Cột NamHocBatDau đã được tạo trong 01_schema.sql
+-- Phần này chỉ populate dữ liệu cho bảng MonHoc_NamHoc_Khoi
+
+-- Populate MonHoc_NamHoc_Khoi with existing subjects for all years and grades
+-- This ensures backward compatibility - all existing subjects are available for all years/grades
+INSERT INTO MonHoc_NamHoc_Khoi (MaMonHoc, MaNamHoc, MaKhoi)
+SELECT DISTINCT 
+    mh.MaMonHoc,
+    nh.MaNamHoc,
+    kl.MaKhoi
+FROM MonHoc mh
+CROSS JOIN NamHoc nh
+CROSS JOIN KhoiLop kl
+WHERE NOT EXISTS (
+    SELECT 1 FROM MonHoc_NamHoc_Khoi mhnk
+    WHERE mhnk.MaMonHoc = mh.MaMonHoc
+    AND mhnk.MaNamHoc = nh.MaNamHoc
+    AND mhnk.MaKhoi = kl.MaKhoi
+);
+
+-- Set NamHocBatDau for existing subjects to the earliest year in database
+UPDATE MonHoc mh
+SET mh.NamHocBatDau = (
+    SELECT MIN(nh.MaNamHoc)
+    FROM NamHoc nh
+)
+WHERE mh.NamHocBatDau IS NULL;
+
+SELECT 'Migration and indexes completed successfully' AS Status;
+

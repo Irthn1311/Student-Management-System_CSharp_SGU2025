@@ -22,6 +22,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private PhanCongGiangDayBUS phanCongBUS;
         private GiaoVienBUS giaoVienBUS;
         private MonHocBUS monHocBUS;
+        private MonHoc_NamHoc_KhoiBUS monHocNamHocKhoiBUS;
         private LopHocBUS lopHocBUS;
         private HocKyBUS hocKyBUS;
         
@@ -34,6 +35,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             phanCongBUS = new PhanCongGiangDayBUS();
             giaoVienBUS = new GiaoVienBUS();
             monHocBUS = new MonHocBUS();
+            monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
             lopHocBUS = new LopHocBUS();
             hocKyBUS = new HocKyBUS();
         }
@@ -58,6 +60,81 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 MessageBox.Show($"Lỗi khi tải dữ liệu: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Load danh sách môn học vào filter ComboBox (filter theo năm học và khối nếu có)
+        /// </summary>
+        private void LoadMonHocFilter()
+        {
+            try
+            {
+                cbMonHoc.Items.Clear();
+                cbMonHoc.Items.Add(new ComboBoxItem { Text = "Tất cả môn", Value = null });
+
+                // Lấy năm học từ học kỳ đã chọn (nếu có)
+                int? maHocKy = GetSelectedHocKyId();
+                string maNamHoc = null;
+                int? maKhoi = null;
+
+                if (maHocKy.HasValue)
+                {
+                    var hocKy = hocKyBUS.LayHocKyTheoMa(maHocKy.Value);
+                    if (hocKy != null && !string.IsNullOrEmpty(hocKy.MaNamHoc))
+                    {
+                        maNamHoc = hocKy.MaNamHoc;
+                    }
+                }
+
+                // Lấy khối từ filter khối (nếu có)
+                if (cbKhoi != null && cbKhoi.SelectedIndex > 0)
+                {
+                    string khoiText = cbKhoi.SelectedItem?.ToString() ?? "";
+                    if (khoiText.Contains("Khối "))
+                    {
+                        if (int.TryParse(khoiText.Replace("Khối ", ""), out int khoi))
+                        {
+                            maKhoi = khoi;
+                        }
+                    }
+                }
+
+                // Load môn học theo năm học và khối (nếu có)
+                List<MonHocDTO> dsMonHoc;
+                if (!string.IsNullOrEmpty(maNamHoc) && maKhoi.HasValue)
+                {
+                    dsMonHoc = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHocKhoi(maNamHoc, maKhoi.Value);
+                }
+                else if (!string.IsNullOrEmpty(maNamHoc))
+                {
+                    dsMonHoc = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHoc(maNamHoc);
+                }
+                else
+                {
+                    // Nếu không có năm học, load tất cả môn học
+                    dsMonHoc = monHocBUS.DocDSMH();
+                }
+
+                if (dsMonHoc != null && dsMonHoc.Count > 0)
+                {
+                    foreach (var mh in dsMonHoc.OrderBy(m => m.tenMon))
+                    {
+                        cbMonHoc.Items.Add(new ComboBoxItem { Text = mh.tenMon, Value = mh.maMon });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Fallback: Load tất cả môn học nếu có lỗi
+                var dsMonHoc = monHocBUS.DocDSMH();
+                if (dsMonHoc != null && dsMonHoc.Count > 0)
+                {
+                    foreach (var mh in dsMonHoc.OrderBy(m => m.tenMon))
+                    {
+                        cbMonHoc.Items.Add(new ComboBoxItem { Text = mh.tenMon, Value = mh.maMon });
+                    }
+                }
             }
         }
 
@@ -197,14 +274,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 cbMonHoc.Items.Clear();
                 cbMonHoc.Items.Add(new ComboBoxItem { Text = "Tất cả môn", Value = null });
-                var dsMonHoc = monHocBUS.DocDSMH();
-                if (dsMonHoc != null && dsMonHoc.Count > 0)
-                {
-                    foreach (var mh in dsMonHoc.OrderBy(m => m.tenMon))
-                    {
-                        cbMonHoc.Items.Add(new ComboBoxItem { Text = mh.tenMon, Value = mh.maMon });
-                    }
-                }
+                
+                // Load subjects based on selected semester/year and grade (if any)
+                LoadMonHocFilter();
+                
                 cbMonHoc.SelectedIndex = 0;
                 cbMonHoc.SelectedIndexChanged += FilterChanged;
             }
@@ -365,6 +438,14 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     {
                         LoadLopFilter();
                     }
+                    
+                    // Reload môn học filter khi khối thay đổi
+                    LoadMonHocFilter();
+                }
+                else if (sender == cbHocKyNamHoc)
+                {
+                    // Reload môn học filter khi học kỳ/năm học thay đổi
+                    LoadMonHocFilter();
                 }
 
                 int? maHocKy = GetSelectedHocKyId();

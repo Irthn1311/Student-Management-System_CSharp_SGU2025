@@ -103,6 +103,13 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Utils
             if (button == null) return;
 
             bool hasPermission = HasPermission(maChucNang, hanhDong);
+            
+            // ✅ TẠM THỜI: Cho phép button luôn hiển thị, chỉ disable khi không có quyền
+            // Bỏ comment dòng này nếu muốn button luôn hiển thị (chỉ disable)
+            // button.Visible = true;
+            // button.Enabled = hasPermission;
+            
+            // Code gốc: Ẩn button nếu không có quyền
             button.Visible = hasPermission;
             button.Enabled = hasPermission;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
 using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.BUS.Services;
 using Student_Management_System_CSharp_SGU2025.DTO;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
@@ -311,7 +312,26 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
             {
                 Console.WriteLine("Bắt đầu load môn học...");
 
-                List<MonHocDTO> danhSachMH = themDiemBUS.GetDanhSachMonHoc();
+                List<MonHocDTO> danhSachMH;
+
+                // ✅ Filter môn học theo học kỳ và lớp (nếu có)
+                if (cbHocKy.SelectedIndex > 0 && cbLop.SelectedIndex > 0)
+                {
+                    var hocKyItem = cbHocKy.SelectedItem;
+                    var valueProperty = hocKyItem.GetType().GetProperty("Value");
+                    int maHocKy = Convert.ToInt32(valueProperty.GetValue(hocKyItem));
+                    
+                    int maLop = Convert.ToInt32(cbLop.SelectedValue);
+                    
+                    // Lấy danh sách môn học hợp lệ cho lớp và học kỳ
+                    var monHocFilterService = new MonHocFilterService();
+                    danhSachMH = monHocFilterService.GetSubjectsForSemesterAndClass(maHocKy, maLop);
+                }
+                else
+                {
+                    // Nếu chưa chọn đủ, load tất cả môn học
+                    danhSachMH = themDiemBUS.GetDanhSachMonHoc();
+                }
 
                 Console.WriteLine($"Đã lấy {danhSachMH?.Count ?? 0} môn học");
 
@@ -365,6 +385,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                         int maHocKy = Convert.ToInt32(valueProperty.GetValue(hocKyItem));
                         LoadDanhSachHocSinh(maLop, maHocKy);
                         cbHocSinh.Enabled = true;
+                        
+                        // ✅ Reload môn học khi lớp thay đổi (để filter theo lớp và học kỳ)
+                        LoadDanhSachMonHoc();
                     }
                 }
                 else
