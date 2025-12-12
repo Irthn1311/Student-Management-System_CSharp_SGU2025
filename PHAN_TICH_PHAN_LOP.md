@@ -1083,7 +1083,306 @@ foreach (var chuCai in danhSachChuCai) // Sắp xếp A-Z, sau đó ký tự đ�
 
 ---
 
-## 5. KẾT LUẬN
+## 5. THUẬT TOÁN ĐƯỢC SỬ DỤNG TRONG PHÂN LỚP TỰ ĐỘNG
+
+### 5.1. Tổng quan thuật toán
+
+Phân lớp tự động sử dụng **nhiều thuật toán** kết hợp để đảm bảo phân lớp công bằng và cân bằng sĩ số:
+
+1. **Thuật toán tính điểm trung bình** (Weighted Average)
+2. **Thuật toán xét điều kiện lên lớp** (Rule-based Decision)
+3. **Thuật toán tìm lớp ít học sinh nhất** (Greedy - Minimum Selection)
+4. **Thuật toán nhóm theo chữ cái** (Grouping Algorithm)
+5. **Thuật toán phân đều** (Round-robin Distribution)
+
+---
+
+### 5.2. Thuật toán 1: Tính điểm trung bình cả năm (Weighted Average)
+
+**Vị trí code**: `PhanLopTuDongBLL.cs` - **Dòng 213-216**
+
+**Thuật toán**:
+
+```csharp
+double dtbHK1 = diemHK1.Average(d => d.DiemTrungBinh ?? 0);
+double dtbHK2 = diemHK2.Average(d => d.DiemTrungBinh ?? 0);
+double dtbCaNam = (dtbHK1 * 1 + dtbHK2 * 2) / 3.0; // HK2 hệ số 2
+```
+
+**Công thức**:
+
+```
+ĐTB cả năm = (ĐTB HK1 × 1 + ĐTB HK2 × 2) / 3
+```
+
+**Giải thích**:
+
+- HK1 có hệ số 1
+- HK2 có hệ số 2 (quan trọng hơn)
+- Tổng hệ số = 3
+
+**Ví dụ**:
+
+- ĐTB HK1 = 6.5, ĐTB HK2 = 7.0
+- ĐTB cả năm = (6.5 × 1 + 7.0 × 2) / 3 = 20.5 / 3 = 6.83
+
+**Độ phức tạp**: O(n) với n là số môn học
+
+---
+
+### 5.3. Thuật toán 2: Xét hạnh kiểm cả năm (Minimum Selection)
+
+**Vị trí code**: `PhanLopTuDongBLL.cs` - **Dòng 220-229**
+
+**Thuật toán**:
+
+```csharp
+string[] thuTuHanhKiem = { "Yếu", "Trung Bình", "Khá", "Tốt" };
+int indexHK1 = Array.IndexOf(thuTuHanhKiem, hanhKiemHK1.XepLoai);
+int indexHK2 = Array.IndexOf(thuTuHanhKiem, hanhKiemHK2.XepLoai);
+int indexMin = Math.Min(indexHK1, indexHK2);
+string hanhKiemCaNam = thuTuHanhKiem[indexMin];
+```
+
+**Logic**:
+
+- Chuyển hạnh kiểm thành index (Yếu=0, Trung Bình=1, Khá=2, Tốt=3)
+- Hạnh kiểm cả năm = Hạnh kiểm có index thấp hơn (tức là xấu hơn)
+
+**Ví dụ**:
+
+- HK1 = "Khá" (index=2), HK2 = "Tốt" (index=3)
+- indexMin = min(2, 3) = 2
+- Hạnh kiểm cả năm = "Khá"
+
+**Độ phức tạp**: O(1)
+
+---
+
+### 5.4. Thuật toán 3: Đếm môn Kém và Yếu (Grouping & Counting)
+
+**Vị trí code**: `PhanLopTuDongBLL.cs` - **Dòng 233-247**
+
+**Thuật toán**:
+
+```csharp
+var diemTheoMon = tatCaDiemCaNam
+    .GroupBy(d => d.MaMonHoc)
+    .Select(g => new
+    {
+        MaMon = g.Key,
+        DiemTBMon = g.Average(d => d.DiemTrungBinh ?? 0)
+    })
+    .ToList();
+
+int soMonKem = diemTheoMon.Count(m => m.DiemTBMon < 3.5);
+int soMonYeu = diemTheoMon.Count(m => m.DiemTBMon >= 3.5 && m.DiemTBMon < 5.0);
+```
+
+**Các bước**:
+
+1. **GroupBy**: Nhóm điểm theo môn học
+2. **Select**: Tính ĐTB môn từ tất cả điểm của môn đó
+3. **Count**: Đếm số môn Kém (< 3.5) và Yếu (3.5-5.0)
+
+**Độ phức tạp**: O(n) với n là số điểm
+
+---
+
+### 5.5. Thuật toán 4: Xét điều kiện lên lớp (Rule-based Decision)
+
+**Vị trí code**: `PhanLopTuDongBLL.cs` - **Dòng 251-281**
+
+**Thuật toán**: Sử dụng **4 quy tắc** để quyết định:
+
+```csharp
+bool duDieuKienLenLop = true;
+
+// Quy tắc 1: ĐTB cả năm >= 5.0
+if (dtbCaNam < 5.0) duDieuKienLenLop = false;
+
+// Quy tắc 2: Hạnh kiểm >= Trung Bình
+if (indexMin < 1) duDieuKienLenLop = false;
+
+// Quy tắc 3: Không có môn Kém
+if (soMonKem > 0) duDieuKienLenLop = false;
+
+// Quy tắc 4: Tối đa 2 môn Yếu
+if (soMonYeu > 2) duDieuKienLenLop = false;
+```
+
+**Logic**: Tất cả 4 điều kiện phải thỏa mãn → Mới đủ điều kiện lên lớp
+
+**Độ phức tạp**: O(1)
+
+---
+
+### 5.6. Thuật toán 5: Tìm lớp có ít học sinh nhất (Greedy - Minimum Selection)
+
+**Vị trí code**: `PhanLopTuDongBLL.cs` - **Dòng 396-408** (NEXT_YEAR), **Dòng 737-740** (FIRST_TIME)
+
+**Thuật toán**:
+
+```csharp
+// Đếm số học sinh trong từng lớp
+var soLuongHocSinhTrongLop = new Dictionary<int, int>();
+// ... đếm từ database và danh sách tạm ...
+
+// Tìm lớp có ít học sinh nhất
+LopDTO lopPhuHop = null;
+int soHocSinhItNhat = int.MaxValue;
+
+foreach (var lop in dsLopKhoiMoi)
+{
+    int soHS = soLuongHocSinhTrongLop.ContainsKey(lop.MaLop)
+        ? soLuongHocSinhTrongLop[lop.MaLop] : 0;
+    if (soHS < soHocSinhItNhat)
+    {
+        soHocSinhItNhat = soHS;
+        lopPhuHop = lop;
+    }
+}
+```
+
+**Hoặc sử dụng LINQ** (FIRST_TIME):
+
+```csharp
+var lopPhuHop = dsLopKhoi10
+    .OrderBy(lop => soLuongHocSinhTrongLop.ContainsKey(lop.MaLop)
+        ? soLuongHocSinhTrongLop[lop.MaLop] : 0)
+    .ThenBy(lop => lop.MaLop) // Nếu bằng nhau, ưu tiên MaLop nhỏ hơn
+    .First();
+```
+
+**Logic**:
+
+- Duyệt qua tất cả lớp trong khối
+- Tìm lớp có số học sinh ít nhất
+- Nếu nhiều lớp có cùng số học sinh → Ưu tiên lớp có MaLop nhỏ hơn
+
+**Mục đích**: Cân bằng sĩ số giữa các lớp
+
+**Độ phức tạp**: O(m) với m là số lớp trong khối
+
+---
+
+### 5.7. Thuật toán 6: Nhóm học sinh theo chữ cái (Grouping Algorithm)
+
+**Vị trí code**: `PhanLopTuDongBLL.cs` - **Dòng 508-532** (NEXT_YEAR), **Dòng 680-706** (FIRST_TIME)
+
+**Thuật toán**:
+
+```csharp
+var hocSinhTheoChuCai = new Dictionary<char, List<HocSinhDTO>>();
+
+foreach (var hs in hocSinhCanPhanLop)
+{
+    char chuCaiDau = '?';
+    if (!string.IsNullOrWhiteSpace(hs.HoTen))
+    {
+        string tenTrimmed = hs.HoTen.Trim();
+        if (tenTrimmed.Length > 0)
+        {
+            chuCaiDau = char.ToUpper(tenTrimmed[0]);
+            if (!char.IsLetter(chuCaiDau))
+                chuCaiDau = '?'; // Ký tự đặc biệt
+        }
+    }
+
+    if (!hocSinhTheoChuCai.ContainsKey(chuCaiDau))
+        hocSinhTheoChuCai[chuCaiDau] = new List<HocSinhDTO>();
+    hocSinhTheoChuCai[chuCaiDau].Add(hs);
+}
+```
+
+**Các bước**:
+
+1. Lấy chữ cái đầu tiên của tên (bỏ qua khoảng trắng)
+2. Chuyển thành chữ hoa
+3. Nếu không phải chữ cái → Gán '?' (nhóm ký tự đặc biệt)
+4. Nhóm học sinh vào Dictionary theo chữ cái
+
+**Ví dụ**:
+
+- "Nguyễn Văn A" → Nhóm 'N'
+- "Trần Thị B" → Nhóm 'T'
+- "123 Học Sinh" → Nhóm '?'
+
+**Độ phức tạp**: O(n) với n là số học sinh
+
+---
+
+### 5.8. Thuật toán 7: Phân đều học sinh vào các lớp (Round-robin với Greedy)
+
+**Vị trí code**: `PhanLopTuDongBLL.cs` - **Dòng 547-606** (NEXT_YEAR), **Dòng 724-785** (FIRST_TIME)
+
+**Thuật toán**:
+
+```csharp
+// Sắp xếp chữ cái: A-Z trước, ký tự đặc biệt sau
+var danhSachChuCai = hocSinhTheoChuCai.Keys
+    .OrderBy(c => c == '?' ? 999 : (int)c)
+    .ToList();
+
+foreach (var chuCai in danhSachChuCai)
+{
+    List<HocSinhDTO> dsHSTheoChuCai = hocSinhTheoChuCai[chuCai];
+
+    foreach (var hs in dsHSTheoChuCai)
+    {
+        // Tìm lớp có ít học sinh nhất
+        var lopPhuHop = dsLopKhoi10
+            .OrderBy(lop => soLuongHocSinhTrongLop.ContainsKey(lop.MaLop)
+                ? soLuongHocSinhTrongLop[lop.MaLop] : 0)
+            .ThenBy(lop => lop.MaLop)
+            .First();
+
+        // Phân lớp cho cả HK1 và HK2
+        phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy);
+        phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy);
+
+        // Cập nhật số lượng
+        soLuongHocSinhTrongLop[lopPhuHop.MaLop] += 2;
+    }
+}
+```
+
+**Logic**:
+
+1. Sắp xếp chữ cái: A-Z trước, '?' sau
+2. Với mỗi nhóm chữ cái:
+   - Với mỗi học sinh trong nhóm:
+     - Tìm lớp có ít học sinh nhất (Greedy)
+     - Phân học sinh vào lớp đó
+     - Cập nhật số lượng học sinh của lớp
+
+**Đặc điểm**:
+
+- **Greedy**: Luôn chọn lớp có ít học sinh nhất tại thời điểm hiện tại
+- **Dynamic**: Số lượng học sinh được cập nhật sau mỗi lần phân lớp
+- **Cân bằng**: Đảm bảo sĩ số các lớp gần bằng nhau
+
+**Độ phức tạp**: O(n × m) với n là số học sinh, m là số lớp
+
+---
+
+### 5.9. Tóm tắt thuật toán
+
+| Thuật toán                 | Vị trí code           | Độ phức tạp | Mục đích                 |
+| -------------------------- | --------------------- | ----------- | ------------------------ |
+| Weighted Average           | Dòng 213-216          | O(n)        | Tính ĐTB cả năm          |
+| Minimum Selection          | Dòng 220-229          | O(1)        | Xét hạnh kiểm cả năm     |
+| Grouping & Counting        | Dòng 233-247          | O(n)        | Đếm môn Kém/Yếu          |
+| Rule-based Decision        | Dòng 251-281          | O(1)        | Xét điều kiện lên lớp    |
+| Greedy - Minimum Selection | Dòng 396-408, 737-740 | O(m)        | Tìm lớp ít học sinh nhất |
+| Grouping Algorithm         | Dòng 508-532, 680-706 | O(n)        | Nhóm theo chữ cái        |
+| Round-robin với Greedy     | Dòng 547-606, 724-785 | O(n × m)    | Phân đều vào các lớp     |
+
+**Tổng độ phức tạp**: O(n × m) với n là số học sinh, m là số lớp
+
+---
+
+## 6. KẾT LUẬN
 
 Phần **Phân lớp** là một module quan trọng với 4 nút chức năng chính:
 

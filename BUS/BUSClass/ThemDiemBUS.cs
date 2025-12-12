@@ -153,18 +153,18 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         }
 
         /// <summary>
-        /// Sửa điểm cho học sinh (chỉ sửa điểm TX, giữ nguyên GK và CK)
+        /// Sửa điểm cho học sinh (cho phép sửa cả 3 loại điểm)
         /// </summary>
         public bool SuaDiem(string maHocSinh, int maMonHoc, int maHocKy,
-                           float diemTX, float? diemGK, float? diemCK)
+            float? diemTX, float? diemGK, float? diemCK)
         {
             try
             {
-                // Tính lại điểm trung bình
+                // Tính điểm trung bình nếu có đủ 3 điểm
                 float? diemTB = null;
-                if (diemGK.HasValue && diemCK.HasValue)
+                if (diemTX.HasValue && diemGK.HasValue && diemCK.HasValue)
                 {
-                    diemTB = (diemTX + diemGK.Value * 2 + diemCK.Value * 3) / 6;
+                    diemTB = (diemTX.Value + diemGK.Value * 2 + diemCK.Value * 3) / 6;
                     diemTB = (float)Math.Round(diemTB.Value, 1);
                 }
 

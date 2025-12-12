@@ -278,6 +278,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
                         tb.NgayTao.ToString("dd/MM/yyyy HH:mm"),
                         tb.TenNguoiTao ?? tb.MaNguoiTao,
                         ngayHetHan,
+                        tb.MaNguoiTao ?? "", // ✅ Lưu mã người tạo để kiểm tra quyền
                         "" // Thao tác
                     );
 
@@ -458,6 +459,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
             tableThongBao.Columns.Add("NgayTao", "Ngày tạo");
             tableThongBao.Columns.Add("NguoiTao", "Người tạo");
             tableThongBao.Columns.Add("NgayHetHan", "Hết hạn");
+            tableThongBao.Columns.Add("MaNguoiTao", "Mã người tạo"); // ✅ Cột ẩn để kiểm tra quyền
             tableThongBao.Columns.Add("ThaoTac", "Thao tác");
 
             // Căn chỉnh
@@ -471,6 +473,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
 
             // Kích thước
             tableThongBao.Columns["MaThongBao"].Visible = false;
+            tableThongBao.Columns["MaNguoiTao"].Visible = false; // ✅ Ẩn cột mã người tạo
             tableThongBao.Columns["TieuDe"].FillWeight = 20; tableThongBao.Columns["TieuDe"].MinimumWidth = 150;
             tableThongBao.Columns["NoiDung"].FillWeight = 25; tableThongBao.Columns["NoiDung"].MinimumWidth = 180;
             tableThongBao.Columns["LoaiThongBao"].FillWeight = 8; tableThongBao.Columns["LoaiThongBao"].MinimumWidth = 90;
@@ -629,38 +632,28 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
             {
                 e.PaintBackground(e.ClipBounds, true);
 
-                // ✅ Lấy permission từ Tag - Sử dụng cách an toàn hơn (không dùng dynamic)
-                bool canUpdate = true; // Mặc định true
-                bool canDelete = true; // Mặc định true
+                // ✅ Kiểm tra quyền UPDATE và DELETE
+                bool hasUpdatePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.UPDATE);
+                bool hasDeletePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.DELETE);
+                bool hasCreatePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.CREATE);
                 
-                if (tableThongBao.Tag != null)
+                // ✅ Lấy mã người tạo của thông báo trong hàng này
+                string maNguoiTao = "";
+                if (tableThongBao.Rows[e.RowIndex].Cells["MaNguoiTao"].Value != null)
                 {
-                    // ✅ Sử dụng reflection thay vì dynamic để tránh RuntimeBinderException
-                    try
-                    {
-                        var tagType = tableThongBao.Tag.GetType();
-                        var canUpdateProp = tagType.GetProperty("CanUpdate");
-                        var canDeleteProp = tagType.GetProperty("CanDelete");
-                        
-                        if (canUpdateProp != null)
-                        {
-                            var value = canUpdateProp.GetValue(tableThongBao.Tag);
-                            if (value is bool) canUpdate = (bool)value;
-                        }
-                        
-                        if (canDeleteProp != null)
-                        {
-                            var value = canDeleteProp.GetValue(tableThongBao.Tag);
-                            if (value is bool) canDelete = (bool)value;
-                        }
-                    }
-                    catch
-                    {
-                        // Ignore errors - sử dụng giá trị mặc định
-                        canUpdate = true;
-                        canDelete = true;
-                    }
+                    maNguoiTao = tableThongBao.Rows[e.RowIndex].Cells["MaNguoiTao"].Value.ToString();
                 }
+                
+                string currentUser = SessionManager.TenDangNhap ?? "";
+                bool isOwnNotification = !string.IsNullOrEmpty(maNguoiTao) && 
+                                        !string.IsNullOrEmpty(currentUser) && 
+                                        maNguoiTao.Equals(currentUser, StringComparison.OrdinalIgnoreCase);
+                
+                // ✅ Logic phân quyền:
+                // - Nếu có quyền UPDATE/DELETE → được sửa/xóa tất cả thông báo
+                // - Nếu CHỈ có quyền CREATE → chỉ được sửa/xóa thông báo của chính mình
+                bool canUpdate = hasUpdatePermission || (hasCreatePermission && !hasUpdatePermission && isOwnNotification);
+                bool canDelete = hasDeletePermission || (hasCreatePermission && !hasDeletePermission && isOwnNotification);
 
                 // Lấy icon từ resources hoặc tạo icon
                 Image viewIcon = Properties.Resources.icon_eye ?? CreateSimpleIcon(Color.FromArgb(59, 130, 246)); // Xanh dương
@@ -871,15 +864,35 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
                 // Sửa thông báo
                 try
                 {
-                    // ✅ Kiểm tra quyền chỉnh sửa bằng CheckDataGridIconPermission
-                    if (!PermissionHelper.CheckDataGridIconPermission(dgv, "edit", "Quản lý thông báo"))
-                        return;
-
+                    // ✅ Kiểm tra quyền chỉnh sửa
+                    bool hasUpdatePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.UPDATE);
+                    bool hasCreatePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.CREATE);
+                    
                     // Lấy thông tin thông báo
                     var thongBao = thongBaoBUS.LayChiTietThongBao(maThongBao, SessionManager.TenDangNhap);
                     if (thongBao != null)
                     {
-                        // ✅ Người dùng có quyền UPDATE thì được sửa mọi thông báo (bỏ check MaNguoiTao)
+                        // ✅ Logic phân quyền:
+                        // - Nếu có quyền UPDATE → được sửa tất cả thông báo
+                        // - Nếu CHỈ có quyền CREATE → chỉ được sửa thông báo của chính mình
+                        bool canEdit = hasUpdatePermission;
+                        
+                        if (!canEdit && hasCreatePermission)
+                        {
+                            // Kiểm tra xem có phải thông báo của chính mình không
+                            string currentUser = SessionManager.TenDangNhap ?? "";
+                            canEdit = !string.IsNullOrEmpty(thongBao.MaNguoiTao) && 
+                                     !string.IsNullOrEmpty(currentUser) && 
+                                     thongBao.MaNguoiTao.Equals(currentUser, StringComparison.OrdinalIgnoreCase);
+                        }
+                        
+                        if (!canEdit)
+                        {
+                            MessageBox.Show("Bạn chỉ có thể chỉnh sửa thông báo do chính mình tạo!", "Thông báo",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                        
                         // Mở form chỉnh sửa
                         using (var frmSua = new FrmThemThongBao(thongBao))
                         {
@@ -907,24 +920,63 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
             else if (xClick >= deleteIconStartX && xClick < deleteIconEndX)
             {
                 // Xóa
-                if (!PermissionHelper.CheckDataGridIconPermission(dgv, "delete", "Quản lý thông báo"))
-                    return;
-
-                if (MessageBox.Show("Bạn có chắc muốn xóa thông báo này?", "Xác nhận xóa",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                try
                 {
-                    var result = thongBaoBUS.XoaThongBao(maThongBao, SessionManager.TenDangNhap);
-                    if (result.Success)
+                    // ✅ Kiểm tra quyền xóa
+                    bool hasDeletePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.DELETE);
+                    bool hasCreatePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.CREATE);
+                    
+                    // Lấy thông tin thông báo để kiểm tra người tạo
+                    var thongBao = thongBaoBUS.LayChiTietThongBao(maThongBao, SessionManager.TenDangNhap);
+                    if (thongBao == null)
                     {
-                        MessageBox.Show(result.Message, "Thành công",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadData();
+                        MessageBox.Show("Không tìm thấy thông báo!", "Thông báo",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
                     }
-                    else
+                    
+                    // ✅ Logic phân quyền:
+                    // - Nếu có quyền DELETE → được xóa tất cả thông báo
+                    // - Nếu CHỈ có quyền CREATE → chỉ được xóa thông báo của chính mình
+                    bool canDelete = hasDeletePermission;
+                    
+                    if (!canDelete && hasCreatePermission)
                     {
-                        MessageBox.Show(result.Message, "Lỗi",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Kiểm tra xem có phải thông báo của chính mình không
+                        string currentUser = SessionManager.TenDangNhap ?? "";
+                        canDelete = !string.IsNullOrEmpty(thongBao.MaNguoiTao) && 
+                                   !string.IsNullOrEmpty(currentUser) && 
+                                   thongBao.MaNguoiTao.Equals(currentUser, StringComparison.OrdinalIgnoreCase);
                     }
+                    
+                    if (!canDelete)
+                    {
+                        MessageBox.Show("Bạn chỉ có thể xóa thông báo do chính mình tạo!", "Thông báo",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    if (MessageBox.Show("Bạn có chắc muốn xóa thông báo này?", "Xác nhận xóa",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        var result = thongBaoBUS.XoaThongBao(maThongBao, SessionManager.TenDangNhap);
+                        if (result.Success)
+                        {
+                            MessageBox.Show(result.Message, "Thành công",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LoadData();
+                        }
+                        else
+                        {
+                            MessageBox.Show(result.Message, "Lỗi",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi xóa thông báo: " + ex.Message, "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

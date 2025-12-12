@@ -66,7 +66,6 @@
             this.guna2Panel2 = new Guna.UI2.WinForms.Guna2Panel();
             this.lblLopHoc = new System.Windows.Forms.Label();
             this.lblDemLopHoc = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.pbLopHocIcon = new Guna.UI2.WinForms.Guna2PictureBox();
             this.guna2Panel3 = new Guna.UI2.WinForms.Guna2Panel();
             this.lblNamHoc = new System.Windows.Forms.Label();
@@ -539,7 +538,6 @@
             this.guna2Panel2.BorderThickness = 1;
             this.guna2Panel2.Controls.Add(this.lblLopHoc);
             this.guna2Panel2.Controls.Add(this.lblDemLopHoc);
-            this.guna2Panel2.Controls.Add(this.label6);
             this.guna2Panel2.Controls.Add(this.pbLopHocIcon);
             this.guna2Panel2.FillColor = System.Drawing.Color.White;
             this.guna2Panel2.Location = new System.Drawing.Point(591, 21);
@@ -573,18 +571,6 @@
             this.lblDemLopHoc.Size = new System.Drawing.Size(54, 42);
             this.lblDemLopHoc.TabIndex = 2;
             this.lblDemLopHoc.Text = "36";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Segoe UI Semibold", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
-            this.label6.Location = new System.Drawing.Point(222, 38);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(28, 23);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "36";
-            this.label6.Visible = false;
             // 
             // pbLopHocIcon
             // 
@@ -825,7 +811,6 @@
         private Guna.UI2.WinForms.Guna2Panel guna2Panel2;
         private System.Windows.Forms.Label lblLopHoc;
         private System.Windows.Forms.Label lblDemLopHoc;
-        private System.Windows.Forms.Label label6;
         private Guna.UI2.WinForms.Guna2PictureBox pbLopHocIcon;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel3;
         private System.Windows.Forms.Label lblNamHoc;

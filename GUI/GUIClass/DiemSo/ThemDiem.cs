@@ -48,7 +48,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                                maHocKy, tenHocKy, diemTX, diemGK, diemCK);
             };
         }
-
         private void LoadDataForEdit(string maHocSinh, string hoTen, int? maLop, string tenLop,
                                int maMonHoc, string tenMonHoc, int maHocKy, string tenHocKy,
                                float? diemTX, float? diemGK, float? diemCK)
@@ -166,14 +165,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                 cbHocSinh.Enabled = false;
                 cbHocKy.Enabled = false;
                 cbMonHoc.Enabled = false;
-                txtDiemGK.Enabled = false;
-                txtDiemCK.Enabled = false;
-                txtDiemGK.ReadOnly = true;
-                txtDiemCK.ReadOnly = true;
 
-                // Chỉ cho sửa txtDiemTX
+                // ✅ CHO PHÉP SỬA CẢ 3 ĐIỂM
                 txtDiemTX.Enabled = true;
                 txtDiemTX.ReadOnly = false;
+                txtDiemGK.Enabled = true;
+                txtDiemGK.ReadOnly = false;
+                txtDiemCK.Enabled = true;
+                txtDiemCK.ReadOnly = false;
+
                 txtDiemTX.Focus();
                 btnLuu.Enabled = true;
             }
@@ -648,51 +648,69 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
             {
                 if (isEditMode)
                 {
-                    // Chế độ sửa - chỉ sửa điểm TX
-                    if (string.IsNullOrWhiteSpace(txtDiemTX.Text))
+                    // ✅ CHẾ ĐỘ SỬA - CHO PHÉP SỬA CẢ 3 ĐIỂM
+                    // Kiểm tra ít nhất phải có 1 điểm
+                    if (string.IsNullOrWhiteSpace(txtDiemTX.Text) &&
+                        string.IsNullOrWhiteSpace(txtDiemGK.Text) &&
+                        string.IsNullOrWhiteSpace(txtDiemCK.Text))
                     {
-                        MessageBox.Show("Vui lòng nhập điểm thường xuyên!", "Thông báo",
+                        MessageBox.Show("Vui lòng nhập ít nhất một loại điểm!", "Thông báo",
                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        txtDiemTX.Focus();
                         return;
                     }
 
-                    float diemTX;
-                    if (!float.TryParse(txtDiemTX.Text, out diemTX))
+                    // Parse các điểm
+                    float? diemTX = null;
+                    float? diemGK = null;
+                    float? diemCK = null;
+
+                    if (!string.IsNullOrWhiteSpace(txtDiemTX.Text))
                     {
-                        MessageBox.Show("Điểm thường xuyên không hợp lệ!", "Lỗi",
-                                       MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        if (!float.TryParse(txtDiemTX.Text, out float tx))
+                        {
+                            MessageBox.Show("Điểm thường xuyên không hợp lệ!", "Lỗi",
+                                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        diemTX = tx;
                     }
 
-                    if (!themDiemBUS.KiemTraDiemHopLe(diemTX))
+                    if (!string.IsNullOrWhiteSpace(txtDiemGK.Text))
+                    {
+                        if (!float.TryParse(txtDiemGK.Text, out float gk))
+                        {
+                            MessageBox.Show("Điểm giữa kỳ không hợp lệ!", "Lỗi",
+                                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        diemGK = gk;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(txtDiemCK.Text))
+                    {
+                        if (!float.TryParse(txtDiemCK.Text, out float ck))
+                        {
+                            MessageBox.Show("Điểm cuối kỳ không hợp lệ!", "Lỗi",
+                                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        diemCK = ck;
+                    }
+
+                    // Kiểm tra điểm hợp lệ (0-10)
+                    if (!themDiemBUS.KiemTraDiemHopLe(diemTX) ||
+                        !themDiemBUS.KiemTraDiemHopLe(diemGK) ||
+                        !themDiemBUS.KiemTraDiemHopLe(diemCK))
                     {
                         MessageBox.Show("Điểm phải nằm trong khoảng 0-10!", "Lỗi",
                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    // Lấy điểm GK và CK từ textbox (đã bị lock)
-                    float? diemGK = null;
-                    float? diemCK = null;
-
-                    if (!string.IsNullOrWhiteSpace(txtDiemGK.Text))
-                        diemGK = float.Parse(txtDiemGK.Text);
-
-                    if (!string.IsNullOrWhiteSpace(txtDiemCK.Text))
-                        diemCK = float.Parse(txtDiemCK.Text);
-
                     // Cập nhật điểm
                     bool success = themDiemBUS.SuaDiem(editMaHocSinh, editMaMonHoc, editMaHocKy,
                                                        diemTX, diemGK, diemCK);
 
-                    //if (success)
-                    //{
-                    //    MessageBox.Show("Cập nhật điểm thành công!", "Thông báo",
-                    //                   MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    //    this.DialogResult = DialogResult.OK;
-                    //    this.Close();
-                    //}
                     if (success)
                     {
                         MessageBox.Show("Cập nhật điểm thành công!", "Thông báo",
@@ -710,8 +728,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                 }
                 else
                 {
-
-
                     // Chế độ thêm mới
                     if (!IsAllComboboxSelected())
                     {
@@ -727,10 +743,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                         txtDiemTX.Focus();
                         return;
                     }
-
-                    //string maHocSinh = ((dynamic)cbHocSinh.SelectedItem).Value;
-                    //int maHocKy = ((dynamic)cbHocKy.SelectedItem).Value;
-                    //string maMon = ((dynamic)cbMonHoc.SelectedItem).Value;
 
                     string maHocSinh = ((dynamic)cbHocSinh.SelectedItem).Value.ToString();
                     int maHocKy = Convert.ToInt32(((dynamic)cbHocKy.SelectedItem).Value);
@@ -780,27 +792,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
 
                     if (success)
                     {
-
                         MessageBox.Show("Lưu điểm thành công!", "Thông báo",
                            MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         MaHocSinhVuaThem = maHocSinh; // Lưu mã học sinh
                         this.DialogResult = DialogResult.OK;
                         this.Close();
-
                     }
                     else
                     {
                         MessageBox.Show("Lưu điểm thất bại!", "Lỗi",
                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-
                 }
             }
             catch (Exception ex)
             {
-          
-
                 if (ex.Message == "DIEM_DA_DAY_DU")
                 {
                     string tenHS = ((dynamic)cbHocSinh.SelectedItem).Text;
@@ -828,7 +835,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                     MessageBox.Show("Lỗi khi lưu điểm: " + ex.Message, "Lỗi",
                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
             }
         }
 

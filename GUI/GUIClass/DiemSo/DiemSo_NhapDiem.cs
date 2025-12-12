@@ -161,55 +161,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         private void DiemSo_NhapDiem_Load(object sender, EventArgs e)
-        {
-            //isLoadingData = true;
-
-            //// Khởi tạo buttons
-            //InitializeButtons();
-
-            //// Trang trí tableNhapDiem
-            //ConfigureTableNhapDiem();
-
-            //// Trang trí tableXemBangDiem
-            //ConfigureTableXemBangDiem();
-
-            //statCardDiemTrungBinh.lbCardTitle.Text = "Điểm trung bình";
-            //statCardDiemCaoNhat.lbCardTitle.Text = "Điểm cao nhất";
-            //statCardDiemThapNhat.lbCardTitle.Text = "Điểm thấp nhất";
-            //statCardDaNhap.lbCardTitle.Text = "Đã Nhập";
-
-            //statCardDiemTrungBinh.lbCardNote.ForeColor = Color.FromArgb(22, 163, 74);
-            //statCardDiemCaoNhat.lbCardValue.ForeColor = Color.FromArgb(30, 136, 229);
-            //statCardDiemThapNhat.lbCardValue.ForeColor = Color.FromArgb(219, 39, 119);
-            //statCardDaNhap.lbCardValue.ForeColor = Color.FromArgb(22, 163, 74);
-            //statCardDaNhap.lbCardNote.ForeColor = Color.FromArgb(220, 38, 38);
-
-            //LoadComboBoxMonHoc();
-            //LoadComboBoxHocKy(); // Tự động load lớp, thống kê và filter cho tab Nhập Điểm
-            //LoadComboBoxHocKyBD(); // Tự động load lớp BD, bảng điểm và thống kê cho tab Xem Bảng Điểm
-
-            //tableXemBangDiem.CellClick += tableXemBangDiem_CellClick;
-            //txtSearch.TextChanged += txtSearch_TextChanged;
-            //txtSearch.KeyPress += txtSearch_KeyPress;
-            ////// Thêm dữ liệu mẫu vào tableXemBangDiem
-            ////LoadSampleDataXemBangDiem();
-
-            ////tableNhapDiem.ReadOnly = false;
-            //tableNhapDiem.CellClick += tableNhapDiem_CellClick;
-            //isLoadingData = false;
-
-            //// LoadThongKe() và ApplyFilter() đã được gọi trong LoadComboBoxHocKy()
-            //// LoadBangDiem() và LoadThongKe() đã được gọi trong LoadComboBoxHocKyBD()
-            //// Chỉ cần load lại thống kê theo tab đang active
-            //if (btnNhapDiem.FillColor == selectedColor)
-            //{
-            //    LoadThongKe(selectedMaHocKy);
-            //}
-            //else if (btnXemBangDiem.FillColor == selectedColor)
-            //{
-            //    LoadThongKe(selectedMaHocKyBD);
-            //}
-
+        {         
             //ApplyPermissions();
 
             isLoadingData = true;

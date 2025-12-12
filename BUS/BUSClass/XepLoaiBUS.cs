@@ -76,18 +76,21 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
         /// <summary>
         /// Lấy danh sách xếp loại kèm hạnh kiểm
+        /// TỐI ƯU: Sử dụng batch load để tránh N+1 query problem
         /// </summary>
         public List<XepLoaiDTO> LayDanhSachXepLoaiDayDu(int maHocKy, int? maLop = null)
         {
             // Lấy danh sách học lực
             List<XepLoaiDTO> dsXepLoai = xepLoaiDAO.GetDanhSachXepLoai(maHocKy, maLop);
 
+            // ✅ TỐI ƯU: Load tất cả hạnh kiểm một lần thay vì query từng học sinh
+            Dictionary<int, HanhKiemDTO> dictHanhKiem = hanhKiemDAO.LayDanhSachHanhKiemDictionary(maHocKy, maLop);
+
             // Bổ sung thông tin hạnh kiểm và xếp loại tổng kết
             foreach (var item in dsXepLoai)
             {
-                // Lấy hạnh kiểm
-                HanhKiemDTO hk = hanhKiemDAO.LayHanhKiem(item.MaHocSinh, maHocKy);
-                if (hk != null)
+                // Lấy hạnh kiểm từ dictionary (O(1) lookup)
+                if (dictHanhKiem.TryGetValue(item.MaHocSinh, out HanhKiemDTO hk) && hk != null)
                 {
                     item.HanhKiem = hk.XepLoai;
                 }
@@ -194,6 +197,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         /// <summary>
         /// Thống kê xếp loại tổng kết theo khối và học kỳ
         /// Kết hợp cả học lực và hạnh kiểm để tính xếp loại tổng kết
+        /// TỐI ƯU: Sử dụng batch load để tránh N+1 query problem
         /// </summary>
         public Dictionary<string, int> ThongKeXepLoaiTongKetTheoKhoi(int maHocKy, int maKhoi)
         {
@@ -211,20 +215,24 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 // Lấy danh sách học sinh có học lực theo khối
                 List<XepLoaiDTO> dsXepLoai = xepLoaiDAO.GetDanhSachXepLoaiTheoKhoi(maHocKy, maKhoi);
 
+                // ✅ TỐI ƯU: Load tất cả hạnh kiểm theo khối một lần thay vì query từng học sinh
+                Dictionary<int, HanhKiemDTO> dictHanhKiem = hanhKiemDAO.LayDanhSachHanhKiemDictionaryTheoKhoi(maHocKy, maKhoi);
+
                 // Với mỗi học sinh, lấy hạnh kiểm và tính xếp loại tổng kết
                 foreach (var item in dsXepLoai)
                 {
-                    // Lấy hạnh kiểm
-                    HanhKiemDTO hk = hanhKiemDAO.LayHanhKiem(item.MaHocSinh, maHocKy);
-
-                    // Chỉ tính xếp loại nếu có đầy đủ cả học lực và hạnh kiểm
-                    if (!string.IsNullOrEmpty(item.HocLuc) && hk != null && !string.IsNullOrEmpty(hk.XepLoai))
+                    // Lấy hạnh kiểm từ dictionary (O(1) lookup)
+                    if (dictHanhKiem.TryGetValue(item.MaHocSinh, out HanhKiemDTO hk) && hk != null && !string.IsNullOrEmpty(hk.XepLoai))
                     {
-                        string xepLoaiTongKet = TinhXepLoaiTongKet(item.HocLuc, hk.XepLoai);
-
-                        if (!string.IsNullOrEmpty(xepLoaiTongKet) && thongKe.ContainsKey(xepLoaiTongKet))
+                        // Chỉ tính xếp loại nếu có đầy đủ cả học lực và hạnh kiểm
+                        if (!string.IsNullOrEmpty(item.HocLuc))
                         {
-                            thongKe[xepLoaiTongKet]++;
+                            string xepLoaiTongKet = TinhXepLoaiTongKet(item.HocLuc, hk.XepLoai);
+
+                            if (!string.IsNullOrEmpty(xepLoaiTongKet) && thongKe.ContainsKey(xepLoaiTongKet))
+                            {
+                                thongKe[xepLoaiTongKet]++;
+                            }
                         }
                     }
                 }

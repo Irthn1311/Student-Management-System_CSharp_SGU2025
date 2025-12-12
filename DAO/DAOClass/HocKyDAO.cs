@@ -448,6 +448,65 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
         }
 
         /// <summary>
+        /// Lấy học kỳ mới nhất có dữ liệu xếp loại (có điểm số đầy đủ)
+        /// TỐI ƯU: Tìm trong một query duy nhất thay vì kiểm tra từng học kỳ
+        /// </summary>
+        public HocKyDTO LayHocKyMoiNhatCoXepLoai()
+        {
+            HocKyDTO hocKy = null;
+            MySqlConnection conn = null;
+
+            try
+            {
+                conn = ConnectionDatabase.GetConnection();
+                conn.Open();
+
+                string query = @"
+            SELECT DISTINCT hk.MaHocKy, hk.TenHocKy, hk.MaNamHoc, hk.TrangThai, hk.NgayBD, hk.NgayKT
+            FROM HocKy hk
+            INNER JOIN PhanLop pl ON pl.MaHocKy = hk.MaHocKy
+            INNER JOIN HocSinh hs ON hs.MaHocSinh = pl.MaHocSinh
+            INNER JOIN DiemSo ds ON ds.MaHocSinh = hs.MaHocSinh AND ds.MaHocKy = hk.MaHocKy
+            WHERE hs.TrangThai = 'Đang học'
+                AND ds.DiemTrungBinh IS NOT NULL
+            GROUP BY hk.MaHocKy, hk.TenHocKy, hk.MaNamHoc, hk.TrangThai, hk.NgayBD, hk.NgayKT
+            HAVING COUNT(DISTINCT ds.MaMonHoc) >= 1
+            ORDER BY hk.MaHocKy DESC
+            LIMIT 1";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            hocKy = new HocKyDTO
+                            {
+                                MaHocKy = reader.GetInt32("MaHocKy"),
+                                TenHocKy = reader.GetString("TenHocKy"),
+                                MaNamHoc = reader.GetString("MaNamHoc"),
+                                TrangThai = reader.GetString("TrangThai"),
+                                NgayBD = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? (DateTime?)null : reader.GetDateTime("NgayBD"),
+                                NgayKT = reader.IsDBNull(reader.GetOrdinal("NgayKT")) ? (DateTime?)null : reader.GetDateTime("NgayKT")
+                            };
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi LayHocKyMoiNhatCoXepLoai: {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                ConnectionDatabase.CloseConnection(conn);
+            }
+
+            return hocKy;
+        }
+
+        /// <summary>
         /// Lấy học kỳ mới nhất có dữ liệu điểm số
         /// Thứ tự ưu tiên: Năm học mới nhất → Học kỳ II → Học kỳ I
         /// </summary>
