@@ -214,12 +214,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         thongBao += $"   • HK1 ({hk1.TenHocKy}): {soHocSinhDaPhanLopHK1} học sinh\n";
                     if (soHocSinhDaPhanLopHK2 > 0)
                         thongBao += $"   • HK2 ({hk2.TenHocKy}): {soHocSinhDaPhanLopHK2} học sinh\n";
-                    thongBao += "\n❌ Không thể phân lớp tự động lại!\n\n";
-                    thongBao += "Nếu muốn phân lớp lại, bạn cần xóa dữ liệu phân lớp cũ trước.";
+                    thongBao += "\n❌ Đã phân lớp tự động rồi, không thể phân lớp tự động lại!\n\n";
                     
                     MessageBox.Show(thongBao, "Không thể phân lớp lại",
                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // CHẶN NGAY, KHÔNG CHO PHÂN LỚP LẠI
+                    return; 
                 }
 
                 // ✅ Truyền HK1 để phân lớp (logic sẽ tự động phân cho cả HK1 và HK2)

@@ -389,6 +389,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 string serverIP = "172.20.10.2"; // ← IP WiFi thật của bạn
                 int port = int.Parse(ConfigurationManager.AppSettings["WebServerPort"] ?? "8080");
 
+
                 string qrUrl = $"http://{serverIP}:{port}/student/{hocSinh.MaHS}";
 
                 System.Diagnostics.Debug.WriteLine($"[QR URL] {qrUrl}");
@@ -397,6 +398,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
             catch (Exception ex)
             {
+
+
+
+
+
+
+
                 System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
                 return $"http://172.20.10.2:8080/student/{hocSinh.MaHS}";
             }

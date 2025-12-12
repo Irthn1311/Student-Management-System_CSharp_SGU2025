@@ -1130,7 +1130,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     return preview;
                 }
 
-                // ✅ XÁC ĐỊNH NĂM HỌC CẦN PHÂN LỚP
+                // XÁC ĐỊNH NĂM HỌC CẦN PHÂN LỚP
                 string maNamHocCanPhanLop = hocKyCanPhanLop.MaNamHoc;
                 
                 // Lấy cả HK1 và HK2 của năm học này
