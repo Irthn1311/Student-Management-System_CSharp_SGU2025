@@ -154,7 +154,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.cbTrangThai.Location = new System.Drawing.Point(920, 22);
             this.cbTrangThai.Margin = new System.Windows.Forms.Padding(2);
             this.cbTrangThai.Name = "cbTrangThai";
-            this.cbTrangThai.Size = new System.Drawing.Size(158, 36);
+            this.cbTrangThai.Size = new System.Drawing.Size(175, 36);
             this.cbTrangThai.StartIndex = 0;
             this.cbTrangThai.TabIndex = 14;
             // 

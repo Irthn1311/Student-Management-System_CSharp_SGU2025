@@ -17,9 +17,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelPhanCongGiangDay = new Guna.UI2.WinForms.Guna2Panel();
             this.btnPhanCongMoi = new Guna.UI2.WinForms.Guna2Button();
             this.btnAutoPhanCong = new Guna.UI2.WinForms.Guna2Button();
@@ -27,34 +27,27 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.cbKhoi = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbLop = new Guna.UI2.WinForms.Guna2ComboBox();
             this.cbMonHoc = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.dgvPhanCong = new Guna.UI2.WinForms.Guna2DataGridView();
             this.statCardPhanCongGiangDay1 = new Student_Management_System_CSharp_SGU2025.GUI.StatCardPhanCongGiangDay();
             this.statCardPhanCongGiangDay2 = new Student_Management_System_CSharp_SGU2025.GUI.StatCardPhanCongGiangDay();
             this.statCardPhanCongGiangDay3 = new Student_Management_System_CSharp_SGU2025.GUI.StatCardPhanCongGiangDay();
             this.statCardPhanCongGiangDay4 = new Student_Management_System_CSharp_SGU2025.GUI.StatCardPhanCongGiangDay();
-            this.dgvPhanCong = new Guna.UI2.WinForms.Guna2DataGridView();
             this.panelPhanCongGiangDay.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhanCong)).BeginInit();
             this.SuspendLayout();
             // 
             // panelPhanCongGiangDay
             // 
-            // Buttons section (top)
             this.panelPhanCongGiangDay.Controls.Add(this.btnPhanCongMoi);
             this.panelPhanCongGiangDay.Controls.Add(this.btnAutoPhanCong);
-            
-            // Filters section
             this.panelPhanCongGiangDay.Controls.Add(this.cbHocKyNamHoc);
             this.panelPhanCongGiangDay.Controls.Add(this.cbKhoi);
             this.panelPhanCongGiangDay.Controls.Add(this.cbLop);
             this.panelPhanCongGiangDay.Controls.Add(this.cbMonHoc);
-            
-            // StatCards section
             this.panelPhanCongGiangDay.Controls.Add(this.statCardPhanCongGiangDay1);
             this.panelPhanCongGiangDay.Controls.Add(this.statCardPhanCongGiangDay2);
             this.panelPhanCongGiangDay.Controls.Add(this.statCardPhanCongGiangDay3);
             this.panelPhanCongGiangDay.Controls.Add(this.statCardPhanCongGiangDay4);
-            
-            // DataGridView section (bottom)
             this.panelPhanCongGiangDay.Controls.Add(this.dgvPhanCong);
             this.panelPhanCongGiangDay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPhanCongGiangDay.Location = new System.Drawing.Point(0, 0);
@@ -62,6 +55,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.panelPhanCongGiangDay.Size = new System.Drawing.Size(1168, 768);
             this.panelPhanCongGiangDay.TabIndex = 0;
             this.panelPhanCongGiangDay.Paint += new System.Windows.Forms.PaintEventHandler(this.panelPhanCongGiangDay_Paint);
+            // 
+            // btnPhanCongMoi
+            // 
+            this.btnPhanCongMoi.BorderRadius = 10;
+            this.btnPhanCongMoi.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
+            this.btnPhanCongMoi.ForeColor = System.Drawing.Color.White;
+            this.btnPhanCongMoi.Location = new System.Drawing.Point(20, 20);
+            this.btnPhanCongMoi.Name = "btnPhanCongMoi";
+            this.btnPhanCongMoi.Size = new System.Drawing.Size(180, 42);
+            this.btnPhanCongMoi.TabIndex = 1;
+            this.btnPhanCongMoi.Text = "Phân công mới";
+            this.btnPhanCongMoi.Click += new System.EventHandler(this.btnPhanCongMoi_Click);
+            // 
+            // btnAutoPhanCong
+            // 
+            this.btnAutoPhanCong.BorderRadius = 10;
+            this.btnAutoPhanCong.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
+            this.btnAutoPhanCong.ForeColor = System.Drawing.Color.White;
+            this.btnAutoPhanCong.Location = new System.Drawing.Point(220, 20);
+            this.btnAutoPhanCong.Name = "btnAutoPhanCong";
+            this.btnAutoPhanCong.Size = new System.Drawing.Size(200, 42);
+            this.btnAutoPhanCong.TabIndex = 19;
+            this.btnAutoPhanCong.Text = "Tự động Phân công";
+            this.btnAutoPhanCong.Click += new System.EventHandler(this.btnAutoPhanCong_Click);
             // 
             // cbHocKyNamHoc
             // 
@@ -79,7 +96,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
             this.cbHocKyNamHoc.Size = new System.Drawing.Size(240, 36);
-            this.cbHocKyNamHoc.StartIndex = 0;
             this.cbHocKyNamHoc.TabIndex = 15;
             // 
             // cbKhoi
@@ -98,7 +114,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.cbKhoi.Margin = new System.Windows.Forms.Padding(2);
             this.cbKhoi.Name = "cbKhoi";
             this.cbKhoi.Size = new System.Drawing.Size(140, 36);
-            this.cbKhoi.StartIndex = 0;
             this.cbKhoi.TabIndex = 21;
             // 
             // cbLop
@@ -117,7 +132,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.cbLop.Margin = new System.Windows.Forms.Padding(2);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(180, 36);
-            this.cbLop.StartIndex = 0;
             this.cbLop.TabIndex = 16;
             // 
             // cbMonHoc
@@ -136,30 +150,29 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.cbMonHoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbMonHoc.Name = "cbMonHoc";
             this.cbMonHoc.Size = new System.Drawing.Size(200, 36);
-            this.cbMonHoc.StartIndex = 0;
             this.cbMonHoc.TabIndex = 17;
             // 
             // dgvPhanCong
             // 
             this.dgvPhanCong.AllowUserToResizeColumns = false;
             this.dgvPhanCong.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.dgvPhanCong.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvPhanCong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvPhanCong.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPhanCong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvPhanCong.ColumnHeadersHeight = 40;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 10F);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(245)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvPhanCong.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 10F);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(245)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPhanCong.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvPhanCong.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.dgvPhanCong.Location = new System.Drawing.Point(20, 220);
             this.dgvPhanCong.Name = "dgvPhanCong";
@@ -190,34 +203,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.dgvPhanCong.ThemeStyle.RowsStyle.Height = 40;
             this.dgvPhanCong.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvPhanCong.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            // 
-            // btnPhanCongMoi
-            // 
-            this.btnPhanCongMoi.BorderRadius = 10;
-            this.btnPhanCongMoi.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
-            this.btnPhanCongMoi.ForeColor = System.Drawing.Color.White;
-            this.btnPhanCongMoi.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.plus;
-            this.btnPhanCongMoi.ImageSize = new System.Drawing.Size(18, 18);
-            this.btnPhanCongMoi.Location = new System.Drawing.Point(20, 20);
-            this.btnPhanCongMoi.Name = "btnPhanCongMoi";
-            this.btnPhanCongMoi.Size = new System.Drawing.Size(180, 42);
-            this.btnPhanCongMoi.TabIndex = 1;
-            this.btnPhanCongMoi.Text = "➕ Phân công mới";
-            this.btnPhanCongMoi.Click += new System.EventHandler(this.btnPhanCongMoi_Click);
-            // 
-            // btnAutoPhanCong
-            // 
-            this.btnAutoPhanCong.BorderRadius = 10;
-            this.btnAutoPhanCong.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
-            this.btnAutoPhanCong.ForeColor = System.Drawing.Color.White;
-            this.btnAutoPhanCong.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.plus;
-            this.btnAutoPhanCong.ImageSize = new System.Drawing.Size(18, 18);
-            this.btnAutoPhanCong.Location = new System.Drawing.Point(220, 20);
-            this.btnAutoPhanCong.Name = "btnAutoPhanCong";
-            this.btnAutoPhanCong.Size = new System.Drawing.Size(200, 42);
-            this.btnAutoPhanCong.TabIndex = 19;
-            this.btnAutoPhanCong.Text = "🤖 Auto Phân công";
-            this.btnAutoPhanCong.Click += new System.EventHandler(this.btnAutoPhanCong_Click);
             // 
             // statCardPhanCongGiangDay1
             // 
