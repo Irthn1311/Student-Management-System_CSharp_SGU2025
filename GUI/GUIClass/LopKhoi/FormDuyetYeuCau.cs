@@ -162,6 +162,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
+                // ✅ LẤY LỚP ADMIN ĐÃ CHỌN TỪ COMBOBOX (KHÔNG PHẢI LỚP MONG MUỐN CỦA PHỤ HUYNH)
                 int maLopDuocDuyet = (int)item.Value;
                 dynamic tagData = item.Tag;
                 bool isEnabled = tagData.IsEnabled;
@@ -196,7 +197,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (result == DialogResult.Yes)
                 {
-                    // Duyệt yêu cầu
+                    // ✅ DUYỆT YÊU CẦU VỚI LỚP ADMIN ĐÃ CHỌN (maLopDuocDuyet từ combobox)
+                    // Không sử dụng yeuCau.MaLopMongMuon - chỉ dùng để hiển thị thông tin ban đầu
                     bool thanhCong = yeuCauBLL.DuyetYeuCau(yeuCau.MaYeuCau, maLopDuocDuyet, tenDangNhapAdmin, ghiChuAdmin);
 
                     if (thanhCong)
