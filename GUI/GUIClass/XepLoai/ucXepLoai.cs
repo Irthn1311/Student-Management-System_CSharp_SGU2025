@@ -79,18 +79,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (cbHocKyNamHoc.Items.Count > 0)
                 {
-                    // ✅ SỬA LẠI: Lấy học kỳ mới nhất có dữ liệu xếp loại
-                    HocKyDTO hocKyMoiNhat = null;
-
-                    // Tìm học kỳ mới nhất có dữ liệu xếp loại
-                    foreach (var hk in dsHocKy)
-                    {
-                        if (hocKyDAO.KiemTraHocKyCoXepLoai(hk.MaHocKy))
-                        {
-                            hocKyMoiNhat = hk;
-                            break; // dsHocKy đã được sắp xếp theo thứ tự mới nhất
-                        }
-                    }
+                    // ✅ TỐI ƯU: Lấy học kỳ mới nhất có dữ liệu xếp loại trong một query duy nhất
+                    HocKyDTO hocKyMoiNhat = hocKyDAO.LayHocKyMoiNhatCoXepLoai();
 
                     // ✅ DEBUG: In ra để kiểm tra
                     Console.WriteLine($"[LoadHocKy] hocKyMoiNhat = {(hocKyMoiNhat != null ? hocKyMoiNhat.MaHocKy + " - " + hocKyMoiNhat.TenHocKy + " - " + hocKyMoiNhat.MaNamHoc : "NULL")}");

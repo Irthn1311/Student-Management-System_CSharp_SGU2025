@@ -335,5 +335,128 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             }
         }
 
+        /// <summary>
+        /// Lấy tất cả hạnh kiểm theo học kỳ và lớp dưới dạng Dictionary để map nhanh
+        /// Key: MaHocSinh, Value: HanhKiemDTO
+        /// Tối ưu để tránh N+1 query problem
+        /// </summary>
+        public Dictionary<int, HanhKiemDTO> LayDanhSachHanhKiemDictionary(int maHocKy, int? maLop = null)
+        {
+            Dictionary<int, HanhKiemDTO> dict = new Dictionary<int, HanhKiemDTO>();
+
+            string sql = @"SELECT DISTINCT hs.MaHocSinh, @maHK as MaHocKy, 
+                      hk.XepLoai, 
+                      hk.NhanXet
+                      FROM HocSinh hs
+                      INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh AND pl.MaHocKy = @maHK
+                      LEFT JOIN HanhKiem hk ON hs.MaHocSinh = hk.MaHocSinh AND hk.MaHocKy = @maHK
+                      WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')";
+
+            if (maLop.HasValue && maLop.Value > 0)
+            {
+                sql += " AND pl.MaLop = @maLop";
+            }
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maHK", maHocKy);
+                        if (maLop.HasValue && maLop.Value > 0)
+                        {
+                            cmd.Parameters.AddWithValue("@maLop", maLop.Value);
+                        }
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int maHocSinh = reader.GetInt32("MaHocSinh");
+                                dict[maHocSinh] = new HanhKiemDTO
+                                {
+                                    MaHocSinh = maHocSinh,
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    XepLoai = reader.IsDBNull(reader.GetOrdinal("XepLoai")) || string.IsNullOrEmpty(reader["XepLoai"]?.ToString())
+                                        ? null : reader.GetString("XepLoai"),
+                                    NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? null : reader.GetString("NhanXet")
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Lỗi lấy danh sách hạnh kiểm dictionary: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return dict;
+        }
+
+        /// <summary>
+        /// Lấy tất cả hạnh kiểm theo học kỳ và khối dưới dạng Dictionary để map nhanh
+        /// Key: MaHocSinh, Value: HanhKiemDTO
+        /// Tối ưu để tránh N+1 query problem khi thống kê theo khối
+        /// </summary>
+        public Dictionary<int, HanhKiemDTO> LayDanhSachHanhKiemDictionaryTheoKhoi(int maHocKy, int maKhoi)
+        {
+            Dictionary<int, HanhKiemDTO> dict = new Dictionary<int, HanhKiemDTO>();
+
+            string sql = @"SELECT DISTINCT hs.MaHocSinh, @maHK as MaHocKy, 
+                      hk.XepLoai, 
+                      hk.NhanXet
+                      FROM HocSinh hs
+                      INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh AND pl.MaHocKy = @maHK
+                      INNER JOIN LopHoc l ON pl.MaLop = l.MaLop AND l.MaKhoi = @maKhoi
+                      LEFT JOIN HanhKiem hk ON hs.MaHocSinh = hk.MaHocSinh AND hk.MaHocKy = @maHK
+                      WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')";
+
+            using (MySqlConnection conn = ConnectionDatabase.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@maHK", maHocKy);
+                        cmd.Parameters.AddWithValue("@maKhoi", maKhoi);
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int maHocSinh = reader.GetInt32("MaHocSinh");
+                                dict[maHocSinh] = new HanhKiemDTO
+                                {
+                                    MaHocSinh = maHocSinh,
+                                    MaHocKy = reader.GetInt32("MaHocKy"),
+                                    XepLoai = reader.IsDBNull(reader.GetOrdinal("XepLoai")) || string.IsNullOrEmpty(reader["XepLoai"]?.ToString())
+                                        ? null : reader.GetString("XepLoai"),
+                                    NhanXet = reader.IsDBNull(reader.GetOrdinal("NhanXet")) ? null : reader.GetString("NhanXet")
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Lỗi lấy danh sách hạnh kiểm dictionary theo khối: " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    ConnectionDatabase.CloseConnection(conn);
+                }
+            }
+            return dict;
+        }
+
     }
 }
