@@ -314,7 +314,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
 
                 List<MonHocDTO> danhSachMH;
 
-                // ✅ Filter môn học theo học kỳ và lớp (nếu có)
+                // ✅ Filter môn học theo học kỳ và lớp từ MonHoc_NamHoc_Khoi
                 if (cbHocKy.SelectedIndex > 0 && cbLop.SelectedIndex > 0)
                 {
                     var hocKyItem = cbHocKy.SelectedItem;
@@ -327,9 +327,29 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                     var monHocFilterService = new MonHocFilterService();
                     danhSachMH = monHocFilterService.GetSubjectsForSemesterAndClass(maHocKy, maLop);
                 }
+                else if (cbHocKy.SelectedIndex > 0)
+                {
+                    // ✅ Nếu chỉ có học kỳ, lấy môn học theo năm học của học kỳ đó (tất cả khối)
+                    var hocKyItem = cbHocKy.SelectedItem;
+                    var valueProperty = hocKyItem.GetType().GetProperty("Value");
+                    int maHocKy = Convert.ToInt32(valueProperty.GetValue(hocKyItem));
+                    
+                    var hocKyBUS = new HocKyBUS();
+                    var hocKy = hocKyBUS.LayHocKyTheoMa(maHocKy);
+                    if (hocKy != null && !string.IsNullOrEmpty(hocKy.MaNamHoc))
+                    {
+                        var monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
+                        danhSachMH = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHoc(hocKy.MaNamHoc);
+                    }
+                    else
+                    {
+                        // Fallback: Nếu không lấy được năm học, load tất cả môn học
+                        danhSachMH = themDiemBUS.GetDanhSachMonHoc();
+                    }
+                }
                 else
                 {
-                    // Nếu chưa chọn đủ, load tất cả môn học
+                    // Nếu chưa chọn học kỳ, load tất cả môn học
                     danhSachMH = themDiemBUS.GetDanhSachMonHoc();
                 }
 

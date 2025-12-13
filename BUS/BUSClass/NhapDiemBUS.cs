@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
+using Student_Management_System_CSharp_SGU2025.BUS.Services;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS
 {
@@ -12,6 +14,9 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         private LopDAO lopDAO;
         private MonHocDAO monHocDAO;
         private HocKyDAO hocKyDAO;
+        private MonHoc_NamHoc_KhoiBUS monHocNamHocKhoiBUS;
+        private MonHocFilterService monHocFilterService;
+        private PhanLopDAO phanLopDAO;
 
         public NhapDiemBUS()
         {
@@ -20,6 +25,9 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
             lopDAO = new LopDAO();
             monHocDAO = new MonHocDAO();
             hocKyDAO = new HocKyDAO();
+            monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
+            monHocFilterService = new MonHocFilterService();
+            phanLopDAO = new PhanLopDAO();
         }
 
 
@@ -226,12 +234,82 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
         /// <summary>
         /// Lấy chi tiết điểm đầy đủ của một học sinh
+        /// ✅ Chỉ lấy các môn học hợp lệ từ MonHoc_NamHoc_Khoi
         /// </summary>
         public ChiTietDiemDTO GetChiTietDiem(string maHocSinh, int maHocKy)
         {
             try
             {
-                return nhapDiemDAO.GetChiTietDiem(maHocSinh, maHocKy);
+                var chiTietDiem = nhapDiemDAO.GetChiTietDiem(maHocSinh, maHocKy);
+                
+                if (chiTietDiem == null)
+                {
+                    return null;
+                }
+
+                // ✅ Lấy lớp của học sinh trong học kỳ này
+                int maLop = phanLopDAO.LayLopCuaHocSinh(int.Parse(maHocSinh), maHocKy);
+                if (maLop <= 0)
+                {
+                    // Nếu không có phân lớp, trả về dữ liệu gốc (có thể học sinh chưa được phân lớp)
+                    return chiTietDiem;
+                }
+
+                // ✅ Lấy danh sách môn học hợp lệ cho lớp và học kỳ
+                var danhSachMonHocHopLe = monHocFilterService.GetSubjectsForSemesterAndClass(maHocKy, maLop);
+                if (danhSachMonHocHopLe == null || danhSachMonHocHopLe.Count == 0)
+                {
+                    // Nếu không có môn học hợp lệ, trả về dữ liệu gốc
+                    return chiTietDiem;
+                }
+
+                // ✅ Tạo lại DiemCacMon với TẤT CẢ môn học hợp lệ (kể cả chưa có điểm)
+                var diemCacMonFiltered = new Dictionary<int, DiemMonHocDTO>();
+                foreach (var monHoc in danhSachMonHocHopLe)
+                {
+                    // Nếu môn học đã có điểm, lấy điểm đó
+                    if (chiTietDiem.DiemCacMon.ContainsKey(monHoc.maMon))
+                    {
+                        diemCacMonFiltered[monHoc.maMon] = chiTietDiem.DiemCacMon[monHoc.maMon];
+                    }
+                    else
+                    {
+                        // Nếu môn học chưa có điểm, tạo mới với DiemTrungBinh = null
+                        diemCacMonFiltered[monHoc.maMon] = new DiemMonHocDTO
+                        {
+                            MaMonHoc = monHoc.maMon,
+                            TenMonHoc = monHoc.tenMon,
+                            DiemTrungBinh = null
+                        };
+                    }
+                }
+                chiTietDiem.DiemCacMon = diemCacMonFiltered;
+
+                // ✅ Tính lại điểm TB chỉ dựa trên các môn học hợp lệ
+                if (diemCacMonFiltered.Count > 0 && danhSachMonHocHopLe != null && danhSachMonHocHopLe.Count > 0)
+                {
+                    var diemHopLe = diemCacMonFiltered.Values
+                        .Where(d => d.DiemTrungBinh.HasValue)
+                        .Select(d => d.DiemTrungBinh.Value)
+                        .ToList();
+                    
+                    if (diemHopLe.Count == danhSachMonHocHopLe.Count)
+                    {
+                        // Đủ điểm tất cả môn học hợp lệ
+                        chiTietDiem.DiemTB = diemHopLe.Average();
+                    }
+                    else
+                    {
+                        // Chưa đủ điểm
+                        chiTietDiem.DiemTB = null;
+                    }
+                }
+                else
+                {
+                    chiTietDiem.DiemTB = null;
+                }
+
+                return chiTietDiem;
             }
             catch (Exception ex)
             {
@@ -289,12 +367,87 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
         /// <summary>
         /// Lấy bảng điểm theo học kỳ và lớp
+        /// ✅ Tính điểm TB chỉ dựa trên các môn học hợp lệ từ MonHoc_NamHoc_Khoi
         /// </summary>
         public List<XemBangDiemDTO> GetBangDiemTheoHocKyVaLop(int maHocKy, int? maLop = null)
         {
             try
             {
-                return nhapDiemDAO.GetBangDiemTheoHocKyVaLop(maHocKy, maLop);
+                var bangDiem = nhapDiemDAO.GetBangDiemTheoHocKyVaLop(maHocKy, maLop);
+                
+                if (bangDiem == null || bangDiem.Count == 0)
+                {
+                    return bangDiem ?? new List<XemBangDiemDTO>();
+                }
+
+                // ✅ Lấy năm học từ học kỳ
+                var hocKy = hocKyDAO.LayHocKyTheoMa(maHocKy);
+                if (hocKy == null || string.IsNullOrEmpty(hocKy.MaNamHoc))
+                {
+                    return bangDiem;
+                }
+
+                string maNamHoc = hocKy.MaNamHoc;
+
+                // ✅ Với mỗi học sinh, lấy lớp và filter môn học hợp lệ
+                foreach (var diem in bangDiem)
+                {
+                    // Lấy lớp của học sinh trong học kỳ này
+                    int maLopHS = phanLopDAO.LayLopCuaHocSinh(int.Parse(diem.MaHocSinh), maHocKy);
+                    if (maLopHS <= 0)
+                    {
+                        // Không có phân lớp, giữ nguyên điểm TB
+                        continue;
+                    }
+
+                    // Lấy khối của lớp
+                    var lop = lopDAO.LayLopTheoId(maLopHS);
+                    if (lop == null)
+                    {
+                        continue;
+                    }
+
+                    // ✅ Lấy danh sách môn học hợp lệ cho năm học và khối
+                    var danhSachMonHocHopLe = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHocKhoi(maNamHoc, lop.maKhoi);
+                    var maMonHocHopLe = danhSachMonHocHopLe?.Select(m => m.maMon).ToHashSet() ?? new HashSet<int>();
+
+                    // ✅ Filter lại DiemCacMon chỉ giữ các môn học hợp lệ
+                    var diemCacMonFiltered = new Dictionary<int, float?>();
+                    foreach (var kvp in diem.DiemCacMon)
+                    {
+                        if (maMonHocHopLe.Contains(kvp.Key))
+                        {
+                            diemCacMonFiltered[kvp.Key] = kvp.Value;
+                        }
+                    }
+                    diem.DiemCacMon = diemCacMonFiltered;
+
+                    // ✅ Tính lại điểm TB chỉ dựa trên các môn học hợp lệ
+                    if (diemCacMonFiltered.Count > 0 && danhSachMonHocHopLe != null && danhSachMonHocHopLe.Count > 0)
+                    {
+                        var diemHopLe = diemCacMonFiltered.Values
+                            .Where(d => d.HasValue)
+                            .Select(d => d.Value)
+                            .ToList();
+                        
+                        if (diemHopLe.Count == danhSachMonHocHopLe.Count)
+                        {
+                            // Đủ điểm tất cả môn học hợp lệ
+                            diem.DiemTB = diemHopLe.Average();
+                        }
+                        else
+                        {
+                            // Chưa đủ điểm
+                            diem.DiemTB = null;
+                        }
+                    }
+                    else
+                    {
+                        diem.DiemTB = null;
+                    }
+                }
+
+                return bangDiem;
             }
             catch (Exception ex)
             {

@@ -1,4 +1,6 @@
 ﻿using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.BUS.Services;
+using Student_Management_System_CSharp_SGU2025.DAO;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
@@ -21,11 +23,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
         private int maHocKy;
         private NhapDiemBUS nhapDiemBUS;
         private ChiTietDiemDTO currentDiemDTO;
+        private MonHocFilterService monHocFilterService;
 
         public ChiTietDiem()
         {
             InitializeComponent();
             nhapDiemBUS = new NhapDiemBUS();
+            monHocFilterService = new MonHocFilterService();
         }
 
         // Constructor với tham số
@@ -37,8 +41,56 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
 
         private void ChiTietDiem_Load(object sender, EventArgs e)
         {
+            ConfigureDataGridView();
             LoadChiTietDiem();
+        }
 
+        /// <summary>
+        /// Cấu hình DataGridView để hiển thị điểm
+        /// </summary>
+        private void ConfigureDataGridView()
+        {
+            // Cấu hình header
+            dgvChiTietDiem.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(243, 244, 246);
+            dgvChiTietDiem.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvChiTietDiem.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10, FontStyle.Bold);
+            dgvChiTietDiem.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvChiTietDiem.ColumnHeadersHeight = 45;
+            dgvChiTietDiem.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+
+            // Cấu hình cells
+            dgvChiTietDiem.DefaultCellStyle.BackColor = Color.White;
+            dgvChiTietDiem.DefaultCellStyle.ForeColor = Color.FromArgb(31, 41, 55);
+            dgvChiTietDiem.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9);
+            dgvChiTietDiem.DefaultCellStyle.SelectionBackColor = Color.FromArgb(243, 244, 246);
+            dgvChiTietDiem.DefaultCellStyle.SelectionForeColor = Color.FromArgb(31, 41, 55);
+            dgvChiTietDiem.DefaultCellStyle.Padding = new Padding(10, 5, 10, 5);
+
+            // Cấu hình rows
+            dgvChiTietDiem.RowTemplate.Height = 50;
+            dgvChiTietDiem.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
+
+            // Cấu hình borders
+            dgvChiTietDiem.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvChiTietDiem.GridColor = Color.FromArgb(229, 231, 235);
+            dgvChiTietDiem.BorderStyle = BorderStyle.None;
+
+            // Cấu hình columns width
+            dgvChiTietDiem.Columns["colMonHoc"].Width = 500;
+            dgvChiTietDiem.Columns["colDiemTB"].Width = 270;
+
+            // Căn giữa cột điểm
+            dgvChiTietDiem.Columns["colDiemTB"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Loại bỏ selection
+            dgvChiTietDiem.EnableHeadersVisualStyles = false;
+
+            // Ngăn đổi màu tiêu đề khi chọn
+            dgvChiTietDiem.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(243, 244, 246);
+            dgvChiTietDiem.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(75, 85, 99);
+
+            // Không cho chỉnh sửa
+            dgvChiTietDiem.ReadOnly = true;
         }
 
         private void LoadChiTietDiem()
@@ -73,55 +125,103 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                     lblDTB.ForeColor = Color.Gray;
                 }
 
-                // Mảng các label điểm theo thứ tự
-                Label[] diemLabels = new Label[]
-                {
-            diem1, diem2, diem3, diem4, diem5, diem6, diem7,
-            diem8, diem9, diem10, diem11, diem12, diem13
-                };
+                // Xóa dữ liệu cũ trong DataGridView
+                dgvChiTietDiem.Rows.Clear();
 
-                // Hiển thị điểm các môn theo thứ tự MaMonHoc
-                for (int i = 1; i <= 13; i++)
+                // ✅ Lấy danh sách môn học từ MonHoc_NamHoc_Khoi để đảm bảo hiển thị đúng các môn cần có điểm
+                List<MonHocDTO> danhSachMonHocHopLe = new List<MonHocDTO>();
+                
+                // Lấy lớp của học sinh trong học kỳ này
+                var phanLopDAO = new DAO.PhanLopDAO();
+                int maLop = phanLopDAO.LayLopCuaHocSinh(int.Parse(maHocSinh), maHocKy);
+                
+                if (maLop > 0)
                 {
-                    if (dto.DiemCacMon.ContainsKey(i))
+                    // Lấy thông tin lớp để biết khối
+                    var lopDAO = new LopDAO();
+                    var lop = lopDAO.LayLopTheoId(maLop);
+                    
+                    // Lấy danh sách môn học hợp lệ cho lớp và học kỳ từ MonHoc_NamHoc_Khoi
+                    danhSachMonHocHopLe = monHocFilterService.GetSubjectsForSemesterAndClass(maHocKy, maLop);
+                    
+                    // Debug: Log thông tin để kiểm tra
+                    System.Diagnostics.Debug.WriteLine($"[ChiTietDiem] MaHocSinh: {maHocSinh}, MaHocKy: {maHocKy}, MaLop: {maLop}, MaKhoi: {lop?.maKhoi ?? -1}, SoMonHoc: {danhSachMonHocHopLe?.Count ?? 0}");
+                }
+                else
+                {
+                    // Nếu không có phân lớp, lấy môn học theo năm học của học kỳ
+                    var hocKyBUS = new HocKyBUS();
+                    var hocKy = hocKyBUS.LayHocKyTheoMa(maHocKy);
+                    if (hocKy != null && !string.IsNullOrEmpty(hocKy.MaNamHoc))
                     {
-                        DiemMonHocDTO diemMon = dto.DiemCacMon[i];
-                        HienThiDiem(diemLabels[i - 1], diemMon.DiemTrungBinh);
+                        var monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
+                        danhSachMonHocHopLe = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHoc(hocKy.MaNamHoc);
+                        
+                        // Debug: Log thông tin để kiểm tra
+                        System.Diagnostics.Debug.WriteLine($"[ChiTietDiem] MaHocSinh: {maHocSinh}, MaHocKy: {maHocKy}, MaNamHoc: {hocKy.MaNamHoc}, SoMonHoc: {danhSachMonHocHopLe?.Count ?? 0}");
+                    }
+                }
+                
+                // Debug: Log danh sách môn học
+                if (danhSachMonHocHopLe != null && danhSachMonHocHopLe.Count > 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ChiTietDiem] Danh sách môn học ({danhSachMonHocHopLe.Count} môn): {string.Join(", ", danhSachMonHocHopLe.Select(m => $"{m.maMon}-{m.tenMon}"))}");
+                    
+                    // Kiểm tra xem có môn ABC không
+                    var monABC = danhSachMonHocHopLe.FirstOrDefault(m => m.maMon == 16 || m.tenMon == "ABC");
+                    if (monABC != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[ChiTietDiem] ✅ Tìm thấy môn ABC: MaMon={monABC.maMon}, TenMon={monABC.tenMon}");
                     }
                     else
                     {
-                        // Nếu môn học không tồn tại, ẩn label hoặc hiển thị "N/A"
-                        if (i - 1 < diemLabels.Length)
+                        System.Diagnostics.Debug.WriteLine($"[ChiTietDiem] ❌ KHÔNG tìm thấy môn ABC trong danh sách!");
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ChiTietDiem] ⚠️ Danh sách môn học rỗng hoặc null!");
+                }
+
+                // Nếu vẫn không có môn học, sử dụng dữ liệu từ DiemCacMon (fallback)
+                if (danhSachMonHocHopLe == null || danhSachMonHocHopLe.Count == 0)
+                {
+                    // Fallback: Sử dụng dữ liệu từ DiemCacMon
+                    var danhSachMonHoc = dto.DiemCacMon.OrderBy(x => x.Key).ToList();
+                    foreach (var monHoc in danhSachMonHoc)
+                    {
+                        string diemTBText = monHoc.Value.DiemTrungBinh.HasValue 
+                            ? monHoc.Value.DiemTrungBinh.Value.ToString("0.0") 
+                            : "Chưa có";
+                        
+                        dgvChiTietDiem.Rows.Add(monHoc.Value.TenMonHoc, diemTBText);
+                    }
+                }
+                else
+                {
+                    // ✅ Hiển thị TẤT CẢ môn học từ MonHoc_NamHoc_Khoi (kể cả chưa có điểm)
+                    // Sắp xếp theo MaMonHoc để hiển thị tuần tự
+                    var danhSachMonHocSorted = danhSachMonHocHopLe.OrderBy(x => x.maMon).ToList();
+                    
+                    foreach (var monHoc in danhSachMonHocSorted)
+                    {
+                        // Tìm điểm của môn học này trong DiemCacMon
+                        string diemTBText = "Chưa có";
+                        if (dto.DiemCacMon != null && dto.DiemCacMon.ContainsKey(monHoc.maMon))
                         {
-                            diemLabels[i - 1].Text = "N/A";
-                            diemLabels[i - 1].ForeColor = Color.LightGray;
+                            var diemMon = dto.DiemCacMon[monHoc.maMon];
+                            if (diemMon.DiemTrungBinh.HasValue)
+                            {
+                                diemTBText = diemMon.DiemTrungBinh.Value.ToString("0.0");
+                            }
                         }
+                        
+                        dgvChiTietDiem.Rows.Add(monHoc.tenMon, diemTBText);
                     }
                 }
 
-                // Thêm vào LoadChiTietDiem
-                Label[] tenMonLabels = new Label[]
-                {
-    tenMon1, tenMon2, tenMon3, tenMon4, tenMon5, tenMon6,
-    tenMon7, tenMon8, tenMon9, tenMon10, tenMon11, tenMon12, tenMon13
-                };
-
-                for (int i = 1; i <= 13; i++)
-                {
-                    if (dto.DiemCacMon.ContainsKey(i))
-                    {
-                        DiemMonHocDTO diemMon = dto.DiemCacMon[i];
-                        tenMonLabels[i - 1].Text = diemMon.TenMonHoc + ":";
-                        HienThiDiem(diemLabels[i - 1], diemMon.DiemTrungBinh);
-                    }
-                    else
-                    {
-                        tenMonLabels[i - 1].Text = "Môn " + i + ":";
-                        diemLabels[i - 1].Text = "N/A";
-                        diemLabels[i - 1].ForeColor = Color.LightGray;
-                    }
-                }
-
+                // Áp dụng màu sắc cho cột điểm trung bình
+                ApplyColorToDiemTBColumn();
 
             }
             catch (Exception ex)
@@ -133,19 +233,43 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
         }
 
         /// <summary>
-        /// Hiển thị điểm và áp dụng màu sắc
+        /// Áp dụng màu sắc cho cột điểm trung bình trong DataGridView
         /// </summary>
-        private void HienThiDiem(Label label, float? diem)
+        private void ApplyColorToDiemTBColumn()
         {
-            if (diem.HasValue)
+            foreach (DataGridViewRow row in dgvChiTietDiem.Rows)
             {
-                label.Text = diem.Value.ToString("0.0");
-                ApplyColorToDiemTB(label, diem.Value);
-            }
-            else
-            {
-                label.Text = "Chưa có";
-                label.ForeColor = Color.Gray;
+                if (row.Cells["colDiemTB"].Value != null && !string.IsNullOrEmpty(row.Cells["colDiemTB"].Value.ToString()))
+                {
+                    string diemText = row.Cells["colDiemTB"].Value.ToString();
+                    if (diemText != "Chưa có" && float.TryParse(diemText, out float score))
+                    {
+                        if (score >= 8.0)
+                        {
+                            row.Cells["colDiemTB"].Style.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
+                            row.Cells["colDiemTB"].Style.Font = new System.Drawing.Font("Segoe UI", 9, FontStyle.Bold);
+                        }
+                        else if (score >= 6.5)
+                        {
+                            row.Cells["colDiemTB"].Style.ForeColor = Color.FromArgb(30, 136, 229); // Xanh dương
+                            row.Cells["colDiemTB"].Style.Font = new System.Drawing.Font("Segoe UI", 9, FontStyle.Bold);
+                        }
+                        else if (score >= 5.0)
+                        {
+                            row.Cells["colDiemTB"].Style.ForeColor = Color.FromArgb(234, 179, 8); // Vàng
+                            row.Cells["colDiemTB"].Style.Font = new System.Drawing.Font("Segoe UI", 9, FontStyle.Bold);
+                        }
+                        else
+                        {
+                            row.Cells["colDiemTB"].Style.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ
+                            row.Cells["colDiemTB"].Style.Font = new System.Drawing.Font("Segoe UI", 9, FontStyle.Bold);
+                        }
+                    }
+                    else if (diemText == "Chưa có")
+                    {
+                        row.Cells["colDiemTB"].Style.ForeColor = Color.Gray;
+                    }
+                }
             }
         }
 
@@ -181,10 +305,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
         }
 
         private void lblDTB_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void dToan_Click(object sender, EventArgs e)
         {
         }
 
@@ -348,15 +468,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.DiemSo
                 return new BaseColor(220, 38, 38);
         }
 
-        private void diem3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void diem6_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 
       

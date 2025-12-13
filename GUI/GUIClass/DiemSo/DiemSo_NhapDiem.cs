@@ -49,6 +49,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private int currentPageXemBangDiem = 1; // Trang hiện tại của tableXemBangDiem
         private int totalPagesXemBangDiem = 0; // Tổng số trang của tableXemBangDiem
         private List<XemBangDiemDTO> fullListXemBangDiem = new List<XemBangDiemDTO>(); // Danh sách đầy đủ
+        private bool isHocKyBDLoaded = false; // Flag để lazy load LoadComboBoxHocKyBD
 
 
         // Check khóa điểm 
@@ -188,9 +189,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
             LoadComboBoxMonHoc();
 
-            // ✅ QUAN TRỌNG: Gọi LoadComboBoxHocKy() và LoadComboBoxHocKyBD() TRƯỚC KHI tắt isLoadingData
+            // ✅ QUAN TRỌNG: Chỉ load tab Nhập Điểm lúc đầu để giảm lag
+            // LoadComboBoxHocKyBD() sẽ được load lazy khi chuyển sang tab Xem Bảng Điểm
             LoadComboBoxHocKy(); // Tự động load lớp, thống kê và filter cho tab Nhập Điểm
-            LoadComboBoxHocKyBD(); // Tự động load lớp BD, bảng điểm và thống kê cho tab Xem Bảng Điểm
+            // LoadComboBoxHocKyBD(); // ✅ LAZY LOAD: Chỉ load khi chuyển sang tab Xem Bảng Điểm
 
             tableXemBangDiem.CellClick += tableXemBangDiem_CellClick;
             txtSearch.TextChanged += txtSearch_TextChanged;
@@ -275,9 +277,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             try
             {
                 ThongKeDTO thongKe = nhapDiemBUS.GetThongKeDiemTheoHocKy(hocKyCanLoad.Value);
+                
+                // Debug: Log thông tin thống kê
+                System.Diagnostics.Debug.WriteLine($"[LoadThongKe] MaHocKy: {hocKyCanLoad.Value}, DiemTBChung: {thongKe.DiemTBChung}, TongHocSinh: {thongKe.TongHocSinh}, HocSinhDaNhap: {thongKe.HocSinhDaNhapDiem}");
 
                 // Card Điểm Trung Bình
-                statCardDiemTrungBinh.lbCardValue.Text = thongKe.DiemTBChung.ToString("0.0");
+                statCardDiemTrungBinh.lbCardValue.Text = thongKe.DiemTBChung > 0 ? thongKe.DiemTBChung.ToString("0.0") : "0.0";
 
                 if (thongKe.DiemTBChungKyTruoc > 0)
                 {
@@ -325,8 +330,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi load thống kê: " + ex.Message, "Lỗi",
-                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Debug: Log lỗi
+                System.Diagnostics.Debug.WriteLine($"[LoadThongKe] Lỗi: {ex.Message}\n{ex.StackTrace}");
+                
+                // Reset về giá trị mặc định nếu có lỗi
+                statCardDiemTrungBinh.lbCardValue.Text = "0.0";
+                statCardDiemTrungBinh.lbCardNote.Text = "Chưa có dữ liệu";
+                statCardDiemCaoNhat.lbCardValue.Text = "0.0";
+                statCardDiemCaoNhat.lbCardNote.Text = "Chưa có";
+                statCardDiemThapNhat.lbCardValue.Text = "0.0";
+                statCardDiemThapNhat.lbCardNote.Text = "Chưa có";
+                statCardDaNhap.lbCardValue.Text = "0 / 0";
+                statCardDaNhap.lbCardNote.Text = "Chưa có dữ liệu";
+                
+                // Chỉ hiển thị MessageBox nếu lỗi nghiêm trọng
+                // MessageBox.Show("Lỗi khi load thống kê: " + ex.Message, "Lỗi",
+                //                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -467,15 +486,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // ✅ SỬA LẠI: Lấy học kỳ mới nhất có dữ liệu điểm số và kiểm tra lại
                 HocKyDTO hocKyMoiNhat = nhapDiemBUS.GetHocKyMoiNhatCoDuLieu();
 
-                // ✅ THÊM DEBUG Ở ĐÂY
-                Console.WriteLine($"[LoadComboBoxHocKyBD] hocKyMoiNhat = {(hocKyMoiNhat != null ? hocKyMoiNhat.MaHocKy + " - " + hocKyMoiNhat.TenHocKy + " - " + hocKyMoiNhat.MaNamHoc : "NULL")}");
-
                 if (hocKyMoiNhat != null && cbHocKyBD.Items.Count > 0)
                 {
                     // ✅ KIỂM TRA LẠI học kỳ này có dữ liệu điểm số thực sự không
                     bool coDuLieu = nhapDiemBUS.KiemTraHocKyCoDiemSo(hocKyMoiNhat.MaHocKy);
-
-                    Console.WriteLine($"[LoadComboBoxHocKyBD] coDuLieu = {coDuLieu} cho MaHocKy = {hocKyMoiNhat.MaHocKy}");
 
                     if (coDuLieu)
                     {
@@ -485,14 +499,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             var item = cbHocKyBD.Items[i] as ComboBoxItem;
                             if (item != null && (int)item.Value == hocKyMoiNhat.MaHocKy)
                             {
-                                Console.WriteLine($"[LoadComboBoxHocKyBD] Chọn index {i} - MaHocKy = {hocKyMoiNhat.MaHocKy}");
-
                                 cbHocKyBD.SelectedIndex = i;
                                 selectedMaHocKyBD = hocKyMoiNhat.MaHocKy;
-
-                                // ✅ IN RA TRƯỚC KHI RETURN
-                                Console.WriteLine($"[LoadComboBoxHocKyBD] selectedMaHocKyBD = {selectedMaHocKyBD}");
-                                Console.WriteLine($"[LoadComboBoxHocKyBD] cbHocKyBD.SelectedIndex = {cbHocKyBD.SelectedIndex}");
 
                                 // Tự động load dữ liệu sau khi chọn
                                 LoadComboBoxLopBD();
@@ -502,16 +510,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             }
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine($"[LoadComboBoxHocKyBD] Học kỳ {hocKyMoiNhat.MaHocKy} không có dữ liệu, sẽ chọn học kỳ I đầu tiên");
-                    }
                 }
 
                 // Nếu không có học kỳ nào có điểm số, chọn học kỳ I của năm học mới nhất
                 HocKyDTO hocKyIDauTien = nhapDiemBUS.LayHocKyIDauTienCuaNamHocMoiNhat();
-
-                Console.WriteLine($"[LoadComboBoxHocKyBD] hocKyIDauTien = {(hocKyIDauTien != null ? hocKyIDauTien.MaHocKy + " - " + hocKyIDauTien.TenHocKy : "NULL")}");
 
                 if (hocKyIDauTien != null && cbHocKyBD.Items.Count > 0)
                 {
@@ -521,14 +523,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         var item = cbHocKyBD.Items[i] as ComboBoxItem;
                         if (item != null && (int)item.Value == hocKyIDauTien.MaHocKy)
                         {
-                            Console.WriteLine($"[LoadComboBoxHocKyBD] Chọn học kỳ I index {i} - MaHocKy = {hocKyIDauTien.MaHocKy}");
-
                             cbHocKyBD.SelectedIndex = i;
                             selectedMaHocKyBD = hocKyIDauTien.MaHocKy;
-
-                            // ✅ IN RA TRƯỚC KHI RETURN
-                            Console.WriteLine($"[LoadComboBoxHocKyBD] selectedMaHocKyBD = {selectedMaHocKyBD}");
-                            Console.WriteLine($"[LoadComboBoxHocKyBD] cbHocKyBD.SelectedIndex = {cbHocKyBD.SelectedIndex}");
 
                             // Tự động load dữ liệu sau khi chọn
                             LoadComboBoxLopBD();
@@ -542,15 +538,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Fallback: Chọn học kỳ đầu tiên trong danh sách nếu không tìm thấy học kỳ I
                 if (cbHocKyBD.Items.Count > 0)
                 {
-                    Console.WriteLine($"[LoadComboBoxHocKyBD] FALLBACK - Chọn index 0");
-
                     cbHocKyBD.SelectedIndex = 0;
                     var firstItem = cbHocKyBD.SelectedItem as ComboBoxItem;
                     selectedMaHocKyBD = (int)firstItem.Value;
-
-                    // ✅ IN RA TRƯỚC KHI LOAD
-                    Console.WriteLine($"[LoadComboBoxHocKyBD] selectedMaHocKyBD = {selectedMaHocKyBD}");
-                    Console.WriteLine($"[LoadComboBoxHocKyBD] cbHocKyBD.SelectedIndex = {cbHocKyBD.SelectedIndex}");
 
                     // Tự động load dữ liệu sau khi chọn
                     LoadComboBoxLopBD();
@@ -560,7 +550,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[LoadComboBoxHocKyBD] LỖI: {ex.Message}");
                 MessageBox.Show("Lỗi khi load danh sách học kỳ: " + ex.Message, "Lỗi",
                                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -713,7 +702,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 List<MonHocDTO> danhSachMonHoc;
 
-                // ✅ Filter môn học theo học kỳ và lớp (nếu có)
+                // ✅ Filter môn học theo học kỳ và lớp từ MonHoc_NamHoc_Khoi
                 if (selectedMaHocKy.HasValue && selectedMaLop.HasValue && selectedMaLop.Value > 0)
                 {
                     // Lấy danh sách môn học hợp lệ cho lớp và học kỳ
@@ -721,8 +710,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
                 else if (selectedMaHocKy.HasValue)
                 {
-                    // Nếu chỉ có học kỳ, lấy tất cả môn học (sẽ filter sau khi chọn lớp)
-                    danhSachMonHoc = nhapDiemBUS.GetDanhSachMonHoc();
+                    // ✅ Nếu chỉ có học kỳ, lấy môn học theo năm học của học kỳ đó (tất cả khối)
+                    var hocKy = hocKyBUS.LayHocKyTheoMa(selectedMaHocKy.Value);
+                    if (hocKy != null && !string.IsNullOrEmpty(hocKy.MaNamHoc))
+                    {
+                        var monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
+                        danhSachMonHoc = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHoc(hocKy.MaNamHoc);
+                    }
+                    else
+                    {
+                        // Fallback: Nếu không lấy được năm học, load tất cả môn học
+                        danhSachMonHoc = nhapDiemBUS.GetDanhSachMonHoc();
+                    }
                 }
                 else
                 {
@@ -790,15 +789,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // ✅ SỬA LẠI: Lấy học kỳ mới nhất có dữ liệu điểm số và kiểm tra lại
                 HocKyDTO hocKyMoiNhat = nhapDiemBUS.GetHocKyMoiNhatCoDuLieu();
 
-                // ✅ THÊM DEBUG Ở ĐÂY
-                Console.WriteLine($"[LoadComboBoxHocKy] hocKyMoiNhat = {(hocKyMoiNhat != null ? hocKyMoiNhat.MaHocKy + " - " + hocKyMoiNhat.TenHocKy + " - " + hocKyMoiNhat.MaNamHoc : "NULL")}");
-
                 if (hocKyMoiNhat != null && cbHocKyNamHoc.Items.Count > 0)
                 {
                     // ✅ KIỂM TRA LẠI học kỳ này có dữ liệu điểm số thực sự không
                     bool coDuLieu = nhapDiemBUS.KiemTraHocKyCoDiemSo(hocKyMoiNhat.MaHocKy);
-
-                    Console.WriteLine($"[LoadComboBoxHocKy] coDuLieu = {coDuLieu} cho MaHocKy = {hocKyMoiNhat.MaHocKy}");
 
                     if (coDuLieu)
                     {
@@ -808,14 +802,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             var item = cbHocKyNamHoc.Items[i] as ComboBoxItem;
                             if (item != null && (int)item.Value == hocKyMoiNhat.MaHocKy)
                             {
-                                Console.WriteLine($"[LoadComboBoxHocKy] Chọn index {i} - MaHocKy = {hocKyMoiNhat.MaHocKy}");
-
                                 cbHocKyNamHoc.SelectedIndex = i;
                                 selectedMaHocKy = hocKyMoiNhat.MaHocKy;
-
-                                // ✅ IN RA TRƯỚC KHI RETURN
-                                Console.WriteLine($"[LoadComboBoxHocKy] selectedMaHocKy = {selectedMaHocKy}");
-                                Console.WriteLine($"[LoadComboBoxHocKy] cbHocKyNamHoc.SelectedIndex = {cbHocKyNamHoc.SelectedIndex}");
 
                                 // Tự động load dữ liệu sau khi chọn
                                 LoadComboBoxLop();
@@ -825,16 +813,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                             }
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine($"[LoadComboBoxHocKy] Học kỳ {hocKyMoiNhat.MaHocKy} không có dữ liệu, sẽ chọn học kỳ I đầu tiên");
-                    }
                 }
 
                 // Nếu không có học kỳ nào có điểm số, chọn học kỳ I của năm học mới nhất
                 HocKyDTO hocKyIDauTien = nhapDiemBUS.LayHocKyIDauTienCuaNamHocMoiNhat();
-
-                Console.WriteLine($"[LoadComboBoxHocKy] hocKyIDauTien = {(hocKyIDauTien != null ? hocKyIDauTien.MaHocKy + " - " + hocKyIDauTien.TenHocKy : "NULL")}");
 
                 if (hocKyIDauTien != null && cbHocKyNamHoc.Items.Count > 0)
                 {
@@ -844,14 +826,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         var item = cbHocKyNamHoc.Items[i] as ComboBoxItem;
                         if (item != null && (int)item.Value == hocKyIDauTien.MaHocKy)
                         {
-                            Console.WriteLine($"[LoadComboBoxHocKy] Chọn học kỳ I index {i} - MaHocKy = {hocKyIDauTien.MaHocKy}");
-
                             cbHocKyNamHoc.SelectedIndex = i;
                             selectedMaHocKy = hocKyIDauTien.MaHocKy;
-
-                            // ✅ IN RA TRƯỚC KHI RETURN
-                            Console.WriteLine($"[LoadComboBoxHocKy] selectedMaHocKy = {selectedMaHocKy}");
-                            Console.WriteLine($"[LoadComboBoxHocKy] cbHocKyNamHoc.SelectedIndex = {cbHocKyNamHoc.SelectedIndex}");
 
                             // Tự động load dữ liệu sau khi chọn
                             LoadComboBoxLop();
@@ -865,15 +841,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Fallback: Chọn học kỳ đầu tiên trong danh sách nếu không tìm thấy học kỳ I
                 if (cbHocKyNamHoc.Items.Count > 0)
                 {
-                    Console.WriteLine($"[LoadComboBoxHocKy] FALLBACK - Chọn index 0");
-
                     cbHocKyNamHoc.SelectedIndex = 0;
                     var firstItem = cbHocKyNamHoc.SelectedItem as ComboBoxItem;
                     selectedMaHocKy = (int)firstItem.Value;
-
-                    // ✅ IN RA TRƯỚC KHI LOAD
-                    Console.WriteLine($"[LoadComboBoxHocKy] selectedMaHocKy = {selectedMaHocKy}");
-                    Console.WriteLine($"[LoadComboBoxHocKy] cbHocKyNamHoc.SelectedIndex = {cbHocKyNamHoc.SelectedIndex}");
 
                     // Tự động load dữ liệu sau khi chọn
                     LoadComboBoxLop();
@@ -883,7 +853,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[LoadComboBoxHocKy] LỖI: {ex.Message}");
                 MessageBox.Show("Lỗi khi load danh sách học kỳ: " + ex.Message, "Lỗi",
                                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -1071,6 +1040,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         {
             // Highlight button Xem bảng điểm
             HighlightButton(btnXemBangDiem);
+            
+            // ✅ LAZY LOAD: Chỉ load LoadComboBoxHocKyBD() lần đầu khi chuyển sang tab này
+            if (!isHocKyBDLoaded)
+            {
+                isLoadingData = true;
+                LoadComboBoxHocKyBD();
+                isLoadingData = false;
+                isHocKyBDLoaded = true;
+            }
+            
             // Hiển thị bảng Xem điểm
             ShowXemBangDiem();
         }

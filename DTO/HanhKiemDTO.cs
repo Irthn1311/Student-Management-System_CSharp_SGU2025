@@ -72,10 +72,7 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
                 {
                     xepLoai = value;
                 }
-                else
-                {
-                    Console.WriteLine("Xep loai hanh kiem khong duoc de trong.");
-                }
+                // Không log để tránh spam console
             }
         }
 
