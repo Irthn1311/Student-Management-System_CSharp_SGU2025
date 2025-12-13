@@ -489,7 +489,7 @@
             this.cbHocKyBD.Location = new System.Drawing.Point(503, 704);
             this.cbHocKyBD.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKyBD.Name = "cbHocKyBD";
-            this.cbHocKyBD.Size = new System.Drawing.Size(184, 36);
+            this.cbHocKyBD.Size = new System.Drawing.Size(198, 36);
             this.cbHocKyBD.TabIndex = 28;
             this.cbHocKyBD.SelectedIndexChanged += new System.EventHandler(this.cbHocKyBD_SelectedIndexChanged);
             // 
@@ -525,7 +525,7 @@
             this.cbLopBD.Location = new System.Drawing.Point(735, 704);
             this.cbLopBD.Margin = new System.Windows.Forms.Padding(2);
             this.cbLopBD.Name = "cbLopBD";
-            this.cbLopBD.Size = new System.Drawing.Size(120, 36);
+            this.cbLopBD.Size = new System.Drawing.Size(143, 36);
             this.cbLopBD.TabIndex = 30;
             this.cbLopBD.SelectedIndexChanged += new System.EventHandler(this.cbLopBD_SelectedIndexChanged);
             // 
@@ -672,7 +672,7 @@
             this.lblTrangHienTai.AutoSize = true;
             this.lblTrangHienTai.BackColor = System.Drawing.Color.Transparent;
             this.lblTrangHienTai.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTrangHienTai.Location = new System.Drawing.Point(383, 720);
+            this.lblTrangHienTai.Location = new System.Drawing.Point(386, 711);
             this.lblTrangHienTai.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblTrangHienTai.Name = "lblTrangHienTai";
             this.lblTrangHienTai.Size = new System.Drawing.Size(43, 20);

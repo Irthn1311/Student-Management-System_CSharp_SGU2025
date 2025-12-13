@@ -275,9 +275,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             try
             {
                 ThongKeDTO thongKe = nhapDiemBUS.GetThongKeDiemTheoHocKy(hocKyCanLoad.Value);
+                
+                // Debug: Log thông tin thống kê
+                System.Diagnostics.Debug.WriteLine($"[LoadThongKe] MaHocKy: {hocKyCanLoad.Value}, DiemTBChung: {thongKe.DiemTBChung}, TongHocSinh: {thongKe.TongHocSinh}, HocSinhDaNhap: {thongKe.HocSinhDaNhapDiem}");
 
                 // Card Điểm Trung Bình
-                statCardDiemTrungBinh.lbCardValue.Text = thongKe.DiemTBChung.ToString("0.0");
+                statCardDiemTrungBinh.lbCardValue.Text = thongKe.DiemTBChung > 0 ? thongKe.DiemTBChung.ToString("0.0") : "0.0";
 
                 if (thongKe.DiemTBChungKyTruoc > 0)
                 {
@@ -325,8 +328,22 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi load thống kê: " + ex.Message, "Lỗi",
-                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Debug: Log lỗi
+                System.Diagnostics.Debug.WriteLine($"[LoadThongKe] Lỗi: {ex.Message}\n{ex.StackTrace}");
+                
+                // Reset về giá trị mặc định nếu có lỗi
+                statCardDiemTrungBinh.lbCardValue.Text = "0.0";
+                statCardDiemTrungBinh.lbCardNote.Text = "Chưa có dữ liệu";
+                statCardDiemCaoNhat.lbCardValue.Text = "0.0";
+                statCardDiemCaoNhat.lbCardNote.Text = "Chưa có";
+                statCardDiemThapNhat.lbCardValue.Text = "0.0";
+                statCardDiemThapNhat.lbCardNote.Text = "Chưa có";
+                statCardDaNhap.lbCardValue.Text = "0 / 0";
+                statCardDaNhap.lbCardNote.Text = "Chưa có dữ liệu";
+                
+                // Chỉ hiển thị MessageBox nếu lỗi nghiêm trọng
+                // MessageBox.Show("Lỗi khi load thống kê: " + ex.Message, "Lỗi",
+                //                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -713,7 +730,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 List<MonHocDTO> danhSachMonHoc;
 
-                // ✅ Filter môn học theo học kỳ và lớp (nếu có)
+                // ✅ Filter môn học theo học kỳ và lớp từ MonHoc_NamHoc_Khoi
                 if (selectedMaHocKy.HasValue && selectedMaLop.HasValue && selectedMaLop.Value > 0)
                 {
                     // Lấy danh sách môn học hợp lệ cho lớp và học kỳ
@@ -721,8 +738,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
                 else if (selectedMaHocKy.HasValue)
                 {
-                    // Nếu chỉ có học kỳ, lấy tất cả môn học (sẽ filter sau khi chọn lớp)
-                    danhSachMonHoc = nhapDiemBUS.GetDanhSachMonHoc();
+                    // ✅ Nếu chỉ có học kỳ, lấy môn học theo năm học của học kỳ đó (tất cả khối)
+                    var hocKy = hocKyBUS.LayHocKyTheoMa(selectedMaHocKy.Value);
+                    if (hocKy != null && !string.IsNullOrEmpty(hocKy.MaNamHoc))
+                    {
+                        var monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
+                        danhSachMonHoc = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHoc(hocKy.MaNamHoc);
+                    }
+                    else
+                    {
+                        // Fallback: Nếu không lấy được năm học, load tất cả môn học
+                        danhSachMonHoc = nhapDiemBUS.GetDanhSachMonHoc();
+                    }
                 }
                 else
                 {

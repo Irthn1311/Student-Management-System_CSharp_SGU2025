@@ -21,7 +21,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn = ConnectionDatabase.GetConnection();
                 conn.Open();
                 string query = @"
-            SELECT 
+            SELECT DISTINCT
                 hs.MaHocSinh,
                 hs.HoTen,
                 ds.DiemThuongXuyen,
@@ -86,7 +86,7 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 conn = ConnectionDatabase.GetConnection();
                 conn.Open();
                 string query = @"
-            SELECT 
+            SELECT DISTINCT
                 hs.MaHocSinh,
                 hs.HoTen,
                 ds.DiemThuongXuyen,
@@ -95,10 +95,12 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 ds.DiemTrungBinh
             FROM HocSinh hs
             INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh
+                AND pl.MaLop = @MaLop
+                AND pl.MaHocKy = @MaHocKy
             LEFT JOIN DiemSo ds ON hs.MaHocSinh = ds.MaHocSinh 
                 AND ds.MaMonHoc = @MaMonHoc 
                 AND ds.MaHocKy = @MaHocKy
-            WHERE pl.MaLop = @MaLop AND (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
+            WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')
             ORDER BY hs.MaHocSinh";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
@@ -356,23 +358,41 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 // Lấy TẤT CẢ học sinh ĐÃ ĐƯỢC PHÂN LỚP trong học kỳ đó
                 string query = @"
             SELECT 
-                -- Điểm TB chung (tính trên các học sinh có đủ tất cả môn)
+                -- Điểm TB chung (tính trên các học sinh có đủ tất cả môn hợp lệ)
                 AVG(CASE 
-                    WHEN DiemTBChung.DiemTB IS NOT NULL THEN DiemTBChung.DiemTB 
+                    WHEN DiemTBChung.DiemTB IS NOT NULL 
+                         AND DiemTBChung.SoMonCoDiemHopLe = TongMonHopLe.TongSoMonHopLe
+                         AND TongMonHopLe.TongSoMonHopLe > 0
+                    THEN DiemTBChung.DiemTB 
                     ELSE NULL 
                 END) as DiemTBChung,
                 
-                -- Điểm cao nhất
-                MAX(DiemTBChung.DiemTB) as DiemCaoNhat,
+                -- Điểm cao nhất (chỉ tính học sinh có đủ tất cả môn hợp lệ)
+                MAX(CASE 
+                    WHEN DiemTBChung.SoMonCoDiemHopLe = TongMonHopLe.TongSoMonHopLe
+                         AND TongMonHopLe.TongSoMonHopLe > 0
+                    THEN DiemTBChung.DiemTB 
+                    ELSE NULL 
+                END) as DiemCaoNhat,
                 
-                -- Điểm thấp nhất (chỉ tính học sinh có điểm)
-                MIN(DiemTBChung.DiemTB) as DiemThapNhat,
+                -- Điểm thấp nhất (chỉ tính học sinh có đủ tất cả môn hợp lệ)
+                MIN(CASE 
+                    WHEN DiemTBChung.SoMonCoDiemHopLe = TongMonHopLe.TongSoMonHopLe
+                         AND TongMonHopLe.TongSoMonHopLe > 0
+                    THEN DiemTBChung.DiemTB 
+                    ELSE NULL 
+                END) as DiemThapNhat,
                 
                 -- Tổng số học sinh ĐÃ ĐƯỢC PHÂN LỚP trong học kỳ
                 COUNT(DISTINCT hs.MaHocSinh) as TongHocSinh,
                 
-                -- Số học sinh đã có điểm TB chung (đủ tất cả môn)
-                COUNT(DISTINCT CASE WHEN DiemTBChung.DiemTB IS NOT NULL THEN hs.MaHocSinh END) as HocSinhDaNhap
+                -- Số học sinh đã có điểm TB chung (đủ tất cả môn hợp lệ)
+                COUNT(DISTINCT CASE 
+                    WHEN DiemTBChung.DiemTB IS NOT NULL 
+                         AND DiemTBChung.SoMonCoDiemHopLe = TongMonHopLe.TongSoMonHopLe
+                         AND TongMonHopLe.TongSoMonHopLe > 0
+                    THEN hs.MaHocSinh 
+                END) as HocSinhDaNhap
                 
             FROM HocSinh hs
             INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh 
@@ -380,16 +400,31 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
             LEFT JOIN (
                 SELECT 
                     ds2.MaHocSinh,
-                    CASE 
-                        WHEN COUNT(DISTINCT ds2.MaMonHoc) = (SELECT COUNT(*) FROM MonHoc)
-                             AND COUNT(DISTINCT CASE WHEN ds2.DiemTrungBinh IS NOT NULL THEN ds2.MaMonHoc END) = (SELECT COUNT(*) FROM MonHoc)
-                        THEN AVG(ds2.DiemTrungBinh)
-                        ELSE NULL
-                    END as DiemTB
+                    AVG(ds2.DiemTrungBinh) as DiemTB,
+                    COUNT(DISTINCT ds2.MaMonHoc) as SoMonCoDiem,
+                    COUNT(DISTINCT CASE WHEN ds2.DiemTrungBinh IS NOT NULL THEN ds2.MaMonHoc END) as SoMonCoDiemHopLe
                 FROM DiemSo ds2
+                INNER JOIN PhanLop pl2 ON ds2.MaHocSinh = pl2.MaHocSinh AND pl2.MaHocKy = @MaHocKy
+                INNER JOIN LopHoc l2 ON pl2.MaLop = l2.maLop
+                INNER JOIN MonHoc_NamHoc_Khoi mhnk ON ds2.MaMonHoc = mhnk.MaMonHoc 
+                    AND mhnk.MaKhoi = l2.maKhoi
+                INNER JOIN HocKy hk2 ON ds2.MaHocKy = hk2.MaHocKy
+                    AND mhnk.MaNamHoc = hk2.MaNamHoc
                 WHERE ds2.MaHocKy = @MaHocKy
                 GROUP BY ds2.MaHocSinh
             ) as DiemTBChung ON hs.MaHocSinh = DiemTBChung.MaHocSinh
+            LEFT JOIN (
+                SELECT 
+                    pl3.MaHocSinh,
+                    COUNT(DISTINCT mhnk2.MaMonHoc) as TongSoMonHopLe
+                FROM PhanLop pl3
+                INNER JOIN LopHoc l3 ON pl3.MaLop = l3.maLop
+                INNER JOIN HocKy hk3 ON pl3.MaHocKy = hk3.MaHocKy
+                INNER JOIN MonHoc_NamHoc_Khoi mhnk2 ON mhnk2.MaKhoi = l3.maKhoi 
+                    AND mhnk2.MaNamHoc = hk3.MaNamHoc
+                WHERE pl3.MaHocKy = @MaHocKy
+                GROUP BY pl3.MaHocSinh
+            ) as TongMonHopLe ON hs.MaHocSinh = TongMonHopLe.MaHocSinh
             WHERE (hs.TrangThai = 'Đang học' OR hs.TrangThai = 'Đang học(CT)')";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
@@ -415,21 +450,39 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                 // Tính số học sinh chưa nhập điểm
                 thongKe.HocSinhChuaNhapDiem = thongKe.TongHocSinh - thongKe.HocSinhDaNhapDiem;
 
-                // Lấy tên học sinh điểm cao nhất (chỉ trong học sinh đã phân lớp)
+                // Lấy tên học sinh điểm cao nhất (chỉ trong học sinh đã phân lớp và có đủ điểm các môn hợp lệ)
                 string queryDiemCaoNhat = @"
             SELECT hs.HoTen
             FROM HocSinh hs
             INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh 
                 AND pl.MaHocKy = @MaHocKy
+            INNER JOIN LopHoc l ON pl.MaLop = l.maLop
+            INNER JOIN HocKy hk ON pl.MaHocKy = hk.MaHocKy
             INNER JOIN (
                 SELECT 
                     ds.MaHocSinh,
-                    AVG(ds.DiemTrungBinh) as DiemTB
+                    AVG(ds.DiemTrungBinh) as DiemTB,
+                    COUNT(DISTINCT ds.MaMonHoc) as SoMonCoDiem
                 FROM DiemSo ds
+                INNER JOIN PhanLop pl2 ON ds.MaHocSinh = pl2.MaHocSinh AND pl2.MaHocKy = @MaHocKy
+                INNER JOIN LopHoc l2 ON pl2.MaLop = l2.maLop
+                INNER JOIN MonHoc_NamHoc_Khoi mhnk ON ds.MaMonHoc = mhnk.MaMonHoc 
+                    AND mhnk.MaKhoi = l2.maKhoi
+                INNER JOIN HocKy hk2 ON ds.MaHocKy = hk2.MaHocKy
+                    AND mhnk.MaNamHoc = hk2.MaNamHoc
                 WHERE ds.MaHocKy = @MaHocKy
+                    AND ds.DiemTrungBinh IS NOT NULL
                 GROUP BY ds.MaHocSinh
-                HAVING COUNT(DISTINCT ds.MaMonHoc) = (SELECT COUNT(*) FROM MonHoc)
-                    AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = (SELECT COUNT(*) FROM MonHoc)
+                HAVING SoMonCoDiem = (
+                    SELECT COUNT(DISTINCT mhnk2.MaMonHoc)
+                    FROM PhanLop pl3
+                    INNER JOIN LopHoc l3 ON pl3.MaLop = l3.maLop
+                    INNER JOIN HocKy hk3 ON pl3.MaHocKy = hk3.MaHocKy
+                    INNER JOIN MonHoc_NamHoc_Khoi mhnk2 ON mhnk2.MaKhoi = l3.maKhoi 
+                        AND mhnk2.MaNamHoc = hk3.MaNamHoc
+                    WHERE pl3.MaHocSinh = ds.MaHocSinh 
+                        AND pl3.MaHocKy = @MaHocKy
+                )
                 ORDER BY DiemTB DESC
                 LIMIT 1
             ) as DiemCaoNhat ON hs.MaHocSinh = DiemCaoNhat.MaHocSinh";
@@ -441,21 +494,39 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     thongKe.HocSinhDiemCaoNhat = result?.ToString() ?? "Chưa có";
                 }
 
-                // Lấy tên học sinh điểm thấp nhất (chỉ trong học sinh đã phân lớp)
+                // Lấy tên học sinh điểm thấp nhất (chỉ trong học sinh đã phân lớp và có đủ điểm các môn hợp lệ)
                 string queryDiemThapNhat = @"
             SELECT hs.HoTen
             FROM HocSinh hs
             INNER JOIN PhanLop pl ON hs.MaHocSinh = pl.MaHocSinh 
                 AND pl.MaHocKy = @MaHocKy
+            INNER JOIN LopHoc l ON pl.MaLop = l.maLop
+            INNER JOIN HocKy hk ON pl.MaHocKy = hk.MaHocKy
             INNER JOIN (
                 SELECT 
                     ds.MaHocSinh,
-                    AVG(ds.DiemTrungBinh) as DiemTB
+                    AVG(ds.DiemTrungBinh) as DiemTB,
+                    COUNT(DISTINCT ds.MaMonHoc) as SoMonCoDiem
                 FROM DiemSo ds
+                INNER JOIN PhanLop pl2 ON ds.MaHocSinh = pl2.MaHocSinh AND pl2.MaHocKy = @MaHocKy
+                INNER JOIN LopHoc l2 ON pl2.MaLop = l2.maLop
+                INNER JOIN MonHoc_NamHoc_Khoi mhnk ON ds.MaMonHoc = mhnk.MaMonHoc 
+                    AND mhnk.MaKhoi = l2.maKhoi
+                INNER JOIN HocKy hk2 ON ds.MaHocKy = hk2.MaHocKy
+                    AND mhnk.MaNamHoc = hk2.MaNamHoc
                 WHERE ds.MaHocKy = @MaHocKy
+                    AND ds.DiemTrungBinh IS NOT NULL
                 GROUP BY ds.MaHocSinh
-                HAVING COUNT(DISTINCT ds.MaMonHoc) = (SELECT COUNT(*) FROM MonHoc)
-                    AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = (SELECT COUNT(*) FROM MonHoc)
+                HAVING SoMonCoDiem = (
+                    SELECT COUNT(DISTINCT mhnk2.MaMonHoc)
+                    FROM PhanLop pl3
+                    INNER JOIN LopHoc l3 ON pl3.MaLop = l3.maLop
+                    INNER JOIN HocKy hk3 ON pl3.MaHocKy = hk3.MaHocKy
+                    INNER JOIN MonHoc_NamHoc_Khoi mhnk2 ON mhnk2.MaKhoi = l3.maKhoi 
+                        AND mhnk2.MaNamHoc = hk3.MaNamHoc
+                    WHERE pl3.MaHocSinh = ds.MaHocSinh 
+                        AND pl3.MaHocKy = @MaHocKy
+                )
                 ORDER BY DiemTB ASC
                 LIMIT 1
             ) as DiemThapNhat ON hs.MaHocSinh = DiemThapNhat.MaHocSinh";
@@ -467,21 +538,36 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
                     thongKe.HocSinhDiemThapNhat = result?.ToString() ?? "Chưa có";
                 }
 
-                // Lấy điểm TB học kỳ trước (chỉ tính học sinh đã phân lớp trong kỳ đó)
+                // Lấy điểm TB học kỳ trước (chỉ tính học sinh đã phân lớp trong kỳ đó và có đủ điểm các môn hợp lệ)
                 string queryDiemKyTruoc = @"
             SELECT AVG(DiemTB) as DiemTBKyTruoc
             FROM (
                 SELECT 
                     ds.MaHocSinh,
-                    AVG(ds.DiemTrungBinh) as DiemTB
+                    ds.MaHocKy,
+                    AVG(ds.DiemTrungBinh) as DiemTB,
+                    COUNT(DISTINCT ds.MaMonHoc) as SoMonCoDiem
                 FROM DiemSo ds
                 INNER JOIN HocKy hk ON ds.MaHocKy = hk.MaHocKy
                 INNER JOIN PhanLop pl ON ds.MaHocSinh = pl.MaHocSinh 
                     AND pl.MaHocKy = hk.MaHocKy
+                INNER JOIN LopHoc l ON pl.MaLop = l.maLop
+                INNER JOIN MonHoc_NamHoc_Khoi mhnk ON ds.MaMonHoc = mhnk.MaMonHoc 
+                    AND mhnk.MaKhoi = l.maKhoi
+                    AND mhnk.MaNamHoc = hk.MaNamHoc
                 WHERE hk.MaHocKy < @MaHocKy
+                    AND ds.DiemTrungBinh IS NOT NULL
                 GROUP BY ds.MaHocSinh, ds.MaHocKy
-                HAVING COUNT(DISTINCT ds.MaMonHoc) = (SELECT COUNT(*) FROM MonHoc)
-                    AND COUNT(DISTINCT CASE WHEN ds.DiemTrungBinh IS NOT NULL THEN ds.MaMonHoc END) = (SELECT COUNT(*) FROM MonHoc)
+                HAVING SoMonCoDiem = (
+                    SELECT COUNT(DISTINCT mhnk2.MaMonHoc)
+                    FROM PhanLop pl2
+                    INNER JOIN LopHoc l2 ON pl2.MaLop = l2.maLop
+                    INNER JOIN HocKy hk2 ON pl2.MaHocKy = hk2.MaHocKy
+                    INNER JOIN MonHoc_NamHoc_Khoi mhnk2 ON mhnk2.MaKhoi = l2.maKhoi 
+                        AND mhnk2.MaNamHoc = hk2.MaNamHoc
+                    WHERE pl2.MaHocSinh = ds.MaHocSinh 
+                        AND pl2.MaHocKy = ds.MaHocKy
+                )
                 ORDER BY hk.MaHocKy DESC
             ) as DiemKyTruoc
             LIMIT 1";
