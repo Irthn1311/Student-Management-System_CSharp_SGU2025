@@ -327,7 +327,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Lỗi tạo QR code: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");  
                 
                 // Fallback: Tạo QR code với text đơn giản
                 try
