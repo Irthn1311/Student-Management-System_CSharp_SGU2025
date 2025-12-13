@@ -2,12 +2,7 @@
 using Student_Management_System_CSharp_SGU2025.DTO;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Student_Management_System_CSharp_SGU2025.GUI
@@ -161,7 +156,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 if (kq)
                 {
-                    MessageBox.Show("Thêm lớp học thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // ✅ Thêm thành công → Thông báo và đóng form
+                    // DataGridView sẽ được cập nhật khi form cha nhận DialogResult.OK
+                    MessageBox.Show($"Thêm lớp '{lopMoi.tenLop}' thành công!\n\n" +
+                        "Lớp mới đã được thêm vào danh sách.\n" +
+                        "Bạn có thể phân học sinh vào lớp tại chức năng 'Phân lớp'.",
+                        "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }

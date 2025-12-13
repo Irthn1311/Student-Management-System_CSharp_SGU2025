@@ -45,6 +45,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             namHocBUS = new NamHocBUS();
             maHocKyHienTai = 0;
 
+            // ✅ Thiết lập cột "Chuyển lớp" ngay từ đầu
+            SetupChuyenLopColumn();
+
             LoadHocKyComboBox();
             LoadThongTinLop();
             //LoadHocSinhChuaPhanLop(); // Load dropdown học sinh chưa phân lớp
@@ -380,6 +383,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 // Hiển thị kết quả đã lọc
                 HienThiDanhSachHocSinh(filteredList);
+                
+                // ✅ Đảm bảo DataGridView được refresh
+                dgvHocSinh.Refresh();
+                dgvHocSinh.Invalidate();
             }
             catch (Exception ex)
             {
@@ -470,18 +477,42 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Lưu danh sách gốc để tìm kiếm
                 danhSachHocSinhGoc = dsHocSinh.OrderBy(h => h.HoTen).ToList();
 
-                // Hiển thị danh sách (có thể đã được lọc)
-                HienThiDanhSachHocSinh(danhSachHocSinhGoc);
-                
-                // ✅ Ẩn cột "Chuyển lớp" (không cần thiết vì đã có button "Gửi yêu cầu chuyển lớp")
-                if (dgvHocSinh.Columns["ChuyenLop"] != null)
-                {
-                    dgvHocSinh.Columns["ChuyenLop"].Visible = false;
-                }
+                // ✅ Đảm bảo cột "Chuyển lớp" luôn hiển thị và ở đúng vị trí
+                SetupChuyenLopColumn();
+
+                // ✅ Áp dụng filter để hiển thị danh sách (tự động áp dụng tìm kiếm và filter giới tính nếu có)
+                ApplyFilters();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi tải danh sách học sinh: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ✅ THIẾT LẬP CỘT "CHUYỂN LỚP"
+        private void SetupChuyenLopColumn()
+        {
+            try
+            {
+                if (dgvHocSinh.Columns["ChuyenLop"] != null)
+                {
+                    var chuyenLopColumn = dgvHocSinh.Columns["ChuyenLop"];
+                    chuyenLopColumn.Visible = true;
+                    chuyenLopColumn.HeaderText = "Chuyển lớp";
+                    chuyenLopColumn.DisplayIndex = 6; // Đặt sau cột Email, trước cột Xóa
+                    
+                    // Đảm bảo cột có thể click được
+                    chuyenLopColumn.ReadOnly = true;
+                    
+                    // Style cho cột (màu xanh)
+                    chuyenLopColumn.DefaultCellStyle.ForeColor = Color.FromArgb(0, 102, 204);
+                    chuyenLopColumn.DefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+                    chuyenLopColumn.DefaultCellStyle.SelectionForeColor = Color.FromArgb(0, 102, 204);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi thiết lập cột Chuyển lớp: {ex.Message}");
             }
         }
 
@@ -492,11 +523,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             {
                 dgvHocSinh.Rows.Clear();
 
-                // ✅ Ẩn cột "Chuyển lớp" (không cần thiết vì đã có button "Gửi yêu cầu chuyển lớp")
-                if (dgvHocSinh.Columns["ChuyenLop"] != null)
-                {
-                    dgvHocSinh.Columns["ChuyenLop"].Visible = false;
-                }
+                // ✅ Đảm bảo cột "Chuyển lớp" luôn hiển thị
+                SetupChuyenLopColumn();
 
                 if (dsHocSinh == null || dsHocSinh.Count == 0)
                 {
@@ -935,16 +963,23 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
         }
 
-        // ✅ CHUYỂN LỚP HỌC SINH
+        // ✅ CHUYỂN LỚP HỌC SINH (CHỈ CHO PHÉP CHUYỂN SANG LỚP CÙNG KHỐI)
         private void ChuyenLopHocSinh(int maHS, string tenHS, int maHocKy)
         {
             try
             {
-                // Lấy tên lớp hiện tại
+                // Lấy thông tin lớp hiện tại để kiểm tra khối
                 var lopHienTai = lopHocBUS.LayLopTheoId(maLop);
-                string tenLopCu = lopHienTai?.tenLop ?? $"Lớp {maLop}";
+                if (lopHienTai == null)
+                {
+                    MessageBox.Show("Không tìm thấy thông tin lớp hiện tại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-                // Mở form chọn lớp mới
+                string tenLopCu = lopHienTai.tenLop ?? $"Lớp {maLop}";
+                int khoiHienTai = lopHienTai.maKhoi;
+
+                // Mở form chọn lớp mới (FormChuyenLop đã tự động lọc chỉ hiển thị lớp cùng khối)
                 using (FormChuyenLop formChuyenLop = new FormChuyenLop(maHS, maLop, maHocKy, tenHS, tenLopCu))
                 {
                     if (formChuyenLop.ShowDialog() == DialogResult.OK)
@@ -952,19 +987,38 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         int maLopMoi = formChuyenLop.MaLopMoi;
                         string lyDo = formChuyenLop.LyDo;
 
+                        // Kiểm tra lại lớp mới có cùng khối không (double check)
+                        var lopMoi = lopHocBUS.LayLopTheoId(maLopMoi);
+                        if (lopMoi == null)
+                        {
+                            MessageBox.Show("Không tìm thấy thông tin lớp mới.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        if (lopMoi.maKhoi != khoiHienTai)
+                        {
+                            MessageBox.Show($"Không thể chuyển học sinh sang lớp khác khối.\n\n" +
+                                $"Lớp hiện tại: Khối {khoiHienTai}\n" +
+                                $"Lớp mới: Khối {lopMoi.maKhoi}\n\n" +
+                                $"Chỉ được phép chuyển trong cùng khối.",
+                                "Không cho phép chuyển khác khối", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
                         // Thực hiện chuyển lớp
                         if (phanLopBLL.ChuyenLop(maHS, maLop, maLopMoi, maHocKy, lyDo, null))
                         {
-                            // Lấy tên lớp mới
-                            var lopMoi = lopHocBUS.LayLopTheoId(maLopMoi);
-                            string tenLopMoi = lopMoi?.tenLop ?? $"Lớp {maLopMoi}";
+                            string tenLopMoi = lopMoi.tenLop ?? $"Lớp {maLopMoi}";
 
-                            MessageBox.Show($"Đã chuyển học sinh {tenHS} từ lớp {tenLopCu} sang lớp {tenLopMoi} thành công.", 
+                            MessageBox.Show($"✅ Đã chuyển học sinh {tenHS} từ lớp {tenLopCu} (Khối {khoiHienTai}) sang lớp {tenLopMoi} (Khối {lopMoi.maKhoi}) thành công.", 
                                 "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                            // Reload dữ liệu
+                            // ✅ Reload dữ liệu (LoadDanhSachHocSinh đã tự động gọi ApplyFilters)
                             LoadDanhSachHocSinh();
-                            //LoadHocSinhChuaPhanLop();
+                            
+                            // ✅ Refresh DataGridView để đảm bảo cập nhật
+                            dgvHocSinh.Refresh();
+                            
                             LoadThongKe();
                         }
                         else

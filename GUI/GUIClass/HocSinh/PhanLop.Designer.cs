@@ -45,6 +45,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnPhanLopChuyenTruong = new Guna.UI2.WinForms.Guna2Button();
             this.btnNhapExcel = new Guna.UI2.WinForms.Guna2Button();
             this.btnThemHocSinh = new Guna.UI2.WinForms.Guna2Button();
+            this.cbKhoi = new Guna.UI2.WinForms.Guna2ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.tablePhanLop)).BeginInit();
             this.SuspendLayout();
             // 
@@ -317,6 +318,30 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnThemHocSinh.Text = "Thêm học sinh";
             this.btnThemHocSinh.Click += new System.EventHandler(this.btnThemHocSinh_Click);
             // 
+            // cbKhoi
+            // 
+            this.cbKhoi.BackColor = System.Drawing.Color.Transparent;
+            this.cbKhoi.BorderRadius = 5;
+            this.cbKhoi.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbKhoi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbKhoi.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbKhoi.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cbKhoi.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbKhoi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cbKhoi.ItemHeight = 30;
+            this.cbKhoi.Items.AddRange(new object[] {
+            "Tất cả khối",
+            "10",
+            "11",
+            "12"});
+            this.cbKhoi.Location = new System.Drawing.Point(484, 21);
+            this.cbKhoi.Margin = new System.Windows.Forms.Padding(2);
+            this.cbKhoi.Name = "cbKhoi";
+            this.cbKhoi.Size = new System.Drawing.Size(120, 36);
+            this.cbKhoi.StartIndex = 0;
+            this.cbKhoi.TabIndex = 83;
+            this.cbKhoi.SelectedIndexChanged += new System.EventHandler(this.cbKhoi_SelectedIndexChanged);
+            // 
             // PhanLop
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -331,6 +356,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.Controls.Add(this.btnThemPhanLop);
             this.Controls.Add(this.btnChon);
             this.Controls.Add(this.txtTimKiem);
+            this.Controls.Add(this.cbKhoi);
             this.Controls.Add(this.cbHocKyNamHoc);
             this.Controls.Add(this.cbLop);
             this.Name = "PhanLop";
@@ -356,5 +382,6 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private Guna.UI2.WinForms.Guna2Button btnPhanLopChuyenTruong;
         private Guna.UI2.WinForms.Guna2Button btnNhapExcel;
         private Guna.UI2.WinForms.Guna2Button btnThemHocSinh;
+        private Guna.UI2.WinForms.Guna2ComboBox cbKhoi;
     }
 }

@@ -391,36 +391,39 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                                 continue;
                             }
 
-                            // Đếm số học sinh trong từng lớp (tổng của cả HK1 và HK2 năm mới)
+                            // ✅ Đếm số học sinh trong từng lớp (lấy MAX giữa HK1 và HK2 để đảm bảo không vượt sĩ số)
                             var soLuongHocSinhTrongLop = new Dictionary<int, int>();
                             
-                            // Đếm từ database (cả HK1 và HK2)
-                            var phanLopHK1Moi = allPhanLopHist.Where(p => p.maHocKy == hocKy1.MaHocKy);
-                            var phanLopHK2Moi = allPhanLopHist.Where(p => p.maHocKy == hocKy2.MaHocKy);
+                            // Đếm riêng cho HK1 và HK2
+                            var phanLopHK1Moi = allPhanLopHist.Where(p => p.maHocKy == hocKy1.MaHocKy).ToList();
+                            var phanLopHK2Moi = allPhanLopHist.Where(p => p.maHocKy == hocKy2.MaHocKy).ToList();
                             
-                            foreach (var pl in phanLopHK1Moi.Concat(phanLopHK2Moi))
+                            // Thêm số lượng tạm của học sinh vừa phân
+                            var phanLopTamHK1 = danhSachPhanLopTam.Where(p => p.maHocKy == hocKy1.MaHocKy).ToList();
+                            var phanLopTamHK2 = danhSachPhanLopTam.Where(p => p.maHocKy == hocKy2.MaHocKy).ToList();
+                            
+                            // Tính sĩ số cho từng lớp (lấy MAX giữa HK1 và HK2)
+                            foreach (var lop in dsLopKhoiMoi)
                             {
-                                if (!soLuongHocSinhTrongLop.ContainsKey(pl.maLop))
-                                    soLuongHocSinhTrongLop[pl.maLop] = 0;
-                                soLuongHocSinhTrongLop[pl.maLop]++;
+                                int siSoHK1 = phanLopHK1Moi.Count(p => p.maLop == lop.MaLop) + 
+                                              phanLopTamHK1.Count(p => p.maLop == lop.MaLop);
+                                int siSoHK2 = phanLopHK2Moi.Count(p => p.maLop == lop.MaLop) + 
+                                              phanLopTamHK2.Count(p => p.maLop == lop.MaLop);
+                                
+                                // Lấy MAX để đảm bảo cả HK1 và HK2 đều không vượt sĩ số
+                                soLuongHocSinhTrongLop[lop.MaLop] = Math.Max(siSoHK1, siSoHK2);
                             }
 
-                            // Thêm số lượng tạm của học sinh vừa phân (cả HK1 và HK2)
-                            foreach (var pl in danhSachPhanLopTam.Where(p => p.maHocKy == hocKy1.MaHocKy || p.maHocKy == hocKy2.MaHocKy))
-                            {
-                                if (!soLuongHocSinhTrongLop.ContainsKey(pl.maLop))
-                                    soLuongHocSinhTrongLop[pl.maLop] = 0;
-                                soLuongHocSinhTrongLop[pl.maLop]++;
-                            }
-
-                            // Tìm lớp có ít học sinh nhất
+                            // ✅ Tìm lớp có ít học sinh nhất VÀ còn chỗ trống
                             LopDTO lopPhuHop = null;
                             int soHocSinhItNhat = int.MaxValue;
 
                             foreach (var lop in dsLopKhoiMoi)
                             {
                                 int soHS = soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0;
-                                if (soHS < soHocSinhItNhat)
+                                
+                                // ✅ Kiểm tra xem lớp còn chỗ trống không
+                                if (soHS < lop.SiSo && soHS < soHocSinhItNhat)
                                 {
                                     soHocSinhItNhat = soHS;
                                     lopPhuHop = lop;
@@ -503,26 +506,26 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                         }
                         else
                         {
-                            // Đếm số học sinh đã có trong từng lớp (tổng cả HK1 và HK2 - bao gồm cả tạm)
+                            // ✅ Đếm số học sinh đã có trong từng lớp (lấy MAX giữa HK1 và HK2 để đảm bảo không vượt sĩ số)
                             var soLuongHocSinhTrongLop = new Dictionary<int, int>();
+                            
+                            // Đếm riêng cho HK1 và HK2
+                            var phanLopHK1Moi = allPhanLopHist.Where(p => p.maHocKy == hocKy1.MaHocKy).ToList();
+                            var phanLopHK2Moi = allPhanLopHist.Where(p => p.maHocKy == hocKy2.MaHocKy).ToList();
+                            
+                            // Thêm số lượng tạm của học sinh vừa phân
+                            var phanLopTamHK1 = danhSachPhanLopTam.Where(p => p.maHocKy == hocKy1.MaHocKy).ToList();
+                            var phanLopTamHK2 = danhSachPhanLopTam.Where(p => p.maHocKy == hocKy2.MaHocKy).ToList();
 
                             foreach (var lop in dsLopKhoi10)
                             {
-                                int soHSHK1 = allPhanLopHist.Count(p => p.maLop == lop.MaLop && p.maHocKy == hocKy1.MaHocKy);
-                                int soHSHK2 = allPhanLopHist.Count(p => p.maLop == lop.MaLop && p.maHocKy == hocKy2.MaHocKy);
-                                soLuongHocSinhTrongLop[lop.MaLop] = soHSHK1 + soHSHK2;
-                            }
-
-                            // Cộng thêm số tạm (cả HK1 và HK2)
-                            foreach (var phanLopTam in danhSachPhanLopTam)
-                            {
-                                if (phanLopTam.maHocKy == hocKy1.MaHocKy || phanLopTam.maHocKy == hocKy2.MaHocKy)
-                                {
-                                    if (soLuongHocSinhTrongLop.ContainsKey(phanLopTam.maLop))
-                                        soLuongHocSinhTrongLop[phanLopTam.maLop]++;
-                                    else
-                                        soLuongHocSinhTrongLop[phanLopTam.maLop] = 1;
-                                }
+                                int siSoHK1 = phanLopHK1Moi.Count(p => p.maLop == lop.MaLop) + 
+                                              phanLopTamHK1.Count(p => p.maLop == lop.MaLop);
+                                int siSoHK2 = phanLopHK2Moi.Count(p => p.maLop == lop.MaLop) + 
+                                              phanLopTamHK2.Count(p => p.maLop == lop.MaLop);
+                                
+                                // Lấy MAX để đảm bảo cả HK1 và HK2 đều không vượt sĩ số
+                                soLuongHocSinhTrongLop[lop.MaLop] = Math.Max(siSoHK1, siSoHK2);
                             }
 
                             // Nhóm học sinh theo chữ cái đầu tiên của tên
@@ -574,11 +577,24 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                                 {
                                     try
                                     {
-                                        // Tìm lớp có ít học sinh nhất
+                                        // ✅ Tìm lớp có ít học sinh nhất VÀ còn chỗ trống
                                         var lopPhuHop = dsLopKhoi10
+                                            .Where(lop => {
+                                                int soHS = soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0;
+                                                return soHS < lop.SiSo; // Chỉ lấy lớp còn chỗ trống
+                                            })
                                             .OrderBy(lop => soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0)
                                             .ThenBy(lop => lop.MaLop)
-                                            .First();
+                                            .FirstOrDefault();
+                                        
+                                        // ✅ Nếu không tìm thấy lớp còn chỗ trống
+                                        if (lopPhuHop == null)
+                                        {
+                                            string loi = $"HS {hs.HoTen}: Khối {khoiCanPhanLop} đã đầy, không thể phân lớp";
+                                            Console.WriteLine($"    ❌ {loi}");
+                                            danhSachLoi.Add(loi);
+                                            continue;
+                                        }
 
                                         // Thêm vào lớp cho CẢ HK1 và HK2 (cùng lớp)
                                         bool themHK1ThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy);
@@ -586,17 +602,17 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
                                         if (themHK1ThanhCong && themHK2ThanhCong)
                                         {
-                                            soHocSinhDaPhanLop += 2; // Đếm cả HK1 và HK2
+                                            soHocSinhDaPhanLop += 2; // Đếm cả HK1 và HK2 (để báo cáo tổng số record)
                                             danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy));
                                             danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy));
 
-                                            // Cập nhật số lượng (tổng cả HK1 và HK2)
+                                            // ✅ Cập nhật số lượng học sinh (chỉ cộng 1 vì cùng 1 học sinh trong cả HK1 và HK2)
                                             if (soLuongHocSinhTrongLop.ContainsKey(lopPhuHop.MaLop))
-                                                soLuongHocSinhTrongLop[lopPhuHop.MaLop] += 2;
+                                                soLuongHocSinhTrongLop[lopPhuHop.MaLop]++;
                                             else
-                                                soLuongHocSinhTrongLop[lopPhuHop.MaLop] = 2;
+                                                soLuongHocSinhTrongLop[lopPhuHop.MaLop] = 1;
 
-                                            Console.WriteLine($"    ✓ {hs.HoTen} → Lớp {lopPhuHop.TenLop} (HK1 & HK2 - Sĩ số: {soLuongHocSinhTrongLop[lopPhuHop.MaLop]})");
+                                            Console.WriteLine($"    ✓ {hs.HoTen} → Lớp {lopPhuHop.TenLop} (HK1 & HK2 - Sĩ số hiện tại: {soLuongHocSinhTrongLop[lopPhuHop.MaLop]}/{lopPhuHop.SiSo})");
                                         }
                                         else
                                         {
@@ -631,7 +647,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                             foreach (var lop in dsLopKhoi10)
                             {
                                 int siSo = soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0;
-                                Console.WriteLine($"     • {lop.TenLop}: {siSo} học sinh");
+                                Console.WriteLine($"     • {lop.TenLop}: {siSo}/{lop.SiSo} học sinh");
                             }
                         }
                     }
@@ -674,27 +690,26 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
                     Console.WriteLine($"  → Số lớp khối 10: {dsLopKhoi10.Count} lớp ({string.Join(", ", dsLopKhoi10.Select(l => l.TenLop))})");
 
-                    // ✅ Đếm số học sinh đã có trong từng lớp (tổng cả HK1 và HK2 - bao gồm cả tạm)
+                    // ✅ Đếm số học sinh đã có trong từng lớp (lấy MAX giữa HK1 và HK2 để đảm bảo không vượt sĩ số)
                     var soLuongHocSinhTrongLop = new Dictionary<int, int>();
+                    
+                    // Đếm riêng cho HK1 và HK2
+                    var phanLopHK1Moi = allPhanLopHist.Where(p => p.maHocKy == hocKy1.MaHocKy).ToList();
+                    var phanLopHK2Moi = allPhanLopHist.Where(p => p.maHocKy == hocKy2.MaHocKy).ToList();
+                    
+                    // Thêm số lượng tạm của học sinh vừa phân
+                    var phanLopTamHK1 = danhSachPhanLopTam.Where(p => p.maHocKy == hocKy1.MaHocKy).ToList();
+                    var phanLopTamHK2 = danhSachPhanLopTam.Where(p => p.maHocKy == hocKy2.MaHocKy).ToList();
 
-                    // Đếm từ database (cả HK1 và HK2)
                     foreach (var lop in dsLopKhoi10)
                     {
-                        int soHSHK1 = allPhanLopHist.Count(p => p.maLop == lop.MaLop && p.maHocKy == hocKy1.MaHocKy);
-                        int soHSHK2 = allPhanLopHist.Count(p => p.maLop == lop.MaLop && p.maHocKy == hocKy2.MaHocKy);
-                        soLuongHocSinhTrongLop[lop.MaLop] = soHSHK1 + soHSHK2;
-                    }
-
-                    // Cộng thêm số tạm (cả HK1 và HK2)
-                    foreach (var phanLopTam in danhSachPhanLopTam)
-                    {
-                        if (phanLopTam.maHocKy == hocKy1.MaHocKy || phanLopTam.maHocKy == hocKy2.MaHocKy)
-                        {
-                            if (soLuongHocSinhTrongLop.ContainsKey(phanLopTam.maLop))
-                                soLuongHocSinhTrongLop[phanLopTam.maLop]++;
-                            else
-                                soLuongHocSinhTrongLop[phanLopTam.maLop] = 1;
-                        }
+                        int siSoHK1 = phanLopHK1Moi.Count(p => p.maLop == lop.MaLop) + 
+                                      phanLopTamHK1.Count(p => p.maLop == lop.MaLop);
+                        int siSoHK2 = phanLopHK2Moi.Count(p => p.maLop == lop.MaLop) + 
+                                      phanLopTamHK2.Count(p => p.maLop == lop.MaLop);
+                        
+                        // Lấy MAX để đảm bảo cả HK1 và HK2 đều không vượt sĩ số
+                        soLuongHocSinhTrongLop[lop.MaLop] = Math.Max(siSoHK1, siSoHK2);
                     }
 
                     // ✅ Nhóm học sinh theo chữ cái đầu tiên của tên (bỏ qua khoảng trắng, lấy chữ cái đầu tiên)
@@ -752,12 +767,24 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                         {
                             try
                             {
-                                // ✅ Lấy lớp theo thứ tự vòng tròn, nhưng ưu tiên lớp có ít học sinh hơn để cân bằng sĩ số
-                                // Tìm lớp có ít học sinh nhất trong danh sách
+                                // ✅ Tìm lớp có ít học sinh nhất VÀ còn chỗ trống
                                 var lopPhuHop = dsLopKhoi10
+                                    .Where(lop => {
+                                        int soHS = soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0;
+                                        return soHS < lop.SiSo; // Chỉ lấy lớp còn chỗ trống
+                                    })
                                     .OrderBy(lop => soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0)
                                     .ThenBy(lop => lop.MaLop) // Nếu bằng nhau thì ưu tiên MaLop nhỏ hơn
-                                    .First();
+                                    .FirstOrDefault();
+                                
+                                // ✅ Nếu không tìm thấy lớp còn chỗ trống
+                                if (lopPhuHop == null)
+                                {
+                                    string loi = $"HS {hs.HoTen}: Khối {khoiCanPhanLop} đã đầy, không thể phân lớp";
+                                    Console.WriteLine($"    ❌ {loi}");
+                                    danhSachLoi.Add(loi);
+                                    continue;
+                                }
 
                                 // ✅ Thêm vào lớp cho CẢ HK1 và HK2 (cùng lớp)
                                 bool themHK1ThanhCong = phanLopDAO.ThemPhanLop(hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy);
@@ -765,17 +792,17 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
                                 if (themHK1ThanhCong && themHK2ThanhCong)
                                 {
-                                    soHocSinhDaPhanLop += 2; // Đếm cả HK1 và HK2
+                                    soHocSinhDaPhanLop += 2; // Đếm cả HK1 và HK2 (để báo cáo tổng số record)
                                     danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, hocKy1.MaHocKy));
                                     danhSachPhanLopTam.Add((hs.MaHS, lopPhuHop.MaLop, hocKy2.MaHocKy));
 
-                                    // Cập nhật số lượng (tổng cả HK1 và HK2)
+                                    // ✅ Cập nhật số lượng học sinh (chỉ cộng 1 vì cùng 1 học sinh trong cả HK1 và HK2)
                                     if (soLuongHocSinhTrongLop.ContainsKey(lopPhuHop.MaLop))
-                                        soLuongHocSinhTrongLop[lopPhuHop.MaLop] += 2; // +2 vì thêm cả HK1 và HK2
+                                        soLuongHocSinhTrongLop[lopPhuHop.MaLop]++;
                                     else
-                                        soLuongHocSinhTrongLop[lopPhuHop.MaLop] = 2;
+                                        soLuongHocSinhTrongLop[lopPhuHop.MaLop] = 1;
 
-                                    Console.WriteLine($"    ✓ {hs.HoTen} → Lớp {lopPhuHop.TenLop} (HK1 & HK2 - Sĩ số: {soLuongHocSinhTrongLop[lopPhuHop.MaLop]})");
+                                    Console.WriteLine($"    ✓ {hs.HoTen} → Lớp {lopPhuHop.TenLop} (HK1 & HK2 - Sĩ số hiện tại: {soLuongHocSinhTrongLop[lopPhuHop.MaLop]}/{lopPhuHop.SiSo})");
                                 }
                                 else
                                 {
@@ -810,7 +837,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                     foreach (var lop in dsLopKhoi10)
                     {
                         int siSo = soLuongHocSinhTrongLop.ContainsKey(lop.MaLop) ? soLuongHocSinhTrongLop[lop.MaLop] : 0;
-                        Console.WriteLine($"     • {lop.TenLop}: {siSo} học sinh");
+                        Console.WriteLine($"     • {lop.TenLop}: {siSo}/{lop.SiSo} học sinh");
                     }
                 }
 

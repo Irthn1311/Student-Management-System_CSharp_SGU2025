@@ -148,12 +148,59 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 cbLop.SelectedIndex = 0; // Chọn mục đầu tiên làm mặc định
             }
 
+            // ✅ Load ComboBox Khối (đã được định nghĩa sẵn trong Designer)
+            // Items: "Tất cả khối", "10", "11", "12"
+            if (cbKhoi.Items.Count > 0)
+            {
+                cbKhoi.SelectedIndex = 0; // Mặc định chọn "Tất cả khối"
+            }
+
+        }
+
+        /// <summary>
+        /// ✅ Refresh lại danh sách lớp từ database
+        /// Gọi method này sau khi thêm lớp mới để cập nhật danhSachLop
+        /// </summary>
+        private void RefreshDanhSachLop()
+        {
+            danhSachLop = lopHocBus.DocDSLop();
+            
+            // Cập nhật lại ComboBox Lớp Học
+            string currentSelection = cbLop.SelectedItem?.ToString();
+            cbLop.Items.Clear();
+            cbLop.Items.Add("Chọn lớp");
+            foreach (var lop in danhSachLop)
+            {
+                cbLop.Items.Add(lop.TenLop);
+            }
+            
+            // Giữ lại selection cũ nếu còn tồn tại
+            if (!string.IsNullOrEmpty(currentSelection) && cbLop.Items.Contains(currentSelection))
+            {
+                cbLop.SelectedItem = currentSelection;
+            }
+            else if (cbLop.Items.Count > 0)
+            {
+                cbLop.SelectedIndex = 0;
+            }
         }
 
         private void cbHocKyNamHoc_SelectedIndexChanged(object sender, EventArgs e)
         {
             FilterTablePhanLop();
             // ✅ Cập nhật trạng thái nút khi thay đổi năm học
+            UpdateButtonStates();
+        }
+
+        /// <summary>
+        /// ✅ Event handler khi chọn khối - điều chỉnh nút theo khối được chọn
+        /// - Khối 10: Hiển thị "Nhập Excel" (tuyển sinh), ẩn "Chuyển trường"
+        /// - Khối 11, 12: Hiển thị "Chuyển trường", ẩn "Nhập Excel"
+        /// - Tất cả khối: Hiển thị cả hai
+        /// </summary>
+        private void cbKhoi_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FilterTablePhanLop();
             UpdateButtonStates();
         }
 
@@ -170,6 +217,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             try
             {
                 // btnThemPhanLop giờ là btnPhanLopTuDong - Phân lớp tự động
+                
+                // ✅ REFRESH lại danh sách lớp để lấy các lớp mới thêm
+                RefreshDanhSachLop();
                 
                 // ✅ Kiểm tra đã chọn học kỳ chưa (giờ không có "Chọn học kỳ" nữa nên chỉ cần check null)
                 if (cbHocKyNamHoc.SelectedItem == null)
@@ -453,8 +503,15 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void PhanLop_Load(object sender, EventArgs e)
         {
-            // Form load event - được gọi tự động khi form được mở
-            // Các thao tác khởi tạo đã được thực hiện trong constructor
+            // ✅ Refresh danh sách lớp mỗi khi form được load
+            // Đảm bảo lấy được các lớp mới thêm từ các form khác
+            RefreshDanhSachLop();
+            
+            // Refresh table phân lớp
+            FilterTablePhanLop();
+            
+            // Cập nhật trạng thái các nút
+            UpdateButtonStates();
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
@@ -568,9 +625,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         }
 
         /// <summary>
-        /// Cập nhật trạng thái enable/disable của các nút
-        /// - "Phân lớp chuyển trường": chỉ enable khi đã phân lớp tự động cho cả HK1 và HK2 VÀ có học kỳ "Đang diễn ra"
-        /// - "Nhập Excel": disable khi đã phân lớp tự động cho cả HK1 và HK2, enable khi chưa phân lớp
+        /// Cập nhật trạng thái enable/disable và visibility của các nút theo khối và học kỳ
+        /// ✅ LOGIC MỚI THEO KHỐI:
+        /// - Khối 10: Hiển thị "Nhập Excel" (tuyển sinh) + "Thêm học sinh", ẩn "Chuyển trường"
+        /// - Khối 11, 12: Hiển thị "Chuyển trường", ẩn "Nhập Excel" + "Thêm học sinh"  
+        /// - Tất cả khối: Hiển thị cả hai (logic cũ)
         /// </summary>
         private void UpdateButtonStates()
         {
@@ -580,7 +639,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 string selectedNamHoc = cbHocKyNamHoc.SelectedItem?.ToString();
                 if (string.IsNullOrEmpty(selectedNamHoc) || !danhSachNamHoc.ContainsKey(selectedNamHoc))
                 {
-                    // Chưa chọn năm học, disable các nút
+                    // Chưa chọn năm học, disable và ẩn các nút
                     btnPhanLopChuyenTruong.Enabled = false;
                     btnNhapExcel.Enabled = false;
                     btnThemHocSinh.Enabled = false;
@@ -622,24 +681,72 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // 2. Có ít nhất một học kỳ "Đang diễn ra"
                 bool daPhanLopTuDongHK1 = soHocSinhDaPhanLopHK1 >= nguongToiThieu;
                 bool daPhanLopTuDongHK2 = soHocSinhDaPhanLopHK2 >= nguongToiThieu;
-                
-                btnPhanLopChuyenTruong.Enabled = daPhanLopTuDongHK1 && daPhanLopTuDongHK2 && coHocKyDangDienRa;
 
-                // ✅ LOGIC CHO NÚT "NHẬP EXCEL" VÀ "THÊM HỌC SINH":
-                // Disable nếu đã phân lớp tự động cho CẢ HK1 VÀ HK2 (không cần quan tâm "Đang diễn ra")
-                // Vì các nút này dùng cho tuyển sinh (học sinh chưa được phân lớp)
-                // Enable nếu chưa phân lớp tự động cho cả HK1 và HK2
-                if (daPhanLopTuDongHK1 && daPhanLopTuDongHK2)
+                // ✅ LẤY KHỐI ĐƯỢC CHỌN TỪ cbKhoi
+                string selectedKhoi = cbKhoi.SelectedItem?.ToString() ?? "Tất cả khối";
+                
+                // ✅ LOGIC HIỂN THỊ NÚT THEO KHỐI
+                if (selectedKhoi == "10")
                 {
-                    // Đã phân lớp tự động cho cả HK1 và HK2 → disable các nút tuyển sinh
-                    btnNhapExcel.Enabled = false;
-                    btnThemHocSinh.Enabled = false;
+                    // KHỐI 10: Chỉ hiển thị "Nhập Excel" + "Thêm học sinh" (tuyển sinh)
+                    // Ẩn "Chuyển trường" vì lớp 10 là tuyển sinh mới
+                    btnNhapExcel.Visible = true;
+                    btnThemHocSinh.Visible = true;
+                    btnPhanLopChuyenTruong.Visible = false;
+                    
+                    // Cập nhật text để rõ ràng hơn
+                    btnNhapExcel.Text = "Nhập Excel (Tuyển sinh)";
+                    
+                    // Enable/Disable theo điều kiện phân lớp
+                    if (daPhanLopTuDongHK1 && daPhanLopTuDongHK2)
+                    {
+                        btnNhapExcel.Enabled = false;
+                        btnThemHocSinh.Enabled = false;
+                    }
+                    else
+                    {
+                        btnNhapExcel.Enabled = true;
+                        btnThemHocSinh.Enabled = true;
+                    }
+                }
+                else if (selectedKhoi == "11" || selectedKhoi == "12")
+                {
+                    // KHỐI 11, 12: Chỉ hiển thị "Chuyển trường"
+                    // Ẩn "Nhập Excel" + "Thêm học sinh" vì lớp 11, 12 là chuyển lên/chuyển trường
+                    btnNhapExcel.Visible = false;
+                    btnThemHocSinh.Visible = false;
+                    btnPhanLopChuyenTruong.Visible = true;
+                    
+                    // Cập nhật text để rõ ràng hơn
+                    btnPhanLopChuyenTruong.Text = $"Chuyển trường (Khối {selectedKhoi})";
+                    
+                    // Enable/Disable theo điều kiện phân lớp và học kỳ
+                    btnPhanLopChuyenTruong.Enabled = daPhanLopTuDongHK1 && daPhanLopTuDongHK2 && coHocKyDangDienRa;
                 }
                 else
                 {
-                    // Chưa phân lớp tự động cho cả HK1 và HK2 → enable các nút tuyển sinh
-                    btnNhapExcel.Enabled = true;
-                    btnThemHocSinh.Enabled = true;
+                    // TẤT CẢ KHỐI: Hiển thị tất cả các nút (logic cũ)
+                    btnNhapExcel.Visible = true;
+                    btnThemHocSinh.Visible = true;
+                    btnPhanLopChuyenTruong.Visible = true;
+                    
+                    // Reset text
+                    btnNhapExcel.Text = "Nhập Excel";
+                    btnPhanLopChuyenTruong.Text = "Chuyển trường";
+                    
+                    // Enable/Disable theo điều kiện phân lớp
+                    btnPhanLopChuyenTruong.Enabled = daPhanLopTuDongHK1 && daPhanLopTuDongHK2 && coHocKyDangDienRa;
+                    
+                    if (daPhanLopTuDongHK1 && daPhanLopTuDongHK2)
+                    {
+                        btnNhapExcel.Enabled = false;
+                        btnThemHocSinh.Enabled = false;
+                    }
+                    else
+                    {
+                        btnNhapExcel.Enabled = true;
+                        btnThemHocSinh.Enabled = true;
+                    }
                 }
             }
             catch (Exception ex)
@@ -697,6 +804,23 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // Event handler cho ComboBox
             cbHocKyNamHoc.SelectedIndexChanged += cbHocKyNamHoc_SelectedIndexChanged;
             cbLop.SelectedIndexChanged += cbLop_SelectedIndexChanged;
+            
+            // ✅ Event handler khi form trở nên visible - refresh danh sách lớp
+            this.VisibleChanged += PhanLop_VisibleChanged;
+        }
+
+        /// <summary>
+        /// ✅ Refresh danh sách lớp khi form trở nên visible
+        /// Đảm bảo các lớp mới thêm từ form khác được cập nhật
+        /// </summary>
+        private void PhanLop_VisibleChanged(object sender, EventArgs e)
+        {
+            if (this.Visible)
+            {
+                RefreshDanhSachLop();
+                FilterTablePhanLop();
+                UpdateButtonStates();
+            }
         }
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)

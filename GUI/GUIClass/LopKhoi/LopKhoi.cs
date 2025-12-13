@@ -92,6 +92,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // ✅ Áp dụng phân quyền cho DataGridView
             ApplyPermissionLopHoc();
 
+            // 🆕 Thêm button "Thêm lớp học" với quyền CREATE
+            ThemButtonThemLopHoc();
+
             // 🆕 Thêm button "Quản lý yêu cầu chuyển lớp" với quyền UPDATE
             ThemButtonQuanLyYeuCau();
         }
@@ -964,6 +967,89 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         e.CellStyle.ForeColor = dgvLop.DefaultCellStyle.ForeColor;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// 🆕 Thêm button "Thêm lớp học" với quyền CREATE
+        /// </summary>
+        private void ThemButtonThemLopHoc()
+        {
+            try
+            {
+                // ✅ Kiểm tra quyền CREATE trước khi tạo button
+                bool canCreate = PermissionHelper.HasPermission(PermissionHelper.QLLOPHOC, PermissionHelper.CREATE);
+                
+                // Tạo button mới
+                Guna2Button btnThemLop = new Guna2Button();
+                btnThemLop.Text = "➕ Thêm lớp học";
+                btnThemLop.Size = new Size(160, 40);
+                btnThemLop.FillColor = Color.FromArgb(34, 197, 94); // Màu xanh lá
+                btnThemLop.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+                btnThemLop.ForeColor = Color.White;
+                btnThemLop.BorderRadius = 8;
+                btnThemLop.Cursor = Cursors.Hand;
+                btnThemLop.Location = new Point(220, 20); // Đặt bên cạnh nút "Yêu cầu chuyển lớp"
+
+                // ✅ Áp dụng quyền CREATE: chỉ hiển thị và enable nếu có quyền
+                btnThemLop.Visible = canCreate;
+                btnThemLop.Enabled = canCreate;
+
+                // Nếu không có quyền, làm mờ button
+                if (!canCreate)
+                {
+                    btnThemLop.FillColor = Color.FromArgb(200, 200, 200); // Màu xám
+                    btnThemLop.ForeColor = Color.FromArgb(100, 100, 100);
+                }
+
+                // Gắn sự kiện click
+                btnThemLop.Click += BtnThemLopHoc_Click;
+
+                // Thêm button vào form
+                this.Controls.Add(btnThemLop);
+                btnThemLop.BringToFront();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi thêm button Thêm lớp học: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 🆕 Event khi click button "Thêm lớp học"
+        /// </summary>
+        private void BtnThemLopHoc_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // ✅ Kiểm tra quyền CREATE trước khi mở form
+                if (!PermissionHelper.HasPermission(PermissionHelper.QLLOPHOC, PermissionHelper.CREATE))
+                {
+                    MessageBox.Show(
+                        "Bạn không có quyền thêm lớp học!",
+                        "Không có quyền",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Mở form thêm lớp học
+                ThemLopHoc formThemLop = new ThemLopHoc();
+                formThemLop.StartPosition = FormStartPosition.CenterParent;
+
+                DialogResult result = formThemLop.ShowDialog();
+
+                // Reload dữ liệu sau khi đóng form (nếu có thay đổi)
+                if (result == DialogResult.OK)
+                {
+                    LoadData();
+                    CapNhatThongKeKhoi();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở form thêm lớp học: {ex.Message}", "Lỗi", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

@@ -390,6 +390,12 @@
     <Compile Include="GUIClass\TaiKhoan\frmEditPhanQuyen.Designer.cs">
       <DependentUpon>frmEditPhanQuyen.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUIClass\ThemSua%28Phuc%29\FormChonHocSinhPhanLop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIClass\ThemSua%28Phuc%29\FormChonHocSinhPhanLop.Designer.cs">
+      <DependentUpon>FormChonHocSinhPhanLop.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUIClass\ThoiKhoaBieu\FrmAutoTKBPreview.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -863,6 +869,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\ThemHoSoHocSinh.resx">
       <DependentUpon>ThemHoSoHocSinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUIClass\ThemSua%28Phuc%29\FormChonHocSinhPhanLop.resx">
+      <DependentUpon>FormChonHocSinhPhanLop.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUIClass\ThemSua%28Phuc%29\frmThemHocKy.resx">
       <DependentUpon>frmThemHocKy.cs</DependentUpon>

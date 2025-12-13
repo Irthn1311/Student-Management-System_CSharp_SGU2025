@@ -91,18 +91,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 cbLopMoi.Items.Clear();
                 cbLopMoi.Items.Add("-- Chọn lớp mới --");
 
-                // Lấy thông tin học kỳ để xác định năm học
-                var hocKy = hocKyBUS.LayHocKyTheoMa(maHocKy);
-
-                // Lấy danh sách lớp theo NĂM HỌC của học kỳ (nếu có), nếu không thì lấy tất cả
-                if (hocKy != null && !string.IsNullOrWhiteSpace(hocKy.MaNamHoc))
-                {
-                    danhSachLopFull = lopHocBUS.DocDSLopTheoNamHoc(hocKy.MaNamHoc);
-                }
-                else
-                {
-                    danhSachLopFull = lopHocBUS.DocDSLop();
-                }
+                // ✅ LẤY TẤT CẢ LỚP - KHÔNG PHỤ THUỘC VÀO NĂM HỌC
+                // Vì form chuyển lớp chỉ cho phép chuyển trong cùng khối,
+                // nên lấy tất cả lớp và filter theo khối là hợp lý.
+                // Điều này đảm bảo các lớp mới thêm vào (chưa có học sinh) cũng được hiển thị.
+                danhSachLopFull = lopHocBUS.DocDSLop();
 
                 if (danhSachLopFull == null || danhSachLopFull.Count == 0)
                 {
@@ -111,16 +104,24 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                // 🔒 CHỈ GIỮ LỚP CÙNG KHỐI VỚI LỚP HIỆN TẠI
+                // ✅ CHỈ LỌC THEO KHỐI - KHÔNG PHÂN BIỆT TÊN LỚP (cho phép tất cả ký tự đặc biệt, tiếng Việt, v.v.)
                 var dsLopFiltered = danhSachLopFull
-                    .Where(l => l.maLop != maLopCu && l.maKhoi == khoiHienTai)
-                    .OrderBy(l => l.tenLop)
+                    .Where(l => l != null && l.maLop != maLopCu && l.maKhoi == khoiHienTai)
+                    .OrderBy(l => l.tenLop ?? "")
                     .ToList();
+
+                // Debug: Log số lượng lớp được tìm thấy
+                Console.WriteLine($"[FormChuyenLop] Tìm thấy {dsLopFiltered.Count} lớp cùng khối {khoiHienTai}");
+                foreach (var lop in dsLopFiltered)
+                {
+                    Console.WriteLine($"[FormChuyenLop] Lớp: {lop.tenLop} (Mã: {lop.maLop}, Khối: {lop.maKhoi})");
+                }
 
                 if (dsLopFiltered.Count == 0)
                 {
                     MessageBox.Show($"Không tìm thấy lớp nào cùng khối (Khối {khoiHienTai}) để chuyển.\n\n" +
-                        $"Hệ thống chỉ cho phép chuyển lớp trong cùng khối.",
+                        $"Hệ thống chỉ cho phép chuyển lớp trong cùng khối.\n\n" +
+                        $"Tổng số lớp trong hệ thống: {danhSachLopFull.Count}",
                         "Không có lớp để chuyển", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     cbLopMoi.SelectedIndex = 0;
                     return;
@@ -131,29 +132,39 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
                 foreach (var lop in dsLopFiltered)
                 {
-                    // Sĩ số hiện tại theo học kỳ
-                    int siSo = phanLopBLL
-                        .LayDanhSachHocSinhTheoLopVaHocKy(lop.maLop, maHocKy)?
-                        .Count ?? 0;
-
-                    // Sĩ số tối đa lấy từ cấu hình lớp, nếu chưa có thì xem hiện tại là tối đa
-                    int siSoToiDa = lop.siSo > 0 ? lop.siSo : siSo;
-                    int siSoConLai = siSoToiDa - siSo;
-                    if (siSoConLai < 0) siSoConLai = 0;
-
-                    string siSoTag = siSoConLai <= 0
-                        ? " ❌ ĐẦY"
-                        : $" ✅ Còn {siSoConLai} chỗ";
-
-                    string displayText =
-                        $"{lop.tenLop} (Khối {lop.maKhoi}) [{siSo}/{siSoToiDa}]{siSoTag}";
-
-                    cbLopMoi.Items.Add(new ComboBoxItem
+                    try
                     {
-                        Text = displayText,
-                        Value = lop.maLop,
-                        Tag = new { SiSo = siSo, Khoi = lop.maKhoi, SiSoToiDa = siSoToiDa, IsEnabled = siSoConLai > 0 }
-                    });
+                        // Sĩ số hiện tại theo học kỳ
+                        int siSo = phanLopBLL
+                            .LayDanhSachHocSinhTheoLopVaHocKy(lop.maLop, maHocKy)?
+                            .Count ?? 0;
+
+                        // Sĩ số tối đa lấy từ cấu hình lớp, nếu chưa có thì xem hiện tại là tối đa
+                        int siSoToiDa = lop.siSo > 0 ? lop.siSo : siSo;
+                        int siSoConLai = siSoToiDa - siSo;
+                        if (siSoConLai < 0) siSoConLai = 0;
+
+                        string siSoTag = siSoConLai <= 0
+                            ? " ❌ ĐẦY"
+                            : $" ✅ Còn {siSoConLai} chỗ";
+
+                        // ✅ Hiển thị tên lớp đầy đủ, không filter ký tự đặc biệt
+                        string tenLop = lop.tenLop ?? $"Lớp {lop.maLop}";
+                        string displayText =
+                            $"{tenLop} (Khối {lop.maKhoi}) [{siSo}/{siSoToiDa}]{siSoTag}";
+
+                        cbLopMoi.Items.Add(new ComboBoxItem
+                        {
+                            Text = displayText,
+                            Value = lop.maLop,
+                            Tag = new { SiSo = siSo, Khoi = lop.maKhoi, SiSoToiDa = siSoToiDa, IsEnabled = siSoConLai > 0 }
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log lỗi nhưng vẫn tiếp tục với lớp khác
+                        Console.WriteLine($"[FormChuyenLop] Lỗi khi thêm lớp {lop?.maLop}: {ex.Message}");
+                    }
                 }
 
                 cbLopMoi.SelectedIndex = 0;
@@ -213,7 +224,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 // Lấy lý do (optional)
                 LyDo = txtLyDo.Text.Trim();
 
-                // ✅ Không cho phép chuyển khác khối – chặn cứng để tránh sai nghiệp vụ
+                // ✅ Kiểm tra cùng khối - ĐÂY LÀ ĐIỀU KIỆN DUY NHẤT (không kiểm tra tên lớp)
                 if (khoiLopMoi != khoiHienTai)
                 {
                     MessageBox.Show($"Không thể chuyển học sinh sang lớp khác khối.\n\n" +
@@ -223,6 +234,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
+
+                // ✅ KHÔNG CÓ VALIDATION NÀO VỀ TÊN LỚP - Cho phép tất cả ký tự đặc biệt, tiếng Việt, v.v.
 
                 // Xác nhận
                 string message = $"Xác nhận chuyển lớp:\n\n" +
@@ -258,7 +271,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.Close();
         }
 
-        // ✅ EVENT VẼ CÁC ITEM TRONG COMBOBOX VỚI MÀU SẮC
+        // ✅ EVENT VẼ CÁC ITEM TRONG COMBOBOX VỚI MÀU SẮC - HỖ TRỢ UNICODE ĐẦY ĐỦ
         private void cbLopMoi_DrawItem(object sender, DrawItemEventArgs e)
         {
             try
@@ -268,11 +281,18 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 e.DrawBackground();
 
                 var item = cbLopMoi.Items[e.Index];
-                string text = item.ToString();
+                string text = item?.ToString() ?? "";
+
+                // ✅ Đảm bảo text không null và hỗ trợ Unicode đầy đủ
+                if (string.IsNullOrEmpty(text))
+                {
+                    text = "";
+                }
 
                 // Màu mặc định
                 Color textColor = Color.Black;
                 Color backgroundColor = Color.White;
+                // ✅ Sử dụng font hỗ trợ Unicode tốt (Segoe UI hỗ trợ tiếng Việt và ký tự đặc biệt)
                 Font itemFont = new Font("Segoe UI", 9.5F, FontStyle.Regular);
 
                 // Kiểm tra header/separator
@@ -317,21 +337,43 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     e.Graphics.FillRectangle(bgBrush, e.Bounds);
                 }
 
-                // Vẽ text
+                // ✅ Vẽ text với StringFormat để hỗ trợ Unicode tốt hơn
                 using (SolidBrush textBrush = new SolidBrush(textColor))
+                using (StringFormat sf = new StringFormat())
                 {
-                    e.Graphics.DrawString(text, itemFont, textBrush, e.Bounds.X + 5, e.Bounds.Y + 5);
+                    sf.Alignment = StringAlignment.Near;
+                    sf.LineAlignment = StringAlignment.Center;
+                    sf.FormatFlags = StringFormatFlags.NoWrap;
+                    
+                    // Vẽ text với padding
+                    RectangleF textRect = new RectangleF(
+                        e.Bounds.X + 5, 
+                        e.Bounds.Y, 
+                        e.Bounds.Width - 10, 
+                        e.Bounds.Height
+                    );
+                    
+                    e.Graphics.DrawString(text, itemFont, textBrush, textRect, sf);
                 }
 
                 e.DrawFocusRectangle();
             }
-            catch
+            catch (Exception ex)
             {
                 // Fallback: vẽ mặc định nếu có lỗi
+                Console.WriteLine($"[FormChuyenLop] Lỗi khi vẽ item ComboBox: {ex.Message}");
                 e.DrawBackground();
-                using (SolidBrush brush = new SolidBrush(e.ForeColor))
+                try
                 {
-                    e.Graphics.DrawString(cbLopMoi.Items[e.Index].ToString(), e.Font, brush, e.Bounds);
+                    string fallbackText = cbLopMoi.Items[e.Index]?.ToString() ?? "";
+                    using (SolidBrush brush = new SolidBrush(e.ForeColor))
+                    {
+                        e.Graphics.DrawString(fallbackText, e.Font, brush, e.Bounds);
+                    }
+                }
+                catch
+                {
+                    // Nếu vẫn lỗi, chỉ vẽ background
                 }
             }
         }
