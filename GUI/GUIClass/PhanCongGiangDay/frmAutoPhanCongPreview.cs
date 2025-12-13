@@ -376,6 +376,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
             }
 
+            // ✅ Cập nhật ComboBox môn học theo học kỳ mới
+            LoadMonHocToFilters();
+
             LoadExistingAssignments();
         }
         
@@ -505,6 +508,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         /// <summary>
         /// Load môn học với TÊN hiển thị (không phải mã)
+        /// ✅ Tự động cập nhật theo học kỳ đã chọn để hiển thị môn học mới được thêm vào năm học đó
         /// </summary>
         private void LoadMonHocToFilters()
         {
@@ -518,9 +522,33 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 var allItem = new ComboBoxItem { Text = "Tất cả môn", Value = null };
                 cbMon.Items.Add(allItem);
 
-                if (monHocCache != null)
+                // ✅ Lấy môn học theo học kỳ đã chọn (nếu có)
+                List<MonHocDTO> dsMonHoc = null;
+                if (selectedHocKyId.HasValue)
                 {
-                    foreach (var mon in monHocCache.Values.OrderBy(m => m.tenMon))
+                    var hocKyDAO = new HocKyDAO();
+                    var hocKy = hocKyDAO.LayHocKyTheoMa(selectedHocKyId.Value);
+                    
+                    if (hocKy != null && !string.IsNullOrEmpty(hocKy.MaNamHoc))
+                    {
+                        // Lấy môn học từ MonHoc_NamHoc_Khoi theo năm học
+                        var monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
+                        dsMonHoc = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHoc(hocKy.MaNamHoc);
+                    }
+                }
+
+                // Nếu không có môn học từ học kỳ, dùng cache
+                if (dsMonHoc == null || dsMonHoc.Count == 0)
+                {
+                    if (monHocCache != null)
+                    {
+                        dsMonHoc = monHocCache.Values.ToList();
+                    }
+                }
+
+                if (dsMonHoc != null && dsMonHoc.Count > 0)
+                {
+                    foreach (var mon in dsMonHoc.OrderBy(m => m.tenMon))
                     {
                         var item = new ComboBoxItem 
                         { 

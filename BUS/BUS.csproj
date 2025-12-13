@@ -167,6 +167,7 @@
     <Compile Include="BUSClass\LoginBUS.cs" />
     <Compile Include="BUSClass\LopHocBUS.cs" />
     <Compile Include="BUSClass\MonHocBUS.cs" />
+    <Compile Include="BUSClass\MonHoc_NamHoc_KhoiBUS.cs" />
     <Compile Include="BUSClass\MoveResult.cs" />
     <Compile Include="BUSClass\NamHocBUS.cs" />
     <Compile Include="BUSClass\NguoiDungBLL.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Services\AssignmentAutoService.cs" />
     <Compile Include="Services\AssignmentPersistService.cs" />
     <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\MonHocFilterService.cs" />
     <Compile Include="Services\OTPManager.cs" />
     <Compile Include="Services\SeedingService.cs" />
     <Compile Include="Services\SemesterHelper.cs" />

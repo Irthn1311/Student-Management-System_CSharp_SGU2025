@@ -72,7 +72,7 @@
             "Học Kỳ II - 2023 - 2024",
             "Học Kỳ I - 2024 - 2025",
             "Học Kỳ II - 2024 - 2025"});
-            this.cbHocKyNamHoc.Location = new System.Drawing.Point(36, 29);
+            this.cbHocKyNamHoc.Location = new System.Drawing.Point(17, 29);
             this.cbHocKyNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKyNamHoc.Name = "cbHocKyNamHoc";
             this.cbHocKyNamHoc.Size = new System.Drawing.Size(230, 36);
@@ -94,7 +94,7 @@
             "Tất cả lớp",
             "Lớp 6A1",
             "Lớp 7A2"});
-            this.cbLop.Location = new System.Drawing.Point(310, 29);
+            this.cbLop.Location = new System.Drawing.Point(296, 29);
             this.cbLop.Margin = new System.Windows.Forms.Padding(2);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(161, 36);
@@ -296,7 +296,7 @@
             this.btnXepHanhKiemTuDong.ForeColor = System.Drawing.Color.White;
             this.btnXepHanhKiemTuDong.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources.plus;
             this.btnXepHanhKiemTuDong.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnXepHanhKiemTuDong.Location = new System.Drawing.Point(971, 29);
+            this.btnXepHanhKiemTuDong.Location = new System.Drawing.Point(971, 30);
             this.btnXepHanhKiemTuDong.Margin = new System.Windows.Forms.Padding(2);
             this.btnXepHanhKiemTuDong.Name = "btnXepHanhKiemTuDong";
             this.btnXepHanhKiemTuDong.Size = new System.Drawing.Size(163, 35);

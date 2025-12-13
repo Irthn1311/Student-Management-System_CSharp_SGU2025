@@ -16,10 +16,10 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             this.statCardKhoi3 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
             this.statCardKhoi2 = new Student_Management_System_CSharp_SGU2025.GUI.statcardLHP.StatCardKhoi();
@@ -109,7 +109,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             "Khối 10",
             "Khối 11",
             "Khối 12"});
-            this.guna2ComboBox1.Location = new System.Drawing.Point(272, 22);
+            this.guna2ComboBox1.Location = new System.Drawing.Point(769, 22);
             this.guna2ComboBox1.Name = "guna2ComboBox1";
             this.guna2ComboBox1.Size = new System.Drawing.Size(146, 36);
             this.guna2ComboBox1.StartIndex = 0;
@@ -120,16 +120,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             // dgvLop
             // 
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            this.dgvLop.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 10.18868F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvLop.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.White;
+            this.dgvLop.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI Semibold", 10.18868F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvLop.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.dgvLop.ColumnHeadersHeight = 22;
             this.dgvLop.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.dgvLop.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -139,25 +139,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.SiSo,
             this.GVCN,
             this.ThaoTac});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.471698F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(254)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvLop.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.471698F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(254)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvLop.DefaultCellStyle = dataGridViewCellStyle7;
             this.dgvLop.GridColor = System.Drawing.Color.White;
             this.dgvLop.Location = new System.Drawing.Point(25, 292);
             this.dgvLop.Name = "dgvLop";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(254)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvLop.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(254)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvLop.RowHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this.dgvLop.RowHeadersVisible = false;
             this.dgvLop.RowHeadersWidth = 45;
             this.dgvLop.Size = new System.Drawing.Size(1125, 464);
@@ -230,7 +230,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.cbNamHoc.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbNamHoc.ForeColor = System.Drawing.Color.Black;
             this.cbNamHoc.ItemHeight = 30;
-            this.cbNamHoc.Location = new System.Drawing.Point(738, 22);
+            this.cbNamHoc.Location = new System.Drawing.Point(933, 22);
             this.cbNamHoc.Name = "cbNamHoc";
             this.cbNamHoc.Size = new System.Drawing.Size(200, 36);
             this.cbNamHoc.TabIndex = 6;
@@ -254,7 +254,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.PlaceholderText = "Tìm kiếm theo mã lớp, tên lớp, giáo viên...";
             this.txtSearch.SelectedText = "";
-            this.txtSearch.Size = new System.Drawing.Size(300, 36);
+            this.txtSearch.Size = new System.Drawing.Size(323, 36);
             this.txtSearch.TabIndex = 8;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
@@ -270,7 +270,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.cbGiaoVien.ForeColor = System.Drawing.Color.Black;
             this.cbGiaoVien.IntegralHeight = false;
             this.cbGiaoVien.ItemHeight = 30;
-            this.cbGiaoVien.Location = new System.Drawing.Point(456, 70);
+            this.cbGiaoVien.Location = new System.Drawing.Point(933, 70);
             this.cbGiaoVien.Name = "cbGiaoVien";
             this.cbGiaoVien.Size = new System.Drawing.Size(200, 36);
             this.cbGiaoVien.TabIndex = 9;
@@ -286,9 +286,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.cbSiSo.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.cbSiSo.ForeColor = System.Drawing.Color.Black;
             this.cbSiSo.ItemHeight = 30;
-            this.cbSiSo.Location = new System.Drawing.Point(456, 22);
+            this.cbSiSo.Location = new System.Drawing.Point(769, 70);
             this.cbSiSo.Name = "cbSiSo";
-            this.cbSiSo.Size = new System.Drawing.Size(140, 36);
+            this.cbSiSo.Size = new System.Drawing.Size(146, 36);
             this.cbSiSo.TabIndex = 10;
             this.cbSiSo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.cbSiSo.SelectedIndexChanged += new System.EventHandler(this.cbSiSo_SelectedIndexChanged);
@@ -299,7 +299,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnResetFilter.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(117)))), ((int)(((byte)(125)))));
             this.btnResetFilter.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
             this.btnResetFilter.ForeColor = System.Drawing.Color.White;
-            this.btnResetFilter.Location = new System.Drawing.Point(738, 70);
+            this.btnResetFilter.Location = new System.Drawing.Point(228, 22);
             this.btnResetFilter.Name = "btnResetFilter";
             this.btnResetFilter.Size = new System.Drawing.Size(120, 36);
             this.btnResetFilter.TabIndex = 12;

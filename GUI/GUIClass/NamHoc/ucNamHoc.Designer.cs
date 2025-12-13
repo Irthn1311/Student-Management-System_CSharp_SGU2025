@@ -28,12 +28,12 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             this.btnNamHoc = new Guna.UI2.WinForms.Guna2Button();
             this.btnHocKy = new Guna.UI2.WinForms.Guna2Button();
@@ -86,7 +86,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnNamHoc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnNamHoc.ForeColor = System.Drawing.Color.White;
             this.btnNamHoc.Location = new System.Drawing.Point(9, 8);
-            this.btnNamHoc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.btnNamHoc.Name = "btnNamHoc";
             this.btnNamHoc.Size = new System.Drawing.Size(112, 37);
             this.btnNamHoc.TabIndex = 1;
@@ -104,7 +104,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnHocKy.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHocKy.ForeColor = System.Drawing.Color.White;
             this.btnHocKy.Location = new System.Drawing.Point(115, 8);
-            this.btnHocKy.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnHocKy.Margin = new System.Windows.Forms.Padding(2);
             this.btnHocKy.Name = "btnHocKy";
             this.btnHocKy.Size = new System.Drawing.Size(96, 37);
             this.btnHocKy.TabIndex = 2;
@@ -122,7 +122,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnAddNamHoc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAddNamHoc.ForeColor = System.Drawing.Color.White;
             this.btnAddNamHoc.Location = new System.Drawing.Point(962, 27);
-            this.btnAddNamHoc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnAddNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.btnAddNamHoc.Name = "btnAddNamHoc";
             this.btnAddNamHoc.Size = new System.Drawing.Size(158, 37);
             this.btnAddNamHoc.TabIndex = 16;
@@ -131,16 +131,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             // tbNamHoc
             // 
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            this.tbNamHoc.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tbNamHoc.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle13.BackColor = System.Drawing.Color.White;
+            this.tbNamHoc.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tbNamHoc.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle14;
             this.tbNamHoc.ColumnHeadersHeight = 18;
             this.tbNamHoc.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tbNamHoc.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -149,17 +149,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.ngayKetThuc,
             this.trangThai,
             this.thaoTac});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tbNamHoc.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle15.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle15.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tbNamHoc.DefaultCellStyle = dataGridViewCellStyle15;
             this.tbNamHoc.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tbNamHoc.Location = new System.Drawing.Point(47, 240);
-            this.tbNamHoc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbNamHoc.Margin = new System.Windows.Forms.Padding(2);
             this.tbNamHoc.MinimumSize = new System.Drawing.Size(1072, 502);
             this.tbNamHoc.Name = "tbNamHoc";
             this.tbNamHoc.RowHeadersVisible = false;
@@ -222,16 +222,16 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             // tbHocKy
             // 
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
-            this.tbHocKy.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tbHocKy.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle16.BackColor = System.Drawing.Color.White;
+            this.tbHocKy.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle17.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tbHocKy.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
             this.tbHocKy.ColumnHeadersHeight = 18;
             this.tbHocKy.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.tbHocKy.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -241,17 +241,17 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.ngayKetThucHK,
             this.trangThaiHK,
             this.thaoTacHK});
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tbHocKy.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle18.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tbHocKy.DefaultCellStyle = dataGridViewCellStyle18;
             this.tbHocKy.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.tbHocKy.Location = new System.Drawing.Point(47, 240);
-            this.tbHocKy.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbHocKy.Margin = new System.Windows.Forms.Padding(2);
             this.tbHocKy.MinimumSize = new System.Drawing.Size(1072, 502);
             this.tbHocKy.Name = "tbHocKy";
             this.tbHocKy.RowHeadersVisible = false;
@@ -329,7 +329,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnAddHocKy.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAddHocKy.ForeColor = System.Drawing.Color.White;
             this.btnAddHocKy.Location = new System.Drawing.Point(962, 27);
-            this.btnAddHocKy.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnAddHocKy.Margin = new System.Windows.Forms.Padding(2);
             this.btnAddHocKy.Name = "btnAddHocKy";
             this.btnAddHocKy.Size = new System.Drawing.Size(158, 37);
             this.btnAddHocKy.TabIndex = 25;
@@ -340,11 +340,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             this.statCardNH3.BackColor = System.Drawing.Color.Transparent;
             this.statCardNH3.BorderColor = System.Drawing.Color.White;
-            this.statCardNH3.Location = new System.Drawing.Point(804, 99);
+            this.statCardNH3.Location = new System.Drawing.Point(774, 77);
             this.statCardNH3.Margin = new System.Windows.Forms.Padding(4);
             this.statCardNH3.Name = "statCardNH3";
             this.statCardNH3.PanelColor = System.Drawing.Color.White;
-            this.statCardNH3.Size = new System.Drawing.Size(315, 114);
+            this.statCardNH3.Size = new System.Drawing.Size(346, 136);
             this.statCardNH3.TabIndex = 2;
             this.statCardNH3.TextColor = System.Drawing.SystemColors.ControlText;
             this.statCardNH3.Load += new System.EventHandler(this.statCardNH3_Load);
@@ -353,11 +353,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             this.statCardNH2.BackColor = System.Drawing.Color.Transparent;
             this.statCardNH2.BorderColor = System.Drawing.Color.White;
-            this.statCardNH2.Location = new System.Drawing.Point(422, 99);
+            this.statCardNH2.Location = new System.Drawing.Point(408, 77);
             this.statCardNH2.Margin = new System.Windows.Forms.Padding(4);
             this.statCardNH2.Name = "statCardNH2";
             this.statCardNH2.PanelColor = System.Drawing.Color.White;
-            this.statCardNH2.Size = new System.Drawing.Size(315, 114);
+            this.statCardNH2.Size = new System.Drawing.Size(347, 136);
             this.statCardNH2.TabIndex = 1;
             this.statCardNH2.TextColor = System.Drawing.SystemColors.ControlText;
             this.statCardNH2.Load += new System.EventHandler(this.statCardKhoi2_Load);
@@ -366,11 +366,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             this.statCardNH1.BackColor = System.Drawing.Color.Transparent;
             this.statCardNH1.BorderColor = System.Drawing.Color.White;
-            this.statCardNH1.Location = new System.Drawing.Point(47, 99);
+            this.statCardNH1.Location = new System.Drawing.Point(47, 77);
             this.statCardNH1.Margin = new System.Windows.Forms.Padding(4);
             this.statCardNH1.Name = "statCardNH1";
             this.statCardNH1.PanelColor = System.Drawing.Color.White;
-            this.statCardNH1.Size = new System.Drawing.Size(315, 114);
+            this.statCardNH1.Size = new System.Drawing.Size(347, 136);
             this.statCardNH1.TabIndex = 0;
             this.statCardNH1.TextColor = System.Drawing.SystemColors.ControlText;
             this.statCardNH1.Load += new System.EventHandler(this.statCardNH1_Load);
@@ -379,11 +379,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             this.statCardHK1.BackColor = System.Drawing.Color.Transparent;
             this.statCardHK1.BorderColor = System.Drawing.Color.White;
-            this.statCardHK1.Location = new System.Drawing.Point(47, 99);
+            this.statCardHK1.Location = new System.Drawing.Point(47, 77);
             this.statCardHK1.Margin = new System.Windows.Forms.Padding(4);
             this.statCardHK1.Name = "statCardHK1";
             this.statCardHK1.PanelColor = System.Drawing.Color.White;
-            this.statCardHK1.Size = new System.Drawing.Size(315, 114);
+            this.statCardHK1.Size = new System.Drawing.Size(347, 136);
             this.statCardHK1.TabIndex = 26;
             this.statCardHK1.TextColor = System.Drawing.SystemColors.ControlText;
             // 
@@ -391,11 +391,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             this.statCardHK2.BackColor = System.Drawing.Color.Transparent;
             this.statCardHK2.BorderColor = System.Drawing.Color.White;
-            this.statCardHK2.Location = new System.Drawing.Point(422, 99);
+            this.statCardHK2.Location = new System.Drawing.Point(408, 77);
             this.statCardHK2.Margin = new System.Windows.Forms.Padding(4);
             this.statCardHK2.Name = "statCardHK2";
             this.statCardHK2.PanelColor = System.Drawing.Color.White;
-            this.statCardHK2.Size = new System.Drawing.Size(315, 114);
+            this.statCardHK2.Size = new System.Drawing.Size(347, 136);
             this.statCardHK2.TabIndex = 27;
             this.statCardHK2.TextColor = System.Drawing.SystemColors.ControlText;
             // 
@@ -403,11 +403,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             // 
             this.statCardHK3.BackColor = System.Drawing.Color.Transparent;
             this.statCardHK3.BorderColor = System.Drawing.Color.White;
-            this.statCardHK3.Location = new System.Drawing.Point(804, 99);
+            this.statCardHK3.Location = new System.Drawing.Point(773, 77);
             this.statCardHK3.Margin = new System.Windows.Forms.Padding(4);
             this.statCardHK3.Name = "statCardHK3";
             this.statCardHK3.PanelColor = System.Drawing.Color.White;
-            this.statCardHK3.Size = new System.Drawing.Size(315, 114);
+            this.statCardHK3.Size = new System.Drawing.Size(347, 136);
             this.statCardHK3.TabIndex = 28;
             this.statCardHK3.TextColor = System.Drawing.SystemColors.ControlText;
             // 

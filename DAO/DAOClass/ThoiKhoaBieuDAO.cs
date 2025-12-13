@@ -63,16 +63,32 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 		{
 			// Map TKB_Temp rows to official ThoiKhoaBieu through PhanCongGiangDay to obtain MaPhanCong.
 			// Assumption: a unique PhanCongGiangDay exists for (MaLop, MaGV, MaMon, MaHocKy=SemesterId)
+			
+			//  Xóa TKB cũ của học kỳ này trước khi insert mới (tránh duplicate entry)
+			// Lưu ý: Vì bảng ThoiKhoaBieu không có WeekNo, TKB được lưu chung cho tất cả tuần
+			// Nên khi chấp nhận lại một tuần, cần xóa toàn bộ TKB cũ của học kỳ
+			const string deleteSql = @"
+				DELETE tkb FROM ThoiKhoaBieu tkb
+				JOIN PhanCongGiangDay pc ON tkb.MaPhanCong = pc.MaPhanCong
+				WHERE pc.MaHocKy = @SemesterId";
+			
 			const string insertSql = @"
 				INSERT INTO ThoiKhoaBieu(MaPhanCong, ThuTrongTuan, TietBatDau, SoTiet, PhongHoc)
-				SELECT pc.MaPhanCong,
+				SELECT DISTINCT
+					MIN(pc.MaPhanCong) AS MaPhanCong,
 					CASE WHEN t.Thu IN (2,3,4,5,6,7) THEN CONCAT('Thu ', t.Thu) ELSE CAST(t.Thu AS CHAR) END AS ThuTrongTuan,
 					t.Tiet AS TietBatDau,
 					1 AS SoTiet,
-					t.Phong
+					MAX(t.Phong) AS Phong
 				FROM TKB_Temp t
 				JOIN PhanCongGiangDay pc ON pc.MaLop = t.MaLop AND pc.MaGiaoVien = t.MaGV AND pc.MaMonHoc = t.MaMon AND pc.MaHocKy = @SemesterId
-				WHERE t.SemesterId = @SemesterId AND t.WeekNo = @WeekNo;";
+				WHERE t.SemesterId = @SemesterId AND t.WeekNo = @WeekNo
+				GROUP BY 
+					CASE WHEN t.Thu IN (2,3,4,5,6,7) THEN CONCAT('Thu ', t.Thu) ELSE CAST(t.Thu AS CHAR) END,
+					t.Tiet,
+					t.MaLop,
+					t.MaGV,
+					t.MaMon;";
 
 			using (var conn = ConnectionDatabase.GetConnection())
 			{
@@ -81,6 +97,14 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 				{
 					try
 					{
+						// Bước 1: Xóa TKB cũ của học kỳ này
+						using (var delCmd = new MySqlCommand(deleteSql, conn, tx))
+						{
+							delCmd.Parameters.AddWithValue("@SemesterId", semesterId);
+							delCmd.ExecuteNonQuery();
+						}
+						
+						// Bước 2: Insert TKB mới từ TKB_Temp (chỉ tuần được chọn)
 						using (var cmd = new MySqlCommand(insertSql, conn, tx))
 						{
 							cmd.Parameters.AddWithValue("@SemesterId", semesterId);
@@ -88,10 +112,82 @@ namespace Student_Management_System_CSharp_SGU2025.DAO
 							cmd.ExecuteNonQuery();
 						}
 
+						// Bước 3: Xóa TKB_Temp sau khi đã chấp nhận
 						using (var clear = new MySqlCommand("DELETE FROM TKB_Temp WHERE SemesterId=@SemesterId AND WeekNo=@WeekNo", conn, tx))
 						{
 							clear.Parameters.AddWithValue("@SemesterId", semesterId);
 							clear.Parameters.AddWithValue("@WeekNo", weekNo);
+							clear.ExecuteNonQuery();
+						}
+
+						tx.Commit();
+					}
+					catch
+					{
+						tx.Rollback();
+						throw;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// ✅ Chấp nhận tất cả các tuần của học kỳ từ TKB_Temp vào ThoiKhoaBieu chính thức
+		/// </summary>
+		public void AcceptAllWeeksForSemester(int semesterId)
+		{
+			// Map TKB_Temp rows to official ThoiKhoaBieu through PhanCongGiangDay to obtain MaPhanCong.
+			// Chấp nhận tất cả các tuần của học kỳ này
+			
+			// ✅ Xóa TKB cũ của học kỳ này trước khi insert mới (tránh duplicate entry)
+			const string deleteSql = @"
+				DELETE tkb FROM ThoiKhoaBieu tkb
+				JOIN PhanCongGiangDay pc ON tkb.MaPhanCong = pc.MaPhanCong
+				WHERE pc.MaHocKy = @SemesterId";
+			
+			const string insertSql = @"
+				INSERT INTO ThoiKhoaBieu(MaPhanCong, ThuTrongTuan, TietBatDau, SoTiet, PhongHoc)
+				SELECT DISTINCT
+					MIN(pc.MaPhanCong) AS MaPhanCong,
+					CASE WHEN t.Thu IN (2,3,4,5,6,7) THEN CONCAT('Thu ', t.Thu) ELSE CAST(t.Thu AS CHAR) END AS ThuTrongTuan,
+					t.Tiet AS TietBatDau,
+					1 AS SoTiet,
+					MAX(t.Phong) AS Phong
+				FROM TKB_Temp t
+				JOIN PhanCongGiangDay pc ON pc.MaLop = t.MaLop AND pc.MaGiaoVien = t.MaGV AND pc.MaMonHoc = t.MaMon AND pc.MaHocKy = @SemesterId
+				WHERE t.SemesterId = @SemesterId
+				GROUP BY 
+					CASE WHEN t.Thu IN (2,3,4,5,6,7) THEN CONCAT('Thu ', t.Thu) ELSE CAST(t.Thu AS CHAR) END,
+					t.Tiet,
+					t.MaLop,
+					t.MaGV,
+					t.MaMon;";
+
+			using (var conn = ConnectionDatabase.GetConnection())
+			{
+				conn.Open();
+				using (var tx = conn.BeginTransaction())
+				{
+					try
+					{
+						// ✅ Bước 1: Xóa TKB cũ của học kỳ này
+						using (var delCmd = new MySqlCommand(deleteSql, conn, tx))
+						{
+							delCmd.Parameters.AddWithValue("@SemesterId", semesterId);
+							delCmd.ExecuteNonQuery();
+						}
+						
+						// ✅ Bước 2: Insert TKB mới từ TKB_Temp
+						using (var cmd = new MySqlCommand(insertSql, conn, tx))
+						{
+							cmd.Parameters.AddWithValue("@SemesterId", semesterId);
+							cmd.ExecuteNonQuery();
+						}
+
+						// ✅ Bước 3: Xóa TKB_Temp sau khi đã chấp nhận
+						using (var clear = new MySqlCommand("DELETE FROM TKB_Temp WHERE SemesterId=@SemesterId", conn, tx))
+						{
+							clear.Parameters.AddWithValue("@SemesterId", semesterId);
 							clear.ExecuteNonQuery();
 						}
 

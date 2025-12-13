@@ -386,8 +386,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 StudentWebServerManager.Instance?.StartServer(); //Server mini trên laptop chạy và lắng nghe request
 
                 // ✅ HARDCODE IP TẠM THỜI ĐỂ TEST
-                string serverIP = "172.20.10.2"; // ← IP WiFi thật của bạn
-                int port = int.Parse(ConfigurationManager.AppSettings["WebServerPort"] ?? "8080");
+                string serverIP = "172.20.10.5"; // ← IP WiFi thật của bạn
+                int port = int.Parse(ConfigurationManager.AppSettings["WebServerPort"] ?? "8081");
+
 
                 string qrUrl = $"http://{serverIP}:{port}/student/{hocSinh.MaHS}";
 
@@ -397,6 +398,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             }
             catch (Exception ex)
             {
+
+
+
+
+
+
+
                 System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
                 return $"http://172.20.10.2:8080/student/{hocSinh.MaHS}";
             }

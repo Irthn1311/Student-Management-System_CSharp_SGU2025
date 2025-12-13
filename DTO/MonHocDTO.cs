@@ -12,6 +12,8 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
         public string tenMon;
         public int soTiet;
         public string ghiChu;
+        public string namHocBatDau; // Năm học bắt đầu áp dụng môn học này
+
         public MonHocDTO() { }
         public MonHocDTO(int maMon, string tenMon, int soTiet, string ghiChu)
         {
@@ -19,6 +21,16 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             this.tenMon = tenMon;
             this.soTiet = soTiet;
             this.ghiChu = ghiChu;
+            this.namHocBatDau = null;
+        }
+
+        public MonHocDTO(int maMon, string tenMon, int soTiet, string ghiChu, string namHocBatDau)
+        {
+            this.maMon = maMon;
+            this.tenMon = tenMon;
+            this.soTiet = soTiet;
+            this.ghiChu = ghiChu;
+            this.namHocBatDau = namHocBatDau;
         }
         public int MaMon
         {
@@ -71,6 +83,15 @@ namespace Student_Management_System_CSharp_SGU2025.DTO
             set
             {
                 ghiChu = value;
+            }
+        }
+
+        public string NamHocBatDau
+        {
+            get { return namHocBatDau; }
+            set
+            {
+                namHocBatDau = value; // Có thể null hoặc rỗng
             }
         }
     }

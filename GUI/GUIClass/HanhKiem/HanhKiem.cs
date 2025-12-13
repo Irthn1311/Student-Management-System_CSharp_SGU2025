@@ -361,25 +361,76 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 dynamic selectedHocKy = cbHocKyNamHoc.SelectedItem;
                 int maHocKy = selectedHocKy.Value;
 
-                int soLuuThanhCong = 0;
-                int soLuuThatBai = 0;
+                // ⭐ KIỂM TRA NẾU KHÔNG CÓ DỮ LIỆU TRONG fullListHanhKiem
+                if (fullListHanhKiem == null || fullListHanhKiem.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu hạnh kiểm để lưu!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
+                // ⭐ CẬP NHẬT fullListHanhKiem TỪ BẢNG HIỆN TẠI (ĐỂ LẤY NHỮNG THAY ĐỔI NHẬN XÉT)
+                Dictionary<int, HanhKiemDTO> dictFullList = fullListHanhKiem.ToDictionary(x => x.MaHocSinh);
                 foreach (DataGridViewRow row in tableHanhKiem.Rows)
                 {
                     if (row.IsNewRow) continue;
 
                     int maHocSinh = Convert.ToInt32(row.Cells[0].Value);
-                    string xepLoai = row.Cells[4].Value?.ToString() ?? "";
                     string nhanXet = row.Cells[5].Value?.ToString() ?? "";
 
-                    HanhKiemDTO hk = new HanhKiemDTO
+                    // Cập nhật nhận xét từ bảng vào fullListHanhKiem
+                    if (dictFullList.ContainsKey(maHocSinh))
                     {
-                        MaHocSinh = maHocSinh,
-                        MaHocKy = maHocKy,
-                        XepLoai = xepLoai,
-                        NhanXet = nhanXet
-                    };
+                        dictFullList[maHocSinh].NhanXet = nhanXet;
+                    }
+                }
 
+                // ⭐ LẤY DỮ LIỆU HIỆN TẠI TỪ DATABASE ĐỂ SO SÁNH
+                Dictionary<int, HanhKiemDTO> dictHanhKiemDB = new Dictionary<int, HanhKiemDTO>();
+                var dsHanhKiemDB = hanhKiemDAO.LayDanhSachHanhKiemDictionary(maHocKy, null);
+                foreach (var kvp in dsHanhKiemDB)
+                {
+                    dictHanhKiemDB[kvp.Key] = kvp.Value;
+                }
+
+                int soLuuThanhCong = 0;
+                int soLuuThatBai = 0;
+                int soBoQua = 0; // Số bản ghi không thay đổi, không cần lưu
+
+                // ⭐ LƯU TỪ fullListHanhKiem THAY VÌ CHỈ TỪ BẢNG HIỆN TẠI
+                foreach (var hk in fullListHanhKiem)
+                {
+                    // ⭐ CHỈ LƯU NẾU CÓ THAY ĐỔI HOẶC LÀ DỮ LIỆU MỚI
+                    bool canLuu = false;
+
+                    if (!dictHanhKiemDB.ContainsKey(hk.MaHocSinh))
+                    {
+                        // Dữ liệu mới, chưa có trong database
+                        canLuu = !string.IsNullOrEmpty(hk.XepLoai);
+                    }
+                    else
+                    {
+                        // Đã có trong database, kiểm tra xem có thay đổi không
+                        HanhKiemDTO hkDB = dictHanhKiemDB[hk.MaHocSinh];
+                        string xepLoaiDB = hkDB.XepLoai?.Trim() ?? "";
+                        string nhanXetDB = hkDB.NhanXet?.Trim() ?? "";
+                        string xepLoaiMoi = hk.XepLoai?.Trim() ?? "";
+                        string nhanXetMoi = hk.NhanXet?.Trim() ?? "";
+
+                        // Chỉ lưu nếu có thay đổi
+                        if (xepLoaiDB != xepLoaiMoi || nhanXetDB != nhanXetMoi)
+                        {
+                            canLuu = true;
+                        }
+                    }
+
+                    if (!canLuu)
+                    {
+                        soBoQua++;
+                        continue;
+                    }
+
+                    // Thực hiện lưu
                     if (hanhKiemBUS.LuuHanhKiem(hk))
                     {
                         soLuuThanhCong++;
@@ -390,18 +441,31 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     }
                 }
 
+                // Hiển thị thông báo kết quả
                 if (soLuuThatBai == 0)
                 {
-                    MessageBox.Show($"Lưu thành công {soLuuThanhCong} bản ghi hạnh kiểm!",
-                        "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (soLuuThanhCong > 0)
+                    {
+                        MessageBox.Show($"Lưu thành công {soLuuThanhCong} bản ghi hạnh kiểm!\n" +
+                            (soBoQua > 0 ? $"{soBoQua} bản ghi không thay đổi nên không cần lưu." : ""),
+                            "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không có dữ liệu mới hoặc thay đổi để lưu!\n" +
+                            "Tất cả dữ liệu đã được lưu trước đó.",
+                            "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
                 else
                 {
                     MessageBox.Show($"Lưu thành công {soLuuThanhCong} bản ghi.\n" +
-                        $"Thất bại {soLuuThatBai} bản ghi.",
+                        $"Thất bại {soLuuThatBai} bản ghi.\n" +
+                        (soBoQua > 0 ? $"{soBoQua} bản ghi không thay đổi nên không cần lưu." : ""),
                         "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
+                // ⭐ RELOAD DỮ LIỆU TỪ DATABASE ĐỂ CẬP NHẬT LẠI BẢNG
                 LoadDuLieuHanhKiem();
             }
             catch (Exception ex)
@@ -649,31 +713,9 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     return;
                 }
 
-                int tongHS = 0;
                 int soTot = 0, soKha = 0, soTrungBinh = 0, soYeu = 0, chuaDanhGia = 0;
 
-                // Đếm số học sinh có xếp loại (từ bảng)
-                foreach (DataGridViewRow row in tableHanhKiem.Rows)
-                {
-                    if (row.IsNewRow) continue;
-                    tongHS++;
-
-                    string xepLoai = row.Cells[4].Value?.ToString()?.Trim();
-
-                    if (string.IsNullOrEmpty(xepLoai)) continue;
-
-                    if (xepLoai.Equals("Tốt", StringComparison.OrdinalIgnoreCase))
-                        soTot++;
-                    else if (xepLoai.Equals("Khá", StringComparison.OrdinalIgnoreCase))
-                        soKha++;
-                    else if (xepLoai.Equals("Trung Bình", StringComparison.OrdinalIgnoreCase) ||
-                             xepLoai.Equals("Trung binh", StringComparison.OrdinalIgnoreCase))
-                        soTrungBinh++;
-                    else if (xepLoai.Equals("Yếu", StringComparison.OrdinalIgnoreCase))
-                        soYeu++;
-                }
-
-                // Đếm tổng số học sinh trong học kỳ (bao gồm cả chưa xếp loại)
+                // ⭐ ĐẾM TRỰC TIẾP TỪ DATABASE THAY VÌ TỪ TABLE (VÌ TABLE CHỈ HIỂN THỊ 1 TRANG)
                 int? maLop = null;
                 if (cbLop.SelectedItem != null)
                 {
@@ -692,25 +734,32 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     }
                 }
 
-                List<HocSinhDTO> dsTatCaHocSinh;
-                if (maLop.HasValue)
+                // Lấy danh sách hạnh kiểm từ database (toàn bộ, không phân trang)
+                var dsHanhKiemDisplay = hanhKiemDAO.LayDanhSachHanhKiemDisplay(maHocKy, maLop);
+                
+                // Đếm số học sinh có xếp loại từ database
+                foreach (var hk in dsHanhKiemDisplay)
                 {
-                    dsTatCaHocSinh = phanLopDAO.LayDanhSachHocSinhTrongLop(maLop.Value, maHocKy);
-                }
-                else
-                {
-                    dsTatCaHocSinh = new List<HocSinhDTO>();
-                    List<LopDTO> dsLop = lopDAO.GetDanhSachLopTheoHocKy(maHocKy);
-                    foreach (var lop in dsLop)
+                    string xepLoai = hk.XepLoai?.Trim();
+                    
+                    if (string.IsNullOrEmpty(xepLoai))
                     {
-                        var hsLop = phanLopDAO.LayDanhSachHocSinhTrongLop(lop.MaLop, maHocKy);
-                        dsTatCaHocSinh.AddRange(hsLop);
+                        chuaDanhGia++;
+                        continue;
                     }
-                    dsTatCaHocSinh = dsTatCaHocSinh.Distinct().ToList();
+
+                    if (xepLoai.Equals("Tốt", StringComparison.OrdinalIgnoreCase))
+                        soTot++;
+                    else if (xepLoai.Equals("Khá", StringComparison.OrdinalIgnoreCase))
+                        soKha++;
+                    else if (xepLoai.Equals("Trung Bình", StringComparison.OrdinalIgnoreCase) ||
+                             xepLoai.Equals("Trung binh", StringComparison.OrdinalIgnoreCase))
+                        soTrungBinh++;
+                    else if (xepLoai.Equals("Yếu", StringComparison.OrdinalIgnoreCase))
+                        soYeu++;
                 }
 
-                int tongTatCaHS = dsTatCaHocSinh.Count;
-                chuaDanhGia = tongTatCaHS - tongHS;
+                int tongTatCaHS = dsHanhKiemDisplay.Count;
 
                 // Cập nhật các card
                 statCarHanhKiemTot.lbCardValue.Text = soTot.ToString();
@@ -803,8 +852,13 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 int soXepThanhCong = 0;
                 int soBoQua = 0;
 
-                // Xóa dữ liệu cũ trên bảng
-                tableHanhKiem.Rows.Clear();
+                // ⭐ XÓA DỮ LIỆU CŨ VÀ CHUẨN BỊ DANH SÁCH MỚI
+                fullListHanhKiem.Clear();
+                _cachedDisplayInfo.Clear();
+                _cachedTenHocKy = tenHocKy;
+
+                // ⭐ XÂY DỰNG DANH SÁCH HẠNH KIỂM VÀ THÔNG TIN HIỂN THỊ
+                List<HanhKiemDisplayDTO> dsHanhKiemDisplay = new List<HanhKiemDisplayDTO>();
 
                 foreach (var xl in dsHocLuc)
                 {
@@ -851,32 +905,35 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         }
                     }
 
-                    // Thêm vào bảng (chưa lưu database)
-                    tableHanhKiem.Rows.Add(
-                        hs.MaHS,
-                        hs.HoTen,
-                        tenLop,
-                        tenHocKy,
-                        xepLoai,
-                        nhanXet
-                    );
-
-                    int rowIndex = tableHanhKiem.Rows.Count - 1;
-                    ApplyXepLoaiColor(rowIndex, xepLoai);
-                }
-
-                // ⭐ SẮP XẾP THEO MÃ HỌC SINH (cột 0) TỪ THẤP ĐẾN CAO
-                tableHanhKiem.Sort(tableHanhKiem.Columns[0], ListSortDirection.Ascending);
-
-                // ⭐ ÁP DỤNG LẠI MÀU SAU KHI SẮP XẾP
-                for (int i = 0; i < tableHanhKiem.Rows.Count; i++)
-                {
-                    if (tableHanhKiem.Rows[i].Cells[4].Value != null)
+                    // ⭐ THÊM VÀO DANH SÁCH THAY VÌ THÊM TRỰC TIẾP VÀO BẢNG
+                    HanhKiemDTO hkDTO = new HanhKiemDTO
                     {
-                        string xepLoai = tableHanhKiem.Rows[i].Cells[4].Value.ToString();
-                        ApplyXepLoaiColor(i, xepLoai);
-                    }
+                        MaHocSinh = hs.MaHS,
+                        MaHocKy = maHocKy,
+                        XepLoai = xepLoai,
+                        NhanXet = nhanXet
+                    };
+                    fullListHanhKiem.Add(hkDTO);
+
+                    // ⭐ LƯU THÔNG TIN HIỂN THỊ VÀO CACHE
+                    HanhKiemDisplayDTO displayInfo = new HanhKiemDisplayDTO
+                    {
+                        MaHocSinh = hs.MaHS,
+                        HoTen = hs.HoTen,
+                        TenLop = tenLop,
+                        MaHocKy = maHocKy,
+                        XepLoai = xepLoai,
+                        NhanXet = nhanXet
+                    };
+                    _cachedDisplayInfo[hs.MaHS] = displayInfo;
                 }
+
+                // ⭐ SẮP XẾP DANH SÁCH THEO MÃ HỌC SINH TỪ THẤP ĐẾN CAO
+                fullListHanhKiem = fullListHanhKiem.OrderBy(x => x.MaHocSinh).ToList();
+
+                // ⭐ RESET VỀ TRANG ĐẦU TIÊN VÀ HIỂN THỊ VỚI PHÂN TRANG
+                currentPage = 1;
+                HienThiDanhSachHanhKiem();
 
                 // Cập nhật thống kê
                 CapNhatThongKe();

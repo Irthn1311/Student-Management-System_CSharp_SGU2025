@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Student_Management_System_CSharp_SGU2025.DTO;
 using Student_Management_System_CSharp_SGU2025.BUS;
+using Student_Management_System_CSharp_SGU2025.DAO;
 
 namespace Student_Management_System_CSharp_SGU2025.BUS.Services
 {
@@ -199,10 +200,16 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Services
 			
 			result.SemesterStatus = SemesterHelper.GetStatus(hocKyId);
 			
-			// Logic cũ với filter...
+			// ✅ Logic với filter theo MonHoc_NamHoc_Khoi
 			var lopBus = new LopHocBUS();
 			var monBus = new MonHocBUS();
 			var pcBus = new PhanCongGiangDayBUS();
+			var hocKyDAO = new HocKyDAO();
+			var monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
+
+			// Lấy năm học từ học kỳ
+			var hocKy = hocKyDAO.LayHocKyTheoMa(hocKyId);
+			string maNamHoc = hocKy?.MaNamHoc;
 
 			var classes = lopBus.DocDSLop() ?? new List<LopDTO>();
 			if (khoi.HasValue)
@@ -210,7 +217,29 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Services
 				classes = classes.Where(l => l.maKhoi == khoi.Value).ToList();
 			}
 
-			var subjects = monBus.DocDSMH() ?? new List<MonHocDTO>();
+			// ✅ Load môn học từ MonHoc_NamHoc_Khoi thay vì tất cả môn học
+			List<MonHocDTO> subjects = new List<MonHocDTO>();
+			
+			if (!string.IsNullOrEmpty(maNamHoc))
+			{
+				// Nếu có filter khối, lấy môn học theo năm học và khối
+				if (khoi.HasValue)
+				{
+					subjects = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHocKhoi(maNamHoc, khoi.Value);
+				}
+				else
+				{
+					// Nếu không có filter khối, lấy tất cả môn học trong năm học (tất cả khối)
+					subjects = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHoc(maNamHoc);
+				}
+			}
+			else
+			{
+				// Fallback: Nếu không có năm học, load tất cả môn học
+				subjects = monBus.DocDSMH() ?? new List<MonHocDTO>();
+			}
+
+			// Filter theo môn học cụ thể (nếu có)
 			int? monId = null;
 			if (!string.IsNullOrWhiteSpace(maMonFilter) && int.TryParse(maMonFilter, out int parsed))
 			{
@@ -229,7 +258,21 @@ namespace Student_Management_System_CSharp_SGU2025.BUS.Services
 			{
 				string gvcn = GetGVCN(lop.maLop);
 
-				foreach (var mon in subjects)
+				// ✅ Lọc môn học hợp lệ cho lớp này (dựa trên khối của lớp và năm học)
+				List<MonHocDTO> validSubjectsForClass = subjects;
+				if (!string.IsNullOrEmpty(maNamHoc))
+				{
+					// Chỉ lấy môn học hợp lệ cho khối của lớp này trong năm học
+					validSubjectsForClass = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHocKhoi(maNamHoc, lop.maKhoi);
+					
+					// Nếu có filter môn học cụ thể, áp dụng filter
+					if (monId.HasValue)
+					{
+						validSubjectsForClass = validSubjectsForClass.Where(m => m.maMon == monId.Value).ToList();
+					}
+				}
+
+				foreach (var mon in validSubjectsForClass)
 				{
 					int required = mon.soTiet;
 					if (required <= 0) continue;

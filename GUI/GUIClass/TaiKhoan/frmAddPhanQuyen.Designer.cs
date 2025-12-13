@@ -152,10 +152,10 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tableChucNang.DefaultCellStyle = dataGridViewCellStyle3;
             this.tableChucNang.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.tableChucNang.Location = new System.Drawing.Point(37, 152);
+            this.tableChucNang.Location = new System.Drawing.Point(37, 131);
             this.tableChucNang.Name = "tableChucNang";
             this.tableChucNang.RowHeadersVisible = false;
-            this.tableChucNang.Size = new System.Drawing.Size(804, 323);
+            this.tableChucNang.Size = new System.Drawing.Size(804, 744);
             this.tableChucNang.TabIndex = 20;
             this.tableChucNang.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.tableChucNang.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -202,7 +202,7 @@
             this.btnToanQuyen.ForeColor = System.Drawing.Color.White;
             this.btnToanQuyen.Image = global::Student_Management_System_CSharp_SGU2025.GUI.Properties.Resources._3que;
             this.btnToanQuyen.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnToanQuyen.Location = new System.Drawing.Point(593, 101);
+            this.btnToanQuyen.Location = new System.Drawing.Point(596, 84);
             this.btnToanQuyen.Margin = new System.Windows.Forms.Padding(2);
             this.btnToanQuyen.Name = "btnToanQuyen";
             this.btnToanQuyen.Size = new System.Drawing.Size(135, 37);
@@ -215,7 +215,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(866, 594);
+            this.ClientSize = new System.Drawing.Size(866, 887);
             this.ControlBox = false;
             this.Controls.Add(this.btnToanQuyen);
             this.Controls.Add(this.tableChucNang);

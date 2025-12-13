@@ -9,10 +9,12 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
     public class NamHocBUS
     {
         private NamHocDAO namHocDAO;
+        private MonHoc_NamHoc_KhoiBUS monHocNamHocKhoiBUS;
 
         public NamHocBUS()
         {
             namHocDAO = new NamHocDAO();
+            monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
         }
 
         public bool ThemNamHoc(NamHocDTO namHoc)
@@ -33,7 +35,36 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
                 if (KiemTraNamHocTonTai(namHoc.MaNamHoc))
                     throw new ArgumentException("Mã năm học đã tồn tại.");
 
-                return namHocDAO.themNamHoc(namHoc);
+                // Thêm năm học vào database
+                bool ketQua = namHocDAO.themNamHoc(namHoc);
+                
+                // ✅ Tự động copy môn học từ năm học trước sang năm học mới
+                if (ketQua)
+                {
+                    try
+                    {
+                        // Tìm năm học trước (năm học có NgayKT gần nhất và < NgayBD của năm học mới)
+                        var dsNamHoc = namHocDAO.DocDSNamHoc();
+                        var namHocTruoc = dsNamHoc
+                            .Where(nh => nh.NgayKT < namHoc.NgayBD)
+                            .OrderByDescending(nh => nh.NgayKT)
+                            .FirstOrDefault();
+                        
+                        if (namHocTruoc != null)
+                        {
+                            // Copy tất cả môn học từ năm học trước sang năm học mới
+                            monHocNamHocKhoiBUS.CopyMonHocTuNamHocNaySangNamHocKhac(namHocTruoc.MaNamHoc, namHoc.MaNamHoc);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log lỗi nhưng không throw - năm học đã được tạo thành công
+                        Console.WriteLine($"Lỗi khi tự động copy môn học: {ex.Message}");
+                        // Có thể thêm logging hoặc thông báo cho user nếu cần
+                    }
+                }
+
+                return ketQua;
             }
             catch (Exception ex)
             {

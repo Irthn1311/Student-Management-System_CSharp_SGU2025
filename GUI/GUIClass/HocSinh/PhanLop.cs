@@ -36,6 +36,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
         private XepLoaiDAO xepLoaiDAO;
         private MonHocDAO monHocDAO;
         private HocKyDAO hocKyDAO;
+        private MonHoc_NamHoc_KhoiBUS monHocNamHocKhoiBUS;
         private List<DTO.LopDTO> danhSachLop;
         private List<DTO.HocKyDTO> danhSachHocKy;
         private List<(int maHocSinh, int maLop, int maHocKy)> danhSachPhanLop;
@@ -61,6 +62,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             xepLoaiDAO = new XepLoaiDAO();
             monHocDAO = new MonHocDAO();
             hocKyDAO = new HocKyDAO();
+            monHocNamHocKhoiBUS = new MonHoc_NamHoc_KhoiBUS();
             danhSachLop = new List<DTO.LopDTO>();
             danhSachHocKy = new List<DTO.HocKyDTO>();
             danhSachPhanLop = new List<(int maHocSinh, int maLop, int maHocKy)>();
@@ -214,12 +216,11 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         thongBao += $"   • HK1 ({hk1.TenHocKy}): {soHocSinhDaPhanLopHK1} học sinh\n";
                     if (soHocSinhDaPhanLopHK2 > 0)
                         thongBao += $"   • HK2 ({hk2.TenHocKy}): {soHocSinhDaPhanLopHK2} học sinh\n";
-                    thongBao += "\n❌ Không thể phân lớp tự động lại!\n\n";
-                    thongBao += "Nếu muốn phân lớp lại, bạn cần xóa dữ liệu phân lớp cũ trước.";
+                    thongBao += "\n❌ Đã phân lớp tự động rồi, không thể phân lớp tự động lại!\n\n";
                     
                     MessageBox.Show(thongBao, "Không thể phân lớp lại",
                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // CHẶN NGAY, KHÔNG CHO PHÂN LỚP LẠI
+                    return; 
                 }
 
                 // ✅ Truyền HK1 để phân lớp (logic sẽ tự động phân cho cả HK1 và HK2)
@@ -1174,7 +1175,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 int soHocSinhDaPhanLopHK2 = allPhanLop.Count(p => p.maHocKy == hk2.MaHocKy);
                 
                 int tongSoHocSinhDangHoc = hocSinhBus.GetTotalHocSinhDangHoc();
-                int nguongToiThieu = Math.Max(50, (int)(tongSoHocSinhDangHoc * 0.3));
+                int nguongToiThieu = Math.Max(50, (int)(tongSoHocSinhDangHoc * 0.3));//nghĩa là tối thiểu 50 học sinh và 30% tổng số học sinh đang học
                 
                 bool daPhanLopTuDongHK1 = soHocSinhDaPhanLopHK1 >= nguongToiThieu;
                 bool daPhanLopTuDongHK2 = soHocSinhDaPhanLopHK2 >= nguongToiThieu;
@@ -1256,7 +1257,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
 
                 // Kiểm tra trạng thái học kỳ
-                string trangThaiHK1 = SemesterHelper.GetStatus(hk1.MaHocKy);
+                string trangThaiHK1 = SemesterHelper.GetStatus(hk1.MaHocKy);// SemesterHelper là class helper để lấy trạng thái của học kỳ
                 string trangThaiHK2 = SemesterHelper.GetStatus(hk2.MaHocKy);
                 bool hk1DangDienRa = trangThaiHK1 == "Đang diễn ra";
                 bool hk2DangDienRa = trangThaiHK2 == "Đang diễn ra";
@@ -2926,7 +2927,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 }
             }
 
-            // Lấy danh sách môn học
+            // ✅ Lấy danh sách môn học từ MonHoc_NamHoc_Khoi (sẽ được filter theo từng học sinh)
+            // Tạm thời lấy tất cả để tạo dictionary, nhưng sẽ filter khi kiểm tra
             var danhSachMonHoc = monHocDAO.DocDSMH();
             var monHocDict = danhSachMonHoc.ToDictionary(m => m.maMon, m => m.tenMon);
 
@@ -3437,7 +3439,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                     continue;
                 }
 
-                // Kiểm tra đầy đủ điểm cho tất cả học kỳ cần thiết và tất cả môn học
+                // ✅ Kiểm tra đầy đủ điểm cho tất cả học kỳ cần thiết và các môn học hợp lệ (theo MonHoc_NamHoc_Khoi)
                 foreach (var hk in hocKyCanThietCuaHS)
                 {
                     var hocKyKey = (TenHocKy: hk.TenHocKy.Trim(), MaNamHoc: hk.MaNamHoc.Trim());
@@ -3452,7 +3454,20 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                         continue;
                     }
 
-                    foreach (var mon in danhSachMonHoc)
+                    // ✅ Lấy danh sách môn học hợp lệ cho năm học và khối này
+                    int khoi = int.Parse(khoiStr);
+                    var danhSachMonHocHopLe = monHocNamHocKhoiBUS.LayDanhSachMonHocTheoNamHocKhoi(hk.MaNamHoc, khoi);
+                    
+                    if (danhSachMonHocHopLe == null || danhSachMonHocHopLe.Count == 0)
+                    {
+                        errors.AppendLine($"Học sinh {tenHS} (Khối {khoiStr}): Năm học {hk.MaNamHoc} không có môn học nào cho khối {khoiStr}");
+                        errorCount++;
+                        hocSinhDuDieuKien[maHS] = false;
+                        continue;
+                    }
+
+                    // ✅ Chỉ kiểm tra các môn học hợp lệ cho năm học và khối này
+                    foreach (var mon in danhSachMonHocHopLe)
                     {
                         if (!diemTheoHS[maHS][hocKyKey].ContainsKey(mon.maMon))
                         {

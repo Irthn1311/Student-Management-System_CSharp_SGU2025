@@ -1,10 +1,11 @@
--- CREATE DATABASE IF NOT EXISTS QuanLyHocSinh;
--- USE QuanLyHocSinh;
+CREATE DATABASE IF NOT EXISTS QuanLyHocSinh;
+USE QuanLyHocSinh;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- Bảng tạm (không có foreign key)
 DROP TABLE IF EXISTS TKB_Temp;
+DROP TABLE IF EXISTS MonHoc_NamHoc_Khoi;
 DROP TABLE IF EXISTS PhanCong_Temp;
 DROP TABLE IF EXISTS HoSoNguoiDung;
 
@@ -265,10 +266,12 @@ CREATE TABLE KhoiLop (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE MonHoc (
-    MaMonHoc INT PRIMARY KEY,
+    MaMonHoc INT PRIMARY KEY AUTO_INCREMENT,
     TenMonHoc NVARCHAR(100) NOT NULL,
     SoTiet INT,
-    GhiChu VARCHAR(50)
+    GhiChu VARCHAR(50),
+    NamHocBatDau VARCHAR(10) NULL COMMENT 'Năm học bắt đầu áp dụng môn học này',
+    FOREIGN KEY (NamHocBatDau) REFERENCES NamHoc(MaNamHoc) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE GiaoVien (
@@ -313,6 +316,17 @@ CREATE TABLE LopHoc (
     MaGiaoVienChuNhiem VARCHAR(15),
     FOREIGN KEY (MaKhoi) REFERENCES KhoiLop(MaKhoi),
     FOREIGN KEY (MaGiaoVienChuNhiem) REFERENCES GiaoVien(MaGiaoVien)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE MonHoc_NamHoc_Khoi (
+    MaMonHoc INT,
+    MaNamHoc VARCHAR(10),
+    MaKhoi INT,
+    PRIMARY KEY (MaMonHoc, MaNamHoc, MaKhoi),
+    FOREIGN KEY (MaMonHoc) REFERENCES MonHoc(MaMonHoc) ON DELETE CASCADE,
+    FOREIGN KEY (MaNamHoc) REFERENCES NamHoc(MaNamHoc) ON DELETE CASCADE,
+    FOREIGN KEY (MaKhoi) REFERENCES KhoiLop(MaKhoi) ON DELETE CASCADE,
+    INDEX idx_namhoc_khoi (MaNamHoc, MaKhoi)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================================
@@ -502,5 +516,28 @@ ALTER TABLE ThoiKhoaBieu ADD INDEX idx_phancong_tkb (MaPhanCong);
 
 -- Indexes cho YeuCauChuyenLop (các indexes cơ bản đã được tạo trong CREATE TABLE)
 -- Các indexes nâng cao sẽ được tạo trong file 02_unique_indexes.sql
+
+-- =====================================================================
+-- FIX AUTO_INCREMENT CHO MONHOC (Nếu chưa có)
+-- =====================================================================
+-- Kiểm tra và thêm AUTO_INCREMENT cho MaMonHoc nếu chưa có
+SET @hasAutoIncrement = (
+    SELECT COUNT(*) 
+    FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = DATABASE() 
+    AND TABLE_NAME = 'MonHoc' 
+    AND COLUMN_NAME = 'MaMonHoc'
+    AND EXTRA LIKE '%auto_increment%'
+);
+
+-- Nếu chưa có AUTO_INCREMENT, thêm vào
+SET @maxId = (SELECT IFNULL(MAX(MaMonHoc), 0) FROM MonHoc);
+SET @sql = IF(@hasAutoIncrement = 0,
+    CONCAT('ALTER TABLE MonHoc MODIFY COLUMN MaMonHoc INT AUTO_INCREMENT, AUTO_INCREMENT = ', @maxId + 1, ';'),
+    'SELECT ''MaMonHoc already has AUTO_INCREMENT'' AS Result;'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
 SELECT 'Schema creation completed successfully' AS Status;

@@ -473,7 +473,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 tableChucNang.Controls.Add(cbThem);
                 cbThem.BringToFront();
 
-                if (maChucNang == "qlxeploai" || maChucNang == "qlbaocao" || maChucNang == "qllophoc" || maChucNang == "qlmonhoc")
+                // ✅ Bỏ qlmonhoc khỏi danh sách disable - cho phép thêm môn học
+                if (maChucNang == "qlxeploai" || maChucNang == "qlbaocao" || maChucNang == "qllophoc")
                 {
                     cbThem.Enabled = false;
                     cbThem.Checked = false;
@@ -505,7 +506,8 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 cbXoa.Location = new Point(cellRect.X + 215, cellRect.Y + 6);
                 checkBoxDict[maChucNang]["xoa"] = cbXoa;
 
-                if (maChucNang == "qldiem" || maChucNang == "qlhanhkiem" || maChucNang == "qlxeploai" || maChucNang == "qltkb" || maChucNang == "qlbaocao" || maChucNang == "qlmonhoc")
+                // ✅ Bỏ qlmonhoc khỏi danh sách disable - cho phép xóa môn học
+                if (maChucNang == "qldiem" || maChucNang == "qlhanhkiem" || maChucNang == "qlxeploai" || maChucNang == "qltkb" || maChucNang == "qlbaocao")
                 {
                     cbXoa.Enabled = false;
                     cbXoa.Checked = false;

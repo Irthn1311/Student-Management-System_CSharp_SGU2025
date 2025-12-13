@@ -247,7 +247,14 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         /// </summary>
         public bool KiemTraQuyenNguoiDung(string tenDangNhap, string maChucNang, string hanhDong)
         {
+            // ✅ Admin luôn có toàn quyền
             List<string> danhSachVaiTro = GetVaiTroByNguoiDung(tenDangNhap);
+            if (danhSachVaiTro != null && danhSachVaiTro.Any(vt => 
+                vt.Equals("admin", StringComparison.OrdinalIgnoreCase) || 
+                vt.Equals("ADMIN", StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
 
             foreach (string maVaiTro in danhSachVaiTro)
             {
@@ -266,7 +273,7 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
 
         /// <summary>
         /// Map từ tên checkbox sang tên hành động trong database
-        /// cbXem -> read
+        /// cbXem/cbDoc -> read
         /// cbThem -> create
         /// cbSua -> update
         /// cbXoa -> delete
@@ -275,6 +282,9 @@ namespace Student_Management_System_CSharp_SGU2025.BUS
         {
             switch (checkBoxName.ToLower())
             {
+                case "xem":
+                case "doc":
+                    return "read";
                 case "them":
                     return "create";
                 case "sua":

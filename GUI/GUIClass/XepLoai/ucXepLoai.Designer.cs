@@ -694,7 +694,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtSearch.ForeColor = System.Drawing.Color.Black;
             this.txtSearch.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtSearch.Location = new System.Drawing.Point(26, 1135);
+            this.txtSearch.Location = new System.Drawing.Point(26, 1128);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(2);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.PlaceholderText = "Tìm kiếm học sinh...";
@@ -708,7 +708,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.lblTrangHienTai.AutoSize = true;
             this.lblTrangHienTai.BackColor = System.Drawing.Color.Transparent;
             this.lblTrangHienTai.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTrangHienTai.Location = new System.Drawing.Point(474, 1105);
+            this.lblTrangHienTai.Location = new System.Drawing.Point(394, 1143);
             this.lblTrangHienTai.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblTrangHienTai.Name = "lblTrangHienTai";
             this.lblTrangHienTai.Size = new System.Drawing.Size(43, 20);
@@ -727,7 +727,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnTrangTruoc.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTrangTruoc.ForeColor = System.Drawing.Color.Black;
             this.btnTrangTruoc.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnTrangTruoc.Location = new System.Drawing.Point(427, 1089);
+            this.btnTrangTruoc.Location = new System.Drawing.Point(347, 1127);
             this.btnTrangTruoc.Margin = new System.Windows.Forms.Padding(2);
             this.btnTrangTruoc.Name = "btnTrangTruoc";
             this.btnTrangTruoc.Size = new System.Drawing.Size(43, 35);
@@ -747,7 +747,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.btnTrangSau.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTrangSau.ForeColor = System.Drawing.Color.Black;
             this.btnTrangSau.ImageSize = new System.Drawing.Size(15, 15);
-            this.btnTrangSau.Location = new System.Drawing.Point(533, 1090);
+            this.btnTrangSau.Location = new System.Drawing.Point(453, 1128);
             this.btnTrangSau.Margin = new System.Windows.Forms.Padding(2);
             this.btnTrangSau.Name = "btnTrangSau";
             this.btnTrangSau.Size = new System.Drawing.Size(43, 35);
@@ -790,6 +790,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
             this.guna2Panel6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableXepLoai)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

@@ -126,17 +126,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
         {
             try
             {
-                // Kiểm tra quyền chỉnh sửa
-                if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLTHONGBAO, "Quản lý thông báo"))
+                // ✅ Kiểm tra quyền chỉnh sửa
+                bool hasUpdatePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.UPDATE);
+                bool hasCreatePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.CREATE);
+                
+                // ✅ Logic phân quyền:
+                // - Nếu có quyền UPDATE → được sửa tất cả thông báo
+                // - Nếu CHỈ có quyền CREATE → chỉ được sửa thông báo của chính mình
+                bool canEdit = hasUpdatePermission;
+                
+                if (!canEdit && hasCreatePermission)
                 {
-                    MessageBox.Show("Bạn không có quyền chỉnh sửa thông báo!", "Thông báo", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    // Kiểm tra xem có phải thông báo của chính mình không
+                    string currentUser = SessionManager.TenDangNhap ?? "";
+                    canEdit = !string.IsNullOrEmpty(thongBao.MaNguoiTao) && 
+                             !string.IsNullOrEmpty(currentUser) && 
+                             thongBao.MaNguoiTao.Equals(currentUser, StringComparison.OrdinalIgnoreCase);
                 }
-
-                // Kiểm tra quyền chỉnh sửa thông báo của chính mình hoặc admin
-                if (thongBao.MaNguoiTao != SessionManager.TenDangNhap && 
-                    !SessionManager.DanhSachVaiTro.Contains("admin"))
+                
+                if (!canEdit)
                 {
                     MessageBox.Show("Bạn chỉ có thể chỉnh sửa thông báo do chính mình tạo!", "Thông báo", 
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -167,17 +175,25 @@ namespace Student_Management_System_CSharp_SGU2025.GUI.ThongBao
         {
             try
             {
-                // Kiểm tra quyền xóa
-                if (!PermissionHelper.CheckAccessPermission(PermissionHelper.QLTHONGBAO, "Quản lý thông báo"))
+                // ✅ Kiểm tra quyền xóa
+                bool hasDeletePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.DELETE);
+                bool hasCreatePermission = PermissionHelper.HasPermission(PermissionHelper.QLTHONGBAO, PermissionHelper.CREATE);
+                
+                // ✅ Logic phân quyền:
+                // - Nếu có quyền DELETE → được xóa tất cả thông báo
+                // - Nếu CHỈ có quyền CREATE → chỉ được xóa thông báo của chính mình
+                bool canDelete = hasDeletePermission;
+                
+                if (!canDelete && hasCreatePermission)
                 {
-                    MessageBox.Show("Bạn không có quyền xóa thông báo!", "Thông báo", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    // Kiểm tra xem có phải thông báo của chính mình không
+                    string currentUser = SessionManager.TenDangNhap ?? "";
+                    canDelete = !string.IsNullOrEmpty(thongBao.MaNguoiTao) && 
+                               !string.IsNullOrEmpty(currentUser) && 
+                               thongBao.MaNguoiTao.Equals(currentUser, StringComparison.OrdinalIgnoreCase);
                 }
-
-                // Kiểm tra quyền xóa thông báo của chính mình hoặc admin
-                if (thongBao.MaNguoiTao != SessionManager.TenDangNhap && 
-                    !SessionManager.DanhSachVaiTro.Contains("admin"))
+                
+                if (!canDelete)
                 {
                     MessageBox.Show("Bạn chỉ có thể xóa thông báo do chính mình tạo!", "Thông báo", 
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);

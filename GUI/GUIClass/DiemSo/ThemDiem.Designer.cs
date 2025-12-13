@@ -83,7 +83,7 @@
             "Chọn lớp học",
             "Lớp 6A1",
             "Lớp 7A2"});
-            this.cbLop.Location = new System.Drawing.Point(44, 93);
+            this.cbLop.Location = new System.Drawing.Point(43, 138);
             this.cbLop.Margin = new System.Windows.Forms.Padding(2);
             this.cbLop.Name = "cbLop";
             this.cbLop.Size = new System.Drawing.Size(341, 36);
@@ -108,7 +108,7 @@
             "PH02 - Nguyễn Đình C",
             "PH03 - Huỳnh Mĩ A",
             "PH04 - Bùi Trường C"});
-            this.cbHocSinh.Location = new System.Drawing.Point(44, 148);
+            this.cbHocSinh.Location = new System.Drawing.Point(45, 197);
             this.cbHocSinh.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocSinh.Name = "cbHocSinh";
             this.cbHocSinh.Size = new System.Drawing.Size(341, 36);
@@ -133,7 +133,7 @@
             "PH02 - Nguyễn Đình C",
             "PH03 - Huỳnh Mĩ A",
             "PH04 - Bùi Trường C"});
-            this.cbHocKy.Location = new System.Drawing.Point(44, 201);
+            this.cbHocKy.Location = new System.Drawing.Point(44, 81);
             this.cbHocKy.Margin = new System.Windows.Forms.Padding(2);
             this.cbHocKy.Name = "cbHocKy";
             this.cbHocKy.Size = new System.Drawing.Size(342, 36);
