@@ -387,7 +387,7 @@ namespace Student_Management_System_CSharp_SGU2025.GUI
                 cbThem.BringToFront();
 
                 // ✅ Bỏ qlmonhoc khỏi danh sách disable - cho phép thêm môn học
-                if (maChucNang == "qlxeploai" || maChucNang == "qlbaocao" || maChucNang == "qllophoc")
+                if (maChucNang == "qlxeploai" || maChucNang == "qlbaocao")
                 {
                     cbThem.Enabled = false;
                     cbThem.Checked = false;
