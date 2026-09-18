@@ -94,3 +94,18 @@ The repository includes documentation for the assignment/timetable workflow and 
 ## Status
 
 This repository represents an academic software project and is kept as a portfolio example of desktop application development, relational-data workflows, layered architecture, and combinatorial scheduling.
+
+
+## Local configuration
+
+Database credentials are not stored in source code. Configure the local MySQL connection with environment variables:
+
+```text
+STUDENT_DB_PASSWORD
+STUDENT_DB_USER
+STUDENT_DB_HOST
+STUDENT_DB_NAME
+STUDENT_DB_PORT
+```
+
+The host, database name, user, and port have local-development defaults; the password defaults to empty. Gmail settings in `App.config` are placeholders only—use local, uncommitted credentials for real SMTP access.
