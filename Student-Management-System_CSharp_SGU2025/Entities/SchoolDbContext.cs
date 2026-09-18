@@ -13,7 +13,7 @@ namespace Student_Management_System_CSharp_SGU2025.Entities
     public class SchoolDbContext : DbContext
     {
         /// <summary>
-        /// Constructor - Sử dụng connection string hardcoded
+        /// Constructor - sử dụng connection string từ environment variables
         /// </summary>
         public SchoolDbContext() 
             : base(GetConnectionString())
@@ -24,17 +24,16 @@ namespace Student_Management_System_CSharp_SGU2025.Entities
         }
 
         /// <summary>
-        /// Lấy connection string cho Entity Framework - Hardcoded trong code
-        /// Để thay đổi cấu hình, sửa trực tiếp trong method này
+        /// Lấy connection string cho Entity Framework từ environment variables
         /// </summary>
         private static string GetConnectionString()
         {
-            // ✅ Cấu hình database - Sửa các giá trị dưới đây
-            string server = "127.0.0.1";
-            string database = "QuanLyHocSinh";
-            string userId = "root";
-            string password = "12345678";  // Để trống "" nếu localhost không có password
-            int port = 3306;
+            // Database configuration is read from environment variables.
+            string server = Environment.GetEnvironmentVariable("STUDENT_DB_HOST") ?? "127.0.0.1";
+            string database = Environment.GetEnvironmentVariable("STUDENT_DB_NAME") ?? "QuanLyHocSinh";
+            string userId = Environment.GetEnvironmentVariable("STUDENT_DB_USER") ?? "root";
+            string password = Environment.GetEnvironmentVariable("STUDENT_DB_PASSWORD") ?? "";
+            int port = int.TryParse(Environment.GetEnvironmentVariable("STUDENT_DB_PORT"), out int parsedPort) ? parsedPort : 3306;
             int connectionTimeout = 30;
 
             // Tạo connection string cho Entity Framework
