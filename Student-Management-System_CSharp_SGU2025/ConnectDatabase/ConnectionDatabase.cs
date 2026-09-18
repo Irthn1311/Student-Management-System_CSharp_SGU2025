@@ -13,17 +13,16 @@ namespace Student_Management_System_CSharp_SGU2025.ConnectDatabase
     internal class ConnectionDatabase
     {
         /// <summary>
-        /// Lấy connection string - Hardcoded trong code
-        /// Để thay đổi cấu hình, sửa trực tiếp trong method này
+        /// Lấy connection string từ environment variables cho môi trường local
         /// </summary>
         private static string GetConnectionString()
         {
-            // ✅ Cấu hình database - Sửa các giá trị dưới đây
-            string server = "127.0.0.1";
-            string database = "QuanLyHocSinh";
-            string userId = "root";
-            string password = "12345678";  // Để trống "" nếu localhost không có password
-            int port = 3306;
+            // Database configuration is read from environment variables.
+            string server = Environment.GetEnvironmentVariable("STUDENT_DB_HOST") ?? "127.0.0.1";
+            string database = Environment.GetEnvironmentVariable("STUDENT_DB_NAME") ?? "QuanLyHocSinh";
+            string userId = Environment.GetEnvironmentVariable("STUDENT_DB_USER") ?? "root";
+            string password = Environment.GetEnvironmentVariable("STUDENT_DB_PASSWORD") ?? "";
+            int port = int.TryParse(Environment.GetEnvironmentVariable("STUDENT_DB_PORT"), out int parsedPort) ? parsedPort : 3306;
             int connectionTimeout = 30;
 
             // Tạo connection string
